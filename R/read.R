@@ -59,7 +59,7 @@ read_pop_table <- function(path, folders, data_group) {
   } else {
     #  do stuff
   }
-
+  
   pop_table <- read.csv(paste0(path, "/", folders$pop_table, "/", pop_table_file))
   return(pop_table)
 }
@@ -122,37 +122,3 @@ read_shapefiles <- function(path, folders, data_group){
   
   return()
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
