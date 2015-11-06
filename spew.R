@@ -10,7 +10,7 @@ read_data <- function(path, folders = list(pop_table = "popTables",
                                            workplaces = "workplaces"),
                       filenames = NULL, data_group = "US") {
   
-  if (data_group != "US" & data_group != "ipums")  stop("SPEw doesn't recognize your data_group\nOnly 'US' and 'ipums' are currently supported")
+  if (data_group != "US" & data_group != "ipums")  stop("SPEW doesn't recognize your data_group\nOnly 'US' and 'ipums' are currently supported")
   
   if (is.null(filenames)) {
     #  Read in pop_table data
