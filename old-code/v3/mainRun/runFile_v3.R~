@@ -1,0 +1,40 @@
+#2015 January 16
+#Shannon Gallagher, Beka Steorts, Lee Richardson
+#The Run File
+#Use this file to create synthetic data!
+
+user<- "shannon"
+countryName<- 06
+version<- "v3"
+censusYear<- 2010 #dummy variable currently
+geoLevel<- 2
+geoID<- "06"
+isUSA<- TRUE
+samplingMethod<- "unif"
+# this is just a quickfix for when I'm running it... will clean up 
+if(user == "lee2"){
+  inputFolder<- "C:/Users/leeri_000/midas_v2/"
+} else if(user == "lee"){
+  inputFolder <- "C:/Users/Lee/midas_v2/"
+} else {
+  inputFolder<- "~/midas_v2/"
+}
+
+## Call a single county 
+source(paste0(inputFolder, "/mainRun/main_", version,".R"))
+ptm <- proc.time()
+mainRun(countryName, censusYear, geoLevel, version, user, inputFolder, isUSA, geoID, samplingMethod)
+print(proc.time() - ptm)
+
+
+## # loop through each african countries and generare the synthetic population
+## ptm <- proc.time()
+## country_list <- c("sierraleone", "thegambia", "guineabissau", "guinea", 
+##                   "mali", "senegal", "liberia", "cotedivoire")
+## for(country in country_list){
+##   source(paste0(inputFolder, "/mainRun/main_v2.R"))
+##   mainRun(country, censusYear, geoLevel, version, user, inputFolder)
+## }
+## print(proc.time() - ptm  )
+
+
