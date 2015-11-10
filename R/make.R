@@ -9,4 +9,5 @@
 # 4. Sample locations 
 # 5. Format the Shapefile
 
-# Output: Written .csv file for each Place ID 
+# Output: Written .csv file for each Place ID
+
