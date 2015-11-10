@@ -1,16 +1,17 @@
-#  Sam Ventura and Lee Richardson
+#  Sam Ventura, Lee Richardson, and Shannon Gallagher
 #  3 November 2015
 #  SPEW -- Synthetic Populations and Ecosystems of the World
+#  Update:  11/10/15
 
 read_data <- function(path, folders = list(pop_table = "popTables", 
                                            pums = "pums", 
                                            schools = "schools", 
-                                           tables = "tables", 
+                                           lookup = "tables", 
                                            shapefiles = "tiger", 
                                            workplaces = "workplaces"),
                       filenames = NULL, data_group = "US") {
   
-  if (data_group != "US" & data_group != "ipums")  stop("SPEW doesn't recognize your data_group\nOnly 'US' and 'ipums' are currently supported")
+  if (data_group != "US" & data_group != "ipums")  stop("SPEw doesn't recognize your data_group\nOnly 'US' and 'ipums' are currently supported")
   
   if (is.null(filenames)) {
     #  Read in pop_table data
@@ -19,8 +20,8 @@ read_data <- function(path, folders = list(pop_table = "popTables",
     #  Read in pums data
     pums <- read_pums(path, folders, data_group)
     
-    #  Read in tables data
-    tables <- read_tables(path, folders, data_group)
+    #  Read in lookup data
+    lookup <- read_lookup(path, folders, data_group)
     
     #  Read in shapefiles data
     shapefiles <- read_shapefiles(path, folders, data_group)
@@ -44,6 +45,13 @@ read_data <- function(path, folders = list(pop_table = "popTables",
   } else {
     
   }
+  
+  return(list(pop_table = popTables, 
+              pums = pums, 
+              lookup = lookup, 
+              shapefiles = tiger, 
+              schools = schools, 
+              workplaces = workplaces))
 }
 
 
@@ -53,6 +61,7 @@ read_pop_table <- function(path, folders, data_group) {
   pop_table_files <- list.files(paste0(path, "/", folders$pop_table))
   
   if (data_group == "US") {
+    #  For US, should always be households.csv
     pop_table_file <- "households.csv"
   } else if (data_group == "ipums") {
     #  do stuff
@@ -66,15 +75,24 @@ read_pop_table <- function(path, folders, data_group) {
 
 
 #  Function for reading in pums data
+#  Need conditional for each of these two cases:
+#  1.  If given both person and household level, return both separately.
+#  2.  If given only person level, extract household level, return both separately.
 read_pums <- function(path, folders, data_group){
   
   pums_files <- list.files(paste0(path, "/", folders$pums))
   
   if (data_group == "US") {
+    
+    #  Get rid of any additional folders in the directory
     pums_files <- pums_files[-which(nchar(pums_files) < 5)]
-    hp <- substr(pums_files, 5)
+    
+    #  Find the indices of the person and household level files
+    hp <- substr(pums_files, 5, 5)
     index_h <- which(hp == "h")
     index_p <- which(hp == "p")
+    
+    #  Read in the person and household level files
     pums_h <- read.csv(paste0(path, "/", folders$pums, "/", pums_files[index_h]))
     pums_p <- read.csv(paste0(path, "/", folders$pums, "/", pums_files[index_p]))
     
@@ -91,19 +109,21 @@ read_pums <- function(path, folders, data_group){
 #  Function for reading in lookup tables data
 #  Not sure if we need this right now
 #  Possibly add later
-read_tables <- function(path, folders, data_group){
+read_lookup <- function(path, folders, data_group){
   
-  tables_files <- list.files(paste0(path, "/", folders$tables))
+  lookup_files <- list.files(paste0(path, "/", folders$lookup))
   
   if (data_group == "US") {
-    #  do stuff
+    filename <- "lookup10.csv"
   } else if (data_group == "ipums") {
     #  do stuff
   } else {
     #  do stuff
   }
   
-  return()
+  #  Read in lookup table
+  lookup <- read.csv(paste0(path, "/", folders$lookup, "/", filename))
+  return(lookup)
 }
 
 
@@ -113,12 +133,25 @@ read_shapefiles <- function(path, folders, data_group){
   shapefiles_files <- list.files(paste0(path, "/", folders$shapefiles))
   
   if (data_group == "US") {
-    #  do stuff
+    
+    #  Navigate to correct folder
+    if(length(shapefiles_files) == 1 & !grepl(pattern = "\\.", x = shapefiles_files)){
+      folders$shapefiles <- paste0(folders$shapefiles, "/", shapefiles_files)
+      shapefiles_files <- list.files(paste0(path, "/", folders$shapefiles))
+    }
+    
+    #  Read in correct file
+    ind_shp <- which(grepl(pattern = "\\.shp", x = shapefiles_files) & 
+                        !grepl(pattern = "\\.xml", x = shapefiles_files))
+    filename <- shapefiles_files[ind_shp]
   } else if (data_group == "ipums") {
     #  do stuff
   } else {
     #  do stuff
   }
   
-  return()
+  #  Read in shapefile
+  shapefile <- readShapeSpatial(paste0(path, folders$shapefiles, "/", filename))
+  return(shapefile)
 }
+
