@@ -2,6 +2,7 @@
 #  3 November 2015
 #  SPEW -- Synthetic Populations and Ecosystems of the World
 #  Update:  11/10/15
+#  Update:  11.12.15 - read in schools and workplaces
 
 read_data <- function(path, folders = list(pop_table = "popTables", 
                                            pums = "pums", 
@@ -155,3 +156,54 @@ read_shapefiles <- function(path, folders, data_group){
   return(shapefile)
 }
 
+
+
+
+#Read in Schools/workplaces
+
+read_schools <- function(path, folders, data_group){
+  
+  schools_files<- list.files(paste0(path, "/", folders$shapefiles))
+  
+  if (data_group == "US") {
+    
+    #  Navigate to correct folder
+    if(length(schools_files) == 1 & !grepl(pattern = "\\.", x = schools_files)){
+      folders$schools_files<- paste0(folders$schools, "/", schools_files)
+      schools_files <- list.files(paste0(path, "/", folders$schools))
+    }
+    filename <- schools_files
+  } else if (data_group == "ipums") {
+    #  do stuff
+  } else {
+    #  do stuff
+  }
+  
+  #  Read in shapefile
+  schools <- read.csv(paste0(path, folders$schools, "/", filename))
+  return(schools)
+}
+
+
+read_workplaces <- function(path, folders, data_group){
+  
+  workplaces_files<- list.files(paste0(path, "/", folders$shapefiles))
+  
+  if (data_group == "US") {
+    
+    #  Navigate to correct folder
+    if(length(workplaces_files) == 1 & !grepl(pattern = "\\.", x = workplaces_files)){
+      folders$workplaces_files<- paste0(folders$workplaces, "/", workplaces_files)
+      workplaces_files <- list.files(paste0(path, "/", folders$workplaces))
+    }
+    filename <- workplaces_files
+  } else if (data_group == "ipums") {
+    #  do stuff
+  } else {
+    #  do stuff
+  }
+  
+  #  Read in shapefile
+  workplaces <- read.csv(paste0(path, folders$workplaces, "/", filename))
+  return(workplaces)
+}
