@@ -1,0 +1,53 @@
+---
+title: "Package Development Guidelines"
+author: "Lee Richardson"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction 
+
+This document is meant to provide a set of guidelines and strategies for developing the spew R package. It's meant to document the philosophy behind our approach, along with a set of specific examples and detailed documentation for the most common development tasks that we will encounter. It's meant to be a dynamic set of guidelines, which will adapt as we move forward and learn more about details of spew and what we need in order to implement it successfully. 
+
+Most of what I've learned about specifically developingg [R Packages](http://r-pkgs.had.co.nz/) comes from the Hadley Wickham book, so for more details on the components described below, a good reference is either this or the official [R extensions](https://cran.r-project.org/doc/manuals/R-exts.html#Creating-R-packages) manual. That said, developing R packages is a lot smoother when using the **devtools** package, along with a few others. To install the key packages, use:
+
+```{r, eval=FALSE}
+install.packages(c("devtools", "roxygen2", "testthat", "knitr"), repos = "http://cran.rstudio.com/")
+```
+
+# High Level Principles 
+
+This section of the document contains the high level principles we plan on sticking to while developing spew. Of course, some of these are more idealizations than what will happen in practice, as deadlines, requests, etc... can cause us to abandon best practices in order to meet a given task. However, we want to work hard to follow these high level principles, as it will help us build spew more effectively, and we will all learn to become better programmers along the way.  
+
+## Style 
+
+## Testing 
+
+## Version Control  
+
+## Code Reviews 
+  
+# Common Tasks 
+
+## Adding documentation to functions 
+
+## Writing tests for functions 
+
+## Using Example data 
+
+## Git for merging data 
+
+# Detailed Situations 
+
+This section will document some of the more detailed situations we find ourselves in, along with strategies for dealing with them. This is hopefully a section which will be updated often, as it will allow all of us to deal with situations in a unified manner, which will reduce confusion down the road. 
+
+## Adding non package-related files/directories (.Rbuildignore)
+
+## Including dependencies in our package 
+
+
+
