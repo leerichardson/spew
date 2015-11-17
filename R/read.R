@@ -12,7 +12,8 @@ read_data <- function(path, folders = list(pop_table = "popTables",
                                            workplaces = "workplaces"),
                       filenames = NULL, data_group = "US") {
   
-  if (data_group != "US" & data_group != "ipums")  stop("SPEw doesn't recognize your data_group\nOnly 'US' and 'ipums' are currently supported")
+  if (data_group != "US" & data_group != "ipums")  stop("spew doesn't recognize your data_group
+                                                        \nOnly 'US' and 'ipums' are currently supported")
   
   if (is.null(filenames)) {
     #  Read in pop_table data
@@ -59,7 +60,7 @@ read_data <- function(path, folders = list(pop_table = "popTables",
 #  Function for reading in pop_table data
 read_pop_table <- function(path, folders, data_group) {
   
-  pop_table_files <- list.files(paste0(path, "/", folders$pop_table))
+  pop_table_files <- list.files(paste0(path, "/", folders$pop_table, "/"))
   
   if (data_group == "US") {
     #  For US, should always be households.csv
@@ -70,7 +71,8 @@ read_pop_table <- function(path, folders, data_group) {
     #  do stuff
   }
   
-  pop_table <- read.csv(paste0(path, "/", folders$pop_table, "/", pop_table_file))
+  pop_table <- read.csv(paste0(path, "/", folders$pop_table, "/", pop_table_file), 
+                        stringsAsFactors = FALSE)
   return(pop_table)
 }
 

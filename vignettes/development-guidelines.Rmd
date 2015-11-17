@@ -16,7 +16,8 @@ This document is meant to provide a set of guidelines and strategies for develop
 Most of what I've learned about specifically developingg [R Packages](http://r-pkgs.had.co.nz/) comes from the Hadley Wickham book, so for more details on the components described below, a good reference is either this or the official [R extensions](https://cran.r-project.org/doc/manuals/R-exts.html#Creating-R-packages) manual. That said, developing R packages is a lot smoother when using the **devtools** package, along with a few others. To install the key packages, use:
 
 ```{r, eval=FALSE}
-install.packages(c("devtools", "roxygen2", "testthat", "knitr"), repos = "http://cran.rstudio.com/")
+install.packages(c("devtools", "roxygen2", "testthat", "knitr"), 
+                 repos = "http://cran.rstudio.com/")
 ```
 
 # High Level Principles 
@@ -25,7 +26,17 @@ This section of the document contains the high level principles we plan on stick
 
 ## Style 
 
+  It's important to agree on a coding style guide up front when creating a project with multiple contributors. This will make spew easier read, understand, verify, and ultimiately contribute to. Since we are writing spew in R, we will start by using the [Advanced R](http://adv-r.had.co.nz/Style.html) style guide, which integrates well with the books we are basing our package structure around. 
+
 ## Testing 
+
+In the past version's of our synthetic population generator, we've had issues when we tweaked certain component to generate a specific population, only to learn that this would break something down the road. This lead to a general anxiety when adding new features to the code, and less confidence in our ability to quickly generate new populations with various subtleties compared with the one's which already worked.  
+
+In spew, we are hoping to alleviate some of these concerns by making unit testing a fundamental part of the development process. Unit tests are universally used by professional software engineers, and while they add a little bit of time to the development process, they will save us much time and energy down the road. 
+
+For one, making sure that all the components in spew have a test associared with it will give us a more modular structure. It will help us remove inderdependencies between functions, and alert us to cases when changing one component will adversely effect another. This will also help boost confidence in our code, since if we know that our functions have gone through their associated tests, we can be confident the new features we add aren't introducing bugs down the road. 
+
+Ideally, we can tests whenever we find ourselves checking the results of various functions at the command line. This way, all of the ad-hoc tests we perform can be codified, and we can catch when strange errors persist in our code. In a later section, we will have an example of writing tests for the `read.R` series of functions. 
 
 ## Version Control  
 
@@ -37,6 +48,11 @@ This section of the document contains the high level principles we plan on stick
 
 ## Writing tests for functions 
 
+For spew, we will make use of the `testhat` package to write unit tests for our corresponding functions. This gives us a nice structure, in which all of the tests are located in the *tests/testthat*. To make sure that our changes pass all of the pre-exising tests, we can use the command `devtools::test()`. This will run all of the tests in this folder, display which one's passed, and provide error messages if they fail. 
+
+
+
+
 ## Using Example data 
 
 ## Git for merging data 
@@ -46,6 +62,20 @@ This section of the document contains the high level principles we plan on stick
 This section will document some of the more detailed situations we find ourselves in, along with strategies for dealing with them. This is hopefully a section which will be updated often, as it will allow all of us to deal with situations in a unified manner, which will reduce confusion down the road. 
 
 ## Adding non package-related files/directories (.Rbuildignore)
+
+There are times when we need specific files for spew, however there is no good place to put them that fit's into the R package structure. Thankfully, we can get around these issues using the `.Rbuildignore` file, which is included in the package. 
+
+The way this works is that the code we have hosted on Github is known as the *source* version of our package. In order for users to ultimately use our package, and not just development version, the source packages needs to be built, converted to binary, and then installed. The `.Rbuildignore` file allows you to specify both files and directories which won't be included when the package is installed, hence they are safe to keep in our source (ie: Github) version of the package, and won't be included when users install the package. 
+
+For example, for testing/verification purposes, we want to develop spew using example data from both our United States and International formats of data. We want this to replicate the data format we see on Olympus, that way we can be sure if the functions and synthetic populations are working here, they are sure to work on Olympus. Because the Olympus format of the data isn't formatted the same way we would format a typical R data-set, we can include the data in our source (Github) package, and use `.Rbuildignore` to make sure this data isn't carried through to the insallation process. 
+
+To add the example data, simply use:
+
+```{r}
+devtools::use_build_ignore("data-raw")
+```
+
+Now, in this folder we can also include scripts which convert this raw data into more efficient `.rdata` files, which can be used for testing/verification of other aspects of spew down the road.  
 
 ## Including dependencies in our package 
 
