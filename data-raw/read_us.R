@@ -62,6 +62,11 @@ sd_workplaces <- read_workplaces("data-raw/46", data_group = "US", folders = lis
 # this as an .rdata file in the /data folder for use in debugging 
 # the other parts of spew ---------------------------------------
 
-
-
-
+sd_data <- read_data("data-raw/46", data_group = "US", folders = list(pop_table = "popTables", 
+                                                                      pums = "pums", 
+                                                                      schools = "schools", 
+                                                                      lookup = "tables", 
+                                                                      shapefiles = "tiger", 
+                                                                      workplaces = "workplaces"))
+devtools::use_data(sd_data)
+ 

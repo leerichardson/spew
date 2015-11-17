@@ -23,22 +23,19 @@ test_that("Individual United States functions", {
   expect_equal(any(lapply(sd_poptable, class) == "factor"), FALSE)
   
   
-  
   # PUMS -------------------------------
 
   
-  
-  
   # Shapefile --------------------------
-  
   
   
   # Schools ----------------------------
   
   
-  
   # Workplace --------------------------
   
   
+  # Lookup -----------------------------
 
+  
 }) 

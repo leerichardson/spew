@@ -12,9 +12,10 @@ read_data <- function(path, folders = list(pop_table = "popTables",
                                            workplaces = "workplaces"),
                       filenames = NULL, data_group = "US") {
   
-  if (data_group != "US" & data_group != "ipums")  stop("spew doesn't recognize your data_group
-                                                        \nOnly 'US' and 'ipums' are currently supported")
-  
+  if (data_group != "US" & data_group != "ipums") {
+    stop("spew doesn't recognize your data_group\n Only 'US' and 'ipums' are currently supported")
+  } 
+
   if (is.null(filenames)) {
     #  Read in pop_table data
     pop_table <- read_pop_table(path, folders, data_group)
@@ -48,10 +49,10 @@ read_data <- function(path, folders = list(pop_table = "popTables",
     
   }
   
-  return(list(pop_table = popTables, 
+  return(list(pop_table = pop_table, 
               pums = pums, 
               lookup = lookup, 
-              shapefiles = tiger, 
+              shapefiles = shapefiles, 
               schools = schools, 
               workplaces = workplaces))
 }
@@ -130,7 +131,7 @@ read_shapefiles <- function(path, folders, data_group) {
   if (data_group == "US") {
     
     #  Navigate to correct folder
-    if(length(shapefiles_files) == 1 & !grepl(pattern = "\\.", x = shapefiles_files)){
+    if (length(shapefiles_files) == 1 & !grepl(pattern = "\\.", x = shapefiles_files)){
       folders$shapefiles <- paste0(folders$shapefiles, "/", shapefiles_files)
       shapefiles_files <- list.files(paste0(path, "/", folders$shapefiles))
     }
@@ -150,44 +151,45 @@ read_shapefiles <- function(path, folders, data_group) {
   return(shapefile)
 }
 
-
 read_schools <- function(path, folders, data_group){
-  browser()
-  schools_files<- list.files(paste0(path, "/", folders$schools))
+
+  schools_path <- paste0(path, "/", folders$schools, "/")
   
   if (data_group == "US") {
+      
+    # Read in public school dataframe  
+    public_fn <- paste0(schools_path, "ELSI_2011_public_f.csv")
+    public_df <- read.csv(public_fn, stringsAsFactors = FALSE)
+    public_df$State.Code = gsub("=", "", public_df$State.Code)
+
+    # Read in private school dataframe 
+    private_fn <- paste0(schools_path, "ELSI_2010_private_f.csv")
+    private_df <- read.csv(private_fn, stringsAsFactors = FALSE)
+    private_df$State.Code = gsub("=", "", private_df$State.Code)
     
-    #  Navigate to correct folder
-    if (length(schools_files) == 1 & !grepl(pattern = "\\.", x = schools_files)) {
-      folders$schools_files <- paste0(folders$schools, "/", schools_files)
-      schools_files <- list.files(paste0(path, "/", folders$schools))
-    }
-    filename <- schools_files
+    # Combine the public and private schools into a list 
+    schools <- list(public = public_df, private = private_df)
+    return(schools)
+    
   } else if (data_group == "ipums") {
     #  do stuff
   } else {
     #  do stuff
   }
-  
-  #  Read in shapefile
-  schools <- read.csv(paste0(path, folders$schools, "/", filename), 
-                      stringsAsFactors = FALSE)
-  return(schools)
+
 }
 
-
-read_workplaces <- function(path, folders, data_group){
-  
-  workplaces_files<- list.files(paste0(path, "/", folders$shapefiles))
+read_workplaces <- function(path, folders, data_group) {
+  workplace_files<- list.files(paste0(path, "/", folders$workplaces))
   
   if (data_group == "US") {
     
-    #  Navigate to correct folder
-    if (length(workplaces_files) == 1 & !grepl(pattern = "\\.", x = workplaces_files)) {
-      folders$workplaces_files<- paste0(folders$workplaces, "/", workplaces_files)
-      workplaces_files <- list.files(paste0(path, "/", folders$workplaces))
+    if (length(workplace_files == 1)) {
+      filename <- workplace_files
+    } else if (length(workplace_files) > 1) {
+      filename <- grep("us.workplaces", workplace_files)[1]
     }
-    filename <- workplaces_files
+    
   } else if (data_group == "ipums") {
     #  do stuff
   } else {
@@ -195,7 +197,7 @@ read_workplaces <- function(path, folders, data_group){
   }
   
   #  Read in shapefile
-  workplaces <- read.csv(paste0(path, folders$workplaces, "/", filename), 
+  workplaces <- read.csv(paste0(path, "/", folders$workplaces, "/", filename), 
                          stringsAsFactors = FALSE)
   return(workplaces)
 }
