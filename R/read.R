@@ -76,11 +76,6 @@ read_pop_table <- function(path, folders, data_group) {
   return(pop_table)
 }
 
-
-#  Function for reading in pums data
-#  Need conditional for each of these two cases:
-#  1.  If given both person and household level, return both separately.
-#  2.  If given only person level, extract household level, return both separately.
 read_pums <- function(path, folders, data_group){
   
   pums_files <- list.files(paste0(path, "/", folders$pums))
@@ -96,8 +91,10 @@ read_pums <- function(path, folders, data_group){
     index_p <- which(hp == "p")
     
     #  Read in the person and household level files
-    pums_h <- read.csv(paste0(path, "/", folders$pums, "/", pums_files[index_h]))
-    pums_p <- read.csv(paste0(path, "/", folders$pums, "/", pums_files[index_p]))
+    pums_h <- read.csv(paste0(path, "/", folders$pums, "/", pums_files[index_h]), 
+                       stringsAsFactors = FALSE)
+    pums_p <- read.csv(paste0(path, "/", folders$pums, "/", pums_files[index_p]), 
+                       stringsAsFactors = FALSE)
     
   } else if (data_group == "ipums") {
     #  do stuff
@@ -108,10 +105,6 @@ read_pums <- function(path, folders, data_group){
   return(list(pums_h = pums_h, pums_p = pums_p))
 }
 
-
-#  Function for reading in lookup tables data
-#  Not sure if we need this right now
-#  Possibly add later
 read_lookup <- function(path, folders, data_group){
   
   lookup_files <- list.files(paste0(path, "/", folders$lookup))
@@ -125,14 +118,13 @@ read_lookup <- function(path, folders, data_group){
   }
   
   #  Read in lookup table
-  lookup <- read.csv(paste0(path, "/", folders$lookup, "/", filename))
+  lookup <- read.csv(paste0(path, "/", folders$lookup, "/", filename), 
+                     stringsAsFactors = FALSE)
   return(lookup)
 }
 
+read_shapefiles <- function(path, folders, data_group) {
 
-#  Function for reading in lookup tables data
-read_shapefiles <- function(path, folders, data_group){
-  
   shapefiles_files <- list.files(paste0(path, "/", folders$shapefiles))
   
   if (data_group == "US") {
@@ -154,24 +146,20 @@ read_shapefiles <- function(path, folders, data_group){
   }
   
   #  Read in shapefile
-  shapefile <- readShapeSpatial(paste0(path, folders$shapefiles, "/", filename))
+  shapefile <- readShapeSpatial(paste0(path, "/", folders$shapefiles, "/", filename))
   return(shapefile)
 }
 
 
-
-
-#Read in Schools/workplaces
-
 read_schools <- function(path, folders, data_group){
-  
-  schools_files<- list.files(paste0(path, "/", folders$shapefiles))
+  browser()
+  schools_files<- list.files(paste0(path, "/", folders$schools))
   
   if (data_group == "US") {
     
     #  Navigate to correct folder
-    if(length(schools_files) == 1 & !grepl(pattern = "\\.", x = schools_files)){
-      folders$schools_files<- paste0(folders$schools, "/", schools_files)
+    if (length(schools_files) == 1 & !grepl(pattern = "\\.", x = schools_files)) {
+      folders$schools_files <- paste0(folders$schools, "/", schools_files)
       schools_files <- list.files(paste0(path, "/", folders$schools))
     }
     filename <- schools_files
@@ -182,7 +170,8 @@ read_schools <- function(path, folders, data_group){
   }
   
   #  Read in shapefile
-  schools <- read.csv(paste0(path, folders$schools, "/", filename))
+  schools <- read.csv(paste0(path, folders$schools, "/", filename), 
+                      stringsAsFactors = FALSE)
   return(schools)
 }
 
@@ -194,7 +183,7 @@ read_workplaces <- function(path, folders, data_group){
   if (data_group == "US") {
     
     #  Navigate to correct folder
-    if(length(workplaces_files) == 1 & !grepl(pattern = "\\.", x = workplaces_files)){
+    if (length(workplaces_files) == 1 & !grepl(pattern = "\\.", x = workplaces_files)) {
       folders$workplaces_files<- paste0(folders$workplaces, "/", workplaces_files)
       workplaces_files <- list.files(paste0(path, "/", folders$workplaces))
     }
@@ -206,6 +195,7 @@ read_workplaces <- function(path, folders, data_group){
   }
   
   #  Read in shapefile
-  workplaces <- read.csv(paste0(path, folders$workplaces, "/", filename))
+  workplaces <- read.csv(paste0(path, folders$workplaces, "/", filename), 
+                         stringsAsFactors = FALSE)
   return(workplaces)
 }

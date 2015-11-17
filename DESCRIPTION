@@ -9,5 +9,8 @@ Description: More about what it does (maybe more than one line)
 License: What license is it under?
 Suggests: testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    RecordLinkage
 VignetteBuilder: knitr
+Imports: sp,
+    maptools

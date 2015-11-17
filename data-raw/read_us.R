@@ -1,0 +1,67 @@
+# Lee Richardson
+# 11/17/2015
+# Purpose: Example script which converts our raw, 
+# south dakota data into a list of .rdata files, which 
+# will be used in later (format, make) parts of the program 
+
+
+# Test the individual read_data functions ----------------------
+
+sd_poptable <- read_pop_table("data-raw/46", data_group = "US", folders = list(pop_table = "popTables", 
+                                                                          pums = "pums", 
+                                                                          schools = "schools", 
+                                                                          lookup = "tables", 
+                                                                          shapefiles = "tiger", 
+                                                                          workplaces = "workplaces")) 
+
+
+
+sd_pums <- read_pums("data-raw/46", data_group = "US", folders = list(pop_table = "popTables", 
+                                                                               pums = "pums", 
+                                                                               schools = "schools", 
+                                                                               lookup = "tables", 
+                                                                               shapefiles = "tiger", 
+                                                                               workplaces = "workplaces")) 
+
+
+sd_shape <- read_shapefiles("data-raw/46", data_group = "US", folders = list(pop_table = "popTables", 
+                                                                      pums = "pums", 
+                                                                      schools = "schools", 
+                                                                      lookup = "tables", 
+                                                                      shapefiles = "tiger", 
+                                                                      workplaces = "workplaces")) 
+
+
+
+sd_lookup <- read_lookup("data-raw/46", data_group = "US", folders = list(pop_table = "popTables", 
+                                                             pums = "pums", 
+                                                             schools = "schools", 
+                                                             lookup = "tables", 
+                                                             shapefiles = "tiger", 
+                                                             workplaces = "workplaces"))
+
+
+
+sd_schools <- read_schools("data-raw/46", data_group = "US", folders = list(pop_table = "popTables", 
+                                                                            pums = "pums", 
+                                                                            schools = "schools", 
+                                                                            lookup = "tables", 
+                                                                            shapefiles = "tiger", 
+                                                                            workplaces = "workplaces")) 
+
+
+sd_workplaces <- read_workplaces("data-raw/46", data_group = "US", folders = list(pop_table = "popTables", 
+                                                                                  pums = "pums", 
+                                                                                  schools = "schools", 
+                                                                                  lookup = "tables", 
+                                                                                  shapefiles = "tiger", 
+                                                                                  workplaces = "workplaces"))
+
+
+# Use the Read Data function to get the desired list, and save 
+# this as an .rdata file in the /data folder for use in debugging 
+# the other parts of spew ---------------------------------------
+
+
+
+

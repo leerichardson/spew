@@ -1,5 +1,5 @@
 ---
-title: "Package Development Guidelines"
+title: "Spew Development Strategy"
 author: "Lee Richardson"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -48,9 +48,46 @@ Ideally, we can tests whenever we find ourselves checking the results of various
 
 ## Writing tests for functions 
 
-For spew, we will make use of the `testhat` package to write unit tests for our corresponding functions. This gives us a nice structure, in which all of the tests are located in the *tests/testthat*. To make sure that our changes pass all of the pre-exising tests, we can use the command `devtools::test()`. This will run all of the tests in this folder, display which one's passed, and provide error messages if they fail. 
+In developing spew, we will make use of the `testhat` package to write unit tests for our corresponding functions. This gives us a nice structure, in which all of the tests are located in the *tests/testthat*. To make sure that our changes pass all of the pre-exising tests, we can use the command `devtools::test()`. This will run all of the tests in this folder, display which one's passed, and provide error messages if they fail. 
+
+For example, one of the main components for spew is reading in all of the data sources, and making sure that they are in a list for use in later components of the program. We want to write a set of complimentary unit tests for our read functions to make sure that we not only have a list with all of the data, but that each file is being read in correctly. That way, if we edit our read functions and introduce an error, we will not only know that our functions failed the tests, but also which specific files/functions causes the failure. 
+
+Let's look at how to write a unit test for our `read_pop_table` function. Note that by default, unit tests are self contained in the tests/testthat directory, meaning that we need to add two lines to ensure that we are reading in from that correct `data-raw/` directory, where we put the example South Dakota data. In testthat, we organize our tests hierarchically, where each file contains a set of tests, and each test contains a set of expectations, each of which is ran everytime we test our package. In this case, we have:
+
+1. File - `tests/testthat/test-read.R`. This file will contain all the tests for the read functions. Note that every testing file must start with 'test'
+2. Test - Within `test_that("Individual United States functions"` contains all of our tests to ensure our individual read functions work
+3. Expectation - For example `expect_equal(nrow(sd_poptable), 222)` contains an expectation that our poptable will have 222 rows. 
 
 
+```{r, eval=FALSE}
+context("Read Functions")
+
+test_that("Individual United States functions", {
+  
+  # Make sure we are using the correct data-raw directory 
+  # as opposed to the tests/testthat one within the package 
+  spew_dir <- system.file("", package = "spew")
+  data_path <- paste0(spew_dir, "/", "data-raw/46")
+  
+  # Pop Table -------------------------------- 
+  sd_poptable <- read_pop_table(data_path, data_group = "US", folders = list(pop_table = "popTables", 
+                                                                             pums = "pums", 
+                                                                             schools = "schools", 
+                                                                             lookup = "tables", 
+                                                                             shapefiles = "tiger", 
+                                                                             workplaces = "workplaces")) 
+  # Data frame with the correct dimensions 
+  expect_equal(nrow(sd_poptable), 222)
+  expect_equal(ncol(sd_poptable), 4)
+  expect_equal(class(sd_poptable), "data.frame")
+  
+  # Making sure stringAsFactors=FALSE 
+  expect_equal(any(lapply(sd_poptable, class) == "factor"), FALSE)
+
+}) 
+```
+
+This is an example of how we can test one of our individual read functions. If we now run `devtools::test()`, each one of these expectations will be ran, along with a print-out on if they passed, failed, and why. 
 
 
 ## Using Example data 
@@ -78,6 +115,21 @@ devtools::use_build_ignore("data-raw")
 Now, in this folder we can also include scripts which convert this raw data into more efficient `.rdata` files, which can be used for testing/verification of other aspects of spew down the road.  
 
 ## Including dependencies in our package 
+
+One critical aspect of developing and R package is learning how to incorporate dependencies from other packages, while not adversely effecting other users' R landscape. For example, in spew, we rely on certain packages for dealing with shapefiles, linking records, etc... Instead of putting `library(sp)` in the first line of the function, the preferred method is to add the `sp` package to our list of dependencies, and this way to will avoid errors down the road. Fortunately, devtools gives an easy way to add dependencies to our `DESCRIPTION` file, which contains all of the metadata needed for using our package. 
+
+To add a necessary package dependency to spew, simply use:
+
+```{r, eval=FALSE}
+devtools::use_package("sp")
+```
+
+This means that anyone using the spew package MUST have the sp package installed as well. For a less stringest requirement, (ie: only some use cases need the record linkage package), we can simply suggest a dependency:
+
+```{r, eval=FALSE}
+devtools::use_package("RecordLinkage", "Suggests")
+```
+
 
 
 
