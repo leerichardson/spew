@@ -19,15 +19,18 @@ read_data <- function(path, folders = list(pop_table = "popTables",
   if (is.null(filenames)) {
     #  Read in pop_table data
     pop_table <- read_pop_table(path, folders, data_group)
+    pop_table <- standardize_pop_table(pop_table, data_group)
     
     #  Read in pums data
     pums <- read_pums(path, folders, data_group)
     
     #  Read in lookup data
     lookup <- read_lookup(path, folders, data_group)
+    lookup <- standardize_lookup(lookup, data_group)
     
     #  Read in shapefiles data
     shapefiles <- read_shapefiles(path, folders, data_group)
+    shapefiles <- standardize_shapefiles(shapefiles, data_group)
     
     #  Read in schools data, if necessary
     if (folders$schools %in% list.files(path)) {
@@ -77,6 +80,19 @@ read_pop_table <- function(path, folders, data_group) {
   return(pop_table)
 }
 
+
+#  Standardize the pop_table
+standardize_pop_table <- function(pop_table, data_group){
+  if (data_group == "US") {
+    pop_table <- data.frame(place_id = pop_table$Id2,
+                            n_house = pop_table$NumberOfHouseholds)
+  }
+  
+  return(pop_table)
+}
+
+
+#  Function for reading in pums data
 read_pums <- function(path, folders, data_group){
   
   pums_files <- list.files(paste0(path, "/", folders$pums))
@@ -106,6 +122,7 @@ read_pums <- function(path, folders, data_group){
   return(list(pums_h = pums_h, pums_p = pums_p))
 }
 
+#  Function for reading in lookup data
 read_lookup <- function(path, folders, data_group){
   
   lookup_files <- list.files(paste0(path, "/", folders$lookup))
@@ -124,6 +141,30 @@ read_lookup <- function(path, folders, data_group){
   return(lookup)
 }
 
+
+#  Standardize the lookup table
+standardize_lookup <- function(lookup, data_group){
+  if (data_group == "US") {
+    #  Below, we add 100, 1000, and 1000000 and then take the substrings
+    #  so that each string has the same length
+    new_state_fp <- lookup$STATEFP + 100  
+    new_state_fp <- substr(new_state_fp, 2, 3)
+    new_county_fp <- lookup$COUNTYFP + 1000
+    new_county_fp <- substr(new_county_fp, 2, 4)
+    new_tract_ce <- lookup$TRACTCE + 1000000
+    new_tract_ce <- substr(new_tract_ce, 2, 7)
+    place_id <- paste0(new_state_fp, new_county_fp, new_tract_ce)
+    
+    lookup <- data.frame(place_id = place_id,
+                         puma_id = lookup$PUMA5CE)
+  }
+  
+  return(pop_table)
+}
+
+
+
+#  Function for reading in shapefiles data
 read_shapefiles <- function(path, folders, data_group) {
 
   shapefiles_files <- list.files(paste0(path, "/", folders$shapefiles))
@@ -151,6 +192,28 @@ read_shapefiles <- function(path, folders, data_group) {
   return(shapefile)
 }
 
+
+
+#  Standardize the shapefiles 
+standardize_shapefiles <- function(shapefiles, data_group){
+  if (data_group == "US") {
+    new_state_fp <- lookup$STATEFP + 100
+    new_state_fp <- substr(new_state_fp, 2, 3)
+    new_county_fp <- lookup$COUNTYFP + 1000
+    new_county_fp <- substr(new_county_fp, 2, 4)
+    new_tract_ce <- lookup$TRACTCE + 1000000
+    new_tract_ce <- substr(new_tract_ce, 2, 7)
+    place_id <- paste0(new_state_fp, new_county_fp, new_tract_ce)
+    
+    lookup <- data.frame(place_id = place_id,
+                         puma_id = lookup$PUMA5CE)
+  }
+  
+  return(pop_table)
+}
+
+
+#  Function for reading in schools data
 read_schools <- function(path, folders, data_group){
 
   schools_path <- paste0(path, "/", folders$schools, "/")
@@ -179,6 +242,8 @@ read_schools <- function(path, folders, data_group){
 
 }
 
+
+#  Function for reading in workplaces data
 read_workplaces <- function(path, folders, data_group) {
   workplace_files<- list.files(paste0(path, "/", folders$workplaces))
   

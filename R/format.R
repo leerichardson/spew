@@ -2,7 +2,7 @@
 
 #  Pseudocode ------------------------
 
-#  Input: List of all data inputs 
+#  Input:  List of all data inputs 
 
 #  Assert that to make sure we have the correct inputs. (at least the first three)
 
