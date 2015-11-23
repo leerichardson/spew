@@ -1,3 +1,5 @@
+#  Sam Ventura, Lee Richardson, Shannon Gallagher
+
 #  Pseudocode ------------------------
 
 #  Input: List of all data inputs 
