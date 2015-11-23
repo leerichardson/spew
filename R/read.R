@@ -23,6 +23,7 @@ read_data <- function(path, folders = list(pop_table = "popTables",
     
     #  Read in pums data
     pums <- read_pums(path, folders, data_group)
+    pums <- standardize_pums(pums, data_group)
     
     #  Read in lookup data
     lookup <- read_lookup(path, folders, data_group)
@@ -122,6 +123,19 @@ read_pums <- function(path, folders, data_group){
   return(list(pums_h = pums_h, pums_p = pums_p))
 }
 
+
+#  Standardize the pums data 
+standardize_pums <- function(pums, data_group){
+  if (data_group == "US") {
+    names(pums$pums_h)[which(names(pums$pums_h) == "PUMA")] <- "puma_id"
+    names(pums$pums_p)[which(names(pums$pums_p) == "PUMA")] <- "puma_id"
+  }
+  
+  return(pums)
+}
+
+
+
 #  Function for reading in lookup data
 read_lookup <- function(path, folders, data_group){
   
@@ -145,6 +159,9 @@ read_lookup <- function(path, folders, data_group){
 #  Standardize the lookup table
 standardize_lookup <- function(lookup, data_group){
   if (data_group == "US") {
+    #  In the future, maybe take the subset of the lookup table corresponding to the state
+    #lookup <- subset(lookup, STATE)
+    
     #  Below, we add 100, 1000, and 1000000 and then take the substrings
     #  so that each string has the same length
     new_state_fp <- lookup$STATEFP + 100  
@@ -157,9 +174,11 @@ standardize_lookup <- function(lookup, data_group){
     
     lookup <- data.frame(place_id = place_id,
                          puma_id = lookup$PUMA5CE)
+    
+    
   }
   
-  return(pop_table)
+  return(lookup)
 }
 
 
@@ -193,23 +212,13 @@ read_shapefiles <- function(path, folders, data_group) {
 }
 
 
-
 #  Standardize the shapefiles 
 standardize_shapefiles <- function(shapefiles, data_group){
   if (data_group == "US") {
-    new_state_fp <- lookup$STATEFP + 100
-    new_state_fp <- substr(new_state_fp, 2, 3)
-    new_county_fp <- lookup$COUNTYFP + 1000
-    new_county_fp <- substr(new_county_fp, 2, 4)
-    new_tract_ce <- lookup$TRACTCE + 1000000
-    new_tract_ce <- substr(new_tract_ce, 2, 7)
-    place_id <- paste0(new_state_fp, new_county_fp, new_tract_ce)
-    
-    lookup <- data.frame(place_id = place_id,
-                         puma_id = lookup$PUMA5CE)
+    names(shapefiles)[which(names(shapefiles) == "GEOID10")] <- "place_id"
   }
   
-  return(pop_table)
+  return(shapefiles)
 }
 
 
