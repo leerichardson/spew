@@ -24,7 +24,6 @@
 ##  For data_group = "ipums", this is important
 ##  Need to record-link the Place names across shapefiles and other sources
 
-
 format_data <- function(data_list, data_group) {
     
     if (data_group == "US") {
@@ -33,5 +32,3 @@ format_data <- function(data_list, data_group) {
       #  Do this later
     }
 }
-
-

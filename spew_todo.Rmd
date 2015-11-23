@@ -1,0 +1,32 @@
+---
+title: "Spew To-do List"
+output: html_document
+author: "Sam, Shannon, and Lee"
+---
+
+# Short Term Tasks ----------------
+
+## Write up Version Control for guidelines 
+  - Use Hadley's git/github tutorial 
+
+## Document each new function
+	- Start with the Read functions... 
+	- Include a section in the documentation 
+
+## Finish format.R and make.R for SPEW 
+
+```{r, eval=FALSE}
+  # To get the data from read, use:
+  devtools::load_all()
+  data(sd_data)
+```
+  
+## Finish Unit Tests for read.R
+  - Following the example of 
+
+## Implement IPUMS read.R functions 
+	- Use an example country (canada, africa, etc...)
+
+## Code reviews
+	Read more about (Guo's Article)
+	http://pgbovine.net/CACM-group-code-reviews.htm
