@@ -46,17 +46,23 @@ test_that("Individual United States functions", {
   expect_equal("puma_id" %in% names(standard_pums$pums_p), TRUE)    
   
   # Shapefile --------------------------
+  library(maptools)
   sd_shape <- read_shapefiles(data_path, data_group = "US", folders = list(pop_table = "popTables", 
                                                                                pums = "pums", 
                                                                                schools = "schools", 
                                                                                lookup = "tables", 
                                                                                shapefiles = "tiger", 
                                                                                workplaces = "workplaces")) 
+  expect_equal(class(sd_shape) == "SpatialPolygonsDataFrame", TRUE)
   
   # Test the standardization functions
   standard_shape <- standardize_shapefiles(sd_shape, data_group = "US")
+  expect_equal(length(standard_shape$place_id) == 222, TRUE)
+  expect_equal(class(standard_shape$place_id) == "numeric", TRUE)
   
-  
+
+  # Lookup -----------------------------
+
   
   # Schools ----------------------------
   
@@ -64,7 +70,8 @@ test_that("Individual United States functions", {
   # Workplace --------------------------
   
   
-  # Lookup -----------------------------
 
-  
 }) 
+
+
+
