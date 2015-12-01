@@ -39,13 +39,12 @@ sd_shape <- read_shapefiles("data-raw/46", data_group = "US", folders = list(pop
                                                                       lookup = "tables", 
                                                                       shapefiles = "tiger", 
                                                                       workplaces = "workplaces")) 
+
 sd_shape <- standardize_shapefiles(sd_shape, data_group = "US")
 
 
 
-
-
-
+  
 sd_lookup <- read_lookup("data-raw/46", data_group = "US", folders = list(pop_table = "popTables", 
                                                              pums = "pums", 
                                                              schools = "schools", 
@@ -53,8 +52,6 @@ sd_lookup <- read_lookup("data-raw/46", data_group = "US", folders = list(pop_ta
                                                              shapefiles = "tiger", 
                                                              workplaces = "workplaces"))
 sd_lookup <- standardize_lookup(sd_lookup, data_group = "US")
-
-
 
 
 
@@ -67,18 +64,12 @@ sd_schools <- read_schools("data-raw/46", data_group = "US", folders = list(pop_
                                                                             workplaces = "workplaces")) 
 
 
-
-
-
 sd_workplaces <- read_workplaces("data-raw/46", data_group = "US", folders = list(pop_table = "popTables", 
                                                                                   pums = "pums", 
                                                                                   schools = "schools", 
                                                                                   lookup = "tables", 
                                                                                   shapefiles = "tiger", 
                                                                                   workplaces = "workplaces"))
-
-
-
 
 # Use the Read Data function to get the desired list, and save 
 # this as an .rdata file in the /data folder for use in debugging 
@@ -98,5 +89,4 @@ sd_data <- format_data(data_list = sd_data, data_group = "US")
 
 
 devtools::use_data(sd_data, overwrite = T)
-
 

@@ -217,7 +217,7 @@ read_shapefiles <- function(path, folders, data_group) {
 standardize_shapefiles <- function(shapefiles, data_group){
   if (data_group == "US") {
     names(shapefiles)[which(names(shapefiles) == "GEOID10")] <- "place_id"
-    shapefiles$place_id <- as.numeric(as.vector(shapefiles$place_id))
+    shapefiles$place_id <- as.numeric(as.character(shapefiles$place_id))
   }
   
   return(shapefiles)
