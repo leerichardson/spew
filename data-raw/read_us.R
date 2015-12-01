@@ -13,6 +13,10 @@ sd_poptable <- read_pop_table("data-raw/46", data_group = "US", folders = list(p
                                                                           lookup = "tables", 
                                                                           shapefiles = "tiger", 
                                                                           workplaces = "workplaces")) 
+sd_poptable <- standardize_pop_table(sd_poptable, data_group = "US")
+
+
+
 
 
 
@@ -22,6 +26,11 @@ sd_pums <- read_pums("data-raw/46", data_group = "US", folders = list(pop_table 
                                                                                lookup = "tables", 
                                                                                shapefiles = "tiger", 
                                                                                workplaces = "workplaces")) 
+sd_pums <- standardize_pums(sd_pums, data_group = "US")
+
+
+
+
 
 
 sd_shape <- read_shapefiles("data-raw/46", data_group = "US", folders = list(pop_table = "popTables", 
@@ -30,6 +39,10 @@ sd_shape <- read_shapefiles("data-raw/46", data_group = "US", folders = list(pop
                                                                       lookup = "tables", 
                                                                       shapefiles = "tiger", 
                                                                       workplaces = "workplaces")) 
+sd_shape <- standardize_shapefiles(sd_shape, data_group = "US")
+
+
+
 
 
 
@@ -39,6 +52,10 @@ sd_lookup <- read_lookup("data-raw/46", data_group = "US", folders = list(pop_ta
                                                              lookup = "tables", 
                                                              shapefiles = "tiger", 
                                                              workplaces = "workplaces"))
+sd_lookup <- standardize_lookup(sd_lookup, data_group = "US")
+
+
+
 
 
 
@@ -50,12 +67,17 @@ sd_schools <- read_schools("data-raw/46", data_group = "US", folders = list(pop_
                                                                             workplaces = "workplaces")) 
 
 
+
+
+
 sd_workplaces <- read_workplaces("data-raw/46", data_group = "US", folders = list(pop_table = "popTables", 
                                                                                   pums = "pums", 
                                                                                   schools = "schools", 
                                                                                   lookup = "tables", 
                                                                                   shapefiles = "tiger", 
                                                                                   workplaces = "workplaces"))
+
+
 
 
 # Use the Read Data function to get the desired list, and save 
@@ -68,5 +90,5 @@ sd_data <- read_data("data-raw/46", data_group = "US", folders = list(pop_table 
                                                                       lookup = "tables", 
                                                                       shapefiles = "tiger", 
                                                                       workplaces = "workplaces"))
-devtools::use_data(sd_data)
+devtools::use_data(sd_data, overwrite = T)
  

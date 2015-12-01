@@ -4,7 +4,7 @@
 
 #  Input:  List of all data inputs 
 
-#  Assert that to make sure we have the correct inputs. (at least the first three)
+#  Assert that we have the correct inputs. (at least the first three, four for US)
 
 #  1. Pull out a vector of the poptable IDs and Shapefile IDs
 #  2. Join to make sure they match (Sam will do this one)
@@ -24,11 +24,26 @@
 ##  For data_group = "ipums", this is important
 ##  Need to record-link the Place names across shapefiles and other sources
 
+#  
+#  sd_data$pop_table <- standardize_pop_table(sd_data$pop_table, data_group = "US")
+
+
 format_data <- function(data_list, data_group) {
     
     if (data_group == "US") {
-      #  Do this now
+      #  Assert that we have the correct inputs. (at least the first three, four for US)
+      if (!(all(c("shapefiles", "pop_table", "pums", "lookup") %in% names(data_list))))
+        stop("Missing a part of data_list")
+      
+      #  1. Pull out a vector of the poptable IDs and Shapefile IDs
+      
+      
     } else if (data_group == "ipums") {
-      #  Do this later
+      #  Assert that we have the correct inputs. (at least the first three, four for US)
+      if (!(all(c("shapefiles", "pop_table", "pums") %in% names(data_list))))
+        stop("Missing a part of data_list")
+      
     }
 }
+
+
