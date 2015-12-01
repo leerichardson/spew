@@ -39,6 +39,7 @@ sd_shape <- read_shapefiles("data-raw/46", data_group = "US", folders = list(pop
                                                                       lookup = "tables", 
                                                                       shapefiles = "tiger", 
                                                                       workplaces = "workplaces")) 
+
 sd_shape <- standardize_shapefiles(sd_shape, data_group = "US")
 
 
@@ -77,9 +78,6 @@ sd_workplaces <- read_workplaces("data-raw/46", data_group = "US", folders = lis
                                                                                   shapefiles = "tiger", 
                                                                                   workplaces = "workplaces"))
 
-
-
-
 # Use the Read Data function to get the desired list, and save 
 # this as an .rdata file in the /data folder for use in debugging 
 # the other parts of spew ---------------------------------------
@@ -90,5 +88,4 @@ sd_data <- read_data("data-raw/46", data_group = "US", folders = list(pop_table 
                                                                       lookup = "tables", 
                                                                       shapefiles = "tiger", 
                                                                       workplaces = "workplaces"))
-devtools::use_data(sd_data, overwrite = T)
- 
+devtools::use_data(sd_data, overwrite = TRUE) 

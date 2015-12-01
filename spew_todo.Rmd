@@ -4,7 +4,7 @@ output: html_document
 author: "Sam, Shannon, and Lee"
 ---
 
-# Short Term Tasks ----------------
+# Short Term Tasks
 
 ## Write up Version Control for guidelines 
   - Use Hadley's git/github tutorial 
@@ -29,4 +29,4 @@ author: "Sam, Shannon, and Lee"
 
 ## Code reviews
 	Read more about (Guo's Article)
-	http://pgbovine.net/CACM-group-code-reviews.htm
+	http://pgbovine.net/CACM-group-code-reviews.html
