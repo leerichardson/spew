@@ -12,11 +12,11 @@
 #  contain this WITHIN THE DATA GROUP. Puerto Rico idea 
 #  4. Output a table with the specified dimensions 
 
-# Output: Pop Table with tract ID, county ID, PUMA ID, # households in tract.
-# Table (PUMS sampling ID, Place ID, Number of households to sample)
+#  Output: Pop Table with tract ID, county ID, PUMA ID, # households in tract.
+#  Table (PUMS sampling ID, Place ID, Number of households to sample)
 
 #  Output is a table with:
-##  Rows:  All individual tracts in the region to be generated
+##  Rows:  All individual places (tracts) in the region to be generated
 ##  Columns:  PlaceID (tract ID), pumaID (puma that contains the tract), # of households
 
 #  Make sure that the tract IDs match with the shapefile IDs 
@@ -24,8 +24,7 @@
 ##  For data_group = "ipums", this is important
 ##  Need to record-link the Place names across shapefiles and other sources
 
-#  
-#  sd_data$pop_table <- standardize_pop_table(sd_data$pop_table, data_group = "US")
+
 
 
 format_data <- function(data_list, data_group) {
