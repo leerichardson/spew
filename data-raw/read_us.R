@@ -44,9 +44,7 @@ sd_shape <- standardize_shapefiles(sd_shape, data_group = "US")
 
 
 
-
-
-
+  
 sd_lookup <- read_lookup("data-raw/46", data_group = "US", folders = list(pop_table = "popTables", 
                                                              pums = "pums", 
                                                              schools = "schools", 
@@ -58,17 +56,12 @@ sd_lookup <- standardize_lookup(sd_lookup, data_group = "US")
 
 
 
-
-
 sd_schools <- read_schools("data-raw/46", data_group = "US", folders = list(pop_table = "popTables", 
                                                                             pums = "pums", 
                                                                             schools = "schools", 
                                                                             lookup = "tables", 
                                                                             shapefiles = "tiger", 
                                                                             workplaces = "workplaces")) 
-
-
-
 
 
 sd_workplaces <- read_workplaces("data-raw/46", data_group = "US", folders = list(pop_table = "popTables", 

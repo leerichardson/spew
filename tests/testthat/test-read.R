@@ -43,8 +43,7 @@ test_that("Individual United States functions", {
   
   standard_pums <- standardize_pums(sd_pums, data_group = "US")  
   expect_equal("puma_id" %in% names(standard_pums$pums_h), TRUE)
-  expect_equal("puma_id" %in% names(standard_pums$pums_p), TRUE)
-    
+  expect_equal("puma_id" %in% names(standard_pums$pums_p), TRUE)    
   
   # Shapefile --------------------------
   sd_shape <- read_shapefiles(data_path, data_group = "US", folders = list(pop_table = "popTables", 
