@@ -4,7 +4,9 @@ output: html_document
 author: "Sam, Shannon, and Lee"
 ---
 
-# Short Term Tasks
+## Write make.R
+
+## Write unit tests for format.R 
 
 ## Write up Version Control for guidelines 
   - Use Hadley's git/github tutorial 
@@ -12,14 +14,6 @@ author: "Sam, Shannon, and Lee"
 ## Document each new function
 	- Start with the Read functions... 
 	- Include a section in the documentation 
-
-## Finish format.R and make.R for SPEW 
-
-```{r, eval=FALSE}
-  # To get the data from read, use:
-  devtools::load_all()
-  data(sd_data)
-```
   
 ## Finish Unit Tests for read.R
   - Following the example of 
@@ -27,6 +21,11 @@ author: "Sam, Shannon, and Lee"
 ## Implement IPUMS read.R functions 
 	- Use an example country (canada, africa, etc...)
 
+## Implement IPUMS format.R functions extensions
+  - Note that the core of format.R should work with the ipums files, 
+    it's simple for the USA since we only need to add a column to the poptable. 
+
 ## Code reviews
 	Read more about (Guo's Article)
-	http://pgbovine.net/CACM-group-code-reviews.html
+	http://pgbovine.net/CACM-group-code-reviews.html  
+  

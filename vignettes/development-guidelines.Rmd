@@ -38,13 +38,66 @@ For one, making sure that all the components in spew have a test associared with
 
 Ideally, we can tests whenever we find ourselves checking the results of various functions at the command line. This way, all of the ad-hoc tests we perform can be codified, and we can catch when strange errors persist in our code. In a later section, we will have an example of writing tests for the `read.R` series of functions. 
 
+## Adding documentation to functions 
+Built into R is a standard way of documenting objects in a package. And since everything in R is an object, this is what we will use to document all of our functions. The way it works is that you create `.Rd` files in the `man/` directory in the package, which are required to be a certain format. If the `.Rd` format is specified correctly, then R can product, html, plaintext, or PDF documentation that we are so used to viewing. 
+
+Since it's tedious to create a `.Rd` file for each individual function, we will use the `roxygen2` package for documentation. This allows us to put the documentation right above our functions, so all we need to to is type:
+
+```{r}
+  devtools::document()
+```
+
+and the latest documentation (`.Rd` files) are created for us, using the required syntax. Note that this allows us to get aorund things like imposing our own commenting structure, as we can just use the conventions of R. This not only removes the burden of trying to create our own system, but if all of our functions have appropriate documentation, all we will need to do is type `?function_name` and we can see all of the parameters used in various functions. 
+
+For example, right now I'm writing the `make_data` function. This function is the final workhorse for our program, as it takes in all of the formattted inputs and writes a csv of microdata for each one of our countries. Let's say we want to specify the inputs and outputs of our mkae function, and give a few examples of how to call this using our example data-sets. 
+
+```{r}
+#' Create microdata using formatted data 
+#' 
+#' @param pop_table dataframe with columns corresponding to 
+#' which places need populations, and how many samples to take 
+#' @param sp class object shapefile used for assigning households to 
+#' particular locations  
+#' @param dataframe with microdata corresponding to housegolds 
+#' @param dataframe with microdata corresponding to people 
+#' @param logical indicating whether or not we will generate our 
+#' synthetic populations in parallel
+#' @param character vector indicating the type of sample to use for 
+#' generating microdata 
+#' @return logical specifying whether the microdata was generated 
+#' successfully 
+#' @examples
+#'  make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
+make_data <- function(pop_table, shapefile, pums_h, pums_p, 
+                      parallel = FALSE, sampling_type = "uniform") {
+  
+  num_places <- nrow(pop_table) 
+
+  for (place in 1:num_places) {
+    households <- sample_households(pop_table[place, "n_house"], 
+                                    pop_table[place, "puma_id"], 
+                                    pums_h)
+    browser()
+  }
+
+}
+```
+
+Then, all we need to do is run roxygen, and the documentation will be made available to us in R's familiar documentation format. 
+
+```{r}
+  devtools::document()
+  ?make_data
+```
+
 ## Version Control  
+
 
 ## Code Reviews 
   
+
 # Common Tasks 
 
-## Adding documentation to functions 
 
 ## Writing tests for functions 
 

@@ -32,4 +32,53 @@
 ###  Subset the columns depending on user input
 ###  Note / TODO:  For ipums, we may have to de-identify the records
 ###    so we may need to hash the old IDs to new IDs
-###  Final Output: Written .csv file for each Place ID
+
+
+#' Create microdata using formatted data 
+#' 
+#' @param pop_table dataframe with columns corresponding to 
+#' which places need populations, and how many samples to take 
+#' @param sp class object shapefile used for assigning households to 
+#' particular locations  
+#' @param dataframe with microdata corresponding to housegolds 
+#' @param dataframe with microdata corresponding to people 
+#' @param logical indicating whether or not we will generate our 
+#' synthetic populations in parallel
+#' @param character vector indicating the type of sample to use for 
+#' generating microdata 
+#' @return logical specifying whether the microdata was generated 
+#' successfully 
+#' @examples
+#'  make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
+make_data <- function(pop_table, shapefile, pums_h, pums_p, 
+                      parallel = FALSE, sampling_type = "uniform") {
+  
+  num_places <- nrow(pop_table) 
+
+  for (place in 1:num_places) {
+    households <- sample_households(pop_table[place, "n_house"], 
+                                    pop_table[place, "puma_id"], 
+                                    pums_h)
+    browser()
+  }
+
+}
+
+sample_households <- function(n_house, puma_id, pums_h, 
+                              sampling_type = "uniform") {
+  
+}
+
+sample_locations <- function(place_id, n_house, shapefile) {
+  
+}
+  
+sample_people <- function(pums_h, pums_p) {
+  
+}  
+  
+write_data <- function(place_id, type, output_dir) {
+  
+}
+
+  
