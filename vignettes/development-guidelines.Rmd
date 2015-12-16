@@ -183,6 +183,6 @@ This means that anyone using the spew package MUST have the sp package installed
 devtools::use_package("RecordLinkage", "Suggests")
 ```
 
-
+Note for dependendies with other packages, you can use the `::` command, which specifies which package a particular function is coming from. For example, when we use the slot function we can write `methods::slot(shapefile, "polygons")`
 
 

@@ -1,39 +1,3 @@
-# Pseudocode -----------------------
-
-# Input: (POPTABLE: (PUMS sampling ID, Place ID, Number of households to sample), 
-#         shapefile, PUMS (household, people))
-
-#  For each place ID (tract)
-
-# 1. Sample Synthetic Households 
-###  Sampling from pums_h, which is passed from format(), by PUMA
-###  Sampling scheme:  Currently sample uniformly over all households 
-###    in the PUMS Sampling ID (PUMA) of that Place ID (tract)
-###  Sampling size:  Household count for that place ID (tract)
-###    which we get from households.csv (which goes into pop_table)
-###  Note / TODO:  Want to update uniform sampling to do something better eventually
-
-# 2. Sample the locations and assign to households
-###  Sample scheme:  
-###  -- Uniform over the geographic of the place ID (tract)
-###  -- We use spsample() for this (package sp)
-###  Sample one location for each household
-###  Result:  (x,y) or (long,lat) for each household in the place ID (tract)
-
-# 3. Assign synthetic people to the synthetic households
-###  For each sampled synthetic household, we just take the people in the original household
-###    using pums_p annd pums_h and the household ID number
-###  Note / TODO:  We want to do something more elegant than this, such as
-###    estimating some joint distirbution of person-level features in each region
-###    and them sampling from that distribution
-
-# 4. Format the output (two files)
-###  Should look identical to pums_p and pums_h
-###  Subset the columns depending on user input
-###  Note / TODO:  For ipums, we may have to de-identify the records
-###    so we may need to hash the old IDs to new IDs
-
-
 #' Create microdata using formatted data 
 #' 
 #' @param pop_table dataframe with columns corresponding to 
@@ -50,35 +14,100 @@
 #' successfully 
 #' @examples
 #'  make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
-make_data <- function(pop_table, shapefile, pums_h, pums_p, 
-                      parallel = FALSE, sampling_type = "uniform") {
+make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE, 
+                      sampling_type = "uniform", output_dir = "/home/lee/south_dakota/") {
   
   num_places <- nrow(pop_table) 
-
   for (place in 1:num_places) {
+    
+    if (pop_table[place, "n_house"] != 2347) {
+      next
+    }
+    
+    # Sample n indices from the household pums 
     households <- sample_households(pop_table[place, "n_house"], 
-                                    pop_table[place, "puma_id"], 
-                                    pums_h)
-    browser()
+                                    pums_h, pop_table[place, "puma_id"])
+    sampled_households <- pums_h[households, ]
+    
+    # Attach locations to the sample households 
+    locations <- sample_locations(place_id = pop_table[place, "place_id"], 
+                                  n_house = pop_table[place, "n_house"], 
+                                  shapefile = shapefile)
+    sampled_households$longitude <- locations@coords[, 1]
+    sampled_households$latitude <- locations@coords[, 2]
+    
+    
+    # Attach people to the sampled households 
+    sampled_people <- sample_people(sampled_households, pums_p)
+    
+    # Output the synthetic population's as a csv
+    write_data(df = sampled_households, place_id = pop_table[place, "place_id"], 
+               type = "household", output_dir = output_dir)
+    write_data(df = sampled_people, place_id = pop_table[place, "place_id"], 
+               type = "people", output_dir = output_dir)
+    
   }
-
 }
 
-sample_households <- function(n_house, puma_id, pums_h, 
+#' Create microdata using formatted data 
+#' 
+#' @param n_house numeric indicating the number of households to sample 
+#' @param pums_h dataframe of the households we are sampling from 
+#' @param puma_id vector indicating which specific puma in PUMS we are sampling 
+#' from, if any 
+#' @param sampling_type character indicating the method for sampling 
+#' @return numeric with the indicies of the household PUMS to sample 
+sample_households <- function(n_house, pums_h, puma_id = NULL,
                               sampling_type = "uniform") {
   
+  if (sampling_type == "uniform") {
+    
+    # Subset to a specific PUMA if we have data to do this 
+    if (!is.null(puma_id)) {
+      sample_inds <- which(pums_h$puma_id == puma_id)
+    } else {
+      sample_inds <- 1:nrow(puma_id)
+    }
+    
+    households <- sample(sample_inds, n_house, replace = TRUE)
+    return(households)
+  }
 }
 
+#' Sample from a particular polygon shapefile 
+#' 
+#' @param place_id numeric specifiying the ID of the region we are 
+#' subsampling  
+#' @param nhouse numeric indicating the number of households
+#' @param shapefile sp class with all of the locations for each place id
+#' @return SpatialPoints object with coordinates for the n households 
 sample_locations <- function(place_id, n_house, shapefile) {
-  
+  slots <- methods::slot(shapefile, "polygons")
+  region <- which(shapefile$place_id == place_id)
+  locs <- sp::spsample(slots[[region]], n = n_house, offset = c(0, 0), 
+                   type = "random", iter = 50)
 }
   
-sample_people <- function(pums_h, pums_p) {
-  
-}  
-  
-write_data <- function(place_id, type, output_dir) {
-  
+
+#' Sample from the individual person PUMS data frame 
+#' 
+#' @param household_pums dataframe with the sampled houehold PUMS 
+#' @param pums_p dataframe of the individual microdata 
+#' @return data indicating the indices of people to sample 
+sample_people <- function(household_pums, pums_p) {
+  people <- plyr::join(household_pums, pums_p, type = "left", by = "SERIALNO")
+  return(people)
 }
 
-  
+#' Output our final synthetic populations as csv's 
+#' 
+#' @param df dataframe with the final synthetic population 
+#' @param place_id numeric indicating the name of the particular region samples
+#' @param type character vector with the type, either "household" or "people"
+#' @param output_dir character containing the directory in which we want to 
+#' write the final csv's 
+#' @return data indicating the indices of people to sample 
+write_data <- function(df, place_id, type, output_dir) {
+  filename <- paste0(output_dir, type, "_", as.character(place_id), ".csv")
+  write.csv(df, filename)
+}

@@ -58,8 +58,7 @@ sampleFromRegion <- function(regionRow, regionCounts, formattedShapefile,
   if (regionCounts > 0) {
     require(sp)
     newRegionRow <- which(formattedShapefile@plotOrder == regionRow)
-    s <- spsample(s.slot[[newRegionRow]], n = regionCounts, offset = c(0, 
-                                                                       0), type = "random", iter = 50)
+    s <- spsample(s.slot[[newRegionRow]], n = regionCounts, offset = c(0, 0), type = "random", iter = 50)
     
     # Temporary fix for puerto rico to sample from the nearest location :(
     if (is.null(s)) {

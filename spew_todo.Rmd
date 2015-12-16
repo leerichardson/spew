@@ -4,7 +4,18 @@ output: html_document
 author: "Sam, Shannon, and Lee"
 ---
 
-## Write make.R
+## Run the new version on Olympus for all 50 states!
+
+## Improve make.R
+- Add in a module which selects the variables 
+- Add in checks which verifies the two PUMS have the same serial numbers (currently assuming this is true) 
+- Add an input which specifies the ID variable used for sampling 
+- Add dependencies to plyr and sp packages 
+- Add unit tests, finish documentation 
+- Contingency if there's two polygons for a particular region. Right now I'm only selecting the first
+
+## Write spew.R function which integrates read, format, and make functions. 
+- Include an output directory 
 
 ## Write unit tests for format.R 
 
@@ -28,4 +39,4 @@ author: "Sam, Shannon, and Lee"
 ## Code reviews
 	Read more about (Guo's Article)
 	http://pgbovine.net/CACM-group-code-reviews.html  
-  
+    

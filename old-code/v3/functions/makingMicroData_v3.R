@@ -50,7 +50,7 @@ outputMicroData <- function(params, stdPUMS.p, stdPUMS.h, stdShapefile, popTable
       print(paste0("Region ", index, " of ", nRegions))
       microDataComplete <- outputMicroDataForRegion(index, popTable, params, stdPUMS.p, 
                                                     stdPUMS.h, stdShapefile, samplingScheme, inputFolder, 
-                                                    outputFolder, geoLevel, countryName, hasPUMS, year, version, 
+                                                    outputFolder, geoLevel, countryName, hasPUMS, year,version, 
                                                     codeFolder, numDecLatLong, isUSA, extraVarsData, 
                                                     dataFolder)
       }
