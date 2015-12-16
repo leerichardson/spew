@@ -66,8 +66,42 @@ img {
 </div>
 
 
-<div id="short-term-tasks--" class="section level1">
-<h1>Short Term Tasks —————-</h1>
+<div id="run-the-new-version-on-olympus-for-all-50-states" class="section level2">
+<h2>Run the new version on Olympus for all 50 states!</h2>
+</div>
+<div id="improve-make.r" class="section level2">
+<h2>Improve make.R</h2>
+<ul>
+<li>Add in a module which selects the variables</li>
+<li>Add in checks which verifies the two PUMS have the same serial numbers (currently assuming this is true)</li>
+<li>Add an input which specifies the ID variable used for sampling</li>
+<li>Add dependencies to plyr and sp packages</li>
+<li>Add unit tests, finish documentation</li>
+<li>Contingency if there’s two polygons for a particular region. NEED TO FIX!</li>
+</ul>
+</div>
+<div id="write-spew.r-function-which-integrates-read-format-and-make-functions." class="section level2">
+<h2>Write spew.R function which integrates read, format, and make functions.</h2>
+<ul>
+<li>Include an output directory</li>
+<li>Include an option for Variables to Keep!!</li>
+</ul>
+</div>
+<div id="unit-tests" class="section level2">
+<h2>Unit tests</h2>
+<ul>
+<li>Finish read.R</li>
+<li>format.R</li>
+<li>make.R</li>
+</ul>
+</div>
+<div id="implement-ipums-functions" class="section level2">
+<h2>Implement IPUMS functions</h2>
+<ul>
+<li>format.R</li>
+<li>read.R</li>
+</ul>
+</div>
 <div id="write-up-version-control-for-guidelines" class="section level2">
 <h2>Write up Version Control for guidelines</h2>
 <ul>
@@ -76,30 +110,34 @@ img {
 </div>
 <div id="document-each-new-function" class="section level2">
 <h2>Document each new function</h2>
-<pre><code>- Start with the Read functions... 
-- Include a section in the documentation </code></pre>
-</div>
-<div id="finish-format.r-and-make.r-for-spew" class="section level2">
-<h2>Finish format.R and make.R for SPEW</h2>
-<pre class="r"><code>  # To get the data from read, use:
-  devtools::load_all()
-  data(sd_data)</code></pre>
-</div>
-<div id="finish-unit-tests-for-read.r" class="section level2">
-<h2>Finish Unit Tests for read.R</h2>
 <ul>
-<li>Following the example of</li>
+<li>Read functions</li>
+<li>Format Functions</li>
 </ul>
 </div>
-<div id="implement-ipums-read.r-functions" class="section level2">
-<h2>Implement IPUMS read.R functions</h2>
-<pre><code>- Use an example country (canada, africa, etc...)</code></pre>
+<div id="implement-ipums-format.r-functions-extensions" class="section level2">
+<h2>Implement IPUMS format.R functions extensions</h2>
+<ul>
+<li>Note that the core of format.R should work with the ipums files, it’s simple for the USA since we only need to add a column to the poptable.</li>
+</ul>
+</div>
+<div id="add-in-a-clickable-feature-to-donwload-the-synthetic-ecosystems" class="section level2">
+<h2>Add in a clickable feature to donwload the synthetic ecosystems</h2>
+<ul>
+<li>Shiny “Map” is a refinement</li>
+<li>Needs to be clickable!</li>
+</ul>
+</div>
+<div id="add-in-a-feature-which-can-include-mosquitoes" class="section level2">
+<h2>Add in a feature which can include mosquitoes</h2>
+<ul>
+<li>Use the vector map data!!!</li>
+</ul>
 </div>
 <div id="code-reviews" class="section level2">
 <h2>Code reviews</h2>
 <pre><code>Read more about (Guo's Article)
-http://pgbovine.net/CACM-group-code-reviews.htm</code></pre>
-</div>
+http://pgbovine.net/CACM-group-code-reviews.html    </code></pre>
 </div>
 
 

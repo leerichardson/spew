@@ -12,31 +12,47 @@ author: "Sam, Shannon, and Lee"
 - Add an input which specifies the ID variable used for sampling 
 - Add dependencies to plyr and sp packages 
 - Add unit tests, finish documentation 
-- Contingency if there's two polygons for a particular region. Right now I'm only selecting the first
+- Contingency if there's two polygons for a particular region. NEED TO FIX!
+
 
 ## Write spew.R function which integrates read, format, and make functions. 
 - Include an output directory 
+- Include an option for Variables to Keep!!
 
-## Write unit tests for format.R 
+
+## Unit tests
+- Finish read.R 
+- format.R 
+- make.R
+
+
+## Implement IPUMS functions 
+- format.R
+- read.R
+
 
 ## Write up Version Control for guidelines 
-  - Use Hadley's git/github tutorial 
+- Use Hadley's git/github tutorial 
+
 
 ## Document each new function
-	- Start with the Read functions... 
-	- Include a section in the documentation 
-  
-## Finish Unit Tests for read.R
-  - Following the example of 
+- Read functions 
+- Format Functions 
 
-## Implement IPUMS read.R functions 
-	- Use an example country (canada, africa, etc...)
 
 ## Implement IPUMS format.R functions extensions
-  - Note that the core of format.R should work with the ipums files, 
-    it's simple for the USA since we only need to add a column to the poptable. 
+- Note that the core of format.R should work with the ipums files, 
+  it's simple for the USA since we only need to add a column to the poptable. 
+
+## Add in a clickable feature to donwload the synthetic ecosystems 
+- Shiny "Map" is a refinement
+- Needs to be clickable!
+
+## Add in a feature which can include mosquitoes
+- Use the vector map data!!!
 
 ## Code reviews
 	Read more about (Guo's Article)
-	http://pgbovine.net/CACM-group-code-reviews.html  
-    
+	http://pgbovine.net/CACM-group-code-reviews.html    
+  
+  
