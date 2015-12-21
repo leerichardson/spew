@@ -5,40 +5,39 @@ author: "Sam, Shannon, and Lee"
 ---
 
 ## Run the new version on Olympus for all 50 states!
+- Install spew on Olympus
+- Set up a bash script which can call spew for each state
 
 ## Improve make.R
-- Add in a module which selects the variables 
-- Add in checks which verifies the two PUMS have the same serial numbers (currently assuming this is true) 
-- Add an input which specifies the ID variable used for sampling 
-- Add dependencies to plyr and sp packages 
-- Add unit tests, finish documentation 
-- Contingency if there's two polygons for a particular region. NEED TO FIX!
-
+- Add in a parallel function which runs on Olympus 
+- Write a separate function which outputs microdata for an individual place 
+- Add in checks which verifies the two PUMS have the same serial numbers (currently assuming this is true)
+- Add an input which specifies the ID variable used for linking the individual 
+and household PUMS (maybe add this to spew.R?)
+- For now, if there are multiple polygons to sample, I am just sampling from 
+the first one for convinience. In the future, we may want to think of something 
+more elegant here (such as a union)
 
 ## Write spew.R function which integrates read, format, and make functions. 
+- Include an option for selecting variables... 
 - Include an output directory 
-- Include an option for Variables to Keep!!
-
 
 ## Unit tests
-- Finish read.R 
+- read.R (finish testing individual functions, test the entire function as well)
 - format.R 
 - make.R
 
+## Write up Version Control for guidelines 
+- Use Hadley's git/github tutorial 
 
 ## Implement IPUMS functions 
 - format.R
 - read.R
 
 
-## Write up Version Control for guidelines 
-- Use Hadley's git/github tutorial 
-
-
 ## Document each new function
 - Read functions 
 - Format Functions 
-
 
 ## Implement IPUMS format.R functions extensions
 - Note that the core of format.R should work with the ipums files, 
@@ -52,7 +51,4 @@ author: "Sam, Shannon, and Lee"
 - Use the vector map data!!!
 
 ## Code reviews
-	Read more about (Guo's Article)
-	http://pgbovine.net/CACM-group-code-reviews.html    
-  
-  
+- Read more about (Guo's Article) http://pgbovine.net/CACM-group-code-reviews.html 

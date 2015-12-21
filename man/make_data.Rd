@@ -5,13 +5,13 @@
 \title{Create microdata using formatted data}
 \usage{
 make_data(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
-  sampling_type = "uniform")
+  sampling_type = "uniform", output_dir = "/home/lee/south_dakota/")
 }
 \arguments{
 \item{pop_table}{dataframe with columns corresponding to 
 which places need populations, and how many samples to take}
 
-\item{sp}{class object shapefile used for assigning households to 
+\item{shapefile}{sp class object used for assigning households to 
 particular locations}
 
 \item{dataframe}{with microdata corresponding to housegolds}
@@ -32,6 +32,6 @@ successfully
 Create microdata using formatted data
 }
 \examples{
- make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
+make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
 }
 

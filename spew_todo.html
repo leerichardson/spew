@@ -68,29 +68,32 @@ img {
 
 <div id="run-the-new-version-on-olympus-for-all-50-states" class="section level2">
 <h2>Run the new version on Olympus for all 50 states!</h2>
+<ul>
+<li>Install spew on Olympus</li>
+<li>Set up a bash script which can call spew for each state</li>
+</ul>
 </div>
 <div id="improve-make.r" class="section level2">
 <h2>Improve make.R</h2>
 <ul>
-<li>Add in a module which selects the variables</li>
 <li>Add in checks which verifies the two PUMS have the same serial numbers (currently assuming this is true)</li>
-<li>Add an input which specifies the ID variable used for sampling</li>
-<li>Add dependencies to plyr and sp packages</li>
-<li>Add unit tests, finish documentation</li>
-<li>Contingency if there’s two polygons for a particular region. NEED TO FIX!</li>
+<li>Add an input which specifies the ID variable used for linking the individual and household PUMS</li>
+<li>Add unit tests</li>
+<li>Add in a parallel function which runs on Olympus</li>
+<li>For now, if there are multiple polygons to sample, I am just sampling from the first one for convinience. In the future, we may want to think of something more elegant here (such as a union)</li>
 </ul>
 </div>
 <div id="write-spew.r-function-which-integrates-read-format-and-make-functions." class="section level2">
 <h2>Write spew.R function which integrates read, format, and make functions.</h2>
 <ul>
+<li>Include an option for selecting variables…</li>
 <li>Include an output directory</li>
-<li>Include an option for Variables to Keep!!</li>
 </ul>
 </div>
 <div id="unit-tests" class="section level2">
 <h2>Unit tests</h2>
 <ul>
-<li>Finish read.R</li>
+<li>read.R (finish testing individual functions, test the entire function as well)</li>
 <li>format.R</li>
 <li>make.R</li>
 </ul>
@@ -121,6 +124,8 @@ img {
 <li>Note that the core of format.R should work with the ipums files, it’s simple for the USA since we only need to add a column to the poptable.</li>
 </ul>
 </div>
+<div id="longer-terms" class="section level1">
+<h1>Longer Terms</h1>
 <div id="add-in-a-clickable-feature-to-donwload-the-synthetic-ecosystems" class="section level2">
 <h2>Add in a clickable feature to donwload the synthetic ecosystems</h2>
 <ul>
@@ -136,8 +141,10 @@ img {
 </div>
 <div id="code-reviews" class="section level2">
 <h2>Code reviews</h2>
-<pre><code>Read more about (Guo's Article)
-http://pgbovine.net/CACM-group-code-reviews.html    </code></pre>
+<ul>
+<li>Read more about (Guo’s Article) <a href="http://pgbovine.net/CACM-group-code-reviews.html" class="uri">http://pgbovine.net/CACM-group-code-reviews.html</a></li>
+</ul>
+</div>
 </div>
 
 

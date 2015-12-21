@@ -1,6 +1,6 @@
 context("Read Functions")
 
-test_that("Individual United States functions", {
+test_that("United States functions", {
   
   # Make sure we are using the correct data-raw directory 
   # as opposed to the test/testthat one within the package 

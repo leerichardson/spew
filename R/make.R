@@ -2,7 +2,7 @@
 #' 
 #' @param pop_table dataframe with columns corresponding to 
 #' which places need populations, and how many samples to take 
-#' @param sp class object shapefile used for assigning households to 
+#' @param shapefile sp class object used for assigning households to 
 #' particular locations  
 #' @param dataframe with microdata corresponding to housegolds 
 #' @param dataframe with microdata corresponding to people 
@@ -13,17 +13,13 @@
 #' @return logical specifying whether the microdata was generated 
 #' successfully 
 #' @examples
-#'  make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
+#' make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
 make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE, 
                       sampling_type = "uniform", output_dir = "/home/lee/south_dakota/") {
   
   num_places <- nrow(pop_table) 
   for (place in 1:num_places) {
-    
-    if (pop_table[place, "n_house"] != 2347) {
-      next
-    }
-    
+
     # Sample n indices from the household pums 
     households <- sample_households(pop_table[place, "n_house"], 
                                     pums_h, pop_table[place, "puma_id"])
@@ -48,6 +44,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
     
   }
 }
+
 
 #' Create microdata using formatted data 
 #' 
@@ -80,14 +77,23 @@ sample_households <- function(n_house, pums_h, puma_id = NULL,
 #' subsampling  
 #' @param nhouse numeric indicating the number of households
 #' @param shapefile sp class with all of the locations for each place id
-#' @return SpatialPoints object with coordinates for the n households 
+#' @return SpatialPoints object with coordinates for the n households
 sample_locations <- function(place_id, n_house, shapefile) {
   slots <- methods::slot(shapefile, "polygons")
   region <- which(shapefile$place_id == place_id)
-  locs <- sp::spsample(slots[[region]], n = n_house, offset = c(0, 0), 
-                   type = "random", iter = 50)
-}
   
+  # Contingency if the Polygons object has polygons, at 
+  # least one of which has holes 
+  if (length(slots[[region]]@Polygons) > 1) {
+    first_polygon <- slots[[region]]@Polygons[[1]]
+    locs <- sp::spsample(first_polygon, n = n_house, offset = c(0, 0), 
+                         type = "random", iter = 50)
+  } else {
+    locs <- sp::spsample(slots[[region]], n = n_house, offset = c(0, 0), 
+                         type = "random", iter = 50)    
+  }
+  return(locs)
+}
 
 #' Sample from the individual person PUMS data frame 
 #' 
