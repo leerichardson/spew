@@ -2,7 +2,7 @@
 % Please edit documentation in R/spew.R
 \name{spew}
 \alias{spew}
-\title{Generates synthetic ecosysystems}
+\title{Generate synthetic ecosysystems}
 \usage{
 spew(input_dir, folders, data_group, output_dir, parallel = TRUE,
   sampling_type)
@@ -13,17 +13,31 @@ input data}
 
 \item{folders}{list which specifies the sub-directory for each piece of data}
 
+\item{output_dir}{character vector indicating the directory to write 
+the synthetic populations}
+
+\item{sampling_type}{character vector indicating the type of sampling 
+to use, defaults to "uniform"}
+
 \item{data-group}{character vector, either "US", "ipums", or "none".}
+
+\item{paralel}{logical indicating whether or not the make_data function 
+should be run in parallel}
 }
 \value{
 logical indicating whether or not this run of spew ended successfully
 }
 \description{
-Generates synthetic ecosysystems
+Generate synthetic ecosysystems
 }
 \examples{
-spew_dir <- system.file("", package="spew")
-data_path <- paste0(spew_dir, "/", "data-raw/46")
-spew()
+spew("/home/lee/spew/data-raw/46", folders = list(pop_table = "popTables", 
+                                             pums = "pums", 
+                                             schools = "schools", 
+                                             lookup = "tables", 
+                                             shapefiles = "tiger", 
+                                             workplaces = "workplaces"), 
+     data_group = "US", output_dir = "/home/lee/south_dakota/", parallel = TRUE, 
+     sampling_type = "uniform")
 }
 

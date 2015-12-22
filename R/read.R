@@ -16,7 +16,8 @@
 #' 
 #' @return list in which each element contains one of our standardized 
 #' data sources
-read_data <- function(input_dir, folders = list(pop_table = "popTables", 
+read_data <- function(input_dir, 
+                      folders = list(pop_table = "popTables", 
                                            pums = "pums", 
                                            schools = "schools", 
                                            lookup = "tables", 

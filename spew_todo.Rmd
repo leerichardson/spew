@@ -4,14 +4,7 @@ output: html_document
 author: "Sam, Shannon, and Lee"
 ---
 
-## Write spew.R function which integrates read, format, and make functions. 
-- Add in a variable which specifies the va
-- Add an input which specifies the ID variable used for linking the individual 
-and household PUMS (maybe add this to spew.R?)
-
-
 ## Run the new version on Olympus for all 50 states!
-- Write spew.R 
 - Install spew on Olympus
 - Set up a bash script which can call spew for each state
 
@@ -24,21 +17,26 @@ more elegant here (such as a union)
 ## Improve read.R
 - Update read.R so that it can now read and standardize miscellaneous data sources. For me, the three groups should be "US", "ipums", and "none". Where in "none", you can specify the filepaths for each one of the data sources. More inpute will be needed to the "none" group, however, since we will need to know which row is the place_id, puma_id, etc...
 
+## Improve spew.R function  
+- Add in a variable which specifies the variables to generate
+- Add an input which specifies the ID variable used for linking the individual 
+and household PUMS (maybe add this to spew.R?)
+
 ## Unit tests
 - read.R (finish testing individual functions, test the entire function as well)
 - format.R 
 - make.R
 
-## Write up Versi on Control for guidelines 
-- Use Hadley's git/github tutorial 
-
-## Implement IPUMS functions 
-- format.R
-- read.R
-
 ## Document each new function
 - Read functions 
 - Format Functions 
+
+## Implement IPUMS functions 
+- read.R
+- format.R
+
+## Schools/Workplaces
+- Need to add in the schools + workplaces modules 
 
 ## Implement IPUMS format.R functions extensions
 - Note that the core of format.R should work with the ipums files, 
@@ -50,6 +48,9 @@ more elegant here (such as a union)
 
 ## Add in a feature which can include mosquitoes
 - Use the vector map data!!!
+
+## Write up Version Control for guidelines 
+- Use Hadley's git/github tutorial 
 
 ## Code reviews
 - Read more about (Guo's Article) http://pgbovine.net/CACM-group-code-reviews.html 

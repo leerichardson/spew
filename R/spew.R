@@ -4,7 +4,12 @@
 #' input data 
 #' @param folders list which specifies the sub-directory for each piece of data 
 #' @param data-group character vector, either "US", "ipums", or "none".
-#' 
+#' @param output_dir character vector indicating the directory to write 
+#' the synthetic populations 
+#' @param paralel logical indicating whether or not the make_data function 
+#' should be run in parallel
+#' @param sampling_type character vector indicating the type of sampling 
+#' to use, defaults to "uniform"
 #' @return logical indicating whether or not this run of spew ended successfully 
 #' @examples
 #' spew("/home/lee/spew/data-raw/46", folders = list(pop_table = "popTables", 
@@ -16,7 +21,7 @@
 #'      data_group = "US", output_dir = "/home/lee/south_dakota/", parallel = TRUE, 
 #'      sampling_type = "uniform")
 
-spew <- function(input_dir, folders, data_group, output_dir, parallel=TRUE, sampling_type) {
+generate_spew <- function(input_dir, folders, data_group, output_dir, parallel = TRUE, sampling_type) {
   
   # Given information on our input data, read in everything to memory and 
   # save everything in a list 
