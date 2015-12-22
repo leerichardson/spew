@@ -10,10 +10,13 @@
 #' synthetic populations in parallel
 #' @param sampling_type character vector indicating the type oof sampling used. 
 #' Default's to "uniform"
+#' @param output_dir character vector specifying where to write the synthetic microdata 
 #' @return logical specifying whether the microdata was generated 
 #' successfully 
 #' @examples
+#' # Run a regular version, then a parallel version
 #' make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
+#' make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p, parallel = TRUE)
 make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE, 
                       sampling_type = "uniform", output_dir = "/home/lee/south_dakota/") {
   
@@ -30,14 +33,11 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
       make_place(place, pop_table, shapefile, pums_h, pums_p, sampling_type, output_dir) 
     }    
   } else {
-    library(doParallel)
-    library(foreach)
-    
     # Set up the worker cores and export all of the necessary 
     # data needed to call the make_place function 
-    num_workers <- detectCores()
-    cluster <- makeCluster(num_workers)
-    registerDoParallel(num_workers)
+    num_workers <- parallel::detectCores()
+    cluster <- parallel::makeCluster(num_workers)
+    doParallel::registerDoParallel(num_workers)
     
     place_pops <- foreach(place = 1:num_places) %dopar% {
       
@@ -46,7 +46,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
       
       make_place(place, pop_table, shapefile, pums_h, pums_p, sampling_type, output_dir)
     }
-    
+    return(place_pops)
   }
 }
 

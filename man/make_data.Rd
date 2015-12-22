@@ -23,6 +23,8 @@ synthetic populations in parallel}
 
 \item{sampling_type}{character vector indicating the type oof sampling used. 
 Default's to "uniform"}
+
+\item{output_dir}{character vector specifying where to write the synthetic microdata}
 }
 \value{
 logical specifying whether the microdata was generated 
@@ -32,6 +34,8 @@ successfully
 Create synthetic microdata
 }
 \examples{
+# Run a regular version, then a parallel version
 make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
+make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p, parallel = TRUE)
 }
 

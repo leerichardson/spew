@@ -5,24 +5,24 @@ author: "Sam, Shannon, and Lee"
 ---
 
 ## Write spew.R function which integrates read, format, and make functions. 
-- Include an output directory 
-- Include an option for selecting variables... 
+- Add in a variable which specifies the va
+- Add an input which specifies the ID variable used for linking the individual 
+and household PUMS (maybe add this to spew.R?)
+
 
 ## Run the new version on Olympus for all 50 states!
 - Write spew.R 
 - Install spew on Olympus
-- Read about parallelizing code, automate this step given the 
-number of cores
 - Set up a bash script which can call spew for each state
 
 ## Improve make.R
-- Write a separate function which outputs microdata for an individual place 
 - Add in checks which verifies the two PUMS have the same serial numbers (currently assuming this is true)
-- Add an input which specifies the ID variable used for linking the individual 
-and household PUMS (maybe add this to spew.R?)
 - For now, if there are multiple polygons to sample, I am just sampling from 
 the first one for convinience. In the future, we may want to think of something 
 more elegant here (such as a union)
+
+## Improve read.R
+- Update read.R so that it can now read and standardize miscellaneous data sources. For me, the three groups should be "US", "ipums", and "none". Where in "none", you can specify the filepaths for each one of the data sources. More inpute will be needed to the "none" group, however, since we will need to know which row is the place_id, puma_id, etc...
 
 ## Unit tests
 - read.R (finish testing individual functions, test the entire function as well)
@@ -35,7 +35,6 @@ more elegant here (such as a union)
 ## Implement IPUMS functions 
 - format.R
 - read.R
-
 
 ## Document each new function
 - Read functions 

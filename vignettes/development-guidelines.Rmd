@@ -1,6 +1,6 @@
 ---
 title: "Spew Development Strategy"
-author: "Lee Richardson"
+author: "Lee Richardson, Sam Ventura, Shannon Gallagher"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -96,6 +96,7 @@ Then, all we need to do is run roxygen, and the documentation will be made avail
 ## Code Reviews 
   
 
+
 # Common Tasks 
 
 
@@ -145,7 +146,9 @@ This is an example of how we can test one of our individual read functions. If w
 
 ## Using Example data 
 
+
 ## Git for merging data 
+
 
 # Detailed Situations 
 
@@ -186,5 +189,27 @@ devtools::use_package("RecordLinkage", "Suggests")
 Note for dependendies with other packages, you can use the `::` command, which specifies which package a particular function is coming from. For example, when we use the slot function we can write `methods::slot(shapefile, "polygons")`
 
 
+# About the Program 
 
+Right now, we have divided spew into three main sections, each of which will be described in this section. The three sections are:
+
+1. Read 
+2. Format
+3. Make 
+
+## Read
+The read.R functions have a clear purpose: read in all the necessary data for a a particular run of spew. Because the data comes in many different formats, places, etc, this is the function which will ideally handle al of these for us. For our purposes, most of the data is in a particular structure on Olympus, so we specify particular data groups as inputs to make everything work easier. But in principal, once should be able to specify filepaths to each data source, and read_data should be able to access them. 
+
+For our program to become a general engine for synthetic population generation, we need it to be able to work for any arbitrary data source people have. To address this, we also have functions in read_data which standardize the data. At a high level, this means that any data source we use needs to have some columns, ID, etc... which allows it to be linked with the other data sources. For spew, the most important thing is that the locations of each data source can be combined, and for this we standardized each data source to have the colums/elements:  
+
+1. place_id 
+2. puma_id 
+
+The idea here is that we are generating a population for n individual places, which we specify with the place ID. In some situations, such as the US, the pums data we recieve is more granular, and we can subset it to obtain more accurate populations. We designate this subset with the puma_id, which is used later down the road in the `make_data` functions. Thus, every data source coming through read_data should not only be loaded into R's memory, but it should also have an identifier indicating which part of it corresponds to the place id, and `puma_id` (if necessary). 
+
+
+## Format 
+
+
+## Make 
 

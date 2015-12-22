@@ -11,7 +11,9 @@ Suggests:
     testthat,
     knitr,
     rmarkdown,
-    RecordLinkage
+    RecordLinkage,
+    doParallel,
+    foreach
 VignetteBuilder: knitr
 Imports: 
     sp,

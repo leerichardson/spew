@@ -14,6 +14,7 @@ test_that("United States functions", {
                                                                              lookup = "tables", 
                                                                              shapefiles = "tiger", 
                                                                              workplaces = "workplaces"))
+  
   # Data frame with the correct dimensions 
   expect_equal(nrow(sd_poptable), 222)
   expect_equal(ncol(sd_poptable), 4)

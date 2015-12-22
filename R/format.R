@@ -25,20 +25,18 @@
 ##  Need to record-link the Place names across shapefiles and other sources
 format_data <- function(data_list, data_group) {
     
-    if (data_group == "US") {
-      #  Assert that we have the correct inputs. (at least the first three, four for US)
-      if (!(all(c("shapefiles", "pop_table", "pums", "lookup") %in% names(data_list))))
-        stop("Missing a part of data_list")
+  # Assert that we have all the REQUIRED (shapefile, pums, counts) elements 
+  # for generating the synthetic population....
+  
+  if (data_group == "US") {
+            
+      # Pull out a vector of the poptable IDs and Shapefile IDs
+      link_pop_table_to_lookup <- match(data_list$pop_table$place_id, data_list$lookup$place_id)
+      data_list$pop_table$puma_id <- data_list$lookup$puma_id[link_pop_table_to_lookup]
       
-      #  1. Pull out a vector of the poptable IDs and Shapefile IDs
-      
-      
-    } else if (data_group == "ipums") {
-      #  Assert that we have the correct inputs. (at least the first three, four for US)
-      if (!(all(c("shapefiles", "pop_table", "pums") %in% names(data_list))))
-        stop("Missing a part of data_list")
-      
-    }
+  } else if (data_group == "ipums") {
+
+  }
+  
+  return(data_list)
 }
-
-
