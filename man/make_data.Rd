@@ -2,7 +2,7 @@
 % Please edit documentation in R/make.R
 \name{make_data}
 \alias{make_data}
-\title{Create microdata using formatted data}
+\title{Create synthetic microdata}
 \usage{
 make_data(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
   sampling_type = "uniform", output_dir = "/home/lee/south_dakota/")
@@ -14,22 +14,22 @@ which places need populations, and how many samples to take}
 \item{shapefile}{sp class object used for assigning households to 
 particular locations}
 
-\item{dataframe}{with microdata corresponding to housegolds}
+\item{pums_h}{dataframe with microdata corresponding to housegolds}
 
-\item{dataframe}{with microdata corresponding to people}
+\item{pums_p}{dataframe with microdata corresponding to people}
 
-\item{logical}{indicating whether or not we will generate our 
+\item{parallel}{logical indicating whether or not we will generate our 
 synthetic populations in parallel}
 
-\item{character}{vector indicating the type of sample to use for 
-generating microdata}
+\item{sampling_type}{character vector indicating the type oof sampling used. 
+Default's to "uniform"}
 }
 \value{
 logical specifying whether the microdata was generated 
 successfully
 }
 \description{
-Create microdata using formatted data
+Create synthetic microdata
 }
 \examples{
 make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)

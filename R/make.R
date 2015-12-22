@@ -1,4 +1,57 @@
-#' Create microdata using formatted data 
+#' Create synthetic microdata 
+#' 
+#' @param pop_table dataframe with columns corresponding to 
+#' which places need populations, and how many samples to take 
+#' @param shapefile sp class object used for assigning households to 
+#' particular locations  
+#' @param pums_h dataframe with microdata corresponding to housegolds 
+#' @param pums_p dataframe with microdata corresponding to people 
+#' @param parallel logical indicating whether or not we will generate our 
+#' synthetic populations in parallel
+#' @param sampling_type character vector indicating the type oof sampling used. 
+#' Default's to "uniform"
+#' @return logical specifying whether the microdata was generated 
+#' successfully 
+#' @examples
+#' make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
+make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE, 
+                      sampling_type = "uniform", output_dir = "/home/lee/south_dakota/") {
+  
+  
+  # Call the make_place function for each place in our pop_table. Either 
+  # run this in parallel of not (usually I don't for debugging purposes)
+  num_places <- nrow(pop_table) 
+  if (parallel == FALSE) {
+    
+    for (place in 1:num_places) { 
+      msg <- paste0("Generating place: ", place, " out of ", num_places)
+      print(msg)
+      
+      make_place(place, pop_table, shapefile, pums_h, pums_p, sampling_type, output_dir) 
+    }    
+  } else {
+    library(doParallel)
+    library(foreach)
+    
+    # Set up the worker cores and export all of the necessary 
+    # data needed to call the make_place function 
+    num_workers <- detectCores()
+    cluster <- makeCluster(num_workers)
+    registerDoParallel(num_workers)
+    
+    place_pops <- foreach(place = 1:num_places) %dopar% {
+      
+      msg <- paste0("Generating place: ", place, " out of ", num_places)
+      print(msg)
+      
+      make_place(place, pop_table, shapefile, pums_h, pums_p, sampling_type, output_dir)
+    }
+    
+  }
+}
+
+
+#' Create microdata for individual places 
 #' 
 #' @param pop_table dataframe with columns corresponding to 
 #' which places need populations, and how many samples to take 
@@ -10,43 +63,38 @@
 #' synthetic populations in parallel
 #' @param character vector indicating the type of sample to use for 
 #' generating microdata 
-#' @return logical specifying whether the microdata was generated 
-#' successfully 
+#' @return synthetic population .csv file for both household and person 
+#' level data  
 #' @examples
-#' make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
-make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE, 
-                      sampling_type = "uniform", output_dir = "/home/lee/south_dakota/") {
+make_place <- function(index, pop_table, shapefile, pums_h, pums_p, 
+                       sampling_type, output_dir) {
   
-  num_places <- nrow(pop_table) 
-  for (place in 1:num_places) {
-
-    # Sample n indices from the household pums 
-    households <- sample_households(pop_table[place, "n_house"], 
-                                    pums_h, pop_table[place, "puma_id"])
-    sampled_households <- pums_h[households, ]
-    
-    # Attach locations to the sample households 
-    locations <- sample_locations(place_id = pop_table[place, "place_id"], 
-                                  n_house = pop_table[place, "n_house"], 
-                                  shapefile = shapefile)
-    sampled_households$longitude <- locations@coords[, 1]
-    sampled_households$latitude <- locations@coords[, 2]
-    
-    
-    # Attach people to the sampled households 
-    sampled_people <- sample_people(sampled_households, pums_p)
-    
-    # Output the synthetic population's as a csv
-    write_data(df = sampled_households, place_id = pop_table[place, "place_id"], 
-               type = "household", output_dir = output_dir)
-    write_data(df = sampled_people, place_id = pop_table[place, "place_id"], 
-               type = "people", output_dir = output_dir)
-    
-  }
+  # Sample n indices from the household pums 
+  households <- sample_households(pop_table[index, "n_house"], 
+                                  pums_h, pop_table[index, "puma_id"])
+  sampled_households <- pums_h[households, ]
+  
+  # Attach locations to the sample households 
+  locations <- sample_locations(place_id = pop_table[index, "place_id"], 
+                                n_house = pop_table[index, "n_house"], 
+                                shapefile = shapefile)
+  sampled_households$longitude <- locations@coords[, 1]
+  sampled_households$latitude <- locations@coords[, 2]
+  
+  
+  # Attach people to the sampled households 
+  sampled_people <- sample_people(sampled_households, pums_p)
+  
+  # Output the synthetic population's as a csv
+  write_data(df = sampled_households, place_id = pop_table[index, "place_id"], 
+             type = "household", output_dir = output_dir)
+  write_data(df = sampled_people, place_id = pop_table[index, "place_id"], 
+             type = "people", output_dir = output_dir)
+  return(TRUE)
 }
 
 
-#' Create microdata using formatted data 
+#' Sample appropriate indices from household PUMS 
 #' 
 #' @param n_house numeric indicating the number of households to sample 
 #' @param pums_h dataframe of the households we are sampling from 

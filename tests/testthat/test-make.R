@@ -16,5 +16,14 @@ test_that("Sampling functions", {
                                     n_house = num_samples, shapefile = sd_data$shapefiles)
   expect_equal(length(single_polygon), num_samples)
   
+  # Test that the Parallel version is quicker ----------------
+  places <- 1:4
+  regular_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles, 
+                                      sd_data$pums$pums_h, sd_data$pums$pums_p))
+  parallel_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles, 
+                                      sd_data$pums$pums_h, sd_data$pums$pums_p, 
+                                      parallel = TRUE))
+  expect_equal(as.logical(parallel_md[3] < regular_md[3]), TRUE)
   
+
 }) 

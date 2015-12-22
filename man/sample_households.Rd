@@ -2,7 +2,7 @@
 % Please edit documentation in R/make.R
 \name{sample_households}
 \alias{sample_households}
-\title{Create microdata using formatted data}
+\title{Sample appropriate indices from household PUMS}
 \usage{
 sample_households(n_house, pums_h, puma_id = NULL,
   sampling_type = "uniform")
@@ -21,6 +21,6 @@ from, if any}
 numeric with the indicies of the household PUMS to sample
 }
 \description{
-Create microdata using formatted data
+Sample appropriate indices from household PUMS
 }
 

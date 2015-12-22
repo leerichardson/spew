@@ -43,7 +43,7 @@ Built into R is a standard way of documenting objects in a package. And since ev
 
 Since it's tedious to create a `.Rd` file for each individual function, we will use the `roxygen2` package for documentation. This allows us to put the documentation right above our functions, so all we need to to is type:
 
-```{r}
+```{r, include=FALSE}
   devtools::document()
 ```
 
@@ -184,5 +184,7 @@ devtools::use_package("RecordLinkage", "Suggests")
 ```
 
 Note for dependendies with other packages, you can use the `::` command, which specifies which package a particular function is coming from. For example, when we use the slot function we can write `methods::slot(shapefile, "polygons")`
+
+
 
 

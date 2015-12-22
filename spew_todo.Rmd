@@ -4,12 +4,18 @@ output: html_document
 author: "Sam, Shannon, and Lee"
 ---
 
+## Write spew.R function which integrates read, format, and make functions. 
+- Include an output directory 
+- Include an option for selecting variables... 
+
 ## Run the new version on Olympus for all 50 states!
+- Write spew.R 
 - Install spew on Olympus
+- Read about parallelizing code, automate this step given the 
+number of cores
 - Set up a bash script which can call spew for each state
 
 ## Improve make.R
-- Add in a parallel function which runs on Olympus 
 - Write a separate function which outputs microdata for an individual place 
 - Add in checks which verifies the two PUMS have the same serial numbers (currently assuming this is true)
 - Add an input which specifies the ID variable used for linking the individual 
@@ -18,16 +24,12 @@ and household PUMS (maybe add this to spew.R?)
 the first one for convinience. In the future, we may want to think of something 
 more elegant here (such as a union)
 
-## Write spew.R function which integrates read, format, and make functions. 
-- Include an option for selecting variables... 
-- Include an output directory 
-
 ## Unit tests
 - read.R (finish testing individual functions, test the entire function as well)
 - format.R 
 - make.R
 
-## Write up Version Control for guidelines 
+## Write up Versi on Control for guidelines 
 - Use Hadley's git/github tutorial 
 
 ## Implement IPUMS functions 
