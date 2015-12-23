@@ -230,11 +230,14 @@ This will replace the default R 3.1 with the latest versions. From here, to down
   library(spew)
 ```
 
-Note that this certainly did not run smoothly for me the first time I tried it. There were some issues downloading the  
+Note that this certainly did not run smoothly for me the first time I tried it. There were some issues downloading spew into the correct library, which in devtools by default goes to the system packages available for all users. Next, I had to remove some lines from the DESCRIPTION file that were causing errors, and remember to "export" the functions I wanted to run, to the NAMESPACE of the package. I'm mainly writing this here so I don't forget, and here are the commands I ended up using:  
 
 
-```{r}
-# The directory spew is installed into is the one corresponding to /home/USERNAME 
-# on Olympus....
-.libPaths()
+```{r, include=FALSE}
+personal_lib <- .libPaths()[2]
+with_libpath(new = personal_lib, install_github("leerichardson/spew"))
+library(spew)
+?generate_spew
 ```
+
+Now, we can call the `generate_spew` function on Olympus for a given input directory, and it works just as it does on our local computers. 

@@ -5,8 +5,9 @@ author: "Sam, Shannon, and Lee"
 ---
 
 ## Run the new version on Olympus for all 50 states!
-- Install spew on Olympus
-- Set up a bash script which can call spew for each state
+- Set up a bash-script which calls spew for each state, 
+records the logfiles, and produces the synthetic ecosystems 
+in a particular directory. 
 
 ## Improve make.R
 - Add in checks which verifies the two PUMS have the same serial numbers (currently assuming this is true)
