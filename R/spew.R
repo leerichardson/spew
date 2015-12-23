@@ -20,8 +20,8 @@
 #'                                              workplaces = "workplaces"), 
 #'      data_group = "US", output_dir = "/home/lee/south_dakota/", parallel = TRUE, 
 #'      sampling_type = "uniform")
-
-generate_spew <- function(input_dir, folders, data_group, output_dir, parallel = TRUE, sampling_type) {
+generate_spew <- function(input_dir, folders, data_group, output_dir, parallel = TRUE, 
+                          sampling_type) {
   
   # Given information on our input data, read in everything to memory and 
   # save everything in a list 

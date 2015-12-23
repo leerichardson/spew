@@ -216,10 +216,10 @@ The idea here is that we are generating a population for n individual places, wh
 
 ## Running SPEW on Olympus 
 
-Since our project is all hosted on github, we should in theory be able to simply install the package on Olympus, and run the `spew` function with the appropriate inputs just as we would with any other package. To do this, we need to have devtools installed (which Jay has nicely done for us) on the headnode. Furthermore, we must make sure that we have the most recent version of R loaded, using:
+Since our project is all hosted on github, we should in theory be able to simply install the package on Olympus, and run the `spew` function with the appropriate inputs just as we would with any other package. To do this, we need to have devtools installed (which Jay has nicely done for us) on the headnode. Furthermore, we must make sure that we have the most recent version of R loaded, using the command:
 
 ```{r, include=FALSE}
-module load r/3.2.1
+# module load r/3.2.1
 ```
 
 This will replace the default R 3.1 with the latest versions. From here, to download spew onto Olympus we type in R to enter an R session, then the following:
@@ -230,5 +230,11 @@ This will replace the default R 3.1 with the latest versions. From here, to down
   library(spew)
 ```
 
-Note that you will be prompted to install packages for a personal library when you do this, but just type `y` when prompted and everything should work smoothly. 
+Note that you will be prompted to install packages for a personal library when you do this, but just type `y` when prompted and everything should work smoothly. Specifically, the package will be now installed in your home directory, which you can see with:
+
+```{r}
+# The directory spew is installed into is the one corresponding to /home/USERNAME 
+# on Olympus....
+.libPaths()
+```
 

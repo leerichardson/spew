@@ -64,7 +64,6 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
 #' generating microdata 
 #' @return synthetic population .csv file for both household and person 
 #' level data  
-#' @examples
 make_place <- function(index, pop_table, shapefile, pums_h, pums_p, 
                        sampling_type, output_dir) {
   
