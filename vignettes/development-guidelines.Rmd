@@ -230,7 +230,8 @@ This will replace the default R 3.1 with the latest versions. From here, to down
   library(spew)
 ```
 
-Note that you will be prompted to install packages for a personal library when you do this, but just type `y` when prompted and everything should work smoothly. Specifically, the package will be now installed in your home directory, which you can see with:
+Note that this certainly did not run smoothly for me the first time I tried it. There were some issues downloading the  
+
 
 ```{r}
 # The directory spew is installed into is the one corresponding to /home/USERNAME 

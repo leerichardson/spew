@@ -10,6 +10,8 @@
 #' should be run in parallel
 #' @param sampling_type character vector indicating the type of sampling 
 #' to use, defaults to "uniform"
+#' 
+#' @export
 #' @return logical indicating whether or not this run of spew ended successfully 
 generate_spew <- function(input_dir, folders, data_group, output_dir, parallel = TRUE, 
                           sampling_type) {
