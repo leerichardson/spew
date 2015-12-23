@@ -237,4 +237,3 @@ Note that you will be prompted to install packages for a personal library when y
 # on Olympus....
 .libPaths()
 ```
-

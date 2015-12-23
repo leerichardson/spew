@@ -1,9 +1,3 @@
-#  Sam Ventura, Lee Richardson, and Shannon Gallagher
-#  3 November 2015
-#  SPEW -- Synthetic Populations and Ecosystems of the World
-#  Update:  11/10/15
-#  Update:  11.12.15 - read in schools and workplaces
-
 #' Read in all necessary data 
 #' 
 #' @param input_dir character vector specifying the directory containing 

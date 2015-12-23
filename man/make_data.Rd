@@ -34,7 +34,6 @@ successfully
 Create synthetic microdata
 }
 \examples{
-# Run a regular version, then a parallel version
 make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
 }
 

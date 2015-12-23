@@ -30,14 +30,4 @@ logical indicating whether or not this run of spew ended successfully
 \description{
 Generate synthetic ecosysystems
 }
-\examples{
-spew("/home/lee/spew/data-raw/46", folders = list(pop_table = "popTables", 
-                                             pums = "pums", 
-                                             schools = "schools", 
-                                             lookup = "tables", 
-                                             shapefiles = "tiger", 
-                                             workplaces = "workplaces"), 
-     data_group = "US", output_dir = "/home/lee/south_dakota/", parallel = TRUE, 
-     sampling_type = "uniform")
-}
 

@@ -11,15 +11,6 @@
 #' @param sampling_type character vector indicating the type of sampling 
 #' to use, defaults to "uniform"
 #' @return logical indicating whether or not this run of spew ended successfully 
-#' @examples
-#' spew("/home/lee/spew/data-raw/46", folders = list(pop_table = "popTables", 
-#'                                              pums = "pums", 
-#'                                              schools = "schools", 
-#'                                              lookup = "tables", 
-#'                                              shapefiles = "tiger", 
-#'                                              workplaces = "workplaces"), 
-#'      data_group = "US", output_dir = "/home/lee/south_dakota/", parallel = TRUE, 
-#'      sampling_type = "uniform")
 generate_spew <- function(input_dir, folders, data_group, output_dir, parallel = TRUE, 
                           sampling_type) {
   
