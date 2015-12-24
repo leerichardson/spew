@@ -17,9 +17,6 @@ sd_poptable <- standardize_pop_table(sd_poptable, data_group = "US")
 
 
 
-
-
-
 sd_pums <- read_pums("data-raw/46", data_group = "US", folders = list(pop_table = "popTables", 
                                                                                pums = "pums", 
                                                                                schools = "schools", 
@@ -54,8 +51,6 @@ sd_lookup <- read_lookup("data-raw/46", data_group = "US", folders = list(pop_ta
 sd_lookup <- standardize_lookup(sd_lookup, data_group = "US")
 
 
-
-
 sd_schools <- read_schools("data-raw/46", data_group = "US", folders = list(pop_table = "popTables", 
                                                                             pums = "pums", 
                                                                             schools = "schools", 
@@ -82,11 +77,7 @@ sd_data <- read_data("data-raw/46", data_group = "US", folders = list(pop_table 
                                                                       shapefiles = "tiger", 
                                                                       workplaces = "workplaces"))
 
-
-
 sd_data <- format_data(data_list = sd_data, data_group = "US")
-
-
 
 devtools::use_data(sd_data, overwrite = T)
 

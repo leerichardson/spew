@@ -85,7 +85,11 @@ read_pop_table <- function(input_dir, folders, data_group) {
 standardize_pop_table <- function(pop_table, data_group){
   if (data_group == "US") {
     pop_table <- data.frame(place_id = pop_table$Id2,
-                            n_house = pop_table$NumberOfHouseholds)
+                            n_house = as.numeric(pop_table$NumberOfHouseholds))
+    
+    # Make sure the variables have the correct class
+    pop_table$place_id <- as.character(pop_table$place_id)
+    pop_table$n_house <- as.numeric(pop_table$n_house)
   }
   
   return(pop_table)
@@ -152,7 +156,6 @@ read_lookup <- function(input_dir, folders, data_group){
   return(lookup)
 }
 
-
 #  Standardize the lookup table
 standardize_lookup <- function(lookup, data_group){
   if (data_group == "US") {
@@ -169,8 +172,12 @@ standardize_lookup <- function(lookup, data_group){
     new_tract_ce <- substr(new_tract_ce, 2, 7)
     place_id <- paste0(new_state_fp, new_county_fp, new_tract_ce)
     
-    lookup <- data.frame(place_id = place_id,
-                         puma_id = lookup$PUMA5CE)
+    lookup <- data.frame(place_id = as.character(place_id),
+                         puma_id = as.numeric(lookup$PUMA5CE))
+    
+    # Make sure the variables have the correct class
+    lookup$place_id <- as.character(lookup$place_id)
+    lookup$puma_id <- as.numeric(lookup$puma_id)
   }
   return(lookup)
 }

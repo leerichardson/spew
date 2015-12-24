@@ -241,3 +241,14 @@ library(spew)
 ```
 
 Now, we can call the `generate_spew` function on Olympus for a given input directory, and it works just as it does on our local computers. 
+
+## Shell Scripting 
+In our use of spew, we will make a lot of use of the Olympus infrastructure to speed up our calculations. In order to use these capabilities, we will need to submit jobs to olympus which request the requisite amount of processors and time. To submit jobs and interact with Olympus, we make use of shell scripts. 
+
+We will have one shell script, called `run_spew.sh`, located in the `/data/shared_group_data/syneco/spew` directory. This script will take inputs (for starters, I'm just using `data_group`, `input_dir`, and `output_dir`) and submit a job to Olympus which requests the desired amount of computing time and runs spew. Thus, we can just call the `run_spew.sh` script using the specific inputs, and everything should run smoothly. 
+
+
+
+
+
+

@@ -43,6 +43,11 @@ and household PUMS (maybe add this to spew.R?)
 - Note that the core of format.R should work with the ipums files, 
   it's simple for the USA since we only need to add a column to the poptable. 
 
+## Add in a diagnostics function
+- Go into a synthetic population directory and create 
+summary statistics and plots which display the output in an
+easily human interpretable manner. Used as a sanity check 
+
 ## Add in a clickable feature to donwload the synthetic ecosystems 
 - Shiny "Map" is a refinement
 - Needs to be clickable!

@@ -23,16 +23,21 @@
 ##  For data_group = "US", this doesn't really matter
 ##  For data_group = "ipums", this is important
 ##  Need to record-link the Place names across shapefiles and other sources
+
 format_data <- function(data_list, data_group) {
     
   # Assert that we have all the REQUIRED (shapefile, pums, counts) elements 
   # for generating the synthetic population....
   
   if (data_group == "US") {
-            
+      
+      # Make sure the place_id is the same type for merging 
+      stopifnot(class(data_list$pop_table$place_id) == class(data_list$lookup$place_id))    
+      
       # Pull out a vector of the poptable IDs and Shapefile IDs
-      link_pop_table_to_lookup <- match(data_list$pop_table$place_id, data_list$lookup$place_id)
-      data_list$pop_table$puma_id <- data_list$lookup$puma_id[link_pop_table_to_lookup]
+      new_poptable <- plyr::join(data_list$pop_table, data_list$lookup, 
+                                 by = "place_id", type = "left")
+      data_list$pop_table <- new_poptable
       
   } else if (data_group == "ipums") {
 
