@@ -16,6 +16,15 @@ test_that("Sampling functions", {
                                     n_house = num_samples, shapefile = sd_data$shapefiles)
   expect_equal(length(single_polygon), num_samples)
   
+  # Make sure the 0 household places are caught
+  test_ind <- 100
+  sd_data$pop_table[test_ind, "n_house"] <- 0
+  
+  expect_output(make_place(test_ind, sd_data$pop_table, sd_data$shapefiles, 
+                         sd_data$pums$pums_h, sd_data$pums$pums_p, 
+                         sampling_type = "uniform", output_dir = "/home/lee"), 
+                          "Place has 0 Households!")
+  
   # Test that the Parallel version is quicker ----------------
   library(doParallel)
   library(foreach)

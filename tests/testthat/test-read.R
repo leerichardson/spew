@@ -48,18 +48,19 @@ test_that("United States functions", {
   
   # Shapefile --------------------------
   library(maptools)
-  sd_shape <- read_shapefiles(data_path, data_group = "US", folders = list(pop_table = "popTables", 
-                                                                               pums = "pums", 
-                                                                               schools = "schools", 
-                                                                               lookup = "tables", 
-                                                                               shapefiles = "tiger", 
-                                                                               workplaces = "workplaces")) 
+  sd_shape <- read_shapefiles(data_path, data_group = "US", 
+                              folders = list(pop_table = "popTables", 
+                                         pums = "pums", 
+                                         schools = "schools", 
+                                         lookup = "tables", 
+                                         shapefiles = "tiger", 
+                                         workplaces = "workplaces")) 
   expect_equal(class(sd_shape) == "SpatialPolygonsDataFrame", TRUE)
   
   # Test the standardization functions
   standard_shape <- standardize_shapefiles(sd_shape, data_group = "US")
   expect_equal(length(standard_shape$place_id) == 222, TRUE)
-  expect_equal(class(standard_shape$place_id) == "numeric", TRUE)
+  expect_equal(class(standard_shape$place_id) == "character", TRUE)
   
 
   # Lookup -----------------------------

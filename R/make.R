@@ -66,6 +66,13 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
 make_place <- function(index, pop_table, shapefile, pums_h, pums_p, 
                        sampling_type, output_dir) {
   
+  # Make sure there are people living in this particular 
+  # place. If not, skip!
+  if (pop_table[index, "n_house"] == 0) {
+    print("Place has 0 Households!")
+    return(TRUE)
+  }
+  
   # Sample n indices from the household pums 
   households <- sample_households(pop_table[index, "n_house"], 
                                   pums_h, pop_table[index, "puma_id"])
