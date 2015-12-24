@@ -90,7 +90,7 @@ standardize_pop_table <- function(pop_table, data_group){
     if (all(nchar(pop_table$Id2) == 10)) {
       pop_table$Id2 <- paste0("0", pop_table$Id2)
     }     
-    stopifnot(all(nchar(shapefiles$place_id) == 11))
+    stopifnot(all(nchar(pop_table$Id2) == 11))
     
     pop_table <- data.frame(place_id = pop_table$Id2,
                             n_house = as.numeric(pop_table$NumberOfHouseholds))
