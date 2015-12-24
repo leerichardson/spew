@@ -232,13 +232,23 @@ This will replace the default R 3.1 with the latest versions. From here, to down
 
 Note that this certainly did not run smoothly for me the first time I tried it. There were some issues downloading spew into the correct library, which in devtools by default goes to the system packages available for all users. Next, I had to remove some lines from the DESCRIPTION file that were causing errors, and remember to "export" the functions I wanted to run, to the NAMESPACE of the package. I'm mainly writing this here so I don't forget, and here are the commands I ended up using:  
 
-
 ```{r, include=FALSE}
+library(devtools)
+library(httr)
 personal_lib <- .libPaths()[2]
-with_libpath(new = personal_lib, install_github("leerichardson/spew"))
+with_libpaths(new = personal_lib, install_github("leerichardson/spew"))
 library(spew)
 ?generate_spew
 ```
+
+Other times, you will realize that spew as is doesn't quite work, and we need to make changes to it. In this case, to run on Olympus we will need to remove spew as is, and re-install it:
+
+```{r, include=FALSE}
+personal_lib <- .libPaths()[2]
+remove.packages(pkgs = "spew", lib = personal_lib)
+```
+
+Then we can reset R and delete our current workspace, and things should now work as expected. 
 
 Now, we can call the `generate_spew` function on Olympus for a given input directory, and it works just as it does on our local computers. 
 
@@ -246,9 +256,4 @@ Now, we can call the `generate_spew` function on Olympus for a given input direc
 In our use of spew, we will make a lot of use of the Olympus infrastructure to speed up our calculations. In order to use these capabilities, we will need to submit jobs to olympus which request the requisite amount of processors and time. To submit jobs and interact with Olympus, we make use of shell scripts. 
 
 We will have one shell script, called `run_spew.sh`, located in the `/data/shared_group_data/syneco/spew` directory. This script will take inputs (for starters, I'm just using `data_group`, `input_dir`, and `output_dir`) and submit a job to Olympus which requests the desired amount of computing time and runs spew. Thus, we can just call the `run_spew.sh` script using the specific inputs, and everything should run smoothly. 
-
-
-
-
-
 

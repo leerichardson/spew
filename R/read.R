@@ -84,6 +84,15 @@ read_pop_table <- function(input_dir, folders, data_group) {
 #  Standardize the pop_table
 standardize_pop_table <- function(pop_table, data_group){
   if (data_group == "US") {
+    
+    # Make sure we aren't stripping off a leading 0 
+    # if we are dealing with one of the first 10 states 
+    if (all(nchar(pop_table$Id2) == 10)) {
+      pop_table$Id2 <- paste0("0", pop_table$Id2)
+    } else if (any(nchar(pop_table$Id2) != 11)) {
+      stop("Place ID Must have 11 Characters!")
+    }
+    
     pop_table <- data.frame(place_id = pop_table$Id2,
                             n_house = as.numeric(pop_table$NumberOfHouseholds))
     
@@ -91,7 +100,6 @@ standardize_pop_table <- function(pop_table, data_group){
     pop_table$place_id <- as.character(pop_table$place_id)
     pop_table$n_house <- as.numeric(pop_table$n_house)
   }
-  
   return(pop_table)
 }
 

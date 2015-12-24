@@ -5,12 +5,17 @@ author: "Sam, Shannon, and Lee"
 ---
 
 ## Run the new version on Olympus for all 50 states!
+- Set up a "lookup" table which contains each directory with 
+input data as well as the inputs needed from it to call run_spew.sh
+
 - Set up a bash-script which calls spew for each state, 
 records the logfiles, and produces the synthetic ecosystems 
 in a particular directory. 
 
+
 ## Improve make.R
 - Add in checks which verifies the two PUMS have the same serial numbers (currently assuming this is true)
+
 - For now, if there are multiple polygons to sample, I am just sampling from 
 the first one for convinience. In the future, we may want to think of something 
 more elegant here (such as a union)
