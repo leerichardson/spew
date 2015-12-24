@@ -89,9 +89,8 @@ standardize_pop_table <- function(pop_table, data_group){
     # if we are dealing with one of the first 10 states 
     if (all(nchar(pop_table$Id2) == 10)) {
       pop_table$Id2 <- paste0("0", pop_table$Id2)
-    } else if (any(nchar(pop_table$Id2) != 11)) {
-      stop("Place ID Must have 11 Characters!")
-    }
+    }     
+    stopifnot(all(nchar(shapefiles$place_id) == 11))
     
     pop_table <- data.frame(place_id = pop_table$Id2,
                             n_house = as.numeric(pop_table$NumberOfHouseholds))
@@ -217,13 +216,15 @@ read_shapefiles <- function(input_dir, folders, data_group) {
   return(shapefile)
 }
 
-
 #  Standardize the shapefiles 
-standardize_shapefiles <- function(shapefiles, data_group){
+standardize_shapefiles <- function(shapefiles, data_group) {
+  
   if (data_group == "US") {
     names(shapefiles)[which(names(shapefiles) == "GEOID10")] <- "place_id"
-    shapefiles$place_id <- as.numeric(as.character(shapefiles$place_id))
+    shapefiles$place_id  <- as.character(shapefiles$place_id)
+    stopifnot(all(nchar(shapefiles$place_id) == 11))
   }
+  
   return(shapefiles)
 }
 
