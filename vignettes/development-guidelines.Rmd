@@ -252,25 +252,24 @@ Then we can reset R and delete our current workspace, and things should now work
 
 Now, we can call the `generate_spew` function on Olympus for a given input directory, and it works just as it does on our local computers. 
 
-Finally, once you re-load the package, it's useful to debug it in Interactive mode on Olympus, just to make sure things are working as expected. you can submit an interactive job (ie: Log onto one of the compute nodes) with the command `qsub -I`. To save time, I usually run the US version on State 01 to find bus:
+Finally, once you re-load the package, it's useful to debug it in Interactive mode on Olympus, just to make sure things are working as expected. you can submit an interactive job (ie: Log onto one of the compute nodes) with the command `qsub -I -l walltime=3:00:00`. To save time, I usually run the US version on State 01 to find bus:
 
 ```{r, include=FALSE}
 library(spew)
 library(maptools)
 options(error = recover)
 
-in_dir <- "/data/shared_group_data/syneco/input/west/north_america/united_states/01/"
+in_dir <- "/data/shared_group_data/syneco/input/west/north_america/united_states/01"
 out_dir <- "/data/shared_group_data/syneco/outputs/spew/"
 folders <- list(pop_table = "popTables", 
-                     pums = "pums", 
+                     pums = "pums/2013", 
                      schools = "schools", 
                      lookup = "tables", 
                      shapefiles = "tiger", 
                      workplaces = "workplaces")
 
 generate_spew(input_dir = in_dir, output_dir = out_dir, folders = folders, 
-              parallel=FALSE, data_group="US", sampling_type="uniform")
-
+              parallel=TRUE, data_group="US", sampling_type="uniform")
 ```
   
 

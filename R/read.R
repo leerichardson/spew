@@ -12,7 +12,7 @@
 #' data sources
 read_data <- function(input_dir, 
                       folders = list(pop_table = "popTables", 
-                                           pums = "pums", 
+                                           pums = "pums/2013", 
                                            schools = "schools", 
                                            lookup = "tables", 
                                            shapefiles = "tiger", 
@@ -109,10 +109,7 @@ read_pums <- function(input_dir, folders, data_group){
   pums_files <- list.files(paste0(input_dir, "/", folders$pums))
   
   if (data_group == "US") {
-    
-    #  Get rid of any additional folders in the directory
-    pums_files <- pums_files[-which(nchar(pums_files) < 5)]
-    
+        
     #  Find the indices of the person and household level files
     hp <- substr(pums_files, 5, 5)
     index_h <- which(hp == "h")

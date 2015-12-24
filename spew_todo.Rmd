@@ -4,14 +4,13 @@ output: html_document
 author: "Sam, Shannon, and Lee"
 ---
 
-## Run the new version on Olympus for all 50 states!
+## Run the SPEW on Olympus for all 50 states!
 - Set up a "lookup" table which contains each directory with 
 input data as well as the inputs needed from it to call run_spew.sh
 
 - Set up a bash-script which calls spew for each state, 
 records the logfiles, and produces the synthetic ecosystems 
-in a particular directory. 
-
+in a particular directory.
 
 ## Improve make.R
 - Add in checks which verifies the two PUMS have the same serial numbers (currently assuming this is true)
