@@ -4,17 +4,17 @@ output: html_document
 author: "Sam, Shannon, and Lee"
 ---
 
-## Run the SPEW on Olympus for all 50 states!
-- Set up a "lookup" table which contains each directory with 
-input data as well as the inputs needed from it to call run_spew.sh
+## Implement IPUMS functions 
+- read.R
+- format.R
 
-- Set up a bash-script which calls spew for each state, 
-records the logfiles, and produces the synthetic ecosystems 
-in a particular directory.
+## Schools/Workplaces
+- Need to add in the schools + workplaces modules 
+
 
 ## Improve make.R
 - Add in checks which verifies the two PUMS have the same serial numbers (currently assuming this is true)
-
+- Also check to make sure that the puma_ids (if used) match. 
 - For now, if there are multiple polygons to sample, I am just sampling from 
 the first one for convinience. In the future, we may want to think of something 
 more elegant here (such as a union)
@@ -35,13 +35,6 @@ and household PUMS (maybe add this to spew.R?)
 ## Document each new function
 - Read functions 
 - Format Functions 
-
-## Implement IPUMS functions 
-- read.R
-- format.R
-
-## Schools/Workplaces
-- Need to add in the schools + workplaces modules 
 
 ## Implement IPUMS format.R functions extensions
 - Note that the core of format.R should work with the ipums files, 

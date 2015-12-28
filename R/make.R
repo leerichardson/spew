@@ -17,8 +17,7 @@
 #' make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
 make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE, 
                       sampling_type = "uniform", output_dir = "/home/lee/south_dakota/") {
-  
-  
+    
   # Call the make_place function for each place in our pop_table. Either 
   # run this in parallel of not (usually I don't for debugging purposes)
   num_places <- nrow(pop_table) 

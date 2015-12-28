@@ -1,5 +1,5 @@
 ---
-title: "Spew Development Strategy"
+title: "Spew Development Strategy and Documentation"
 author: "Lee Richardson, Sam Ventura, Shannon Gallagher"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -232,7 +232,7 @@ This will replace the default R 3.1 with the latest versions. From here, to down
 
 Note that this certainly did not run smoothly for me the first time I tried it. There were some issues downloading spew into the correct library, which in devtools by default goes to the system packages available for all users. Next, I had to remove some lines from the DESCRIPTION file that were causing errors, and remember to "export" the functions I wanted to run, to the NAMESPACE of the package. I'm mainly writing this here so I don't forget, and here are the commands I ended up using:  
 
-```{r, include=FALSE}
+```{r, include=FALSE, eval=FALSE}
 library(devtools)
 library(httr)
 personal_lib <- .libPaths()[2]
@@ -243,7 +243,7 @@ library(spew)
 
 Other times, you will realize that spew as is doesn't quite work, and we need to make changes to it. In this case, to run on Olympus we will need to remove spew as is, and re-install it:
 
-```{r, include=FALSE}
+```{r, include=FALSE, eval=FALSE}
 personal_lib <- .libPaths()[2]
 remove.packages(pkgs = "spew", lib = personal_lib)
 ```
@@ -254,12 +254,14 @@ Now, we can call the `generate_spew` function on Olympus for a given input direc
 
 Finally, once you re-load the package, it's useful to debug it in Interactive mode on Olympus, just to make sure things are working as expected. you can submit an interactive job (ie: Log onto one of the compute nodes) with the command `qsub -I -l walltime=3:00:00`. To save time, I usually run the US version on State 01 to find bus:
 
-```{r, include=FALSE}
+```{r, include=FALSE, eval=FALSE}
 library(spew)
 library(maptools)
+library(foreach)
+library(doParallel)
 options(error = recover)
 
-in_dir <- "/data/shared_group_data/syneco/input/west/north_america/united_states/01"
+in_dir <- "/data/shared_group_data/syneco/input/west/north_america/united_states/38"
 out_dir <- "/data/shared_group_data/syneco/outputs/spew/"
 folders <- list(pop_table = "popTables", 
                      pums = "pums/2013", 
@@ -270,14 +272,19 @@ folders <- list(pop_table = "popTables",
 
 generate_spew(input_dir = in_dir, output_dir = out_dir, folders = folders, 
               parallel=TRUE, data_group="US", sampling_type="uniform")
-```
-  
+```  
 
 ## Shell Scripting 
 In our use of spew, we will make a lot of use of the Olympus infrastructure to speed up our calculations. In order to use these capabilities, we will need to submit jobs to olympus which request the requisite amount of processors and time. To submit jobs and interact with Olympus, we make use of shell scripts. 
 
-We will have one shell script, called `run_spew.sh`, located in the `/data/shared_group_data/syneco/spew` directory. This script will take inputs (for starters, I'm just using `data_group`, `input_dir`, and `output_dir`) and submit a job to Olympus which requests the desired amount of computing time and runs spew. Thus, we can just call the `run_spew.sh` script using the specific inputs, and everything should run smoothly. 
+Right now, all of the scripts are located in the `/data/shared_group_data/syneco/spew` directory. All of the files in here have a specific purpose, but the main idea is this. There's a lookup table in the `/input/spew_lookup.csv` directory, which contains all of the inputs necessary to run spew. What we want to do, is to subset this lookup table corresponding to whichever synthetic population we are interested in generated, grab the inputs, and then use these inputs to call spew. This is what the `/spew/run_spew.sh` does, we pass it a query, and this grabs the appropriate inputs from the lookup table. Then, it submits a job for each row of the lookup table that remains after the subset. 
 
+For example, to run a particular state, we can call:
+`/data/shared_group_data/syneco/spew/run_spew.sh "which(lookup[, 'state_dirs'] == '56')"`
 
+And to run the entire United States, we can run:
+`/data/shared_group_data/syneco/spew/run_spew.sh "which(lookup[, 'country'] == 'united_states')"`
 
+In the case of the United States, what happens is that we subset the lookup table for all of the states, and then submit a job which calls spew for each individual state. The result of these calls to spew are saved in the `/outputs/spew/` directory. 
 
+This system can definitely be improved, and will for sure undergo improvements as we move forward. Ideally, we can keep adding to the spew package ways of handling new types of data, update the parameters necesary for these calls in the lookup table, and systematically generate synthetic populations in the same way for every location upon which we have data. 

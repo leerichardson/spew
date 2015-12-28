@@ -14,7 +14,7 @@
 #' @export
 #' @return logical indicating whether or not this run of spew ended successfully 
 generate_spew <- function(input_dir, folders, data_group, output_dir, parallel = TRUE, 
-                          sampling_type) {
+                          sampling_type = "uniform") {
   
   # Given information on our input data, read in everything to memory and 
   # save everything in a list 

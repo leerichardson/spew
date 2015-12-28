@@ -5,7 +5,7 @@
 \title{Generate synthetic ecosysystems}
 \usage{
 generate_spew(input_dir, folders, data_group, output_dir, parallel = TRUE,
-  sampling_type)
+  sampling_type = "uniform")
 }
 \arguments{
 \item{input_dir}{character vector specifying the directory containing all of the 

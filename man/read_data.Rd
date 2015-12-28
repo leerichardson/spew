@@ -4,9 +4,9 @@
 \alias{read_data}
 \title{Read in all necessary data}
 \usage{
-read_data(input_dir, folders = list(pop_table = "popTables", pums = "pums",
-  schools = "schools", lookup = "tables", shapefiles = "tiger", workplaces =
-  "workplaces"), data_group = "US")
+read_data(input_dir, folders = list(pop_table = "popTables", pums =
+  "pums/2013", schools = "schools", lookup = "tables", shapefiles = "tiger",
+  workplaces = "workplaces"), data_group = "US")
 }
 \arguments{
 \item{input_dir}{character vector specifying the directory containing 
