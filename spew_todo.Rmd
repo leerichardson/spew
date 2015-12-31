@@ -4,13 +4,21 @@ output: html_document
 author: "Sam, Shannon, and Lee"
 ---
 
+## Look into why a few States didn't work out and Fix These
+- Check the logfiles of 72 in `/home/leerich/job_logs/`
+
+## Make sure data (GADM, GEOGIVE, and IPUMS) are all in the correct location 
+- Write a scraper for GADM and save these into the appropriate folders
+- Look into the Geohive scripts and save them into the appropriate folders
+- Update the `/data/shared_group_data/syneco/getting_data` folder with the new scripts. 
+
 ## Implement IPUMS functions 
+- Look an example data-set into the spew `/data` directory 
 - read.R
 - format.R
 
 ## Schools/Workplaces
 - Need to add in the schools + workplaces modules 
-
 
 ## Improve make.R
 - Add in checks which verifies the two PUMS have the same serial numbers (currently assuming this is true)

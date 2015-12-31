@@ -261,8 +261,8 @@ library(foreach)
 library(doParallel)
 options(error = recover)
 
-in_dir <- "/data/shared_group_data/syneco/input/west/north_america/united_states/38"
-out_dir <- "/data/shared_group_data/syneco/outputs/spew/"
+in_dir <- "/data/shared_group_data/syneco/input/west/north_america/united_states/72"
+out_dir <- "/data/shared_group_data/syneco/outputs/spew/west/north_america/united_states/72"
 folders <- list(pop_table = "popTables", 
                      pums = "pums/2013", 
                      schools = "schools", 
@@ -270,9 +270,14 @@ folders <- list(pop_table = "popTables",
                      shapefiles = "tiger", 
                      workplaces = "workplaces")
 
+folders <- list(pop_table = "popTables", 
+                     pums = "pums/2013",  
+                     lookup = "tables", 
+                     shapefiles = "tiger")
+
 generate_spew(input_dir = in_dir, output_dir = out_dir, folders = folders, 
-              parallel=TRUE, data_group="US", sampling_type="uniform")
-```  
+              parallel = FALSE, data_group="US", sampling_type="uniform")
+```
 
 ## Shell Scripting 
 In our use of spew, we will make a lot of use of the Olympus infrastructure to speed up our calculations. In order to use these capabilities, we will need to submit jobs to olympus which request the requisite amount of processors and time. To submit jobs and interact with Olympus, we make use of shell scripts. 

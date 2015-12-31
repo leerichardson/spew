@@ -39,15 +39,15 @@ read_data <- function(input_dir,
   shapefiles <- read_shapefiles(input_dir, folders, data_group)
   shapefiles <- standardize_shapefiles(shapefiles, data_group)
   
-  #  Read in schools data, if necessary
-  if (folders$schools %in% list.files(input_dir)) {
+  #  Read in schools data, if specified
+  if (!is.null(folders$schools)) {
     schools <- read_schools(input_dir, folders, data_group)
   } else {
     schools <- NULL
   }
   
-  #  Read in workplaces data, if necessary
-  if (folders$workplaces %in% list.files(input_dir)) {
+  #  Read in workplaces data, if specified
+  if (!is.null(folders$workplaces)) {
     workplaces <- read_workplaces(input_dir, folders, data_group)
   } else {
     workplaces <- NULL
@@ -264,7 +264,7 @@ read_workplaces <- function(input_dir, folders, data_group) {
     if (length(workplace_files == 1)) {
       filename <- workplace_files
     } else if (length(workplace_files) > 1) {
-      filename <- grep("us.workplaces", workplace_files)[1]
+      stop("Expecting only one file in the workplaces directory")
     }
     
   } else if (data_group == "ipums") {
