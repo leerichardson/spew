@@ -43,7 +43,7 @@ Built into R is a standard way of documenting objects in a package. And since ev
 
 Since it's tedious to create a `.Rd` file for each individual function, we will use the `roxygen2` package for documentation. This allows us to put the documentation right above our functions, so all we need to to is type:
 
-```{r, include=FALSE}
+```{r, eval=FALSE}
   devtools::document()
 ```
 
@@ -189,6 +189,7 @@ devtools::use_package("RecordLinkage", "Suggests")
 Note for dependendies with other packages, you can use the `::` command, which specifies which package a particular function is coming from. For example, when we use the slot function we can write `methods::slot(shapefile, "polygons")`
 
 
+
 # About the Program 
 
 Right now, we have divided spew into three main sections, each of which will be described in this section. The three sections are:
@@ -214,17 +215,17 @@ The idea here is that we are generating a population for n individual places, wh
 ## Make 
 
 
-## Running SPEW on Olympus 
+# Running SPEW on Olympus 
 
 Since our project is all hosted on github, we should in theory be able to simply install the package on Olympus, and run the `spew` function with the appropriate inputs just as we would with any other package. To do this, we need to have devtools installed (which Jay has nicely done for us) on the headnode. Furthermore, we must make sure that we have the most recent version of R loaded, using the command:
 
-```{r, include=FALSE}
+```{r, eval=FALSE}
 # module load r/3.2.1
 ```
 
 This will replace the default R 3.1 with the latest versions. From here, to download spew onto Olympus we type in R to enter an R session, then the following:
 
-```{r, include=FALSE}
+```{r, eval=FALSE}
   library(devtools)
   devtools::install_github(repo="leerichardson/spew")
   library(spew)
@@ -232,7 +233,7 @@ This will replace the default R 3.1 with the latest versions. From here, to down
 
 Note that this certainly did not run smoothly for me the first time I tried it. There were some issues downloading spew into the correct library, which in devtools by default goes to the system packages available for all users. Next, I had to remove some lines from the DESCRIPTION file that were causing errors, and remember to "export" the functions I wanted to run, to the NAMESPACE of the package. I'm mainly writing this here so I don't forget, and here are the commands I ended up using:  
 
-```{r, include=FALSE, eval=FALSE}
+```{r, eval=FALSE}
 library(devtools)
 library(httr)
 personal_lib <- .libPaths()[2]
@@ -243,7 +244,7 @@ library(spew)
 
 Other times, you will realize that spew as is doesn't quite work, and we need to make changes to it. In this case, to run on Olympus we will need to remove spew as is, and re-install it:
 
-```{r, include=FALSE, eval=FALSE}
+```{r, eval=FALSE}
 personal_lib <- .libPaths()[2]
 remove.packages(pkgs = "spew", lib = personal_lib)
 ```
@@ -252,9 +253,9 @@ Then we can reset R and delete our current workspace, and things should now work
 
 Now, we can call the `generate_spew` function on Olympus for a given input directory, and it works just as it does on our local computers. 
 
-Finally, once you re-load the package, it's useful to debug it in Interactive mode on Olympus, just to make sure things are working as expected. you can submit an interactive job (ie: Log onto one of the compute nodes) with the command `qsub -I -l walltime=3:00:00`. To save time, I usually run the US version on State 01 to find bus:
+Finally, once you re-load the package, it's useful to debug it in Interactive mode on Olympus, just to make sure things are working as expected. you can submit an interactive job (ie: Log onto one of the compute nodes) with the command `qsub -I -l walltime=3:00:00`. To save time, I usually run the US version on State 01 to find bugs:
 
-```{r, include=FALSE, eval=FALSE}
+```{r, eval=FALSE}
 library(spew)
 library(maptools)
 library(foreach)
@@ -262,7 +263,7 @@ library(doParallel)
 options(error = recover)
 
 in_dir <- "/data/shared_group_data/syneco/input/west/north_america/united_states/72"
-out_dir <- "/data/shared_group_data/syneco/outputs/spew/west/north_america/united_states/72"
+out_dir <- "/data/shared_group_data/syneco/outputs/spew/west/north_america/united_states/72/"
 folders <- list(pop_table = "popTables", 
                      pums = "pums/2013", 
                      schools = "schools", 
@@ -293,3 +294,33 @@ And to run the entire United States, we can run:
 In the case of the United States, what happens is that we subset the lookup table for all of the states, and then submit a job which calls spew for each individual state. The result of these calls to spew are saved in the `/outputs/spew/` directory. 
 
 This system can definitely be improved, and will for sure undergo improvements as we move forward. Ideally, we can keep adding to the spew package ways of handling new types of data, update the parameters necesary for these calls in the lookup table, and systematically generate synthetic populations in the same way for every location upon which we have data. 
+
+
+# Data 
+
+In principle, spew needs three things in order to generate synthetic ecosystems:
+
+1. Microdata-  This is what we are sampling from, and what the final form of our synthetic ecosystems will look like
+2. Counts- Tells us how many people and households to generate for each place 
+3. Shapefiles- The shape of the region we are generating a synthetic ecosystem for, allowing us to put agents in specific locations. 
+
+Everything else: Workplaces, schools, vectors, etc... can be added in, but they are not crititcal to getting the synthetic population forumlated. We don't actually *need* shapefiles to generate synthetic populations, but for our purposes we are making sure we have locations attached to individual people and households. Ideally, we will have as much information about the agents as desired for modeling, but are limited by the data we have to generate them. 
+
+So far, our data comes from a few particular sources, which we have classified into `groups`. The idea behind these groups is that the data sources have the same structure, which allows us to standardize the code we use to read and format them. The details of the groups are described next
+
+
+## United States 
+
+
+## IPUMS 
+While searching for sources with the data of our three necessary ingredients to spew, we came across three which had global coverage we needed. The three sources are:
+
+1. IPUMS- Microdata for international (non-US) countries 
+2. Geohive- Population counts for countries. 
+3. GADM- Shapefile's for countries
+
+Of course, the main difference between these three sources and the United States data is that these three organizations were not collaborating together, hence the sources are not `harmonized`. Although the data is not perfectly syncronized, the key feature is that each source has a file (or files) corresponding to many individual countries. This means we can use the same code to generate synthetic populations for any country which data from these three sources, hence the reason why we made IPUMS a datagroup of its own. 
+
+The data, code and documenation for these three source is located in the `/data/shared_group_data/syneco/getting_data` directory on Olympus. Note that I made some approximations in moving the data to specific places, and it would be smart to go back over this with a "fine toothed comb" and make sure I'm not missing any obvious countries. 
+
+

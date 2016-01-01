@@ -20,7 +20,6 @@ getRegionCountsDF <- function(countryName, year, geoLevel, stdPUMS, params,
   # 'geohive', scrape from geohive if the country doesn't have its own
   # PUMS, then divide the counts by the household average return a data
   # frame with uniquely identified regions and counts
-  browser()
   switch(params$table, USPUMS = {
     countsDF <- read.csv(paste0(dataFolder, "popTables/households.csv"))
     countsDF <- countsDF[, 1:4]

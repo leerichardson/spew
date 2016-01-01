@@ -4,21 +4,20 @@ output: html_document
 author: "Sam, Shannon, and Lee"
 ---
 
-## Look into why a few States didn't work out and Fix These
-- Check the logfiles of 72 in `/home/leerich/job_logs/`
-
-## Make sure data (GADM, GEOGIVE, and IPUMS) are all in the correct location 
-- Write a scraper for GADM and save these into the appropriate folders
-- Look into the Geohive scripts and save them into the appropriate folders
-- Update the `/data/shared_group_data/syneco/getting_data` folder with the new scripts. 
-
 ## Implement IPUMS functions 
-- Look an example data-set into the spew `/data` directory 
+- Save an example data-set into the spew `data/` folder  
 - read.R
 - format.R
 
 ## Schools/Workplaces
-- Need to add in the schools + workplaces modules 
+- Need to add in the schools + workplaces modules for the United States data 
+
+## Canadian PUMS
+- Use this as a text case for generating a "custom" synthetic population. 
+  
+  IE: By specifying the filepaths, Location ID's, etc... This will give us a text case to make sure that someone who has these three data-sources but aren't in our format can still use the program. 
+  
+  In fact, we should probably re-write the "read.R" functions so that the only data_group = "US" part that matters is specifying **where** the locations are. The functions for actual reading, then, should be agnostic to the filenames. Although I'm sure practical issues will overwhelm this ideal  
 
 ## Improve make.R
 - Add in checks which verifies the two PUMS have the same serial numbers (currently assuming this is true)
