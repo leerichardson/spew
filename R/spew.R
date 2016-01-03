@@ -18,7 +18,8 @@ generate_spew <- function(input_dir, folders, data_group, output_dir, parallel =
   
   # Given information on our input data, read in everything to memory and 
   # save everything in a list 
-  data_list <- read_data(input_dir = input_dir, folders = folders, data_group = data_group)
+  data_list <- read_data(input_dir = input_dir, folders = folders, 
+                         data_group = data_group)
   
   # Given the data list, make sure everything is formatted correctly 
   formatted_data <- format_data(data_list = data_list, data_group = data_group)

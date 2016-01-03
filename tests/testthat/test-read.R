@@ -8,12 +8,14 @@ test_that("United States functions", {
   data_path <- paste0(spew_dir, "/", "data-raw/46")
   
   # Pop Table -------------------------------- 
-  sd_poptable <- read_pop_table(data_path, data_group = "US", folders = list(pop_table = "popTables", 
-                                                                             pums = "pums", 
-                                                                             schools = "schools", 
-                                                                             lookup = "tables", 
-                                                                             shapefiles = "tiger", 
-                                                                             workplaces = "workplaces"))
+  sd_poptable <- read_pop_table(data_path, 
+                                data_group = "US", 
+                                folders = list(pop_table = "popTables", 
+                                               pums = "pums", 
+                                               schools = "schools", 
+                                               lookup = "tables", 
+                                               shapefiles = "tiger", 
+                                               workplaces = "workplaces"))
   
   # Data frame with the correct dimensions 
   expect_equal(nrow(sd_poptable), 222)
@@ -29,12 +31,15 @@ test_that("United States functions", {
   
   
   # PUMS -------------------------------
-  sd_pums <- read_pums(data_path, data_group = "US", folders = list(pop_table = "popTables", 
-                                                                        pums = "pums", 
-                                                                        schools = "schools", 
-                                                                        lookup = "tables", 
-                                                                        shapefiles = "tiger", 
-                                                                        workplaces = "workplaces"))
+  sd_pums <- read_pums(data_path, data_group = "US", 
+                       folders = list(pop_table = "popTables", 
+                                      pums = "pums", 
+                                      schools = "schools", 
+                                      lookup = "tables", 
+                                      shapefiles = "tiger", 
+                                      workplaces = "workplaces"))
+  
+  
   # Text the rows of households are larger 
   expect_equal(names(sd_pums)[1] == "pums_h", TRUE)
   expect_equal(nrow(sd_pums$pums_p) > nrow(sd_pums$pums_h), TRUE)
@@ -48,7 +53,8 @@ test_that("United States functions", {
   
   # Shapefile --------------------------
   library(maptools)
-  sd_shape <- read_shapefiles(data_path, data_group = "US", 
+  sd_shape <- read_shapefiles(data_path, 
+                              data_group = "US", 
                               folders = list(pop_table = "popTables", 
                                          pums = "pums", 
                                          schools = "schools", 
@@ -76,4 +82,51 @@ test_that("United States functions", {
 }) 
 
 
+
+test_that("ipums functions", {
+  
+  # Make sure we are using the correct data-raw directory 
+  # as opposed to the test/testthat one within the package 
+  spew_dir <- system.file("", package = "spew")
+  data_path <- paste0(spew_dir, "/", "data-raw/uruguay")  
+
+  # Pop Table --------------------------------
+  uruguay_counts <- read_pop_table(data_path, 
+                                data_group = "ipums", 
+                                folders = list(pop_table = "counts", 
+                                               pums = "PUMS", 
+                                               shapefiles = "shapefile"))
+  expect_equal(class(uruguay_counts), "data.frame")
+  
+  standard_counts <- standardize_pop_table(uruguay_counts, data_group = "ipums")
+  expect_equal(names(standard_counts), c("place_id", "n_house", "level"))
+
+  # PUMS -------------------------------------
+  uruguay_pums <- read_pums(data_path, 
+                            data_group = "ipums", 
+                            folders = list(pop_table = "counts", 
+                                           pums = "PUMS", 
+                                           shapefiles = "shapefile"))
+  
+  expect_equal(class(uruguay_pums), "list")
+  expect_equal(names(uruguay_pums), c("pums_h", "pums_p"))
+  
+  standard_pums <- standardize_pums(pums = uruguay_pums, data_group = "ipums")
+  expect_equal("puma_id" %in% names(standard_pums$pums_h), TRUE)
+  expect_equal("puma_id" %in% names(standard_pums$pums_p), TRUE)
+  
+  # Shapefile --------------------------------
+  library(maptools)
+  uruguay_shape <- read_shapefiles(data_path, 
+                                   data_group = "ipums", 
+                                   folders = list(pop_table = "counts", 
+                                                  pums = "PUMS", 
+                                                  shapefiles = "shapefile"))
+  
+  expect_equal(class(uruguay_shape) == "SpatialPolygonsDataFrame", TRUE)
+  expect_equal("NAME_1" %in% names(uruguay_shape), TRUE)
+  
+  standard_shape <- standardize_shapefiles(uruguay_shape, data_group = "ipums")
+  expect_equal("place_id" %in% names(standard_shape), TRUE)  
+}) 
 

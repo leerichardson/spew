@@ -5,12 +5,22 @@ author: "Sam, Shannon, and Lee"
 ---
 
 ## Implement IPUMS functions 
-- Save an example data-set into the spew `data/` folder  
 - read.R
-- format.R
+  - For PUMS, we only have person level household data.
+    To get around this, I ended up subsetting the unique serial ID's. 
+    Another assumption, putting GEOLEV1 as puma_id. 
+  - For shapefile, I'm just going to go with geolevel 1, since it merges with admin  
+  
+  
+- format.R 
+  - (make sure that if things don't match perfectly, we are still getting the *total* population correct)
+  - How can we differentiate when we are sampling number of total people compared 
+with just a total number of households?? 
+ - Need to make sure we are using the correct "level" for counts. Will keep them all in read/standardize, and then find the appropriate level in "format"!
+
 
 ## Schools/Workplaces
-- Need to add in the schools + workplaces modules for the United States data 
+- Need to add in the schools + workplaces modules for the United States  
 
 ## Canadian PUMS
 - Use this as a text case for generating a "custom" synthetic population. 

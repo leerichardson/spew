@@ -66,28 +66,46 @@ img {
 </div>
 
 
-<div id="run-the-new-version-on-olympus-for-all-50-states" class="section level2">
-<h2>Run the new version on Olympus for all 50 states!</h2>
+<div id="implement-ipums-functions" class="section level2">
+<h2>Implement IPUMS functions</h2>
 <ul>
-<li>Install spew on Olympus</li>
-<li>Set up a bash script which can call spew for each state</li>
+<li>read.R</li>
+<li>format.R (make sure that if things don’t match perfectly, we are still getting the <em>total</em> population correct)</li>
 </ul>
+</div>
+<div id="schoolsworkplaces" class="section level2">
+<h2>Schools/Workplaces</h2>
+<ul>
+<li>Need to add in the schools + workplaces modules for the United States data</li>
+</ul>
+</div>
+<div id="canadian-pums" class="section level2">
+<h2>Canadian PUMS</h2>
+<ul>
+<li>Use this as a text case for generating a “custom” synthetic population.</li>
+</ul>
+<p>IE: By specifying the filepaths, Location ID’s, etc… This will give us a text case to make sure that someone who has these three data-sources but aren’t in our format can still use the program.</p>
+<p>In fact, we should probably re-write the “read.R” functions so that the only data_group = “US” part that matters is specifying <strong>where</strong> the locations are. The functions for actual reading, then, should be agnostic to the filenames. Although I’m sure practical issues will overwhelm this ideal</p>
 </div>
 <div id="improve-make.r" class="section level2">
 <h2>Improve make.R</h2>
 <ul>
 <li>Add in checks which verifies the two PUMS have the same serial numbers (currently assuming this is true)</li>
-<li>Add an input which specifies the ID variable used for linking the individual and household PUMS</li>
-<li>Add unit tests</li>
-<li>Add in a parallel function which runs on Olympus</li>
+<li>Also check to make sure that the puma_ids (if used) match.</li>
 <li>For now, if there are multiple polygons to sample, I am just sampling from the first one for convinience. In the future, we may want to think of something more elegant here (such as a union)</li>
 </ul>
 </div>
-<div id="write-spew.r-function-which-integrates-read-format-and-make-functions." class="section level2">
-<h2>Write spew.R function which integrates read, format, and make functions.</h2>
+<div id="improve-read.r" class="section level2">
+<h2>Improve read.R</h2>
 <ul>
-<li>Include an option for selecting variables…</li>
-<li>Include an output directory</li>
+<li>Update read.R so that it can now read and standardize miscellaneous data sources. For me, the three groups should be “US”, “ipums”, and “none”. Where in “none”, you can specify the filepaths for each one of the data sources. More inpute will be needed to the “none” group, however, since we will need to know which row is the place_id, puma_id, etc…</li>
+</ul>
+</div>
+<div id="improve-spew.r-function" class="section level2">
+<h2>Improve spew.R function</h2>
+<ul>
+<li>Add in a variable which specifies the variables to generate</li>
+<li>Add an input which specifies the ID variable used for linking the individual and household PUMS (maybe add this to spew.R?)</li>
 </ul>
 </div>
 <div id="unit-tests" class="section level2">
@@ -96,19 +114,6 @@ img {
 <li>read.R (finish testing individual functions, test the entire function as well)</li>
 <li>format.R</li>
 <li>make.R</li>
-</ul>
-</div>
-<div id="implement-ipums-functions" class="section level2">
-<h2>Implement IPUMS functions</h2>
-<ul>
-<li>format.R</li>
-<li>read.R</li>
-</ul>
-</div>
-<div id="write-up-version-control-for-guidelines" class="section level2">
-<h2>Write up Version Control for guidelines</h2>
-<ul>
-<li>Use Hadley’s git/github tutorial</li>
 </ul>
 </div>
 <div id="document-each-new-function" class="section level2">
@@ -124,8 +129,12 @@ img {
 <li>Note that the core of format.R should work with the ipums files, it’s simple for the USA since we only need to add a column to the poptable.</li>
 </ul>
 </div>
-<div id="longer-terms" class="section level1">
-<h1>Longer Terms</h1>
+<div id="add-in-a-diagnostics-function" class="section level2">
+<h2>Add in a diagnostics function</h2>
+<ul>
+<li>Go into a synthetic population directory and create summary statistics and plots which display the output in an easily human interpretable manner. Used as a sanity check</li>
+</ul>
+</div>
 <div id="add-in-a-clickable-feature-to-donwload-the-synthetic-ecosystems" class="section level2">
 <h2>Add in a clickable feature to donwload the synthetic ecosystems</h2>
 <ul>
@@ -139,12 +148,17 @@ img {
 <li>Use the vector map data!!!</li>
 </ul>
 </div>
+<div id="write-up-version-control-for-guidelines" class="section level2">
+<h2>Write up Version Control for guidelines</h2>
+<ul>
+<li>Use Hadley’s git/github tutorial</li>
+</ul>
+</div>
 <div id="code-reviews" class="section level2">
 <h2>Code reviews</h2>
 <ul>
 <li>Read more about (Guo’s Article) <a href="http://pgbovine.net/CACM-group-code-reviews.html" class="uri">http://pgbovine.net/CACM-group-code-reviews.html</a></li>
 </ul>
-</div>
 </div>
 
 

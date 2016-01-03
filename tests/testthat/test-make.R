@@ -29,12 +29,15 @@ test_that("Sampling functions", {
   library(doParallel)
   library(foreach)
   
-  places <- 1:4
+  places <- 1:4 
+  sink("test_output.txt")
   regular_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles, 
                                       sd_data$pums$pums_h, sd_data$pums$pums_p))
   parallel_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles, 
                                       sd_data$pums$pums_h, sd_data$pums$pums_p, 
                                       parallel = TRUE))
-  expect_equal(as.logical(parallel_md[3] < regular_md[3]), TRUE)
+  sink()
+  file.remove("test_output.txt")
   
+  expect_equal(as.logical(parallel_md[3] < regular_md[3]), TRUE)
 }) 

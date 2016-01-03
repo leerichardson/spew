@@ -11,9 +11,11 @@ vignette: >
 
 # Introduction 
 
-This document is meant to provide a set of guidelines and strategies for developing the spew R package. It's meant to document the philosophy behind our approach, along with a set of specific examples and detailed documentation for the most common development tasks that we will encounter. It's meant to be a dynamic set of guidelines, which will adapt as we move forward and learn more about details of spew and what we need in order to implement it successfully. 
+This document is meant to serve as both the documentation for specific aspects of spew as well as notes on our general guidelines for development. The hope is that is can help explain what we're doing at a more high level than having to dig through the source code to get to the bottom of what's happening. In this, a set of guidelines, specific examples, and high level explanations about the program will be documented. 
 
-Most of what I've learned about specifically developingg [R Packages](http://r-pkgs.had.co.nz/) comes from the Hadley Wickham book, so for more details on the components described below, a good reference is either this or the official [R extensions](https://cran.r-project.org/doc/manuals/R-exts.html#Creating-R-packages) manual. That said, developing R packages is a lot smoother when using the **devtools** package, along with a few others. To install the key packages, use:
+Most of what I've learned about specifically developing [R Packages](http://r-pkgs.had.co.nz/) comes from the Hadley Wickham book, so for more details on the components described below, a good reference is either this or the official [R extensions](https://cran.r-project.org/doc/manuals/R-exts.html#Creating-R-packages) manual. Another good refererence is John Chambers: Programming with Data: Chapter 4. 
+
+Developing R packages is a lot smoother when using the **devtools** package, along with a few others. To install the key packages we will be using, use:
 
 ```{r, eval=FALSE}
 install.packages(c("devtools", "roxygen2", "testthat", "knitr"), 
@@ -22,26 +24,26 @@ install.packages(c("devtools", "roxygen2", "testthat", "knitr"),
 
 # High Level Principles 
 
-This section of the document contains the high level principles we plan on sticking to while developing spew. Of course, some of these are more idealizations than what will happen in practice, as deadlines, requests, etc... can cause us to abandon best practices in order to meet a given task. However, we want to work hard to follow these high level principles, as it will help us build spew more effectively, and we will all learn to become better programmers along the way.  
+This section of the document contains the high level principles we plan on sticking to while developing spew. Of course, some of these are more idealizations than what will happen in practice, as deadlines, requests, etc... can cause us to abandon best practices. However, we want to work hard to follow these high level principles, as it will make spew a more reliable program, document everything we are doing, and overall just make our lives easier and help us learn more about programming.  
 
 ## Style 
 
-  It's important to agree on a coding style guide up front when creating a project with multiple contributors. This will make spew easier read, understand, verify, and ultimiately contribute to. Since we are writing spew in R, we will start by using the [Advanced R](http://adv-r.had.co.nz/Style.html) style guide, which integrates well with the books we are basing our package structure around. 
+It's important to agree on a coding style guide up front when creating a project with multiple contributors. This will make spew easier read, understand, verify, build on. Since we are writing spew in R, we will use the [Advanced R](http://adv-r.had.co.nz/Style.html) style guide, which integrates well with the books we are basing our package structure around. 
 
 ## Testing 
 
 In the past version's of our synthetic population generator, we've had issues when we tweaked certain component to generate a specific population, only to learn that this would break something down the road. This lead to a general anxiety when adding new features to the code, and less confidence in our ability to quickly generate new populations with various subtleties compared with the one's which already worked.  
 
-In spew, we are hoping to alleviate some of these concerns by making unit testing a fundamental part of the development process. Unit tests are universally used by professional software engineers, and while they add a little bit of time to the development process, they will save us much time and energy down the road. 
+In spew, we are hoping to alleviate these concerns by making unit testing a routine part of the development process. Ideally, every function which is used will have a corresponding test associated with it. That way, we can be confident that making a change won't mess things up down the road. Another benefit of this is that since we are testing individual level functions, this will force us to break spew up into smaller pieces, making it easier to both combine them together and reducing linkages between components. 
 
-For one, making sure that all the components in spew have a test associared with it will give us a more modular structure. It will help us remove inderdependencies between functions, and alert us to cases when changing one component will adversely effect another. This will also help boost confidence in our code, since if we know that our functions have gone through their associated tests, we can be confident the new features we add aren't introducing bugs down the road. 
-
-Ideally, we can tests whenever we find ourselves checking the results of various functions at the command line. This way, all of the ad-hoc tests we perform can be codified, and we can catch when strange errors persist in our code. In a later section, we will have an example of writing tests for the `read.R` series of functions. 
+Ideally, we can tests whenever we find ourselves debugging spew and checking out the performance of new functions. This way, all of the ad-hoc tests will be automated. In a later section, we will have an example of writing tests for the `read.R` series of functions, using the `testthat` package.  
 
 ## Adding documentation to functions 
-Built into R is a standard way of documenting objects in a package. And since everything in R is an object, this is what we will use to document all of our functions. The way it works is that you create `.Rd` files in the `man/` directory in the package, which are required to be a certain format. If the `.Rd` format is specified correctly, then R can product, html, plaintext, or PDF documentation that we are so used to viewing. 
+Built into R is a standard way of documenting objects in a package. And since everything in R is an object (including functions!), we will utilize this to document the functions in our package. The way it works is that you create `.Rd` files in the `man/` directory in the package, which is required to be a certain format. If the `.Rd` file is in the correct format, then R can produce  html, plaintext, or PDF documentation that we are used to using and is so helpful. Building this documentation system into the language itself is a tremendously helpful part of R.  
 
-Since it's tedious to create a `.Rd` file for each individual function, we will use the `roxygen2` package for documentation. This allows us to put the documentation right above our functions, so all we need to to is type:
+Since it's tedious to create a `.Rd` file for each individual function, we will use the `roxygen2` package for documentation to speed this up. This allows us to put the documentation right on top of our functions. Note that we were intuitively doing this in the last versions of our program, but utilizing roxygen will give us  
+
+so all we need to to is type:
 
 ```{r, eval=FALSE}
   devtools::document()
@@ -102,16 +104,18 @@ Then, all we need to do is run roxygen, and the documentation will be made avail
 
 ## Writing tests for functions 
 
-In developing spew, we will make use of the `testhat` package to write unit tests for our corresponding functions. This gives us a nice structure, in which all of the tests are located in the *tests/testthat*. To make sure that our changes pass all of the pre-exising tests, we can use the command `devtools::test()`. This will run all of the tests in this folder, display which one's passed, and provide error messages if they fail. 
+In developing spew, we will make use of the `testhat` package to write unit tests for our  functions. This gives us a method for automating tests with a pre defined structure, where all of the tests are located in the *tests/testthat* directory. To run all of our tests, we can use the command `devtools::test()`. This will run all of the tests in this folder, display which one's passed, and provide error messages if they fail. Ideally, we should run these tests before making changes to spew. 
 
-For example, one of the main components for spew is reading in all of the data sources, and making sure that they are in a list for use in later components of the program. We want to write a set of complimentary unit tests for our read functions to make sure that we not only have a list with all of the data, but that each file is being read in correctly. That way, if we edit our read functions and introduce an error, we will not only know that our functions failed the tests, but also which specific files/functions causes the failure. 
+One of the main parts for spew is reading in all of the data sources, and making sure that they are in a list for use in later aspects of the program. We want to write a set of  unit tests for our read functions, to make sure that that they are functioning as expected. That way, if we edit our read functions and introduce an error, we will not only know that our functions failed the tests, but also which specific files/functions causes the failure. Note that the beauty of this is that by writing tests for each individual read function, this forces us to break our code into smaller, more modular pieces, making it easier to understand. 
 
-Let's look at how to write a unit test for our `read_pop_table` function. Note that by default, unit tests are self contained in the tests/testthat directory, meaning that we need to add two lines to ensure that we are reading in from that correct `data-raw/` directory, where we put the example South Dakota data. In testthat, we organize our tests hierarchically, where each file contains a set of tests, and each test contains a set of expectations, each of which is ran everytime we test our package. In this case, we have:
+Let's look at how to write a unit test for our `read_pop_table` function. In testthat, we organize our tests hierarchically, where each file contains a set of tests, and each test contains a set of expectations, each of which is ran everytime we test our package. In this case, we have:
 
 1. File - `tests/testthat/test-read.R`. This file will contain all the tests for the read functions. Note that every testing file must start with 'test'
 2. Test - Within `test_that("Individual United States functions"` contains all of our tests to ensure our individual read functions work
 3. Expectation - For example `expect_equal(nrow(sd_poptable), 222)` contains an expectation that our poptable will have 222 rows. 
 
+
+Note that by default, unit tests are self contained in the tests/testthat directory, meaning that we need to add two lines to ensure that we are reading in from that correct `data-raw/` directory, where we put the example South Dakota data.
 
 ```{r, eval=FALSE}
 context("Read Functions")
@@ -124,25 +128,29 @@ test_that("Individual United States functions", {
   data_path <- paste0(spew_dir, "/", "data-raw/46")
   
   # Pop Table -------------------------------- 
-  sd_poptable <- read_pop_table(data_path, data_group = "US", folders = list(pop_table = "popTables", 
-                                                                             pums = "pums", 
-                                                                             schools = "schools", 
-                                                                             lookup = "tables", 
-                                                                             shapefiles = "tiger", 
-                                                                             workplaces = "workplaces")) 
-  # Data frame with the correct dimensions 
+  sd_poptable <- read_pop_table(data_path, 
+                                data_group = "US", 
+                                folders = list(pop_table = "popTables", 
+                                               pums = "pums", 
+                                               schools = "schools", 
+                                               lookup = "tables", 
+                                               shapefiles = "tiger", 
+                                               workplaces = "workplaces")) 
+  
+  # Make sure the reading in of the pop_table works 
+  # as we expected 
   expect_equal(nrow(sd_poptable), 222)
   expect_equal(ncol(sd_poptable), 4)
   expect_equal(class(sd_poptable), "data.frame")
   
-  # Making sure stringAsFactors=FALSE 
+  # Test that we are reading in characters instead of factors
   expect_equal(any(lapply(sd_poptable, class) == "factor"), FALSE)
-
 }) 
 ```
 
 This is an example of how we can test one of our individual read functions. If we now run `devtools::test()`, each one of these expectations will be ran, along with a print-out on if they passed, failed, and why. 
 
+It's often hard to come up with what to test. One heurustic I've been using is that whenever I am ad-hoc testing/debugging a function at the command line, I should instead formally do this in the test that package instead. That way, the bug will in some senses be fixed forever, and we won't have to remember this specific condition every time we repeat the same code. 
 
 ## Using Example data 
 
@@ -322,5 +330,3 @@ While searching for sources with the data of our three necessary ingredients to 
 Of course, the main difference between these three sources and the United States data is that these three organizations were not collaborating together, hence the sources are not `harmonized`. Although the data is not perfectly syncronized, the key feature is that each source has a file (or files) corresponding to many individual countries. This means we can use the same code to generate synthetic populations for any country which data from these three sources, hence the reason why we made IPUMS a datagroup of its own. 
 
 The data, code and documenation for these three source is located in the `/data/shared_group_data/syneco/getting_data` directory on Olympus. Note that I made some approximations in moving the data to specific places, and it would be smart to go back over this with a "fine toothed comb" and make sure I'm not missing any obvious countries. 
-
-
