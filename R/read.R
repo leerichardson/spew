@@ -134,7 +134,6 @@ standardize_pop_table <- function(pop_table, data_group){
   return(pop_table)
 }
 
-
 #  Function for reading in pums data
 read_pums <- function(input_dir, folders, data_group){
   
@@ -154,13 +153,15 @@ read_pums <- function(input_dir, folders, data_group){
                        stringsAsFactors = FALSE)
     
   } else if (data_group == "ipums") {
+
     stopifnot(length(pums_files) == 1)
     pums_p <- read.csv(paste0(input_dir, "/", folders$pums, "/", pums_files), 
                      stringsAsFactors = FALSE)
     
     # Use the unique household ID's for household pums  
-    pums_h <- pums_p[unique(pums_p$SERIAL), ]
-    
+    unique_hh_indices <- !duplicated(pums_p$SERIAL)
+    pums_h <- pums_p[unique_hh_indices, ]
+  
   } else if (data_group == "none") {
     #  do stuff
   }
@@ -172,13 +173,17 @@ read_pums <- function(input_dir, folders, data_group){
 #  Standardize the pums data 
 standardize_pums <- function(pums, data_group){
   if (data_group == "US") {
+    
     names(pums$pums_h)[which(names(pums$pums_h) == "PUMA")] <- "puma_id"
     names(pums$pums_p)[which(names(pums$pums_p) == "PUMA")] <- "puma_id"
+  
   } else if (data_group == "ipums") {
+    
     names(pums$pums_h)[which(names(pums$pums_h) == "GEOLEV1")] <- "puma_id"
     names(pums$pums_p)[which(names(pums$pums_p) == "GEOLEV1")] <- "puma_id"
     names(pums$pums_h)[which(names(pums$pums_h) == "SERIAL")] <- "SERIALNO"
     names(pums$pums_p)[which(names(pums$pums_p) == "SERIAL")] <- "SERIALNO"
+  
   } else if (data_group == "none") {
     # do stuff
   }

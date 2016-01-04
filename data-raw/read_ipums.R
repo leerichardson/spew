@@ -10,9 +10,10 @@ uruguay_data <- read_data(input_dir = "data-raw/uruguay",
                           folders = list(pop_table = "counts", 
                                          pums = "PUMS", 
                                          shapefiles = "shapefile"))
-
-uruguay_format <- format_data(data_list = uruguay_data, data_group = "ipums")
 # devtools::use_data(uruguay_data, overwrite = TRUE)
+
+uruguay_format <- format_data(data_list = uruguay_data, 
+                              data_group = "ipums")
 
 make_data(pop_table = uruguay_format$pop_table, 
           shapefile = uruguay_format$shapefiles, 
@@ -21,4 +22,3 @@ make_data(pop_table = uruguay_format$pop_table,
           parallel = FALSE, 
           sampling_type = "uniform", 
           output_dir = "/home/lee/uruguay/")
-
