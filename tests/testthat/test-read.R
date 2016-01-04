@@ -50,6 +50,7 @@ test_that("United States functions", {
   standard_pums <- standardize_pums(sd_pums, data_group = "US")  
   expect_equal("puma_id" %in% names(standard_pums$pums_h), TRUE)
   expect_equal("puma_id" %in% names(standard_pums$pums_p), TRUE)    
+  expect_equal("SERIALNO" %in% names(standard_pums$pums_p), TRUE) 
   
   # Shapefile --------------------------
   library(maptools)
@@ -128,5 +129,15 @@ test_that("ipums functions", {
   
   standard_shape <- standardize_shapefiles(uruguay_shape, data_group = "ipums")
   expect_equal("place_id" %in% names(standard_shape), TRUE)  
-}) 
 
+  # Overall ----------------------------------
+  uruguay_data <- read_data(data_path, 
+                            data_group = "ipums", 
+                            folders = list(pop_table = "counts", 
+                                           pums = "PUMS", 
+                                           shapefiles = "shapefile"))
+  
+  expect_equal("SERIALNO" %in% names(uruguay_data$pums$pums_p), TRUE)
+  expect_equal("puma_id" %in% names(uruguay_data$pums$pums_h), TRUE)
+  expect_equal(class(uruguay_data) == "list", TRUE)
+})

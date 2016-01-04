@@ -1,6 +1,6 @@
 context("Format functions")
 
-test_that("United States Formatting", { 
+test_that("United States formatting", { 
   data(sd_data)
   
   # Check to make sure the merge is of the pop_table 
@@ -11,3 +11,22 @@ test_that("United States Formatting", {
   expect_equal(any(is.na(merged_puma)), FALSE)
   
 }) 
+
+test_that("ipums formatting", { 
+  data(uruguay_data)
+  library(stringdist)
+  
+  # Check that we are getting the accurate level 
+  shape_names <- uruguay_data$shapefiles$place_id
+  level <- get_level(shape_names, uruguay_data$pop_table)
+  expect_equal(level, "level2")
+  
+  level_indices <- which(uruguay_data$pop_table$level == level)
+  count_names <- uruguay_data$pop_table$place_id[level_indices]
+  shape_indices <- get_shapefile_indices(shape_names, count_names)
+
+  # Make sure the formatted data is doing the right thing 
+  uruguay_format <- format_data(data_list = uruguay_data, data_group = "ipums")
+  expect_equal(nrow(uruguay_format$pop_table) == 19, TRUE)
+  expect_equal(all(uruguay_format$pop_table$place_id == uruguay_format$pop_table$place_id), TRUE)  
+})

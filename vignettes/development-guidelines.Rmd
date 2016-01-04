@@ -191,11 +191,10 @@ devtools::use_package("sp")
 This means that anyone using the spew package MUST have the sp package installed as well. For a less stringest requirement, (ie: only some use cases need the record linkage package), we can simply suggest a dependency:
 
 ```{r, eval=FALSE}
-devtools::use_package("RecordLinkage", "Suggests")
+devtools::use_package("stringdist", "Suggests")
 ```
 
 Note for dependendies with other packages, you can use the `::` command, which specifies which package a particular function is coming from. For example, when we use the slot function we can write `methods::slot(shapefile, "polygons")`
-
 
 
 # About the Program 
@@ -219,6 +218,7 @@ The idea here is that we are generating a population for n individual places, wh
 
 ## Format 
 
+The format functions are supposed to be the 
 
 ## Make 
 
@@ -330,3 +330,5 @@ While searching for sources with the data of our three necessary ingredients to 
 Of course, the main difference between these three sources and the United States data is that these three organizations were not collaborating together, hence the sources are not `harmonized`. Although the data is not perfectly syncronized, the key feature is that each source has a file (or files) corresponding to many individual countries. This means we can use the same code to generate synthetic populations for any country which data from these three sources, hence the reason why we made IPUMS a datagroup of its own. 
 
 The data, code and documenation for these three source is located in the `/data/shared_group_data/syneco/getting_data` directory on Olympus. Note that I made some approximations in moving the data to specific places, and it would be smart to go back over this with a "fine toothed comb" and make sure I'm not missing any obvious countries. 
+
+

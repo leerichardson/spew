@@ -96,7 +96,6 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p,
   return(TRUE)
 }
 
-
 #' Sample appropriate indices from household PUMS 
 #' 
 #' @param n_house numeric indicating the number of households to sample 
@@ -111,10 +110,10 @@ sample_households <- function(n_house, pums_h, puma_id = NULL,
   if (sampling_type == "uniform") {
     
     # Subset to a specific PUMA if we have data to do this 
-    if (!is.null(puma_id)) {
+    if (!is.na(puma_id)) {
       sample_inds <- which(pums_h$puma_id == puma_id)
     } else {
-      sample_inds <- 1:nrow(puma_id)
+      sample_inds <- 1:nrow(pums_h)
     }
     
     households <- sample(sample_inds, n_house, replace = TRUE)
