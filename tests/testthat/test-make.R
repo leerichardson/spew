@@ -22,7 +22,7 @@ test_that("Sampling functions", {
   
   expect_output(make_place(test_ind, sd_data$pop_table, sd_data$shapefiles, 
                          sd_data$pums$pums_h, sd_data$pums$pums_p, 
-                         sampling_type = "uniform", output_dir = "/home/lee"), 
+                         sampling_type = "uniform", output_dir = "/home/lee", convert_count = FALSE), 
                           "Place has 0 Households!")
   
   # Test that the Parallel version is quicker ----------------
@@ -31,13 +31,43 @@ test_that("Sampling functions", {
   
   places <- 1:4 
   sink("test_output.txt")
+  
   regular_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles, 
-                                      sd_data$pums$pums_h, sd_data$pums$pums_p))
+                                      sd_data$pums$pums_h, sd_data$pums$pums_p, 
+                                      convert_count = FALSE))
+  
   parallel_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles, 
                                       sd_data$pums$pums_h, sd_data$pums$pums_p, 
-                                      parallel = TRUE))
+                                      parallel = TRUE, convert_count = FALSE))
   sink()
   file.remove("test_output.txt")
   
   expect_equal(as.logical(parallel_md[3] < regular_md[3]), TRUE)
-}) 
+
+  # Test the Serial Synth and convert count functions ---------------
+  data(uruguay_data)
+  library(stringdist)
+  uruguay_format <- format_data(data_list = uruguay_data, 
+                                data_group = "ipums")
+  
+  dir.create("tmp")
+  make_place(index = 1, pop_table = uruguay_format$pop_table, 
+             shapefile = uruguay_format$shapefiles, pums_h = uruguay_format$pums$pums_h, 
+             pums_p = uruguay_format$pums$pums_p, sampling_type = "uniform", 
+             output_dir = "tmp/", convert_count = TRUE)
+  
+  synth_pums_h <- read.csv("tmp/household_Artigas.csv")
+  synth_pums_p <- read.csv("tmp/people_Artigas.csv")
+  
+  # Make sure the synthetic serial I.D. makes it in, and that 
+  # there are less of these than the original, in case of duplicated columns
+  expect_equal("SYNTHETIC_SERIAL" %in% names(synth_pums_h), TRUE)
+  expect_equal(max(table(synth_pums_p$SYNTHETIC_SERIAL)) < max(table(synth_pums_p$SERIALNO)), TRUE)
+  
+  # Make sure the convert_count functions work...
+  original_nhouse <- uruguay_format$pop_table[1, "n_house"]
+  expect_equal(nrow(synth_pums_h) == original_nhouse, FALSE)
+  expect_equal(abs( (nrow(synth_pums_p) / original_nhouse) - 1) < .2, TRUE)
+  
+  unlink("tmp/", recursive = TRUE)
+})

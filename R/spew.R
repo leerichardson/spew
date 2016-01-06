@@ -14,7 +14,7 @@
 #' @export
 #' @return logical indicating whether or not this run of spew ended successfully 
 generate_spew <- function(input_dir, folders, data_group, output_dir, parallel = TRUE, 
-                          sampling_type = "uniform") {
+                          sampling_type = "uniform", convert_count = FALSE) {
   
   # Given information on our input data, read in everything to memory and 
   # save everything in a list 
@@ -27,7 +27,8 @@ generate_spew <- function(input_dir, folders, data_group, output_dir, parallel =
   # Use the formatted data to generate synthetic populations 
   make_data(pop_table = formatted_data$pop_table, shapefile = formatted_data$shapefiles, 
             pums_h = formatted_data$pums$pums_h, pums_p = formatted_data$pums$pums_p, 
-            parallel = parallel, sampling_type = sampling_type, output_dir = output_dir)
+            parallel = parallel, sampling_type = sampling_type, output_dir = output_dir, 
+            convert_count = convert_count)
   
   return(TRUE)
 }

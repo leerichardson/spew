@@ -8,21 +8,23 @@ make_place(index, pop_table, shapefile, pums_h, pums_p, sampling_type,
   output_dir)
 }
 \arguments{
+\item{index}{numeric with the pop_table row to generate}
+
 \item{pop_table}{dataframe with columns corresponding to 
 which places need populations, and how many samples to take}
 
 \item{shapefile}{sp class object used for assigning households to 
 particular locations}
 
-\item{dataframe}{with microdata corresponding to housegolds}
+\item{pums_h}{dataframe with microdata corresponding to housegolds}
 
-\item{dataframe}{with microdata corresponding to people}
+\item{pums_p}{dataframe with microdata corresponding to people}
 
-\item{logical}{indicating whether or not we will generate our 
-synthetic populations in parallel}
+\item{sampling_type}{character vector indicating the type of sample to use for 
+generating microdata. Right now the only value here is "uniform"}
 
-\item{character}{vector indicating the type of sample to use for 
-generating microdata}
+\item{output}{dir character vector containing the location to save the 
+synthetic population}
 }
 \value{
 synthetic population .csv file for both household and person 

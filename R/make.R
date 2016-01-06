@@ -16,7 +16,8 @@
 #' @examples
 #' make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
 make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE, 
-                      sampling_type = "uniform", output_dir = "/home/lee/south_dakota/") {
+                      sampling_type = "uniform", output_dir = "/home/lee/south_dakota/", 
+                      convert_count) {
     
   # Call the make_place function for each place in our pop_table. Either 
   # run this in parallel of not (usually I don't for debugging purposes)
@@ -27,7 +28,8 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
       msg <- paste0("Generating place: ", place, " out of ", num_places)
       print(msg)
       
-      make_place(place, pop_table, shapefile, pums_h, pums_p, sampling_type, output_dir) 
+      make_place(place, pop_table, shapefile, pums_h, pums_p, 
+                 sampling_type, output_dir, convert_count) 
     }    
   } else {
     # Set up the worker cores and export all of the necessary 
@@ -41,7 +43,8 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
       msg <- paste0("Generating place: ", place, " out of ", num_places)
       print(msg)
       
-      make_place(place, pop_table, shapefile, pums_h, pums_p, sampling_type, output_dir)
+      make_place(place, pop_table, shapefile, pums_h, pums_p, 
+                 sampling_type, output_dir, convert_count)
     }
     return(place_pops)
   }
@@ -50,20 +53,21 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
 
 #' Create microdata for individual places 
 #' 
+#' @param index numeric with the pop_table row to generate
 #' @param pop_table dataframe with columns corresponding to 
 #' which places need populations, and how many samples to take 
 #' @param shapefile sp class object used for assigning households to 
 #' particular locations  
-#' @param dataframe with microdata corresponding to housegolds 
-#' @param dataframe with microdata corresponding to people 
-#' @param logical indicating whether or not we will generate our 
-#' synthetic populations in parallel
-#' @param character vector indicating the type of sample to use for 
-#' generating microdata 
+#' @param pums_h dataframe with microdata corresponding to housegolds 
+#' @param pums_p dataframe with microdata corresponding to people 
+#' @param sampling_type character vector indicating the type of sample to use for 
+#' generating microdata. Right now the only value here is "uniform"
+#' @param output dir character vector containing the location to save the 
+#' synthetic population  
 #' @return synthetic population .csv file for both household and person 
 #' level data  
 make_place <- function(index, pop_table, shapefile, pums_h, pums_p, 
-                       sampling_type, output_dir) {
+                       sampling_type, output_dir, convert_count) {
   
   # Make sure there are people living in this particular 
   # place. If not, skip!
@@ -72,26 +76,38 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p,
     return(TRUE)
   }
   
+  # Obtain the specific parameters for this run of make 
+  n_house <- pop_table[index, "n_house"]
+  puma_id <- pop_table[index, "puma_id"]
+  place_id <- pop_table[index, "place_id"]
+  
+  # Convert people counts to household counts 
+  if (convert_count == TRUE) {
+    hh_sizes <- pums_h$PERSONS
+    n_house <- people_to_households(hh_sizes, n_house)
+  }
+  
   # Sample n indices from the household pums 
-  households <- sample_households(pop_table[index, "n_house"], 
-                                  pums_h, pop_table[index, "puma_id"])
+  households <- sample_households(n_house, pums_h, puma_id)
   sampled_households <- pums_h[households, ]
   
   # Attach locations to the sample households 
-  locations <- sample_locations(place_id = pop_table[index, "place_id"], 
-                                n_house = pop_table[index, "n_house"], 
+  locations <- sample_locations(place_id = place_id, n_house = n_house, 
                                 shapefile = shapefile)
   sampled_households$longitude <- locations@coords[, 1]
   sampled_households$latitude <- locations@coords[, 2]
   
+  # Add a synthetic serial ID to the sampled households 
+  sampled_households$SYNTHETIC_SERIAL <- 1:nrow(sampled_households)
+  stopifnot(!any(duplicated(sampled_households$SYNTHETIC_SERIAL)))
   
   # Attach people to the sampled households 
   sampled_people <- sample_people(sampled_households, pums_p)
   
   # Output the synthetic population's as a csv
-  write_data(df = sampled_households, place_id = pop_table[index, "place_id"], 
+  write_data(df = sampled_households, place_id = place_id, 
              type = "household", output_dir = output_dir)
-  write_data(df = sampled_people, place_id = pop_table[index, "place_id"], 
+  write_data(df = sampled_people, place_id = place_id, 
              type = "people", output_dir = output_dir)
   return(TRUE)
 }
@@ -112,6 +128,7 @@ sample_households <- function(n_house, pums_h, puma_id = NULL,
     # Subset to a specific PUMA if we have data to do this 
     if (!is.na(puma_id)) {
       sample_inds <- which(pums_h$puma_id == puma_id)
+      stopifnot(length(sample_inds) < nrow(pums_h))
     } else {
       sample_inds <- 1:nrow(pums_h)
     }
@@ -165,5 +182,18 @@ sample_people <- function(household_pums, pums_p) {
 #' @return data indicating the indices of people to sample 
 write_data <- function(df, place_id, type, output_dir) {
   filename <- paste0(output_dir, type, "_", as.character(place_id), ".csv")
-  write.csv(df, filename)
+  write.table(df, filename, sep = ",", row.names = FALSE, qmethod = "double")
+}
+
+#' Convert a population count to household count 
+#' 
+#' @param hh_sizes numeric vector with the household 
+#' sizes for this particular sampling region  
+#' @param n_people numeric indicating the number 
+#' of people in this specific region 
+#' @return number of households 
+people_to_households <- function(hh_sizes, n_people) {
+  hh_avg <- mean(hh_sizes)
+  num_households <- n_people / hh_avg
+  return(num_households)
 }

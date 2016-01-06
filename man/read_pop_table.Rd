@@ -2,7 +2,7 @@
 % Please edit documentation in R/read.R
 \name{read_pop_table}
 \alias{read_pop_table}
-\title{Read in the counts}
+\title{Read in the population counts}
 \usage{
 read_pop_table(input_dir, folders, data_group)
 }
@@ -21,6 +21,6 @@ the pre-formatted data-types we have on our Olympus}
 data frame with counts
 }
 \description{
-Read in the counts
+Read in the population counts
 }
 

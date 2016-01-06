@@ -7,23 +7,17 @@ author: "Sam, Shannon, and Lee"
 ## Implement IPUMS functions 
 
 - read.R
-  - For PUMS, we only have person level household data.
-    To get around this, I ended up subsetting the unique serial ID's. 
-    Another assumption, putting GEOLEV1 as puma_id. 
-  - For shapefile, I'm just going to go with geolevel 1, since it merges with admin  
-
-
+  - Make sure household sizes is "PERSONS"
+  
 - format.R 
-  - make sure that if things don't match perfectly, we are still getting the *total* population correct
-  - Need to make sure that n_house corresponds to households and NOT people for ipums... Need to somehow incorporate the
-  - It looks like the puma_id has 19 countries for uruguay. How can we reconcile this without 
-  the data names? 
-  - Is it possible to get more variables from ipums? I think people would be interested in a few more, if it's indeed possible to release them. 
-
+  - Add a function which can incorporate the names from ipums...
 
 - make.R 
-  - How to deal with the synthetic ID's being duplicated?
+  - Make sure join(people) doesn't include duplicated columns
 
+## Run IPUMS on Olympus!
+- Start with uruguay
+  - interactive job, then add to our lookup table 
 
 ## Move IPUMS data to the corresponding directories
 - Write a script similat to the one's for geohive and GADM. 
