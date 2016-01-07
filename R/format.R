@@ -125,6 +125,8 @@ get_shapefile_indices <- function(shapefile_names, count_names) {
 #' @param names character vector of names   
 #' @return names a character vector of updated names  
 remove_excess_words <- function(names) {
+  names <- gsub("Provincia del", "", names) 
+  names <- gsub("Provincia de", "", names) 
   names <- gsub("Region de La", "", names)
   names <- gsub("Region del", "", names)
   names <- gsub("Region de", "", names)
