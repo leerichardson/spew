@@ -333,3 +333,8 @@ Of course, the main difference between these three sources and the United States
 The data, code and documenation for these three source is located in the `/data/shared_group_data/syneco/getting_data` directory on Olympus. Note that I made some approximations in moving the data to specific places, and it would be smart to go back over this with a "fine toothed comb" and make sure I'm not missing any obvious countries. 
 
 
+### Chile:
+  Note that Chile has a duplicate name in its shapefile. For this reason, I ended up just using the first region and the second. 
+  
+  
+

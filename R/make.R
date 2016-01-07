@@ -149,9 +149,12 @@ sample_locations <- function(place_id, n_house, shapefile) {
   slots <- methods::slot(shapefile, "polygons")
   region <- which(shapefile$place_id == place_id)
   
-  # Contingency if the Polygons object has polygons, at 
-  # least one of which has holes 
-  if (length(slots[[region]]@Polygons) > 1) {
+  # Contingency if either the shapefile has duplicate 
+  # regions, or if the Polygon has multiple polygons. In 
+  # both cases, subset the first and remove the second
+  if (length(region) > 1) {
+    region <- region[1]
+  } else if (length(slots[[region]]@Polygons) > 1) {
     first_polygon <- slots[[region]]@Polygons[[1]]
     locs <- sp::spsample(first_polygon, n = n_house, offset = c(0, 0), 
                          type = "random", iter = 50)
