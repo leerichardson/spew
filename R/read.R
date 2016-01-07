@@ -125,8 +125,17 @@ standardize_pop_table <- function(pop_table, data_group){
     # names of countries, and total numbers
     final_row <- which(pop_table$level == "total")
     cols <- ncol(pop_table)
-    pop_table <- pop_table[1:final_row, c(1, cols - 1, cols)]
+    
+    # Make sure we are getting the name instead of the code, 
+    # then re-name the columns to their formatted names 
+    name_col <- 1
+    if (names(pop_table)[1] == "code") {
+      name_col <- name_col + 1
+    }
+      
+    pop_table <- pop_table[1:final_row, c(name_col, cols - 1, cols)]
     names(pop_table) <- c("place_id", "n_house", "level")
+    
   } else if (data_group == "none") {
     
   }

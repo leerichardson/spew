@@ -10,14 +10,17 @@ author: "Sam, Shannon, and Lee"
   - Make sure household sizes is "PERSONS"
   
 - format.R 
-  - Add a function which can incorporate the names from ipums...
+  - Add in a function which links in the puma_id's from IPUMS so we can correctly subset them as well
+  - Figure out a way to get this to work for level 2 as well 
 
 - make.R 
   - Make sure join(people) doesn't include duplicated columns
+  - Make sure join(people) doesn't include duplicate rows.... (with the new serial!)
+
 
 ## Run IPUMS on Olympus!
-- Start with uruguay
-  - interactive job, then add to our lookup table 
+- Finish Colombia, Chile, and Uruguay!
+
 
 ## Move IPUMS data to the corresponding directories
 - Write a script similat to the one's for geohive and GADM. 

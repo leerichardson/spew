@@ -90,12 +90,12 @@ get_level <- function(shapefile_names, pop_table) {
 get_shapefile_indices <- function(shapefile_names, count_names) {
 
   # Remove the non ascii characters, whitespaces, and 
-  # uppercase letters -------------------------------
+  # uppercase letters 
   shapefile_names <- iconv(shapefile_names, to = "ASCII", sub = "")
   shapefile_names <- tolower(shapefile_names)
   shapefile_names <- gsub(pattern = " ", replacement = "", x = shapefile_names)
   
-  count_names <- iconv(shapefile_names, to = "ASCII", sub = "")
+  count_names <- iconv(count_names, to = "ASCII", sub = "")
   count_names <- tolower(count_names)
   count_names <- gsub(pattern = " ", replacement = "", x = count_names)
   

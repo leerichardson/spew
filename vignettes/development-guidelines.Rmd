@@ -218,7 +218,7 @@ The idea here is that we are generating a population for n individual places, wh
 
 ## Format 
 
-The format functions are supposed to be the 
+The format functions are the 
 
 ## Make 
 
@@ -268,10 +268,11 @@ library(spew)
 library(maptools)
 library(foreach)
 library(doParallel)
+library(stringdist)
 options(error = recover)
 
-in_dir <- "/data/shared_group_data/syneco/input/west/north_america/united_states/72"
-out_dir <- "/data/shared_group_data/syneco/outputs/spew/west/north_america/united_states/72/"
+in_dir <- "/data/shared_group_data/syneco/input/west/south_america/chile"
+out_dir <- "/data/shared_group_data/syneco/outputs/spew/west/south_america/chile/"
 folders <- list(pop_table = "popTables", 
                      pums = "pums/2013", 
                      schools = "schools", 
@@ -279,13 +280,13 @@ folders <- list(pop_table = "popTables",
                      shapefiles = "tiger", 
                      workplaces = "workplaces")
 
-folders <- list(pop_table = "popTables", 
-                     pums = "pums/2013",  
-                     lookup = "tables", 
-                     shapefiles = "tiger")
+folders <- list(pop_table = "counts", 
+                     pums = "PUMS",  
+                     shapefiles = "shapefile")
 
 generate_spew(input_dir = in_dir, output_dir = out_dir, folders = folders, 
-              parallel = FALSE, data_group="US", sampling_type="uniform")
+              parallel = FALSE, data_group = "ipums", sampling_type="uniform", 
+              convert_count = TRUE)
 ```
 
 ## Shell Scripting 

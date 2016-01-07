@@ -10,6 +10,8 @@
 #' should be run in parallel
 #' @param sampling_type character vector indicating the type of sampling 
 #' to use, defaults to "uniform"
+#' @param convert_count logical meant to indicate if we are going to convert 
+#' population totals to househole counts
 #' 
 #' @export
 #' @return logical indicating whether or not this run of spew ended successfully 
