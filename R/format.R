@@ -88,7 +88,17 @@ get_level <- function(shapefile_names, pop_table) {
 #' @return numeric vector indicating the appropriate indices for 
 #' shapefiles which correspond to the count_names 
 get_shapefile_indices <- function(shapefile_names, count_names) {
-
+  
+  
+  # Remove duplictae shapefile names 
+  shapefile_names <- shapefile_names[!duplicated(shapefile_names)]
+  count_names <- count_names[!duplicated(count_names)]
+  stopifnot(length(shapefile_names) == length(count_names))
+  
+  # Remove the potential excess words 
+  shapefile_names <- remove_excess_words(shapefile_names)
+  count_names <- remove_excess_words(count_names)
+  
   # Remove the non ascii characters, whitespaces, and 
   # uppercase letters 
   shapefile_names <- iconv(shapefile_names, to = "ASCII", sub = "")
@@ -101,8 +111,25 @@ get_shapefile_indices <- function(shapefile_names, count_names) {
   
   # Match the shapefile names against the count names. And make sure 
   # that both everything is matched and that 
-  shapefile_indices <- amatch(shapefile_names, count_names, method = "jw")
+  shapefile_indices <- amatch(shapefile_names, count_names, method = "jw", 
+                              maxDist = .3)
+  
+  stopifnot(!any(is.na(shapefile_indices)))
   stopifnot(length(shapefile_indices) == length(shapefile_names))
   stopifnot(length(unique(shapefile_indices)) == length(shapefile_names))  
   return(shapefile_indices)
 }
+
+#' Remove extraneous words from place names 
+#' 
+#' @param names character vector of names   
+#' @return names a character vector of updated names  
+remove_excess_words <- function(names) {
+  names <- gsub("Region del", "", names)
+  names <- gsub("Region de", "", names)
+  names <- gsub( " *\\(.*?\\) *", "", names)
+  
+  return(names)
+}
+
+
