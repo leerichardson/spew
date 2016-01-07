@@ -154,6 +154,8 @@ sample_locations <- function(place_id, n_house, shapefile) {
   # both cases, subset the first and remove the second
   if (length(region) > 1) {
     region <- region[1]
+    locs <- sp::spsample(slots[[region]], n = n_house, offset = c(0, 0), 
+                         type = "random", iter = 50)
   } else if (length(slots[[region]]@Polygons) > 1) {
     first_polygon <- slots[[region]]@Polygons[[1]]
     locs <- sp::spsample(first_polygon, n = n_house, offset = c(0, 0), 
