@@ -213,7 +213,7 @@ For our program to become a general engine for synthetic population generation, 
 1. place_id 
 2. puma_id 
 
-The idea here is that we are generating a population for n individual places, which we specify with the place ID. In some situations, such as the US, the pums data we recieve is more granular, and we can subset it to obtain more accurate populations. We designate this subset with the puma_id, which is used later down the road in the `make_data` functions. Thus, every data source coming through read_data should not only be loaded into R's memory, but it should also have an identifier indicating which part of it corresponds to the place id, and `puma_id` (if necessary). 
+The idea here is that we are generating a population for n individual places, which we specify with the place ID. In some situations, such as the US, the pums data we recieve is more granular, and we can subset it to obtain more accurate populations. We designate this subset with the `puma_id`, which is used later down the road in the `make_data` functions. Thus, every data source coming through `read_data` should not only be loaded into R's memory, but it should also have an identifier indicating which part of it corresponds to the place id, and `puma_id` (if necessary). 
 
 
 ## Format 
