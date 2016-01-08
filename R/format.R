@@ -165,6 +165,17 @@ remove_excess_words <- function(names) {
     names[index] <- "Distrito Capital"
   }
   
+  if (any(names == "Ciudad de Buenos Aires")) {
+    index <- which(names == "Ciudad de Buenos Aires")
+    names[index] <- "buenosairescuidad"
+  }
+
+  if (any(names == "Ciudad Autonoma de Buenos Aires")) {
+    index <- which(names == "Ciudad Autonoma de Buenos Aires")
+    names[index] <- "buenosairescuidad"
+  }
+  
+  
   # Removing titles before the various 
   # south american countries 
   names <- gsub("Departamento del", "", names)
