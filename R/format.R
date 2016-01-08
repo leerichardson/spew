@@ -174,6 +174,17 @@ remove_excess_words <- function(names) {
     index <- which(names == "Ciudad Autonoma de Buenos Aires")
     names[index] <- "buenosairescuidad"
   }
+
+  if (any(names == "Bío-Bío")) {
+    index <- which(names == "Bío-Bío")
+    names[index] <- "biobio"
+  }
+
+  
+  if (any(names == "Region del Bio-Bio (VIII)")) {
+    index <- which(names == "Region del Bio-Bio (VIII)")
+    names[index] <- "biobio"
+  }
   
   
   # Removing titles before the various 
