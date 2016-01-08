@@ -59,7 +59,8 @@ format_data <- function(data_list, data_group) {
       # Update the shapefile and count indices to remove the excess count 
       sids <- which(shapefile_indices$shapefile_indices >= shapefile_indices$excess_count)
       shapefile_indices$shapefile_indices[sids] <- shapefile_indices$shapefile_indices[sids] - 1
-      count_indices[-shapefile_indices$excess_count]  
+      count_indices <- count_indices[-shapefile_indices$excess_count]  
+      puma_id <- puma_id[-shapefile_indices$excess_count]
     }
     
     # Create a revised pop-table and replace the old on in the data-list 
@@ -67,9 +68,10 @@ format_data <- function(data_list, data_group) {
                                 n_house = new_nhouse[count_indices], 
                                 puma_id = puma_id)
     new_poptable$place_id <- as.character(new_poptable$place_id)
+    
     classes <- unlist(lapply(new_poptable, class))
     stopifnot(!any(classes == "factor"))
-    
+  
     data_list$pop_table <- new_poptable
     
   } else if (data_group == "none") {
