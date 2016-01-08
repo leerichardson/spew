@@ -155,7 +155,7 @@ get_shapefile_indices <- function(shapefile_names, count_names) {
 remove_excess_words <- function(names) {
   
   # Specific fix for a Peru province 
-  if (any(count_names == "Provincia de Lima")) {
+  if (any(names == "Provincia de Lima")) {
     index <- which(names == "Provincia de Lima")
     names[index] <- "Lima Province"
   }
