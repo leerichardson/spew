@@ -158,6 +158,11 @@ remove_excess_words <- function(names) {
   if (any(names == "Provincia de Lima")) {
     index <- which(names == "Provincia de Lima")
     names[index] <- "Lima Province"
+  } 
+  
+  if (any(names == "Distrito Federal")) {
+    index <- which(names == "Distrito Federal")
+    names[index] <- "Distrito Capital"
   }
   
   # Removing titles before the various 
@@ -174,6 +179,8 @@ remove_excess_words <- function(names) {
   names <- gsub("Region de La", "", names)
   names <- gsub("Region del", "", names)
   names <- gsub("Region de", "", names)
+  
+  names <- gsub("Estado", "", names)
   
   # Par paruguay, roman numericls separated by -. Removing 
   # everything before the - 

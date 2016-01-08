@@ -271,8 +271,8 @@ library(doParallel)
 library(stringdist)
 options(error = recover)
 
-in_dir <- "/data/shared_group_data/syneco/input/west/south_america/peru"
-out_dir <- "/data/shared_group_data/syneco/outputs/spew/west/south_america/peru/"
+in_dir <- "/data/shared_group_data/syneco/input/west/south_america/venezuela"
+out_dir <- "/data/shared_group_data/syneco/outputs/spew/west/south_america/venezuela/"
 folders <- list(pop_table = "popTables", 
                      pums = "pums/2013", 
                      schools = "schools", 
