@@ -106,7 +106,6 @@ get_level <- function(shapefile_names, pop_table) {
 #' shapefiles which correspond to the count_names 
 get_shapefile_indices <- function(shapefile_names, count_names) {
   
-  
   # Remove duplictae shapefile names 
   shapefile_names <- shapefile_names[!duplicated(shapefile_names)]
   count_names <- count_names[!duplicated(count_names)]
@@ -155,13 +154,20 @@ get_shapefile_indices <- function(shapefile_names, count_names) {
 #' @return names a character vector of updated names  
 remove_excess_words <- function(names) {
   
+  # Specific fix for a Peru province 
+  if (any(count_names == "Provincia de Lima")) {
+    index <- which(count_names == "Provincia de Lima")
+    count_names[index] <- "Lima Province"
+  }
+  
   # Removing titles before the various 
   # south american countries 
   names <- gsub("Departamento del", "", names)
   names <- gsub("Departamento de", "", names)
   names <- gsub("Departamento", "", names)
   names <- gsub("Ciudad de", "", names)
-  
+
+  names <- gsub("Provincia Constitutional del", "", names)
   names <- gsub("Provincia del", "", names) 
   names <- gsub("Provincia de", "", names) 
   
