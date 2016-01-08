@@ -5,7 +5,6 @@ author: "Sam, Shannon, and Lee"
 ---
 
 ## Implement IPUMS functions 
-
 - read.R
   - Make sure household sizes is "PERSONS"
   
@@ -17,10 +16,8 @@ author: "Sam, Shannon, and Lee"
   - Make sure join(people) doesn't include duplicated columns
   - Make sure join(people) doesn't include duplicate rows.... (with the new serial!)
 
-
 ## Run IPUMS on Olympus!
-- Finish Colombia, Chile, and Uruguay!
-
+- Finish Colombia, Paraguay, Ecuador, Peru, and Venezuela!
 
 ## Move IPUMS data to the corresponding directories
 - Write a script similat to the one's for geohive and GADM. 

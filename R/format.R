@@ -41,17 +41,24 @@ format_data <- function(data_list, data_group) {
     shapefile_indices <- get_shapefile_indices(shapefile_names = shapefile_names, 
                                                count_names = count_names)
     
+    
+    # Make the n_house column numeric and the generic 
     no_commas <- gsub(pattern = ",", replacement = "", data_list$pop_table$n_house)
     new_nhouse <- as.numeric(no_commas)
-    
+
     puma_id <- rep(NA, length(count_indices))
     
+    # If there is an excess count in the population table, 
+    # remove it and re-allocate the people evenly to other locations 
+    if (!is.null(shapefile_indices$excess_count)) {
+      new_nhouse <- allocate_count(n_house, count_id)
+    }
+    
     # Create a revised pop-table and replace the old on in the data-list 
-    new_poptable <- data.frame(place_id = shapefile_names[shapefile_indices], 
+    new_poptable <- data.frame(place_id = shapefile_names[shapefile_indices$shapefile_indices], 
                                 n_house = new_nhouse[count_indices], 
                                 puma_id = puma_id)
     new_poptable$place_id <- as.character(new_poptable$place_id)
-    
     classes <- unlist(lapply(new_poptable, class))
     stopifnot(!any(classes == "factor"))
     
@@ -93,7 +100,6 @@ get_shapefile_indices <- function(shapefile_names, count_names) {
   # Remove duplictae shapefile names 
   shapefile_names <- shapefile_names[!duplicated(shapefile_names)]
   count_names <- count_names[!duplicated(count_names)]
-  stopifnot(length(shapefile_names) == length(count_names))
   
   # Remove the potential excess words 
   shapefile_names <- remove_excess_words(shapefile_names)
@@ -114,10 +120,22 @@ get_shapefile_indices <- function(shapefile_names, count_names) {
   shapefile_indices <- amatch(shapefile_names, count_names, method = "jw", 
                               maxDist = .3)
   
+  # Check to see if there is an excess number of count names 
+  if (length(count_names) > length(shapefile_names)) {
+    warning("More count_names than shapefile names!")
+    excess_count <- which(!(1:length(count_names) %in% shapefile_indices))  
+  } else {
+    excess_count <- NULL
+  }
+  
+  # Make sure the shapefile indices are unique, have no missing
+  # values, and that there is the same amount of these as count names 
+  stopifnot(length(shapefile_names) == length(count_names))
   stopifnot(!any(is.na(shapefile_indices)))
-  stopifnot(length(shapefile_indices) == length(shapefile_names))
-  stopifnot(length(unique(shapefile_indices)) == length(shapefile_names))  
-  return(shapefile_indices)
+  stopifnot(length(unique(shapefile_indices)) == length(shapefile_names))
+  
+  return(list(shapefile_indices = shapefile_indices, 
+              excess_count = excess_count))
 }
 
 #' Remove extraneous words from place names 
@@ -141,4 +159,19 @@ remove_excess_words <- function(names) {
   return(names)
 }
 
+
+#' Re-allocate excess counts to other locations 
+#' 
+#' @param counts numeric vector of current counts 
+#' @param count_id numeric index indicating which 
+#' count is excess
+#' @return new_counts a new numeric count vector with the 
+#' 
+allocate_count <- function(counts, count_id) {
+  to_allocate <- counts[count_id]
+  to_add <- floor(to_allocate / length(counts))
+  new_counts <- counts + to_add
+  new_counts <- new_counts[-count_id]
+  return(new_counts)
+}
 

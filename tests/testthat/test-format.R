@@ -29,4 +29,11 @@ test_that("ipums formatting", {
   uruguay_format <- format_data(data_list = uruguay_data, data_group = "ipums")
   expect_equal(nrow(uruguay_format$pop_table) == 19, TRUE)
   expect_equal(all(uruguay_format$pop_table$place_id == uruguay_format$pop_table$place_id), TRUE)  
+
+  # Make sure allocate_count is working as expected 
+  pseudo_counts <- floor(seq(1, 1000, length = 30))
+  new_counts <- allocate_count(counts = pseudo_counts, count_id = 4)
+  expect_equal(length(new_counts) < length(pseudo_counts), TRUE)
+  expect_equal(new_counts[1] > pseudo_counts[1], TRUE)
+  
 })

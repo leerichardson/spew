@@ -271,8 +271,8 @@ library(doParallel)
 library(stringdist)
 options(error = recover)
 
-in_dir <- "/data/shared_group_data/syneco/input/west/south_america/bolivia"
-out_dir <- "/data/shared_group_data/syneco/outputs/spew/west/south_america/bolivia/"
+in_dir <- "/data/shared_group_data/syneco/input/west/south_america/colombia"
+out_dir <- "/data/shared_group_data/syneco/outputs/spew/west/south_america/colombia/"
 folders <- list(pop_table = "popTables", 
                      pums = "pums/2013", 
                      schools = "schools", 
@@ -285,7 +285,7 @@ folders <- list(pop_table = "counts",
                      shapefiles = "shapefile")
 
 generate_spew(input_dir = in_dir, output_dir = out_dir, folders = folders, 
-              parallel = FALSE, data_group = "ipums", sampling_type="uniform", 
+              parallel = FALSE, data_group = "ipums", sampling_type = "uniform", 
               convert_count = TRUE)
 ```
 
@@ -333,8 +333,13 @@ Of course, the main difference between these three sources and the United States
 The data, code and documenation for these three source is located in the `/data/shared_group_data/syneco/getting_data` directory on Olympus. Note that I made some approximations in moving the data to specific places, and it would be smart to go back over this with a "fine toothed comb" and make sure I'm not missing any obvious countries. 
 
 
+## Specific country level notes 
+
+In this section, I'm going to jot down country specific notes which we will include in the final documentation. 
+
 ### Chile:
   Note that Chile has a duplicate name in its shapefile. For this reason, I ended up just using the first region and the second. 
   
-  
+### Colombia:
+  Geohive has the "Capital District of Santa Fe de Bogota", but the shapefile does not. For this reason, I took it out and re allocated the remaining people evenly in the other cuntries. Using the 'allocate count' function
 
