@@ -49,9 +49,13 @@ format_data <- function(data_list, data_group) {
     puma_id <- rep(NA, length(count_indices))
     
     # If there is an excess count in the population table, 
-    # remove it and re-allocate the people evenly to other locations 
+    # remove it and re-allocate the people evenly to other locations. 
+    # Also need to update the shapefile_indices which are 
+    # larger than the excess count... 
     if (!is.null(shapefile_indices$excess_count)) {
       new_nhouse <- allocate_count(new_nhouse, shapefile_indices$excess_count)
+      sids <- which(shapefile_indices$shapefile_indices >= shapefile_indices$excess_count)
+      shapefile_indices$shapefile_indices[sids] <- shapefile_indices$shapefile_indices[sids] - 1
     }
     
     # Create a revised pop-table and replace the old on in the data-list 
