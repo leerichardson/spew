@@ -142,6 +142,7 @@ get_shapefile_indices <- function(shapefile_names, count_names) {
   # values, and that there is the same amount of these as count names 
   stopifnot(length(shapefile_names) + length(excess_count) == length(count_names))
   stopifnot(!any(is.na(shapefile_indices)))
+  stopifnot(!any(duplicated(shapefile_indices)))
   stopifnot(length(unique(shapefile_indices)) == length(shapefile_names))
   
   return(list(shapefile_indices = shapefile_indices, 
@@ -153,8 +154,13 @@ get_shapefile_indices <- function(shapefile_names, count_names) {
 #' @param names character vector of names   
 #' @return names a character vector of updated names  
 remove_excess_words <- function(names) {
+  
+  # Removing titles before the various 
+  # south american countries 
   names <- gsub("Departamento del", "", names)
   names <- gsub("Departamento de", "", names)
+  names <- gsub("Departamento", "", names)
+  names <- gsub("Ciudad de", "", names)
   
   names <- gsub("Provincia del", "", names) 
   names <- gsub("Provincia de", "", names) 
@@ -162,6 +168,10 @@ remove_excess_words <- function(names) {
   names <- gsub("Region de La", "", names)
   names <- gsub("Region del", "", names)
   names <- gsub("Region de", "", names)
+  
+  # Par paruguay, roman numericls separated by -. Removing 
+  # everything before the - 
+  names <- gsub(".*\\-","", names)
   
   # Anything in between paranthesis (specifically for Chile)
   names <- gsub( " *\\(.*?\\) *", "", names)
