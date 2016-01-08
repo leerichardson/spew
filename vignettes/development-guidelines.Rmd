@@ -257,7 +257,7 @@ personal_lib <- .libPaths()[2]
 remove.packages(pkgs = "spew", lib = personal_lib)
 ```
 
-Then we can reset R and delete our current workspace, and things should now work as expected. 
+Then we can reset R and delete our current workspace, and things should now work as expected.
 
 Now, we can call the `generate_spew` function on Olympus for a given input directory, and it works just as it does on our local computers. 
 
@@ -342,4 +342,3 @@ In this section, I'm going to jot down country specific notes which we will incl
   
 ### Colombia:
   Geohive has the "Capital District of Santa Fe de Bogota", but the shapefile does not. For this reason, I took it out and re allocated the remaining people evenly in the other cuntries. Using the 'allocate count' function
-

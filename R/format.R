@@ -156,8 +156,8 @@ remove_excess_words <- function(names) {
   
   # Specific fix for a Peru province 
   if (any(count_names == "Provincia de Lima")) {
-    index <- which(count_names == "Provincia de Lima")
-    count_names[index] <- "Lima Province"
+    index <- which(names == "Provincia de Lima")
+    names[index] <- "Lima Province"
   }
   
   # Removing titles before the various 
