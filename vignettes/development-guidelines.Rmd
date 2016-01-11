@@ -300,10 +300,12 @@ For example, to run a particular state, we can call:
 And to run the entire United States, we can run:
 `/data/shared_group_data/syneco/spew/run_spew.sh "which(lookup[, 'country'] == 'united_states')"`
 
+To run South America, use:
+`/data/shared_group_data/syneco/spew/run_spew.sh "which(lookup[, 'continent'] == 'united_states')"`
+
 In the case of the United States, what happens is that we subset the lookup table for all of the states, and then submit a job which calls spew for each individual state. The result of these calls to spew are saved in the `/outputs/spew/` directory. 
 
 This system can definitely be improved, and will for sure undergo improvements as we move forward. Ideally, we can keep adding to the spew package ways of handling new types of data, update the parameters necesary for these calls in the lookup table, and systematically generate synthetic populations in the same way for every location upon which we have data. 
-
 
 # Data 
 
@@ -332,6 +334,13 @@ Of course, the main difference between these three sources and the United States
 
 The data, code and documenation for these three source is located in the `/data/shared_group_data/syneco/getting_data` directory on Olympus. Note that I made some approximations in moving the data to specific places, and it would be smart to go back over this with a "fine toothed comb" and make sure I'm not missing any obvious countries. 
 
+## Canada 
+Upon the request of our MIDAS collaborators, we have obtained the Canadian PUMS data file in order to generate microdata. In addition, we have obtained an individual shapefile from Montreal as well as population counts. We are putting these resources together in order to generate an as realistic as possible synthetic population for Montreal. 
+
+In terms of the PUMS for canada, the household level data is contained in a "Hierarchical" data-set, whereas the individual level data is in the individual data-set. The data-set contains 133,192 private households and 333,008 individual records. Note that the NHS (similar to the ACS) in the USA, is what was used to obtain this microdata, and it's a voluntary self administered survey. Also similar to PUMA's in the USA, the Canadian's were split into "Census metropolitan areas (CMA's)". This should serve as our "PUMA ID" for the Canadian data. Note that the Montreal CMA is "462", and corresponds to around 3.7 million people. 
+
+
+
 
 ## Specific country level notes 
 
@@ -342,3 +351,5 @@ In this section, I'm going to jot down country specific notes which we will incl
   
 ### Colombia:
   Geohive has the "Capital District of Santa Fe de Bogota", but the shapefile does not. For this reason, I took it out and re allocated the remaining people evenly in the other cuntries. Using the 'allocate count' function
+
+
