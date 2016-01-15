@@ -16,7 +16,7 @@ read_data <- function(input_dir,
                                            schools = "schools", 
                                            lookup = "tables", 
                                            shapefiles = "tiger", 
-                                           workplaces = "workplaces"),
+                                           workplaces = "workplaces"), 
                       data_group = "US") {
   
   if (data_group != "US" & data_group != "ipums" & data_group != "none") {
@@ -93,8 +93,9 @@ read_pop_table <- function(input_dir, folders, data_group) {
     }
     
   } else if (data_group == "none") {
-    #  do stuff
-  }  
+    pop_table <- read.csv(folders$pop_table, stringsAsFactors = FALSE)
+    return(pop_table)
+  }
   
   pop_table <- read.csv(paste0(input_dir, "/", folders$pop_table, "/",
                                pop_table_file), stringsAsFactors = FALSE)
@@ -137,7 +138,8 @@ standardize_pop_table <- function(pop_table, data_group){
     names(pop_table) <- c("place_id", "n_house", "level")
     
   } else if (data_group == "none") {
-    
+    # Check to see that pop_table has all the necessary components
+    check_pop_table(pop_table)
   }
   
   return(pop_table)
@@ -172,12 +174,13 @@ read_pums <- function(input_dir, folders, data_group){
     pums_h <- pums_p[unique_hh_indices, ]
   
   } else if (data_group == "none") {
-    #  do stuff
+    pums_h <- read.csv(folders$pums$pums_h, stringsAsFactors = FALSE)
+    pums_p <- read.csv(folders$pums$pums_p, stringsAsFactors = FALSE)
+    return(list(pums_h = pums_h, pums_p = pums_p))
   }
   
   return(list(pums_h = pums_h, pums_p = pums_p))
 }
-
 
 #  Standardize the pums data 
 standardize_pums <- function(pums, data_group){
@@ -194,7 +197,7 @@ standardize_pums <- function(pums, data_group){
     names(pums$pums_p)[which(names(pums$pums_p) == "SERIAL")] <- "SERIALNO"
   
   } else if (data_group == "none") {
-    # do stuff
+    check_pums(pums)
   }
   
   return(pums)
@@ -266,8 +269,9 @@ read_shapefiles <- function(input_dir, folders, data_group) {
   } else if (data_group == "ipums") {
     shp_indices <- grep("1.shp", shapefiles_files)
     filename <- shapefiles_files[shp_indices]
-  } else {
-    #  do stuff
+  } else if (data_group == "none") {
+    shapefile <- maptools::readShapeSpatial(folders$shapefiles)
+    return(shapefile)
   }
   
   #  Read in shapefile
@@ -287,7 +291,7 @@ standardize_shapefiles <- function(shapefiles, data_group) {
     names(shapefiles)[which(names(shapefiles) == "NAME_1")] <- "place_id"
     shapefiles$place_id  <- as.character(shapefiles$place_id)
   } else if (data_group == "none") {
-    
+    check_shapefile(shapefiles)
   }
   
   return(shapefiles)

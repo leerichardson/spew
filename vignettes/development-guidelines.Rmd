@@ -218,7 +218,7 @@ The idea here is that we are generating a population for n individual places, wh
 
 ## Format 
 
-The format functions are the 
+The format functions are meant to link the location identifier in each data-source with eachother, and also serve as the last series of checks before the microdata is generated. 
 
 ## Make 
 

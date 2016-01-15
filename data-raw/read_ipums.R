@@ -12,8 +12,11 @@ uruguay_data <- read_data(input_dir = "data-raw/uruguay",
                                          shapefiles = "shapefile"))
 # devtools::use_data(uruguay_data, overwrite = TRUE)
 
+
 uruguay_format <- format_data(data_list = uruguay_data, 
                               data_group = "ipums")
+# devtools::use_data(uruguay_format, overwrite = TRUE)
+write.csv(uruguay_format$pums$pums_h, "data-raw/uruguay/PUMS/pums_hh.csv")
 
 make_data(pop_table = uruguay_format$pop_table, 
           shapefile = uruguay_format$shapefiles, 

@@ -79,7 +79,6 @@ test_that("United States functions", {
   # Workplace --------------------------
   
   
-
 }) 
 
 
@@ -97,6 +96,7 @@ test_that("ipums functions", {
                                 folders = list(pop_table = "counts", 
                                                pums = "PUMS", 
                                                shapefiles = "shapefile"))
+  
   expect_equal(class(uruguay_counts), "data.frame")
   
   standard_counts <- standardize_pop_table(uruguay_counts, data_group = "ipums")
@@ -141,3 +141,47 @@ test_that("ipums functions", {
   expect_equal("puma_id" %in% names(uruguay_data$pums$pums_h), TRUE)
   expect_equal(class(uruguay_data) == "list", TRUE)
 })
+
+
+test_that("no group functions", {
+  
+  # Make sure we are using the correct data-raw directory 
+  # as opposed to the test/testthat one within the package 
+  spew_dir <- system.file("", package = "spew")
+  data_path <- paste0(spew_dir, "/", "data-raw/")  
+  
+  # Counts --------------------------------
+  
+  counts <- read_pop_table(input_dir = NULL, 
+                           folders = list(pop_table = paste0(data_path, "uruguay/counts/uruguay_admin.csv"), 
+                                          pums = list(pums_h = paste0(data_path, "uruguay/PUMS/858.csv"), 
+                                                      pums_p = paste0(data_path, "uruguay/PUMS/858.csv")), 
+                                          shapefiles = paste0(data_path, "uruguay/shapefile/URY_adm1.shp")), 
+                           data_group = "none")
+  
+  expect_equal(class(counts), "data.frame")
+  expect_error(standardize_pop_table(counts, data_group = "none"), "%in% pt_names is not TRUE", fixed = TRUE)
+  
+  shapefile <- read_shapefiles(input_dir = NULL, 
+                               folders = list(pop_table = paste0(data_path, "uruguay/counts/uruguay_admin.csv"), 
+                                              pums = list(pums_h = paste0(data_path, "uruguay/PUMS/858.csv"), 
+                                                          pums_p = paste0(data_path, "uruguay/PUMS/858.csv")), 
+                                              shapefiles = paste0(data_path, "uruguay/shapefile/URY_adm1.shp")), 
+                               data_group = "none")
+  
+  expect_equal(as.character(class(shapefile)), "SpatialPolygonsDataFrame")
+  expect_error(standardize_shapefiles(shapefile, data_group = "none"))
+  
+  pums <- read_pums(input_dir = NULL, 
+                    folders = list(pop_table = paste0(data_path, "uruguay/counts/uruguay_admin.csv"), 
+                                   pums = list(pums_h = paste0(data_path, "uruguay/PUMS/858.csv"), 
+                                               pums_p = paste0(data_path, "uruguay/PUMS/858.csv")), 
+                                   shapefiles = paste0(data_path, "uruguay/shapefile/URY_adm1.shp")), 
+                    data_group = "none")
+  
+  expect_equal(class(pums), "list")
+  expect_equal(class(pums$pums_h), "data.frame")
+  expect_error(standardize_pums(pums, data_group = "none"))  
+  
+})
+

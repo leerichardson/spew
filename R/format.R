@@ -1,4 +1,3 @@
-#' Format data for generation 
 #' 
 #' @param data_list list which contains all of the data from 
 #' the read_data function 
@@ -16,7 +15,6 @@ format_data <- function(data_list, data_group) {
   if (is.null(data_list$pop_table) | is.null(data_list$shapefile) | is.null(data_list$pums)) {
     stop("data_list must contain pop_table, shapefile, and pums ")
   }
-  
   
   if (data_group == "US") {
 
@@ -37,10 +35,9 @@ format_data <- function(data_list, data_group) {
     count_names <- data_list$pop_table$place_id[count_indices]
     
     # Join the appropriate shapefile names, remove the commas 
-    # from the counts, and determine the puma_id 
+    # from the counts, and determine the puma_id
     shapefile_indices <- get_shapefile_indices(shapefile_names = shapefile_names, 
                                                count_names = count_names)
-    
     
     # Make the n_house column numeric and the generic 
     no_commas <- gsub(pattern = ",", replacement = "", data_list$pop_table$n_house)
@@ -53,6 +50,7 @@ format_data <- function(data_list, data_group) {
     # Also need to update the shapefile and count indices which need 
     # to remove the excess counts... 
     if (!is.null(shapefile_indices$excess_count)) {
+
       # Re-allocate the excess counts 
       new_nhouse <- allocate_count(new_nhouse, shapefile_indices$excess_count)
       
@@ -76,6 +74,14 @@ format_data <- function(data_list, data_group) {
     
   } else if (data_group == "none") {
     
+    # Check all of the locations match up     
+    pop_table_places <- data_list$pop_table$place_id
+    pop_table_pumas <-  data_list$pop_table$puma_id
+    shapefile_places <- data_list$pop_table$place_id
+    pums_pumas <- data_list$pums$pums_h$puma_id
+    
+    check_place_ids(pop_table_places, shapefile_places)
+    check_puma_ids(pop_table_pumas, pums_pumas)
   }
   
   return(data_list)

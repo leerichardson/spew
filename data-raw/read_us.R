@@ -78,6 +78,4 @@ sd_data <- read_data("data-raw/46", data_group = "US", folders = list(pop_table 
                                                                       workplaces = "workplaces"))
 
 sd_data <- format_data(data_list = sd_data, data_group = "US")
-
-devtools::use_data(sd_data, overwrite = T)
-
+# devtools::use_data(sd_data, overwrite = TRUE)
