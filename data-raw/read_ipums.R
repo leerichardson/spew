@@ -12,7 +12,7 @@ uruguay_data <- read_data(input_dir = "data-raw/uruguay",
                                          shapefiles = "shapefile"))
 
 # devtools::use_data(uruguay_data, overwrite = TRUE)
-
+library(stringdist)
 uruguay_format <- format_data(data_list = uruguay_data, data_group = "ipums")
 
 # devtools::use_data(uruguay_format, overwrite = TRUE)
