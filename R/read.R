@@ -287,11 +287,16 @@ standardize_shapefiles <- function(shapefiles, data_group) {
     names(shapefiles)[which(names(shapefiles) == "GEOID10")] <- "place_id"
     shapefiles$place_id  <- as.character(shapefiles$place_id)
     stopifnot(all(nchar(shapefiles$place_id) == 11))
+  
   } else if (data_group == "ipums") {
     names(shapefiles)[which(names(shapefiles) == "NAME_1")] <- "place_id"
     shapefiles$place_id  <- as.character(shapefiles$place_id)
+  
   } else if (data_group == "none") {
+  
+    shapefiles$place_id <- as.character(shapefiles$place_id)
     check_shapefile(shapefiles)
+  
   }
   
   return(shapefiles)

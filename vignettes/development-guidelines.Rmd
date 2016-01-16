@@ -282,9 +282,14 @@ folders <- list(pop_table = "counts",
                      pums = "PUMS",  
                      shapefiles = "shapefile")
 
+folders = list(pop_table = "/data/shared_group_data/syneco/input/west/north_america/canada/counts/canada_pop_table.csv", 
+                     pums = list(pums_h = "/data/shared_group_data/syneco/input/west/north_america/canada/pums/pums_h.csv", 
+                                 pums_p = "/data/shared_group_data/syneco/input/west/north_america/canada/pums/pums_p.csv"),  
+                     shapefiles = "/data/shared_group_data/syneco/input/west/north_america/canada/shapefiles/canada_shapefiles.shp")
+
 generate_spew(input_dir = in_dir, output_dir = out_dir, folders = folders, 
-              parallel = FALSE, data_group = "ipums", sampling_type = "uniform", 
-              convert_count = TRUE)
+              parallel = FALSE, data_group = "none", sampling_type = "uniform", 
+              convert_count = FALSE)
 ```
 
 ## Shell Scripting 

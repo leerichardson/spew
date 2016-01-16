@@ -2,7 +2,6 @@
 % Please edit documentation in R/format.R
 \name{format_data}
 \alias{format_data}
-\title{Format data for generation}
 \usage{
 format_data(data_list, data_group)
 }
@@ -19,8 +18,5 @@ indicates the places in which we will generate synthetic ecosystems.
 The table should include three columns: the place_id, number of households 
 to sample, and the puma id.  Note the the place_id should correspond to 
 the place_id from the shapefile
-}
-\description{
-Format data for generation
 }
 

@@ -5,7 +5,8 @@
 \title{Create synthetic microdata}
 \usage{
 make_data(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
-  sampling_type = "uniform", output_dir = "/home/lee/south_dakota/")
+  sampling_type = "uniform", output_dir = "/home/lee/south_dakota/",
+  convert_count)
 }
 \arguments{
 \item{pop_table}{dataframe with columns corresponding to 

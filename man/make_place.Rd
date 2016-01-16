@@ -5,7 +5,7 @@
 \title{Create microdata for individual places}
 \usage{
 make_place(index, pop_table, shapefile, pums_h, pums_p, sampling_type,
-  output_dir)
+  output_dir, convert_count)
 }
 \arguments{
 \item{index}{numeric with the pop_table row to generate}

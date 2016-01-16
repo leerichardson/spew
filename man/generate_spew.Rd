@@ -5,7 +5,7 @@
 \title{Generate synthetic ecosysystems}
 \usage{
 generate_spew(input_dir, folders, data_group, output_dir, parallel = TRUE,
-  sampling_type = "uniform")
+  sampling_type = "uniform", convert_count = FALSE)
 }
 \arguments{
 \item{input_dir}{character vector specifying the directory containing all of the 
@@ -18,6 +18,9 @@ the synthetic populations}
 
 \item{sampling_type}{character vector indicating the type of sampling 
 to use, defaults to "uniform"}
+
+\item{convert_count}{logical meant to indicate if we are going to convert 
+population totals to househole counts}
 
 \item{data-group}{character vector, either "US", "ipums", or "none".}
 
