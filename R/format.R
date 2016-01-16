@@ -1,3 +1,4 @@
+#' Format data before entering make 
 #' 
 #' @param data_list list which contains all of the data from 
 #' the read_data function 
