@@ -78,7 +78,7 @@ format_data <- function(data_list, data_group) {
     # Check all of the locations match up     
     pop_table_places <- data_list$pop_table$place_id
     pop_table_pumas <-  data_list$pop_table$puma_id
-    shapefile_places <- data_list$pop_table$place_id
+    shapefile_places <- data_list$shapefiles$place_id
     pums_pumas <- data_list$pums$pums_h$puma_id
     
     check_place_ids(pop_table_places, shapefile_places)

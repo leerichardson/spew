@@ -93,7 +93,8 @@ read_pop_table <- function(input_dir, folders, data_group) {
     }
     
   } else if (data_group == "none") {
-    pop_table <- read.csv(folders$pop_table, stringsAsFactors = FALSE)
+    pop_table <- read.csv(folders$pop_table, stringsAsFactors = FALSE, 
+                          colClasses = c("character", "numeric", "numeric"))
     return(pop_table)
   }
   
@@ -138,7 +139,6 @@ standardize_pop_table <- function(pop_table, data_group){
     names(pop_table) <- c("place_id", "n_house", "level")
     
   } else if (data_group == "none") {
-    # Check to see that pop_table has all the necessary components
     check_pop_table(pop_table)
   }
   
