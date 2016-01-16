@@ -7,6 +7,8 @@
 #' @param data_group character either "US", "ipums" or "none" which tells 
 #' read_data if the input data follows a particular format. Used mainly for 
 #' the pre-formatted data-types we have on our Olympus
+#' @param vars list with two components: household and person. This specifies 
+#' which variables to include in the corresponding PUMS data-set  
 #' 
 #' @return list in which each element contains one of our standardized 
 #' data sources
@@ -17,7 +19,8 @@ read_data <- function(input_dir,
                                            lookup = "tables", 
                                            shapefiles = "tiger", 
                                            workplaces = "workplaces"), 
-                      data_group = "US") {
+                      data_group = "US", 
+                      vars = list(household = NA, person = NA)) {
   
   if (data_group != "US" & data_group != "ipums" & data_group != "none") {
     stop("spew only accepts data_group: 'US', 'ipums', or 'none'")
@@ -27,7 +30,7 @@ read_data <- function(input_dir,
   pop_table <- read_pop_table(input_dir, folders, data_group)
   pop_table <- standardize_pop_table(pop_table, data_group)
   
-  pums <- read_pums(input_dir, folders, data_group)
+  pums <- read_pums(input_dir, folders, data_group, vars)
   pums <- standardize_pums(pums, data_group)
   
   shapefiles <- read_shapefiles(input_dir, folders, data_group)
@@ -146,7 +149,7 @@ standardize_pop_table <- function(pop_table, data_group){
 }
 
 #  Function for reading in pums data
-read_pums <- function(input_dir, folders, data_group){
+read_pums <- function(input_dir, folders, data_group, vars) {
   
   pums_files <- list.files(paste0(input_dir, "/", folders$pums))
   
@@ -176,8 +179,17 @@ read_pums <- function(input_dir, folders, data_group){
   } else if (data_group == "none") {
     pums_h <- read.csv(folders$pums$pums_h, stringsAsFactors = FALSE)
     pums_p <- read.csv(folders$pums$pums_p, stringsAsFactors = FALSE)
-    return(list(pums_h = pums_h, pums_p = pums_p))
   }
+
+  # If specified, subset the household and person level PUMS 
+  # for the desired choice of variables 
+  if (!is.na(vars$household)) {
+    pums_h <- pums_h[, vars$household]  
+  }  
+
+  if (!is.na(vars$person)) {
+    pums_p <- pums_p[, vars$person]  
+  }  
   
   return(list(pums_h = pums_h, pums_p = pums_p))
 }

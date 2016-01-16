@@ -104,11 +104,14 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p,
   # Attach people to the sampled households 
   sampled_people <- sample_people(sampled_households, pums_p)
   
-  # Output the synthetic population's as a csv
+  # Write the synthetic populations as CSV's
   write_data(df = sampled_households, place_id = place_id, 
-             type = "household", output_dir = output_dir)
+             puma_id = puma_id, type = "household", 
+             output_dir = output_dir)
   write_data(df = sampled_people, place_id = place_id, 
-             type = "people", output_dir = output_dir)
+             puma_id = puma_id, type = "people", 
+             output_dir = output_dir)
+  
   return(TRUE)
 }
 
@@ -181,13 +184,30 @@ sample_people <- function(household_pums, pums_p) {
 #' 
 #' @param df dataframe with the final synthetic population 
 #' @param place_id numeric indicating the name of the particular region samples
+#' @param puma_id numeric indicating the puma this synthetic population belongs to 
 #' @param type character vector with the type, either "household" or "people"
 #' @param output_dir character containing the directory in which we want to 
 #' write the final csv's 
 #' @return data indicating the indices of people to sample 
-write_data <- function(df, place_id, type, output_dir) {
-  filename <- paste0(output_dir, type, "_", as.character(place_id), ".csv")
-  write.table(df, filename, sep = ",", row.names = FALSE, qmethod = "double")
+write_data <- function(df, place_id, puma_id, type, output_dir) {
+  
+  # Make a sub-directory for the puma_id if it exists 
+  if (!(is.na(puma_id))) {
+    directory <- paste0(output_dir, puma_id, "/")  
+    
+    if (!dir.exists(directory)) {
+      dir.create(directory, recursive = TRUE)          
+    }
+    
+    filename <- paste0(directory, type, "_", as.character(place_id), ".csv")
+    write.table(df, filename, sep = ",", row.names = FALSE, qmethod = "double")
+    
+  } else {
+    filename <- paste0(output_dir, type, "_", as.character(place_id), ".csv")
+    write.table(df, filename, sep = ",", row.names = FALSE, qmethod = "double")
+  }
+  
+  return(TRUE)
 }
 
 #' Convert a population count to household count 
