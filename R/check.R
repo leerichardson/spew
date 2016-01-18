@@ -41,10 +41,6 @@ check_pums <- function(pums) {
   stopifnot("pums_p" %in% names(pums))
   
   stopifnot("puma_id" %in% names(pums$pums_h))
-  stopifnot("puma_id" %in% names(pums$pums_p))
-  
-  stopifnot("puma_id" %in% names(pums$pums_h))
-  stopifnot("puma_id" %in% names(pums$pums_p))
 
   stopifnot("SERIALNO" %in% names(pums$pums_h))
   stopifnot("SERIALNO" %in% names(pums$pums_p))
