@@ -44,12 +44,15 @@ format_data <- function(data_list, data_group) {
     # PUMA id as an NA, since we are not yet able to subset
     no_commas <- gsub(pattern = ",", replacement = "", data_list$pop_table$n_house)
     new_nhouse <- as.numeric(no_commas)
-    puma_id <- rep(NA, length(count_indices))
+    
+    # Update the PUMA_ID's 
+    puma_ids <- data_list$shapefiles$puma_id
+    
   
     # Create a revised pop-table and replace the old on in the data-list 
     new_poptable <- data.frame(place_id = shapefile_names[shapefile_indices], 
                                 n_house = new_nhouse[count_indices], 
-                                puma_id = puma_id)
+                                puma_id = puma_ids[shapefile_indices])
     new_poptable$place_id <- as.character(new_poptable$place_id)
     
     # Assert that we have only numeric and character classes 

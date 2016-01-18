@@ -201,7 +201,9 @@ standardize_pums <- function(pums, data_group){
     names(pums$pums_p)[which(names(pums$pums_p) == "PUMA")] <- "puma_id"
   
   } else if (data_group == "ipums") {
-    names(pums$pums_h)[which(names(pums$pums_h) == "GEOLEV1")] <- "puma_id"
+    # Set the puma_id and serial ID's 
+    names(pums$pums_h)[which(names(pums$pums_h) == "GEOLEV1")] <- "puma_id"  
+    
     names(pums$pums_h)[which(names(pums$pums_h) == "SERIAL")] <- "SERIALNO"
     names(pums$pums_p)[which(names(pums$pums_p) == "SERIAL")] <- "SERIALNO"
   
@@ -301,8 +303,11 @@ standardize_shapefiles <- function(shapefiles, data_group) {
     stopifnot(all(nchar(shapefiles$place_id) == 11))
   
   } else if (data_group == "ipums") {
-    names(shapefiles)[which(names(shapefiles) == "NAME_1")] <- "place_id"
+    names(shapefiles)[which(names(shapefiles) == "ADMIN_NAME")] <- "place_id"
     shapefiles$place_id  <- as.character(shapefiles$place_id)
+    
+    names(shapefiles)[which(names(shapefiles) == "GEOLEVEL1")] <- "puma_id"
+    
   
   } else if (data_group == "none") {
   

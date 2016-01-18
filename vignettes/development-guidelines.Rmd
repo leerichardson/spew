@@ -269,7 +269,7 @@ library(doParallel)
 library(stringdist)
 options(error = recover)
 
-in_dir <- "/data/shared_group_data/syneco/input/west/south_america/chile"
+in_dir <- "/data/shared_group_data/syneco/input/west/south_america/argentina"
 out_dir <- "/data/shared_group_data/syneco/outputs/spew/temp/"
 
 # data_group = "US"
@@ -282,7 +282,7 @@ out_dir <- "/data/shared_group_data/syneco/outputs/spew/temp/"
 
 # data_group = "ipums"
 folders <- list(pop_table = "counts", 
-                    pums = "PUMS",  
+                    pums = "PUMS", 
                     shapefiles = "shapefile_ipums")
 
 # # data_group = "none"
@@ -294,7 +294,11 @@ folders <- list(pop_table = "counts",
 generate_spew(input_dir = in_dir, output_dir = out_dir, folders = folders, 
               parallel = FALSE, data_group = "none", sampling_type = "uniform", 
               convert_count = FALSE, 
-              	vars = list(household = NA, person = NA))
+	            vars = list(household = c("COUNTRY","YEAR","SAMPLE","SERIAL","PERSONS","HHWT",
+								                        "FORMTYPE","REGIONW","GEOLEV1","GEOLEV2","HHTYPE",
+								                        "PERNUM","PERWT","RELATE","RELATED"), 
+				                  person = c("SERIAL","AGE","SEX","RACE","SCHOOL","INCTOT"))              
+              )
 ```
 
 
