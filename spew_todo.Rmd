@@ -4,58 +4,47 @@ output: html_document
 author: "Sam, Shannon, and Lee"
 ---
 
-## Canadian PUMS
-  - See evernote 
+## Generate the Western Hemisphere 
+  Strategy:
   
-## Implement IPUMS functions 
-- read.R
-  - Make sure household sizes is "PERSONS"
-  
-- format.R 
-  - Add in a function which links in the puma_id's from IPUMS so we can correctly subset them as well
-  - Figure out a way to get this to work for level 2 as well 
+  1. Add country to lookup table 
+  2. Run SPEW for this country, and check the logfile. 
+  3. If this doesn't work, run in interactive mode to identify the problem 
+  4. Make the fixes to the problem in a prep.R file located in the same input 
+  directory (see Canada for example)
+  5. Once fixed, run, verify it works, then move to the $ONLINE directory 
 
+## Use the ipums shapefiles for subsetting specific geolevels 
+
+## Canadian PUMS
+  - Write up the documentation 
+  
+## Improve functions  
+- read.R
+  - For now, if there are multiple polygons to sample, I am just sampling from 
+the first one for convinience. In the future, we may want to think of something 
+more elegant here (such as a union)
+
+- format.R 
+  
 - make.R 
   - Make sure join(people) doesn't include duplicated columns
   - Make sure join(people) doesn't include duplicate rows.... (with the new serial!)
+  - Account for the household weights 
 
 ## Schools/Workplaces
 - Need to add in the schools + workplaces modules for the United States  
 
 ## Add in a diagnostics function
+
 - Go into a synthetic population directory and create summary statistics and plots which display the output in an
 easily human interpretable manner. Used as a sanity check
+
 - Maps and summary statistics 
-- The function should be able to go into a directory with many CSV's and print out whatever diagnostics are needed
 
-## Improve make.R
-- Add in checks which verifies the two PUMS have the same serial numbers (currently assuming this is true)
-- Also check to make sure that the puma_ids (if used) match. 
-- For now, if there are multiple polygons to sample, I am just sampling from 
-the first one for convinience. In the future, we may want to think of something 
-more elegant here (such as a union)
-- Account for the household weights 
+- The function should be able to go into a directory with many CSV's and print out whatever diagnostics are needed. 
+We may also want to consider appending all of the files together for easier use 
 
-## Improve read.R
-- Update read.R so that it can now read and standardize miscellaneous data sources. For me, the three groups should be "US", "ipums", and "none". Where in "none", you can specify the filepaths for each one of the data sources. More inpute will be needed to the "none" group, however, since we will need to know which row is the place_id, puma_id, etc...
-
-## Improve spew.R function  
-- Add in a variable which specifies the variables to generate
-- Add an input which specifies the ID variable used for linking the individual 
-and household PUMS (maybe add this to spew.R?)
-
-## Unit tests
-- read.R (finish testing individual functions, test the entire function as well)
-- format.R 
-- make.R
-
-## Document each new function
-- Read functions 
-- Format Functions 
-
-## Implement IPUMS format.R functions extensions
-- Note that the core of format.R should work with the ipums files, 
-  it's simple for the USA since we only need to add a column to the poptable. 
 
 ## Add in a clickable feature to donwload the synthetic ecosystems 
 - Shiny "Map" is a refinement

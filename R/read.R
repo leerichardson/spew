@@ -197,14 +197,11 @@ read_pums <- function(input_dir, folders, data_group, vars) {
 #  Standardize the pums data 
 standardize_pums <- function(pums, data_group){
   if (data_group == "US") {
-    
     names(pums$pums_h)[which(names(pums$pums_h) == "PUMA")] <- "puma_id"
     names(pums$pums_p)[which(names(pums$pums_p) == "PUMA")] <- "puma_id"
   
   } else if (data_group == "ipums") {
-    
     names(pums$pums_h)[which(names(pums$pums_h) == "GEOLEV1")] <- "puma_id"
-    names(pums$pums_p)[which(names(pums$pums_p) == "GEOLEV1")] <- "puma_id"
     names(pums$pums_h)[which(names(pums$pums_h) == "SERIAL")] <- "SERIALNO"
     names(pums$pums_p)[which(names(pums$pums_p) == "SERIAL")] <- "SERIALNO"
   
@@ -278,9 +275,12 @@ read_shapefiles <- function(input_dir, folders, data_group) {
     ind_shp <- which(grepl(pattern = "\\.shp", x = shapefiles_files) & 
                         !grepl(pattern = "\\.xml", x = shapefiles_files))
     filename <- shapefiles_files[ind_shp]
+  
   } else if (data_group == "ipums") {
-    shp_indices <- grep("1.shp", shapefiles_files)
+    shp_indices <- grep(".shp", shapefiles_files)
+    stopifnot(length(shp_indices != 1))
     filename <- shapefiles_files[shp_indices]
+  
   } else if (data_group == "none") {
     shapefile <- maptools::readShapeSpatial(folders$shapefiles)
     return(shapefile)
@@ -288,7 +288,7 @@ read_shapefiles <- function(input_dir, folders, data_group) {
   
   #  Read in shapefile
   shapefile <- maptools::readShapeSpatial(paste0(input_dir, "/", 
-                                       folders$shapefiles, "/", filename))
+                                          folders$shapefiles, "/", filename))
   return(shapefile)
 }
 

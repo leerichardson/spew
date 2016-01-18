@@ -5,7 +5,7 @@
 #' @param data_group character vector indiciating which group 
 #' the data is located in 
 #' @return data_list list with an updated pop_table element which 
-#' indicates the places in which we will generate synthetic ecosystems. 
+#' indicates the places in which we will generate synthetic ecosystems.
 #' The table should include three columns: the place_id, number of households 
 #' to sample, and the puma id.  Note the the place_id should correspond to 
 #' the place_id from the shapefile 
@@ -40,41 +40,26 @@ format_data <- function(data_list, data_group) {
     shapefile_indices <- get_shapefile_indices(shapefile_names = shapefile_names, 
                                                count_names = count_names)
     
-    # Make the n_house column numeric and the generic 
+    # Make the n_house column numeric and the generic
+    # PUMA id as an NA, since we are not yet able to subset
     no_commas <- gsub(pattern = ",", replacement = "", data_list$pop_table$n_house)
     new_nhouse <- as.numeric(no_commas)
-
     puma_id <- rep(NA, length(count_indices))
-    
-    # If there is an excess count in the population table, 
-    # remove it and re-allocate the people evenly to other locations. 
-    # Also need to update the shapefile and count indices which need 
-    # to remove the excess counts... 
-    if (!is.null(shapefile_indices$excess_count)) {
-
-      # Re-allocate the excess counts 
-      new_nhouse <- allocate_count(new_nhouse, shapefile_indices$excess_count)
-      
-      # Update the shapefile and count indices to remove the excess count 
-      sids <- which(shapefile_indices$shapefile_indices >= shapefile_indices$excess_count)
-      shapefile_indices$shapefile_indices[sids] <- shapefile_indices$shapefile_indices[sids] - 1
-      count_indices <- count_indices[-shapefile_indices$excess_count]  
-      puma_id <- puma_id[-shapefile_indices$excess_count]
-    }
-    
+  
     # Create a revised pop-table and replace the old on in the data-list 
-    new_poptable <- data.frame(place_id = shapefile_names[shapefile_indices$shapefile_indices], 
+    new_poptable <- data.frame(place_id = shapefile_names[shapefile_indices], 
                                 n_house = new_nhouse[count_indices], 
                                 puma_id = puma_id)
     new_poptable$place_id <- as.character(new_poptable$place_id)
     
+    # Assert that we have only numeric and character classes 
     classes <- unlist(lapply(new_poptable, class))
-    stopifnot(!any(classes == "factor"))
-  
+    stopifnot(all(classes %in% c("character", "numeric")))
+    
+    # Update the pop_table with the revised table 
     data_list$pop_table <- new_poptable
     
   } else if (data_group == "none") {
-    
     # Check all of the locations match up     
     pop_table_places <- data_list$pop_table$place_id
     pop_table_pumas <-  data_list$pop_table$puma_id
@@ -113,16 +98,8 @@ get_level <- function(shapefile_names, pop_table) {
 #' shapefiles which correspond to the count_names 
 get_shapefile_indices <- function(shapefile_names, count_names) {
   
-  # Remove duplictae shapefile names 
-  shapefile_names <- shapefile_names[!duplicated(shapefile_names)]
-  count_names <- count_names[!duplicated(count_names)]
-  
-  # Remove the potential excess words 
-  shapefile_names <- remove_excess_words(shapefile_names)
-  count_names <- remove_excess_words(count_names)
-  
   # Remove the non ascii characters, whitespaces, and 
-  # uppercase letters 
+  # uppercase letters to assist the matching process  
   shapefile_names <- iconv(shapefile_names, to = "ASCII", sub = "")
   shapefile_names <- tolower(shapefile_names)
   shapefile_names <- gsub(pattern = " ", replacement = "", x = shapefile_names)
@@ -136,23 +113,14 @@ get_shapefile_indices <- function(shapefile_names, count_names) {
   shapefile_indices <- amatch(shapefile_names, count_names, method = "jw", 
                               maxDist = .3)
   
-  # Check to see if there is an excess number of count names 
-  if (length(count_names) > length(shapefile_names)) {
-    warning("More count_names than shapefile names!")
-    excess_count <- which(!(1:length(count_names) %in% shapefile_indices))  
-  } else {
-    excess_count <- NULL
-  }
-  
   # Make sure the shapefile indices are unique, have no missing
   # values, and that there is the same amount of these as count names 
-  stopifnot(length(shapefile_names) + length(excess_count) == length(count_names))
+  stopifnot(length(shapefile_names) == length(count_names))
   stopifnot(!any(is.na(shapefile_indices)))
   stopifnot(!any(duplicated(shapefile_indices)))
   stopifnot(length(unique(shapefile_indices)) == length(shapefile_names))
   
-  return(list(shapefile_indices = shapefile_indices, 
-              excess_count = excess_count))
+  return(shapefile_indices)
 }
 
 #' Remove extraneous words from place names 
