@@ -103,15 +103,13 @@ get_shapefile_indices <- function(shapefile_names, count_names) {
   
   # Match the shapefile names against the count names. And make sure 
   # that both everything is matched and that 
-  shapefile_indices <- amatch(shapefile_names, count_names, method = "jw", 
+  shapefile_indices <- amatch(count_names, shapefile_names, method = "jw", 
                               maxDist = .3)
   
   # Make sure the shapefile indices are unique, have no missing
   # values, and that there is the same amount of these as count names 
-  stopifnot(length(shapefile_names) == length(count_names))
   stopifnot(!any(is.na(shapefile_indices)))
   stopifnot(!any(duplicated(shapefile_indices)))
-  stopifnot(length(unique(shapefile_indices)) == length(shapefile_names))
   
   return(shapefile_indices)
 }
@@ -142,7 +140,7 @@ replace_word <- function(word, replace, names) {
   names[index] <- replace
   return(names)
 }
-
+  
 #' Remove excess words
 #' 
 #' @param word character of the word you want to replace 
