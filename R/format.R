@@ -46,7 +46,7 @@ format_data <- function(data_list, data_group) {
     new_nhouse <- as.numeric(no_commas)
     
     # Update the PUMA_ID's 
-    puma_ids <- data_list$shapefiles$puma_id
+    puma_ids <- as.numeric(data_list$shapefiles$puma_id)
     
   
     # Create a revised pop-table and replace the old on in the data-list 

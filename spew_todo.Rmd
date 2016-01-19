@@ -7,7 +7,7 @@ author: "Sam, Shannon, and Lee"
 ## Generate the Western Hemisphere 
   Strategy:
   
-  1. Add country to lookup table 
+  1. Add country to lookup table
   2. Run SPEW for this country, and check the logfile. 
   3. If this doesn't work, run in interactive mode to identify the problem 
   4. Make the fixes to the problem in a prep.R file located in the same input 

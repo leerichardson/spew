@@ -280,7 +280,7 @@ read_shapefiles <- function(input_dir, folders, data_group) {
   
   } else if (data_group == "ipums") {
     shp_indices <- grep(".shp", shapefiles_files)
-    stopifnot(length(shp_indices != 1))
+    stopifnot(length(shp_indices) == 1)
     filename <- shapefiles_files[shp_indices]
   
   } else if (data_group == "none") {

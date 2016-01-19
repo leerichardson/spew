@@ -272,7 +272,7 @@ options(error = recover)
 in_dir <- "/data/shared_group_data/syneco/input/west/south_america/argentina"
 out_dir <- "/data/shared_group_data/syneco/outputs/spew/temp/"
 
-# data_group = "US"
+# data_group <- "US"
 # folders <- list(pop_table = "popTables", 
 #                      pums = "pums/2013", 
 #                      schools = "schools", 
@@ -280,19 +280,19 @@ out_dir <- "/data/shared_group_data/syneco/outputs/spew/temp/"
 #                      shapefiles = "tiger", 
 #                      workplaces = "workplaces")
 
-# data_group = "ipums"
+data_group = "ipums"
 folders <- list(pop_table = "counts", 
                     pums = "PUMS", 
                     shapefiles = "shapefile_ipums")
 
-# # data_group = "none"
+# # data_group <- "none"
 # folders = list(pop_table = "/data/shared_group_data/syneco/input/west/north_america/canada/counts/canada_pop_table.csv", 
 #                      pums = list(pums_h = "/data/shared_group_data/syneco/input/west/north_america/canada/pums/pums_h.csv", 
 #                                  pums_p = "/data/shared_group_data/syneco/input/west/north_america/canada/pums/pums_p.csv"),  
 #                      shapefiles = "/data/shared_group_data/syneco/input/west/north_america/canada/shapefiles/canada_shapefiles.shp")
 
 generate_spew(input_dir = in_dir, output_dir = out_dir, folders = folders, 
-              parallel = FALSE, data_group = "none", sampling_type = "uniform", 
+              parallel = FALSE, data_group, sampling_type = "uniform", 
               convert_count = FALSE, 
 	            vars = list(household = c("COUNTRY","YEAR","SAMPLE","SERIAL","PERSONS","HHWT",
 								                        "FORMTYPE","REGIONW","GEOLEV1","GEOLEV2","HHTYPE",
@@ -300,7 +300,6 @@ generate_spew(input_dir = in_dir, output_dir = out_dir, folders = folders,
 				                  person = c("SERIAL","AGE","SEX","RACE","SCHOOL","INCTOT"))              
               )
 ```
-
 
 
 ## Shell Scripting 
