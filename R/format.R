@@ -138,7 +138,7 @@ clean_names <- function(names) {
 #' 
 #' @return names character vector of the replaced word 
 replace_word <- function(word, replace, names) {
-  index <- which(names == "word")
+  index <- which(names == word)
   names[index] <- replace
   return(names)
 }
