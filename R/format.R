@@ -126,6 +126,35 @@ get_shapefile_indices <- function(shapefile_names, count_names) {
   return(shapefile_indices)
 }
 
+
+#' Replace an existing word 
+#' 
+#' @param word character of the word you want to replace 
+#' @param replace character of what you want to replace 
+#' the word 
+#' @param names character vector of words which we can
+#' replace 
+#' 
+#' @return names character vector of the replaced word 
+replace_word <- function(word, replace, names) {
+  index <- which(names == "word")
+  names[index] <- replace
+  return(names)
+}
+
+#' Remove excess words
+#' 
+#' @param word character of the word you want to replace 
+#' @param names character vector of the words 
+#' we can potentially replace 
+#' 
+#' @return names character vector with the excess 
+#' word removed 
+remove_words <- function(word, names) {
+  names <- gsub(word, "", names)
+  return(names)
+}
+
 #' Remove extraneous words from place names 
 #' 
 #' @param names character vector of names   
@@ -187,11 +216,10 @@ remove_excess_words <- function(names) {
   names <- gsub(".*\\-","", names)
   
   # Anything in between paranthesis (specifically for Chile)
-  names <- gsub( " *\\(.*?\\) *", "", names)
+  names <- gsub(" *\\(.*?\\) *", "", names)
   
   return(names)
 }
-
 
 #' Re-allocate excess counts to other locations 
 #' 

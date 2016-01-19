@@ -84,15 +84,18 @@ read_pop_table <- function(input_dir, folders, data_group) {
   } else if (data_group == "ipums") {
     # If the extended counts are available, use them 
     # If not, use the available admin counts 
+    revised_counts <- grep("revised", pop_table_files)
     extended_counts <- grep("extended", pop_table_files)
     admin_counts <- grep("admin", pop_table_files)
     
-    if (length(extended_counts != 0)) {
+    if (length(revised_counts) != 0) {
+      pop_table_file <- pop_table_files[revised_counts]
+    } else if (length(extended_counts != 0)) {
       pop_table_file <- pop_table_files[extended_counts]
     } else if (length(admin_counts) != 0) {
       pop_table_file <- pop_table_files[admin_counts]
     } else {
-      stop("There is no admin or extended counts!")
+      stop("There is no revised, admin or extended counts!")
     }
     
   } else if (data_group == "none") {

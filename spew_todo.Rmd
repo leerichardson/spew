@@ -14,7 +14,6 @@ author: "Sam, Shannon, and Lee"
   directory (see Canada for example)
   5. Once fixed, run, verify it works, then move to the $ONLINE directory 
 
-## Use the ipums shapefiles for subsetting specific geolevels 
 
 ## Canadian PUMS
   - Write up the documentation 
