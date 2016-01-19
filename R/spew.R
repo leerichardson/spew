@@ -14,12 +14,12 @@
 #' population totals to househole counts
 #' @param vars list with two components: household and person. This specifies 
 #' which variables to include in the corresponding PUMS data-set  
-#' 
+#' @param make_plots boolean indicating whether we should make maps of the synthetic households
 #' @export
 #' @return logical indicating whether or not this run of spew ended successfully 
 generate_spew <- function(input_dir, folders, data_group, output_dir, parallel = TRUE, 
                           sampling_type = "uniform", convert_count = FALSE, 
-                          vars = list(household = NA, person = NA)) {
+                          vars = list(household = NA, person = NA), make_plots=FALSE){
   
   # Given information on our input data, read in everything to memory and 
   # save everything in a list 
@@ -33,7 +33,7 @@ generate_spew <- function(input_dir, folders, data_group, output_dir, parallel =
   make_data(pop_table = formatted_data$pop_table, shapefile = formatted_data$shapefiles, 
             pums_h = formatted_data$pums$pums_h, pums_p = formatted_data$pums$pums_p, 
             parallel = parallel, sampling_type = sampling_type, output_dir = output_dir, 
-            convert_count = convert_count)
+            convert_count = convert_count, make_plots=make_plots)
   
   return(TRUE)
 }

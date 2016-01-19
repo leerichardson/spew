@@ -17,7 +17,7 @@
 #' make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
 make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE, 
                       sampling_type = "uniform", output_dir = "/home/lee/south_dakota/", 
-                      convert_count) {
+                      convert_count, make_plots=FALSE) {
     
   # Call the make_place function for each place in our pop_table. Either 
   # run this in parallel of not (usually I don't for debugging purposes)
@@ -29,7 +29,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
       print(msg)
       
       make_place(place, pop_table, shapefile, pums_h, pums_p, 
-                 sampling_type, output_dir, convert_count) 
+                 sampling_type, output_dir, convert_count, make_plots=make_plots) 
     }    
   } else {
     # Set up the worker cores and export all of the necessary 
@@ -44,7 +44,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
       print(msg)
       
       make_place(place, pop_table, shapefile, pums_h, pums_p, 
-                 sampling_type, output_dir, convert_count)
+                 sampling_type, output_dir, convert_count, make_plots=make_plots)
     }
     return(place_pops)
   }
@@ -62,12 +62,13 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
 #' @param pums_p dataframe with microdata corresponding to people 
 #' @param sampling_type character vector indicating the type of sample to use for 
 #' generating microdata. Right now the only value here is "uniform"
-#' @param output dir character vector containing the location to save the 
+#' @param output dir character vector containing the location to save the
+#' @param make_plots boolean indicating whether spew  makes plots of the synthetic households
 #' synthetic population  
 #' @return synthetic population .csv file for both household and person 
 #' level data  
 make_place <- function(index, pop_table, shapefile, pums_h, pums_p, 
-                       sampling_type, output_dir, convert_count) {
+                       sampling_type, output_dir, convert_count, make_plots=FALSE) {
   
   # Make sure there are people living in this particular 
   # place. If not, skip!
@@ -111,6 +112,12 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p,
   write_data(df = sampled_people, place_id = place_id, 
              puma_id = puma_id, type = "people", 
              output_dir = output_dir)
+
+    if (make_plots){
+        g <- plot_pop(place_id, sampled_households, shapefile)
+        plot_filename <- paste0(output_dir,as.character(place_id), ".png")
+       ggsave(plot_filename, g)
+    }
   
   return(TRUE)
 }
@@ -129,15 +136,15 @@ sample_households <- function(n_house, pums_h, puma_id = NULL,
   if (sampling_type == "uniform") {
     
     # Subset to a specific PUMA if we have data to do this 
-    if (!is.na(puma_id)) {
-      sample_inds <- which(pums_h$puma_id == puma_id)
-      stopifnot(length(sample_inds) < nrow(pums_h))
-    } else {
-      sample_inds <- 1:nrow(pums_h)
-    }
+      if (!is.na(puma_id)) {
+        sample_inds <- which(pums_h$puma_id == puma_id)
+        stopifnot(length(sample_inds) < nrow(pums_h))
+      } else {
+          sample_inds <- 1:nrow(pums_h)
+      }
     
-    households <- sample(sample_inds, n_house, replace = TRUE)
-    return(households)
+      households <- sample(sample_inds, n_house, replace = TRUE)
+      return(households)
   }
 }
 
@@ -205,8 +212,7 @@ write_data <- function(df, place_id, puma_id, type, output_dir) {
   } else {
     filename <- paste0(output_dir, type, "_", as.character(place_id), ".csv")
     write.table(df, filename, sep = ",", row.names = FALSE, qmethod = "double")
-  }
-  
+  }  
   return(TRUE)
 }
 

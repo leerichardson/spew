@@ -18,5 +18,6 @@ VignetteBuilder: knitr
 Imports: 
     sp,
     maptools,
-    plyr
+    plyr,
+    ggmap
 RoxygenNote: 5.0.1
