@@ -18,6 +18,8 @@
 make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE, 
                       sampling_type = "uniform", output_dir = "/home/lee/south_dakota/", 
                       convert_count, make_plots=FALSE) {
+  
+  start_time <- Sys.time()
     
   # Call the make_place function for each place in our pop_table. Either 
   # run this in parallel of not (usually I don't for debugging purposes)
@@ -29,7 +31,8 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
       print(msg)
       
       make_place(place, pop_table, shapefile, pums_h, pums_p, 
-                 sampling_type, output_dir, convert_count, make_plots=make_plots) 
+                 sampling_type, output_dir, convert_count, 
+                 make_plots = make_plots) 
     }    
   } else {
     # Set up the worker cores and export all of the necessary 
@@ -44,12 +47,19 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
       print(msg)
       
       make_place(place, pop_table, shapefile, pums_h, pums_p, 
-                 sampling_type, output_dir, convert_count, make_plots=make_plots)
+                 sampling_type, output_dir, convert_count, 
+                 make_plots = make_plots)
     }
-    return(place_pops)
+    print(place_pops)
   }
+  
+  # Print the overall timings 
+  overall_time <- difftime(Sys.time(), start_time,units = "secs")
+  total_hh <- sum(pop_table$n_house)
+  statement <- paste0("Households: ", total_hh, " Time: ", overall_time)
+  print(statement)
+  return(statement)
 }
-
 
 #' Create microdata for individual places 
 #' 
@@ -69,6 +79,8 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
 #' level data  
 make_place <- function(index, pop_table, shapefile, pums_h, pums_p, 
                        sampling_type, output_dir, convert_count, make_plots=FALSE) {
+  
+  start_time <- Sys.time()
   
   # Make sure there are people living in this particular 
   # place. If not, skip!
@@ -113,13 +125,18 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p,
              puma_id = puma_id, type = "people", 
              output_dir = output_dir)
 
-    if (make_plots){
-        g <- plot_pop(place_id, sampled_households, shapefile)
-        plot_filename <- paste0(output_dir,as.character(place_id), ".png")
-       ggsave(plot_filename, g)
-    }
+  # If specified, create a plot of the individual place 
+  if (make_plots) {
+      g <- plot_pop(place_id, sampled_households, shapefile)
+      plot_filename <- paste0(output_dir, as.character(place_id), ".png")
+      ggsave(plot_filename, g)
+  }
   
-  return(TRUE)
+  overall_time <- difftime(Sys.time(), start_time, units = "secs")
+  total_people <- nrow(sampled_people)
+  statement <- paste0("People: ", total_people, " Time: ", overall_time)
+  print(statement)
+  return(statement)
 }
 
 #' Sample appropriate indices from household PUMS 

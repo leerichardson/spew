@@ -46,7 +46,7 @@ format_data <- function(data_list, data_group) {
     new_nhouse <- as.numeric(no_commas)
     
     # Update the PUMA_ID's 
-    puma_ids <- as.numeric(data_list$shapefiles$puma_id)
+    puma_ids <- as.numeric(as.character(data_list$shapefiles$puma_id))
     
   
     # Create a revised pop-table and replace the old on in the data-list 
@@ -101,31 +101,30 @@ get_level <- function(shapefile_names, pop_table) {
 #' shapefiles which correspond to the count_names 
 get_shapefile_indices <- function(shapefile_names, count_names) {
   
-  # Remove the non ascii characters, whitespaces, and 
-  # uppercase letters to assist the matching process  
-  shapefile_names <- iconv(shapefile_names, to = "ASCII", sub = "")
-  shapefile_names <- tolower(shapefile_names)
-  shapefile_names <- gsub(pattern = " ", replacement = "", x = shapefile_names)
-  
-  count_names <- iconv(count_names, to = "ASCII", sub = "")
-  count_names <- tolower(count_names)
-  count_names <- gsub(pattern = " ", replacement = "", x = count_names)
-  
   # Match the shapefile names against the count names. And make sure 
   # that both everything is matched and that 
-  shapefile_indices <- amatch(shapefile_names, count_names, method = "jw", 
+  shapefile_indices <- amatch(count_names, shapefile_names, method = "jw", 
                               maxDist = .3)
   
   # Make sure the shapefile indices are unique, have no missing
   # values, and that there is the same amount of these as count names 
-  stopifnot(length(shapefile_names) == length(count_names))
   stopifnot(!any(is.na(shapefile_indices)))
   stopifnot(!any(duplicated(shapefile_indices)))
-  stopifnot(length(unique(shapefile_indices)) == length(shapefile_names))
   
   return(shapefile_indices)
 }
 
+#' Remove whitespace, capitals, and non ASCII
+#' 
+#' @param names character vector of names to clean 
+#' @return names character vector of all lowercase, 
+#' non-capital and ASCII names 
+clean_names <- function(names) {
+  names <- iconv(names, to = "ASCII", sub = "")
+  names <- tolower(names)
+  names <- gsub(pattern = " ", replacement = "", x = names)
+  return(names)
+}
 
 #' Replace an existing word 
 #' 
@@ -137,11 +136,11 @@ get_shapefile_indices <- function(shapefile_names, count_names) {
 #' 
 #' @return names character vector of the replaced word 
 replace_word <- function(word, replace, names) {
-  index <- which(names == "word")
+  index <- which(names == word)
   names[index] <- replace
   return(names)
 }
-
+  
 #' Remove excess words
 #' 
 #' @param word character of the word you want to replace 
@@ -153,6 +152,21 @@ replace_word <- function(word, replace, names) {
 remove_words <- function(word, names) {
   names <- gsub(word, "", names)
   return(names)
+}
+
+#' Re-allocate excess counts to other locations 
+#' 
+#' @param counts numeric vector of current counts 
+#' @param count_id numeric index indicating which 
+#' count is excess
+#' @return new_counts a new numeric count vector with the 
+#' 
+allocate_count <- function(counts, count_id) {
+  to_allocate <- counts[count_id]
+  to_add <- floor(to_allocate / length(counts))
+  new_counts <- counts + to_add
+  new_counts <- new_counts[-count_id]
+  return(new_counts)
 }
 
 #' Remove extraneous words from place names 
@@ -221,18 +235,4 @@ remove_excess_words <- function(names) {
   return(names)
 }
 
-#' Re-allocate excess counts to other locations 
-#' 
-#' @param counts numeric vector of current counts 
-#' @param count_id numeric index indicating which 
-#' count is excess
-#' @return new_counts a new numeric count vector with the 
-#' 
-allocate_count <- function(counts, count_id) {
-  to_allocate <- counts[count_id]
-  to_add <- floor(to_allocate / length(counts))
-  new_counts <- counts + to_add
-  new_counts <- new_counts[-count_id]
-  return(new_counts)
-}
 

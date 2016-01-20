@@ -13,11 +13,11 @@ Suggests:
     rmarkdown,
     doParallel,
     foreach,
-    stringdist
+    stringdist,
+    ggmap
 VignetteBuilder: knitr
 Imports: 
     sp,
     maptools,
-    plyr,
-    ggmap
+    plyr
 RoxygenNote: 5.0.1

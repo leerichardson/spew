@@ -134,8 +134,7 @@ test_that("ipums functions", {
   
   standard_pums <- standardize_pums(pums = uruguay_pums, data_group = "ipums")
   expect_equal("puma_id" %in% names(standard_pums$pums_h), TRUE)
-  expect_equal("puma_id" %in% names(standard_pums$pums_p), TRUE)
-  
+
   # Shapefile --------------------------------
   library(maptools)
   uruguay_shape <- read_shapefiles(data_path, 
