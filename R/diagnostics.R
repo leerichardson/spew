@@ -47,7 +47,7 @@ append_pops <- function(input_dir, output_dir=input_dir, remove_pops=FALSE){
 #' @param pretty if set to TRUE, should generate a summary pdf including plots (currently non-functional)
 #' @return  a print out of the files generated
 
-run_diags <- function(input_dir, output_dir=input_dir, save_plots=TRUE, pretty=FALSE){
+run_diags <- function(input_dir="./", output_dir=input_dir, save_plots=TRUE, pretty=FALSE){
     #read in filenames
     filenames <- list.files(input_dir)
     filename_hh <- filenames[ grep("household", filenames) ]
@@ -58,7 +58,9 @@ run_diags <- function(input_dir, output_dir=input_dir, save_plots=TRUE, pretty=F
     
     puma_id <- unique(hh_df$puma_id)
     log_filename <- paste0("log_", puma_id, ".txt")
-    sink(paste0(output_dir, log_filename))
+    if(!prettY){
+      sink(paste0(output_dir, log_filename))
+    }
     print(paste("PUMA ID:", puma_id))
     print("\n")
     print("HOUSEHOLDS")
@@ -73,14 +75,18 @@ run_diags <- function(input_dir, output_dir=input_dir, save_plots=TRUE, pretty=F
     print("\n")
     print(paste("Number of unique households sampled:", length(unique(hh_df$SERIALNO))))
     print("\n")
-    sink()
+    if(!pretty){
+      sink()
+    }
     
     rm(hh_df)
 
     #the people information
     p_df <- data.table::fread(paste0(input_dir, filename_p))
-
-    sink(paste0(output_dir, log_filename), append=TRUE)
+  
+    if(!pretty){
+      sink(paste0(output_dir, log_filename), append=TRUE)
+    }
     print("PEOPLE")
     print("\n")
     print(paste("Number of individuals:", nrow(p_df)))
@@ -89,7 +95,9 @@ run_diags <- function(input_dir, output_dir=input_dir, save_plots=TRUE, pretty=F
     print(colnames(p_df))
     mfr<-sum(p_df$SEX == 1)/sum(p_df$SEX == 2)
     print(paste("Male to Female Ratio:", round(mfr, 2)))
+    if(!pretty){
     sink()
+    }
     return(TRUE)
 
 }

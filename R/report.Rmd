@@ -1,0 +1,49 @@
+---
+title: "SPEW"
+subtitle: "Synthetic Populations and Ecosystems of the World"
+author: "Lee Richardson, Shannon Gallagher, Samuel Ventura, and Bill Eddy"
+output: pdf_document
+---
+
+This report was generated on `r Sys.Date()` by `spew`, an `R` package used to generate populations throughout the world.  Please see [spew Github repo](https://github.com/leerichardson/spew).
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
+#!/bin/env/Rscript
+args <- commandArgs(TRUE)
+input_dir <- args[1]
+
+#read in filenames
+filenames <- list.files(input_dir)
+filename_hh <- filenames[ grep("household", filenames) ]
+filename_p <- filenames[ grep("people", filenames) ]
+stopifnot(length(filename_hh) * length(filename_p) == 1)
+hh_df <- data.table::fread(paste0(input_dir, filename_hh))
+# write log file
+
+puma_id <- unique(hh_df$puma_id)
+
+```
+
+# Area `r puma_id`
+## Households
+There are `r prettyNum(nrow(hh_df), big.mark=",")` households in this area.
+
+The household column names are:
+```{r, echo=FALSE}
+colnames(hh_df)
+```
+
+The average location (longitude, latitude) of the households is `r round(mean(hh_df$longitude), 3)`, `r round(mean(hh_df$latitude), 3)`. 
+
+```{r, echo=FALSE, message=FALSE, warnings=FALSE, results='hide'}
+rm(hh_df)
+
+#the people information
+p_df <- data.table::fread(paste0(input_dir, filename_p))
+
+```
+## People
+There are `r prettyNum(nrow(p_df), big.mark=",")` people in the synthetic population with `r ncol(p_df)` attributes.
+
+The male to female ratio is `r round(sum(p_df$SEX ==1)/sum(p_df$SEX == 2), 2)`.
