@@ -31,7 +31,8 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
       print(msg)
       
       make_place(place, pop_table, shapefile, pums_h, pums_p, 
-                 sampling_type, output_dir, convert_count, make_plots=make_plots) 
+                 sampling_type, output_dir, convert_count, 
+                 make_plots = make_plots) 
     }    
   } else {
     # Set up the worker cores and export all of the necessary 
@@ -46,8 +47,10 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
       print(msg)
       
       make_place(place, pop_table, shapefile, pums_h, pums_p, 
-                 sampling_type, output_dir, convert_count, make_plots=make_plots)
+                 sampling_type, output_dir, convert_count, 
+                 make_plots = make_plots)
     }
+    print(place_pops)
   }
   
   # Print the overall timings 

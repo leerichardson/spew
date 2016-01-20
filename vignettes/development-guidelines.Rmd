@@ -269,10 +269,11 @@ library(doParallel)
 library(stringdist)
 options(error = recover)
 
-in_dir <- "/data/shared_group_data/syneco/input/west/south_america/argentina"
-out_dir <- "/data/shared_group_data/syneco/outputs/spew/temp/"
+in_dir <- "/data/shared_group_data/syneco/input/west/south_america/uruguay"
+out_dir <- "/data/shared_group_data/syneco/outputs/spew/west/south_america/argentina/"
 
 # data_group <- "US"
+# convert_count = FALSE
 # folders <- list(pop_table = "popTables", 
 #                      pums = "pums/2013", 
 #                      schools = "schools", 
@@ -281,11 +282,13 @@ out_dir <- "/data/shared_group_data/syneco/outputs/spew/temp/"
 #                      workplaces = "workplaces")
 
 data_group = "ipums"
+convert_count = TRUE
 folders <- list(pop_table = "counts", 
                     pums = "PUMS", 
                     shapefiles = "shapefile_ipums")
 
 # # data_group <- "none"
+# convert_count = FALSE
 # folders = list(pop_table = "/data/shared_group_data/syneco/input/west/north_america/canada/counts/canada_pop_table.csv", 
 #                      pums = list(pums_h = "/data/shared_group_data/syneco/input/west/north_america/canada/pums/pums_h.csv", 
 #                                  pums_p = "/data/shared_group_data/syneco/input/west/north_america/canada/pums/pums_p.csv"),  
@@ -293,12 +296,12 @@ folders <- list(pop_table = "counts",
 
 generate_spew(input_dir = in_dir, output_dir = out_dir, folders = folders, 
               parallel = FALSE, data_group, sampling_type = "uniform", 
-              convert_count = FALSE, 
+              convert_count = convert_count, 
 	            vars = list(household = c("COUNTRY","YEAR","SAMPLE","SERIAL","PERSONS","HHWT",
 								                        "FORMTYPE","REGIONW","GEOLEV1","GEOLEV2","HHTYPE",
 								                        "PERNUM","PERWT","RELATE","RELATED"), 
 				                  person = c("SERIAL","AGE","SEX","RACE","SCHOOL","INCTOT"))              
-              )
+)
 ```
 
 

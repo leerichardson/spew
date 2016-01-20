@@ -20,13 +20,13 @@ uruguay_format <- format_data(data_list = uruguay_data, data_group = "ipums")
 
 # library(parallel)
 # library(foreach)
-make_data(pop_table = uruguay_format$pop_table, 
+uruguay <- make_data(pop_table = uruguay_format$pop_table, 
            shapefile = uruguay_format$shapefiles, 
            pums_h = uruguay_format$pums$pums_h, 
            pums_p = uruguay_format$pums$pums_p, 
-           parallel = FALSE, 
+           parallel = TRUE, 
            sampling_type = "uniform", 
            convert_count = TRUE, 
            output_dir = "/home/lee/uruguay/")
 
-
+print(uruguay)
