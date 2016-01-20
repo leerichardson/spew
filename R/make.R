@@ -48,13 +48,15 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
       make_place(place, pop_table, shapefile, pums_h, pums_p, 
                  sampling_type, output_dir, convert_count, make_plots=make_plots)
     }
-    
-    overall_time <- Sys.time() - start_time
-    print(overall_time)
-    return(overall_time)
   }
+  
+  # Print the overall timings 
+  overall_time <- difftime(Sys.time(), start_time,units = "secs")
+  total_hh <- sum(pop_table$n_house)
+  statement <- paste0("Households: ", total_hh, " Time: ", overall_time)
+  print(statement)
+  return(statement)
 }
-
 
 #' Create microdata for individual places 
 #' 
@@ -127,9 +129,11 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p,
       ggsave(plot_filename, g)
   }
   
-  overall_time <- Sys.time() - start_time
-  print(overall_time)
-  return(overall_time)
+  overall_time <- difftime(Sys.time(), start_time, units = "secs")
+  total_people <- nrow(sampled_people)
+  statement <- paste0("People: ", total_people, " Time: ", overall_time)
+  print(statement)
+  return(statement)
 }
 
 #' Sample appropriate indices from household PUMS 

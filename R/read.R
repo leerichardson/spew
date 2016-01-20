@@ -287,9 +287,14 @@ read_shapefiles <- function(input_dir, folders, data_group) {
     filename <- shapefiles_files[ind_shp]
   
   } else if (data_group == "ipums") {
-    shp_indices <- grep(".shp", shapefiles_files)
-    stopifnot(length(shp_indices) == 1)
-    filename <- shapefiles_files[shp_indices]
+    revised_indices <- grep("revised.shp", shapefiles_files)
+    if (length(revised_indices) == 1) {
+      filename <- shapefiles_files[revised_indices]
+    } else {
+      shp_indices <- grep(".shp", shapefiles_files)
+      stopifnot(length(shp_indices) == 1)
+      filename <- shapefiles_files[shp_indices]
+    }
   
   } else if (data_group == "none") {
     shapefile <- maptools::readShapeSpatial(folders$shapefiles)
