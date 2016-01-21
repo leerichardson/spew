@@ -1,11 +1,11 @@
 ---
-title: "SPEW"
+title: "SPEW Output Summary"
 subtitle: "Synthetic Populations and Ecosystems of the World"
 author: "Lee Richardson, Shannon Gallagher, Samuel Ventura, and Bill Eddy"
 output: pdf_document
 ---
 
-This report was generated on `r Sys.Date()` by `spew`, an `R` package used to generate populations throughout the world.  Please see [spew Github repo](https://github.com/leerichardson/spew).
+This report was generated on `r Sys.Date()` by `spew`, an `R` package used to generate populations throughout the world.  Please see our [spew Github repo](https://github.com/leerichardson/spew) and our previously generated regions at [epimodels.org](http://www.epimodels.org/drupal/?q=node/32).
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE, results='hide'}
@@ -47,3 +47,38 @@ p_df <- data.table::fread(paste0(input_dir, filename_p))
 There are `r prettyNum(nrow(p_df), big.mark=",")` people in the synthetic population with `r ncol(p_df)` attributes.
 
 The male to female ratio is `r round(sum(p_df$SEX ==1)/sum(p_df$SEX == 2), 2)`.
+
+## Plots
+
+```{r, echo=FALSE, message=FALSE, warnings=FALSE, results='hide'}
+if(file.exists(paste0(input_dir, "ex_plot.png"))){
+       file.remove(paste0(input_dir, "ex_plot.png"))
+}
+filename_plots <- filenames[ grep(".png", filenames) ]
+print(filename_plots)
+if(length(filename_plots) == 0){
+        df <- data.frame(x=1, y=1)
+	library(ggplot2)	
+	g <- ggplot(df, aes(x,y, label="No plots were found"))+geom_text()+	  theme(axis.line=element_blank(),axis.text.x=element_blank(),
+          axis.text.y=element_blank(),axis.ticks=element_blank(),
+          axis.title.x=element_blank(),
+          axis.title.y=element_blank(),legend.position="none",        panel.background=element_blank(),panel.border=element_blank(),panel.grid.major=element_blank(),
+          panel.grid.minor=element_blank(),plot.background=element_blank())
+	ggsave(paste0("./","ex_plot.png"), g)
+print(g)
+} else{
+	set.seed(42)
+	ind <- sample(1:length(filename_plots), 1)
+	ex_plot <- filename_plots[ind]
+	print(ex_plot)
+	file.copy(paste0(input_dir, ex_plot), "./ex_plot.png", overwrite=TRUE)
+} 
+
+```
+
+```{r fig.width=3, fig.height=60, echo=FALSE, fig.align='center'}
+library(png)
+library(grid)
+img <- readPNG("./ex_plot.png")
+ grid.raster(img)
+```

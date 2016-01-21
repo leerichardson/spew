@@ -15,7 +15,7 @@ plot_pop <- function(region_name, hh_pop, region_shape, zoom=8, title_map=region
     center.df$region <- region_name
     print(center.df)
     #get hte map
-    google.map <- get_map(c(center.df$Longitude, center.df$Latitude), zoom=z, maptype="roadmap")
+    google.map <- get_map(c(center.df$Longitude, center.df$Latitude), zoom=zoom, maptype="roadmap")
     stopifnot(sum(c("latitude", "longitude") %in% names(hh_pop)) == 2)
     df.coords <- subset(hh_pop, select=c("latitude","longitude"))
     #making the actual map
@@ -24,7 +24,7 @@ plot_pop <- function(region_name, hh_pop, region_shape, zoom=8, title_map=region
                colour = "darkgreen", fill = NA, alpha = .4, size = 2, cex=3) +
     geom_point(aes(x=longitude, y=latitude), data=df.coords, color="blue", size=.5) +
     geom_text(aes(label = region, x = Longitude, y = Latitude), data=center.df, 
-            cex=5, font=2) +
+            cex=6, font=3) +
     theme_nothing(legend=TRUE) +
     ggtitle(title_map)
     print(g)
