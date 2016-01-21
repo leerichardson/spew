@@ -43,4 +43,3 @@ generate_spew <- function(input_dir, folders, data_group, output_dir, parallel =
   print(overall_time)
   return(overall_time)
 }
-

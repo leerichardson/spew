@@ -17,10 +17,10 @@
 #' make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
 make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE, 
                       sampling_type = "uniform", output_dir = "/home/lee/south_dakota/", 
-                      convert_count, make_plots=FALSE) {
+                      convert_count, make_plots = FALSE) {
   
   start_time <- Sys.time()
-    
+  
   # Call the make_place function for each place in our pop_table. Either 
   # run this in parallel of not (usually I don't for debugging purposes)
   num_places <- nrow(pop_table) 
@@ -97,6 +97,11 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p,
   # Convert people counts to household counts 
   if (convert_count == TRUE) {
     hh_sizes <- pums_h$PERSONS
+    
+    if (is.null(hh_sizes)) {
+      hh_sizes <- nrow(pums_p) / nrow(pums_h)
+    }
+    
     n_house <- people_to_households(hh_sizes, n_house)
   }
   
@@ -110,12 +115,16 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p,
   sampled_households$longitude <- locations@coords[, 1]
   sampled_households$latitude <- locations@coords[, 2]
   
-  # Add a synthetic serial ID to the sampled households 
+  # Add a synthetic serial ID and place ID 
+  # to the sampled households 
   sampled_households$SYNTHETIC_SERIAL <- 1:nrow(sampled_households)
   stopifnot(!any(duplicated(sampled_households$SYNTHETIC_SERIAL)))
+  sampled_households$place_id <- place_id
   
   # Attach people to the sampled households 
   sampled_people <- sample_people(sampled_households, pums_p)
+  sampled_people$place_id <- place_id
+  sampled_people$place_id <- puma_id
   
   # Write the synthetic populations as CSV's
   write_data(df = sampled_households, place_id = place_id, 

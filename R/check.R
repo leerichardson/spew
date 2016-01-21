@@ -41,7 +41,11 @@ check_pums <- function(pums) {
   stopifnot("pums_p" %in% names(pums))
   
   stopifnot("puma_id" %in% names(pums$pums_h))
-
+  
+  if (!("PERSONS" %in% names(pums$pums_h))) {
+    print("PERSONS not in pums_h for convert_count")
+  }
+  
   stopifnot("SERIALNO" %in% names(pums$pums_h))
   stopifnot("SERIALNO" %in% names(pums$pums_p))
   
@@ -53,7 +57,6 @@ check_pums <- function(pums) {
   
   return("Pums is ready!")
 }
-
 
 #' Check the Place ID's match 
 #' 
