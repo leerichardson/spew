@@ -7,6 +7,8 @@
 #' @param data_group character either "US", "ipums" or "none" which tells 
 #' read_data if the input data follows a particular format. Used mainly for 
 #' the pre-formatted data-types we have on our Olympus
+#' @param vars list with two components: household and person. This specifies 
+#' which variables to include in the corresponding PUMS data-set  
 #' 
 #' @return list in which each element contains one of our standardized 
 #' data sources
@@ -17,7 +19,8 @@ read_data <- function(input_dir,
                                            lookup = "tables", 
                                            shapefiles = "tiger", 
                                            workplaces = "workplaces"), 
-                      data_group = "US") {
+                      data_group = "US", 
+                      vars = list(household = NA, person = NA)) {
   
   if (data_group != "US" & data_group != "ipums" & data_group != "none") {
     stop("spew only accepts data_group: 'US', 'ipums', or 'none'")
@@ -27,7 +30,7 @@ read_data <- function(input_dir,
   pop_table <- read_pop_table(input_dir, folders, data_group)
   pop_table <- standardize_pop_table(pop_table, data_group)
   
-  pums <- read_pums(input_dir, folders, data_group)
+  pums <- read_pums(input_dir, folders, data_group, vars)
   pums <- standardize_pums(pums, data_group)
   
   shapefiles <- read_shapefiles(input_dir, folders, data_group)
@@ -81,19 +84,23 @@ read_pop_table <- function(input_dir, folders, data_group) {
   } else if (data_group == "ipums") {
     # If the extended counts are available, use them 
     # If not, use the available admin counts 
+    revised_counts <- grep("revised", pop_table_files)
     extended_counts <- grep("extended", pop_table_files)
     admin_counts <- grep("admin", pop_table_files)
     
-    if (length(extended_counts != 0)) {
+    if (length(revised_counts) != 0) {
+      pop_table_file <- pop_table_files[revised_counts]
+    } else if (length(extended_counts != 0)) {
       pop_table_file <- pop_table_files[extended_counts]
     } else if (length(admin_counts) != 0) {
       pop_table_file <- pop_table_files[admin_counts]
     } else {
-      stop("There is no admin or extended counts!")
+      stop("There is no revised, admin or extended counts!")
     }
     
   } else if (data_group == "none") {
-    pop_table <- read.csv(folders$pop_table, stringsAsFactors = FALSE)
+    pop_table <- read.csv(folders$pop_table, stringsAsFactors = FALSE, 
+                          colClasses = c("character", "numeric", "numeric"))
     return(pop_table)
   }
   
@@ -122,23 +129,27 @@ standardize_pop_table <- function(pop_table, data_group){
     pop_table$n_house <- as.numeric(pop_table$n_house)
   } else if (data_group == "ipums") {
     
-    # Extract the rows with the most recent counts, 
-    # names of countries, and total numbers
-    final_row <- which(pop_table$level == "total")
-    cols <- ncol(pop_table)
-    
-    # Make sure we are getting the name instead of the code, 
-    # then re-name the columns to their formatted names 
-    name_col <- 1
-    if (names(pop_table)[1] == "code") {
-      name_col <- name_col + 1
-    }
+    if (all(names(pop_table) == c("place_id", "n_house", "level"))) {
+      return(pop_table)
       
-    pop_table <- pop_table[1:final_row, c(name_col, cols - 1, cols)]
-    names(pop_table) <- c("place_id", "n_house", "level")
+    } else {
+      # Extract the rows with the most recent counts, 
+      # names of countries, and total numbers
+      final_row <- which(pop_table$level == "total")
+      cols <- ncol(pop_table)
+      
+      # Make sure we are getting the name instead of the code, 
+      # then re-name the columns to their formatted names 
+      name_col <- 1
+      if (names(pop_table)[1] == "code") {
+        name_col <- name_col + 1
+      }
+      
+      pop_table <- pop_table[1:final_row, c(name_col, cols - 1, cols)]
+      names(pop_table) <- c("place_id", "n_house", "level")
+    }
     
   } else if (data_group == "none") {
-    # Check to see that pop_table has all the necessary components
     check_pop_table(pop_table)
   }
   
@@ -146,7 +157,7 @@ standardize_pop_table <- function(pop_table, data_group){
 }
 
 #  Function for reading in pums data
-read_pums <- function(input_dir, folders, data_group){
+read_pums <- function(input_dir, folders, data_group, vars) {
   
   pums_files <- list.files(paste0(input_dir, "/", folders$pums))
   
@@ -176,8 +187,17 @@ read_pums <- function(input_dir, folders, data_group){
   } else if (data_group == "none") {
     pums_h <- read.csv(folders$pums$pums_h, stringsAsFactors = FALSE)
     pums_p <- read.csv(folders$pums$pums_p, stringsAsFactors = FALSE)
-    return(list(pums_h = pums_h, pums_p = pums_p))
   }
+
+  # If specified, subset the household and person level PUMS 
+  # for the desired choice of variables 
+  if (!is.na(vars$household)) {
+    pums_h <- pums_h[, vars$household]  
+  }  
+
+  if (!is.na(vars$person)) {
+    pums_p <- pums_p[, vars$person]  
+  }  
   
   return(list(pums_h = pums_h, pums_p = pums_p))
 }
@@ -185,14 +205,13 @@ read_pums <- function(input_dir, folders, data_group){
 #  Standardize the pums data 
 standardize_pums <- function(pums, data_group){
   if (data_group == "US") {
-    
     names(pums$pums_h)[which(names(pums$pums_h) == "PUMA")] <- "puma_id"
     names(pums$pums_p)[which(names(pums$pums_p) == "PUMA")] <- "puma_id"
   
   } else if (data_group == "ipums") {
+    # Set the puma_id and serial ID's 
+    names(pums$pums_h)[which(names(pums$pums_h) == "GEOLEV1")] <- "puma_id"  
     
-    names(pums$pums_h)[which(names(pums$pums_h) == "GEOLEV1")] <- "puma_id"
-    names(pums$pums_p)[which(names(pums$pums_p) == "GEOLEV1")] <- "puma_id"
     names(pums$pums_h)[which(names(pums$pums_h) == "SERIAL")] <- "SERIALNO"
     names(pums$pums_p)[which(names(pums$pums_p) == "SERIAL")] <- "SERIALNO"
   
@@ -266,9 +285,17 @@ read_shapefiles <- function(input_dir, folders, data_group) {
     ind_shp <- which(grepl(pattern = "\\.shp", x = shapefiles_files) & 
                         !grepl(pattern = "\\.xml", x = shapefiles_files))
     filename <- shapefiles_files[ind_shp]
+  
   } else if (data_group == "ipums") {
-    shp_indices <- grep("1.shp", shapefiles_files)
-    filename <- shapefiles_files[shp_indices]
+    revised_indices <- grep("revised.shp", shapefiles_files)
+    if (length(revised_indices) == 1) {
+      filename <- shapefiles_files[revised_indices]
+    } else {
+      shp_indices <- grep(".shp", shapefiles_files)
+      stopifnot(length(shp_indices) == 1)
+      filename <- shapefiles_files[shp_indices]
+    }
+  
   } else if (data_group == "none") {
     shapefile <- maptools::readShapeSpatial(folders$shapefiles)
     return(shapefile)
@@ -276,7 +303,7 @@ read_shapefiles <- function(input_dir, folders, data_group) {
   
   #  Read in shapefile
   shapefile <- maptools::readShapeSpatial(paste0(input_dir, "/", 
-                                       folders$shapefiles, "/", filename))
+                                          folders$shapefiles, "/", filename))
   return(shapefile)
 }
 
@@ -287,11 +314,19 @@ standardize_shapefiles <- function(shapefiles, data_group) {
     names(shapefiles)[which(names(shapefiles) == "GEOID10")] <- "place_id"
     shapefiles$place_id  <- as.character(shapefiles$place_id)
     stopifnot(all(nchar(shapefiles$place_id) == 11))
+  
   } else if (data_group == "ipums") {
-    names(shapefiles)[which(names(shapefiles) == "NAME_1")] <- "place_id"
+    names(shapefiles)[which(names(shapefiles) == "ADMIN_NAME")] <- "place_id"
     shapefiles$place_id  <- as.character(shapefiles$place_id)
+    
+    names(shapefiles)[which(names(shapefiles) == "GEOLEVEL1")] <- "puma_id"
+    
+  
   } else if (data_group == "none") {
+  
+    shapefiles$place_id <- as.character(shapefiles$place_id)
     check_shapefile(shapefiles)
+  
   }
   
   return(shapefiles)

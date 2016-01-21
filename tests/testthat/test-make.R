@@ -39,6 +39,8 @@ test_that("Sampling functions", {
   parallel_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles, 
                                       sd_data$pums$pums_h, sd_data$pums$pums_p, 
                                       parallel = TRUE, convert_count = FALSE))
+  
+  
   sink()
   file.remove("test_output.txt")
   
@@ -70,4 +72,5 @@ test_that("Sampling functions", {
   expect_equal(abs( (nrow(synth_pums_p) / original_nhouse) - 1) < .2, TRUE)
   
   unlink("tmp/", recursive = TRUE)
+  
 })

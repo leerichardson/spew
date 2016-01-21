@@ -13,7 +13,8 @@ Suggests:
     rmarkdown,
     doParallel,
     foreach,
-    stringdist
+    stringdist,
+    ggmap
 VignetteBuilder: knitr
 Imports: 
     sp,

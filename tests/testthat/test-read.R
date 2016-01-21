@@ -31,14 +31,16 @@ test_that("United States functions", {
   
   
   # PUMS -------------------------------
-  sd_pums <- read_pums(data_path, data_group = "US", 
+  sd_pums <- read_pums(data_path, 
+                       data_group = "US", 
+                       
                        folders = list(pop_table = "popTables", 
                                       pums = "pums", 
                                       schools = "schools", 
                                       lookup = "tables", 
                                       shapefiles = "tiger", 
-                                      workplaces = "workplaces"))
-  
+                                      workplaces = "workplaces"), 
+                       vars = list(household = NA, person = NA))
   
   # Text the rows of households are larger 
   expect_equal(names(sd_pums)[1] == "pums_h", TRUE)
@@ -51,6 +53,23 @@ test_that("United States functions", {
   expect_equal("puma_id" %in% names(standard_pums$pums_h), TRUE)
   expect_equal("puma_id" %in% names(standard_pums$pums_p), TRUE)    
   expect_equal("SERIALNO" %in% names(standard_pums$pums_p), TRUE) 
+  
+  # Make sure that the subset variables function works 
+  sd_pums <- read_pums(data_path, 
+                       data_group = "US", 
+                       
+                       folders = list(pop_table = "popTables", 
+                                      pums = "pums", 
+                                      schools = "schools", 
+                                      lookup = "tables", 
+                                      shapefiles = "tiger", 
+                                      workplaces = "workplaces"), 
+                       vars = list(household = c("SERIALNO", "ST"), 
+                                   person = c("SERIALNO", "ST")))
+  
+  expect_equal(ncol(sd_pums$pums_h), 2)  
+  expect_equal(names(sd_pums$pums_h), c("SERIALNO", "ST"))
+  expect_equal(ncol(sd_pums$pums_h), 2)
   
   # Shapefile --------------------------
   library(maptools)
@@ -107,15 +126,15 @@ test_that("ipums functions", {
                             data_group = "ipums", 
                             folders = list(pop_table = "counts", 
                                            pums = "PUMS", 
-                                           shapefiles = "shapefile"))
+                                           shapefiles = "shapefile"), 
+                            vars = list(household = NA, person = NA))
   
   expect_equal(class(uruguay_pums), "list")
   expect_equal(names(uruguay_pums), c("pums_h", "pums_p"))
   
   standard_pums <- standardize_pums(pums = uruguay_pums, data_group = "ipums")
   expect_equal("puma_id" %in% names(standard_pums$pums_h), TRUE)
-  expect_equal("puma_id" %in% names(standard_pums$pums_p), TRUE)
-  
+
   # Shapefile --------------------------------
   library(maptools)
   uruguay_shape <- read_shapefiles(data_path, 
@@ -177,7 +196,8 @@ test_that("no group functions", {
                                    pums = list(pums_h = paste0(data_path, "uruguay/PUMS/858.csv"), 
                                                pums_p = paste0(data_path, "uruguay/PUMS/858.csv")), 
                                    shapefiles = paste0(data_path, "uruguay/shapefile/URY_adm1.shp")), 
-                    data_group = "none")
+                    data_group = "none", 
+                    vars = list(household = NA, person = NA))
   
   expect_equal(class(pums), "list")
   expect_equal(class(pums$pums_h), "data.frame")

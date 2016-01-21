@@ -269,23 +269,41 @@ library(doParallel)
 library(stringdist)
 options(error = recover)
 
-in_dir <- "/data/shared_group_data/syneco/input/west/south_america/chile"
-out_dir <- "/data/shared_group_data/syneco/outputs/spew/west/south_america/chile/"
-folders <- list(pop_table = "popTables", 
-                     pums = "pums/2013", 
-                     schools = "schools", 
-                     lookup = "tables", 
-                     shapefiles = "tiger", 
-                     workplaces = "workplaces")
+in_dir <- "/data/shared_group_data/syneco/input/west/south_america/uruguay"
+out_dir <- "/data/shared_group_data/syneco/outputs/spew/west/south_america/argentina/"
 
+# data_group <- "US"
+# convert_count = FALSE
+# folders <- list(pop_table = "popTables", 
+#                      pums = "pums/2013", 
+#                      schools = "schools", 
+#                      lookup = "tables", 
+#                      shapefiles = "tiger", 
+#                      workplaces = "workplaces")
+
+data_group = "ipums"
+convert_count = TRUE
 folders <- list(pop_table = "counts", 
-                     pums = "PUMS",  
-                     shapefiles = "shapefile")
+                    pums = "PUMS", 
+                    shapefiles = "shapefile_ipums")
+
+# # data_group <- "none"
+# convert_count = FALSE
+# folders = list(pop_table = "/data/shared_group_data/syneco/input/west/north_america/canada/counts/canada_pop_table.csv", 
+#                      pums = list(pums_h = "/data/shared_group_data/syneco/input/west/north_america/canada/pums/pums_h.csv", 
+#                                  pums_p = "/data/shared_group_data/syneco/input/west/north_america/canada/pums/pums_p.csv"),  
+#                      shapefiles = "/data/shared_group_data/syneco/input/west/north_america/canada/shapefiles/canada_shapefiles.shp")
 
 generate_spew(input_dir = in_dir, output_dir = out_dir, folders = folders, 
-              parallel = FALSE, data_group = "ipums", sampling_type = "uniform", 
-              convert_count = TRUE)
+              parallel = FALSE, data_group, sampling_type = "uniform", 
+              convert_count = convert_count, 
+	            vars = list(household = c("COUNTRY","YEAR","SAMPLE","SERIAL","PERSONS","HHWT",
+								                        "FORMTYPE","REGIONW","GEOLEV1","GEOLEV2","HHTYPE",
+								                        "PERNUM","PERWT","RELATE","RELATED"), 
+				                  person = c("SERIAL","AGE","SEX","RACE","SCHOOL","INCTOT"))              
+)
 ```
+
 
 ## Shell Scripting 
 In our use of spew, we will make a lot of use of the Olympus infrastructure to speed up our calculations. In order to use these capabilities, we will need to submit jobs to olympus which request the requisite amount of processors and time. To submit jobs and interact with Olympus, we make use of shell scripts. 

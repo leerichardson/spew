@@ -79,3 +79,13 @@ sd_data <- read_data("data-raw/46", data_group = "US", folders = list(pop_table 
 
 sd_data <- format_data(data_list = sd_data, data_group = "US")
 # devtools::use_data(sd_data, overwrite = TRUE)
+
+# make_data(pop_table = sd_data$pop_table, 
+#          pums_h = sd_data$pums$pums_h, 
+#          pums_p = sd_data$pums$pums_p, 
+#          shapefile = sd_data$shapefiles, 
+#          parallel = TRUE, 
+#          output_dir = "/home/lee/south_dakota/", 
+#          sampling_type = "uniform", 
+#          convert_count = FALSE)
+
