@@ -57,3 +57,10 @@ We may also want to consider appending all of the files together for easier use
 
 ## Code reviews
 - Read more about (Guo's Article) http://pgbovine.net/CACM-group-code-reviews.html 
+
+## Diagnostics File
++ Add in country/place names
++ Make map of zoomed out version
++ Summaries of some variables: age, race, income, gender
++ Print column names
++ Mega file for a country?
