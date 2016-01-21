@@ -119,12 +119,15 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p,
   # to the sampled households 
   sampled_households$SYNTHETIC_SERIAL <- 1:nrow(sampled_households)
   stopifnot(!any(duplicated(sampled_households$SYNTHETIC_SERIAL)))
-  sampled_households$place_id <- place_id
   
-  # Attach people to the sampled households 
+  sampled_households$place_id <- place_id
+  sampled_households$puma_id <- puma_id
+  
+  # Attach people to the sampled households and make 
+  # sure to include both the place and puma id
   sampled_people <- sample_people(sampled_households, pums_p)
   sampled_people$place_id <- place_id
-  sampled_people$place_id <- puma_id
+  sampled_people$puma_id <- puma_id
   
   # Write the synthetic populations as CSV's
   write_data(df = sampled_households, place_id = place_id, 
