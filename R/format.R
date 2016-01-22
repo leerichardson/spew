@@ -169,6 +169,44 @@ allocate_count <- function(counts, count_id) {
   return(new_counts)
 }
 
+#' Combine two rows of a pop_table into one 
+#' 
+#' @param pop_table dataframe to update 
+#' @param place1 character indicating the name of the 
+#' place to add counts to 
+#' @param place2 character indicating the name of the 
+#' place to remove 
+#' 
+#' @return pop_table a data-frame with the place2 counts 
+#' added to place1, and place2 removed from the pop_table 
+combine_counts <- function(pop_table, place1, place2) {
+  
+  place1_index <- which(pop_table$place_id == place1)
+  place2_index <- which(pop_table$place_id == place2)
+  
+  place1_counts <- pop_table[place1_index, "n_house"]
+  place2_counts <- pop_table[place2_index, "n_house"]
+  
+  pop_table[place1_index, "n_house"] <- place1_counts + place2_counts
+  pop_table <- pop_table[-place2_index, ]
+    
+  return(pop_table)
+}
+
+#' Remove a row from the pop_table 
+#' 
+#' @param pop_table dataframe to update
+#' @param place character of place_ids to remove
+#' 
+#' @return pop_table updated dataframe with the 
+#' desired place removed 
+remove_count <- function(pop_table, place) {
+  place_index <- which(pop_table$place_id == place)
+  pop_table <- pop_table[-place_index, ]
+  return(pop_table)
+}
+
+
 #' Remove extraneous words from place names 
 #' 
 #' @param names character vector of names   
