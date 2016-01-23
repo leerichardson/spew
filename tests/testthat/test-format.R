@@ -36,4 +36,12 @@ test_that("ipums formatting", {
   expect_equal(length(new_counts) < length(pseudo_counts), TRUE)
   expect_equal(new_counts[1] > pseudo_counts[1], TRUE)
   
+  # Verify that we can combine counts and remove rows 
+  data(uruguay_format)
+  pt_combined <- combine_counts(pop_table = uruguay_format$pop_table, "Rocha", "Soriano")
+  expect_equal(nrow(pt_combined) == 18, TRUE)  
+  expect_equal("Soriano" %in% pt_combined$place_id, FALSE)
+
+  pt_remove <- remove_count(pop_table = uruguay_format$pop_table, place = "Rocha")
+  expect_equal(nrow(pt_remove) == 18, TRUE)
 })
