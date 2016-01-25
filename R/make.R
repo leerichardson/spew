@@ -137,12 +137,13 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p,
              puma_id = puma_id, type = "people", 
              output_dir = output_dir)
 
-  # If specified, create a plot of the individual place 
-  if (make_plots) {
-      g <- plot_pop(place_id, sampled_households, shapefile)
-      plot_filename <- paste0(output_dir, as.character(place_id), ".png")
-      ggsave(plot_filename, g)
-  }
+    #MOVING to PUMAs, so at the end of SPEW
+  ## # If specified, create a plot of the individual place 
+  ## if (make_plots) {
+  ##     g <- plot_pop(place_id, sampled_households, shapefile)
+  ##     plot_filename <- paste0(output_dir, as.character(place_id), ".png")
+  ##     ggsave(plot_filename, g)
+  ## }
   
   overall_time <- difftime(Sys.time(), start_time, units = "secs")
   total_people <- nrow(sampled_people)
