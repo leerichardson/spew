@@ -141,7 +141,7 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p,
   write_data(df = sampled_people, place_id = place_id, 
              puma_id = puma_id, type = "people", 
              output_dir = output_dir)
-  
+
   # Print out diagnostics/summaries of this place 
   overall_time <- difftime(Sys.time(), start_time, units = "secs")
   overall_time <- round(overall_time, digits = 2)
