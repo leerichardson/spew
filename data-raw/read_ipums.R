@@ -18,8 +18,10 @@ uruguay_format <- format_data(data_list = uruguay_data, data_group = "ipums")
 # devtools::use_data(uruguay_format, overwrite = TRUE)
 # write.csv(uruguay_format$pums$pums_h, "data-raw/uruguay/PUMS/pums_hh.csv")
 
-# library(parallel)
-# library(foreach)
+library(parallel)
+library(foreach)
+library(doSNOW)
+data(uruguay_format)
 uruguay <- make_data(pop_table = uruguay_format$pop_table, 
            shapefile = uruguay_format$shapefiles, 
            pums_h = uruguay_format$pums$pums_h, 
@@ -28,5 +30,3 @@ uruguay <- make_data(pop_table = uruguay_format$pop_table,
            sampling_type = "uniform", 
            convert_count = TRUE, 
            output_dir = "/home/lee/uruguay/")
-
-print(uruguay)

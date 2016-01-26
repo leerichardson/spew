@@ -19,7 +19,7 @@
 #' @return logical indicating whether or not this run of spew ended successfully 
 generate_spew <- function(input_dir, folders, data_group, output_dir, parallel = TRUE, 
                           sampling_type = "uniform", convert_count = FALSE, 
-                          vars = list(household = NA, person = NA), make_plots=FALSE){
+                          vars = list(household = NA, person = NA), make_plots = FALSE){
   
   # Start timing the function 
   start_time <- Sys.time()
@@ -39,7 +39,11 @@ generate_spew <- function(input_dir, folders, data_group, output_dir, parallel =
             convert_count = convert_count, make_plots = make_plots)
   
   # End the timer and return this as output
-  overall_time <- Sys.time() - start_time
-  print(overall_time)
+  overall_time <- difftime(Sys.time(), start_time,units = "secs")
+  overall_time <- round(overall_time, digits = 2)
+  
+  statement <- paste0("SPEW Runs in: ", overall_time)
+  print(statement)
+  
   return(overall_time)
 }
