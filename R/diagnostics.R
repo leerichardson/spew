@@ -65,14 +65,12 @@ read_concat_pop <- function(filenames){
 #' @param summary_vars which variables should we summarize.  The default value is 'base' which includes total number of records.  For households 'base' includes longitude and latitude and the names.  For people, this includes gender.  Otherwise we summarize the base variables and the the variable names which we should summarize.  For the summary output to be something other than a factor variable then see var_list.
 #' @param region_name string default is basename of input_dir
 #' @param var_list category labels.  Each name of a list entry should correspond to a variable in summary_vars.  The actual entry then is the category names.
-#' @return summary_list list of summary numbers with corresponding names
+#' @return summary_list list of summary numbers and list of features
 
 summary_diags <- function(type="hh",input_dir="./", output_dir=input_dir, summary_vars="base", region_name=basename(input_dir), var_list=NULL){
     stopifnot(type %in% c("hh", "p"))
-    #EVENTUALLY remove below check
-    stopifnot(summary_vars="base")
     pop_list<- read_pop(type, input_dir, summary_vars)
-    summary_row <- summarize_pop(pop_list, region_name)
+    summary_list <- summarize_pop(pop_list, region_name)
     return(summary_list)
 }
 
@@ -83,21 +81,24 @@ summary_diags <- function(type="hh",input_dir="./", output_dir=input_dir, summar
 
 summarize_pop <- function(pop_list, region_name){
     names <- c(region_name, colnames(pop_list$pop))
-    i <- 2
+    i <- 1
     coords <- NULL
     row_list <- NULL
     nRecords <- nrow(pop_list$pop)
-    if ("longitude" %in% colnames(pop_list$pop)){
-        coords <- colMeans(pop_list$pop[,c("longitude", "latitude")])
-        i <- 4
+    df <- as.data.frame(pop_list$pop)
+    if ("longitude" %in% colnames(df)){
+        coords <- colMeans(df[,c("longitude", "latitude")])
+        i <- 3
     }
-    if ( i <= ncol(pop_list)){
-        row_list <- lapply(i:ncol(pop_list$pop), function(i) table(pop_list$pop[,i]))
+    if ( i <= ncol(df)){
+        row_list <- lapply(i:ncol(df), function(i){
+            tab <- table(df[,i])
+            names(tab) <- paste0(colnames(df)[i],"_", names(tab))
+            return(tab)
+        })
     }
-    summary_row <- c(region_name, nRecords, coords, row_list)
-    summary_names <- names(unlist(row_list))
-    return(list(summary_row=summary_row, summary_names=summary_names))
-
+    summary_row <- data.frame(region_name=region_name, nRecords=nRecords)
+    return(list(summary_row=summary_row, features=row_list, all_names=pop_list$all_vars))
 }
 
 
@@ -112,6 +113,7 @@ read_pop <- function(type, input_dir, summary_vars){
     key_word <- ifelse(type == "hh", "household", "people")
     concat_file <- paste0(input_dir, key_word, "_", basename(input_dir), ".csv")
     print(concat_file)
+    #TODO:  FIX.  Seems to be losing records
     if( file.exists(concat_file)){
         pop <- data.table::fread(concat_file)
     } else {
