@@ -17,13 +17,14 @@
 #' make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
 make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE, 
                       sampling_type = "uniform", output_dir = "/home/lee/south_dakota/", 
-                      convert_count, make_plots = FALSE) {
+                      convert_count) {
   
   start_time <- Sys.time()
   
   # Call the make_place function for each place in our pop_table. Either 
   # run this in parallel of not (usually I don't for debugging purposes)
   num_places <- nrow(pop_table) 
+  
   if (parallel == FALSE) {
     
     for (place in 1:num_places) { 
@@ -38,10 +39,9 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
     # Set up the worker cores and export all of the necessary 
     # data needed to call the make_place function 
     num_workers <- parallel::detectCores()
-    cluster <- parallel::makeCluster(num_workers)
     doParallel::registerDoParallel(num_workers)
     
-    place_pops <- foreach(place = 1:num_places) %dopar% {
+    foreach(place = 1:num_places) %dopar% {
       
       msg <- paste0("Generating place: ", place, " out of ", num_places)
       print(msg)
@@ -50,15 +50,20 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
                  sampling_type, output_dir, convert_count, 
                  make_plots = make_plots)
     }
-    print(place_pops)
+    parallel::stopCluster(cluster)
   }
   
-  # Print the overall timings 
+  # Print the diagnostics and summaries of the entire country 
   overall_time <- difftime(Sys.time(), start_time,units = "secs")
+  overall_time <- round(overall_time, digits = 2)
+  
   total_hh <- sum(pop_table$n_house)
-  statement <- paste0("Households: ", total_hh, " Time: ", overall_time)
-  print(statement)
-  return(statement)
+  hh_statement <- paste0("Total Households: ", total_hh)
+  time_statement <- paste0("Total Time: ", overall_time)
+  
+  print(hh_statement)
+  print(time_statement)
+  return(overall_time)
 }
 
 #' Create microdata for individual places 
@@ -78,7 +83,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
 #' @return synthetic population .csv file for both household and person 
 #' level data  
 make_place <- function(index, pop_table, shapefile, pums_h, pums_p, 
-                       sampling_type, output_dir, convert_count, make_plots=FALSE) {
+                       sampling_type, output_dir, convert_count) {
   
   start_time <- Sys.time()
   
@@ -137,18 +142,23 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p,
              puma_id = puma_id, type = "people", 
              output_dir = output_dir)
 
-  # If specified, create a plot of the individual place 
-  if (make_plots) {
-      g <- plot_pop(place_id, sampled_households, shapefile)
-      plot_filename <- paste0(output_dir, as.character(place_id), ".png")
-      ggsave(plot_filename, g)
-  }
-  
+  # Print out diagnostics/summaries of this place 
   overall_time <- difftime(Sys.time(), start_time, units = "secs")
+  overall_time <- round(overall_time, digits = 2)
+  
+  total_households <- nrow(sampled_households)
   total_people <- nrow(sampled_people)
-  statement <- paste0("People: ", total_people, " Time: ", overall_time)
-  print(statement)
-  return(statement)
+  
+  hh_statement <- paste0("Households: ", total_households)
+  people_statement <- paste0("People: ", total_people)
+  time_statement <- paste0("Time: ", overall_time)
+  
+  print(paste0("Place: ", place_id))
+  print(paste0("Puma: ", puma_id))
+  print(hh_statement)
+  print(people_statement)
+  print(time_statement)
+  return(overall_time)
 }
 
 #' Sample appropriate indices from household PUMS 

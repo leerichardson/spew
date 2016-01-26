@@ -14,12 +14,13 @@
 #' population totals to househole counts
 #' @param vars list with two components: household and person. This specifies 
 #' which variables to include in the corresponding PUMS data-set  
-#' @param make_plots boolean indicating whether we should make maps of the synthetic households
+#' @param make_plots boolean indicating whether we should make maps of the synthetic households.  
+#' WARNING:  Approximately doubles the run time.
 #' @export
 #' @return logical indicating whether or not this run of spew ended successfully 
 generate_spew <- function(input_dir, folders, data_group, output_dir, parallel = TRUE, 
                           sampling_type = "uniform", convert_count = FALSE, 
-                          vars = list(household = NA, person = NA), make_plots=FALSE){
+                          vars = list(household = NA, person = NA), make_plots = FALSE){
   
   # Start timing the function 
   start_time <- Sys.time()
@@ -37,9 +38,20 @@ generate_spew <- function(input_dir, folders, data_group, output_dir, parallel =
             pums_h = formatted_data$pums$pums_h, pums_p = formatted_data$pums$pums_p, 
             parallel = parallel, sampling_type = sampling_type, output_dir = output_dir, 
             convert_count = convert_count, make_plots = make_plots)
+
+  if (make_plots) {
+      # if desired make diagnostic maps
+      # NEEDS TESTED
+      make_maps(output_dir, formatted_data$shapefiles, zoom=7)
+
+  }
   
   # End the timer and return this as output
-  overall_time <- Sys.time() - start_time
-  print(overall_time)
+  overall_time <- difftime(Sys.time(), start_time,units = "secs")
+  overall_time <- round(overall_time, digits = 2)
+  
+  statement <- paste0("SPEW Runs in: ", overall_time)
+  print(statement)
+  
   return(overall_time)
 }

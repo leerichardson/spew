@@ -269,8 +269,6 @@ library(doParallel)
 library(stringdist)
 options(error = recover)
 
-in_dir <- "/data/shared_group_data/syneco/input/west/south_america/uruguay"
-out_dir <- "/data/shared_group_data/syneco/outputs/spew/west/south_america/argentina/"
 
 # data_group <- "US"
 # convert_count = FALSE
@@ -294,14 +292,17 @@ folders <- list(pop_table = "counts",
 #                                  pums_p = "/data/shared_group_data/syneco/input/west/north_america/canada/pums/pums_p.csv"),  
 #                      shapefiles = "/data/shared_group_data/syneco/input/west/north_america/canada/shapefiles/canada_shapefiles.shp")
 
+
+in_dir <- "/data/shared_group_data/syneco/input/east/asia/bangladesh"
+out_dir <- "/data/shared_group_data/syneco/outputs/spew/east/asia/bangladesh/"
+vars = list(household = c("COUNTRY","YEAR","SAMPLE","SERIAL","PERSONS","HHWT",
+	                        "FORMTYPE","REGIONW","GEOLEV1","GEOLEV2","HHTYPE",
+	                        "PERNUM","PERWT","RELATE","RELATED"), 
+            person = c("SERIAL","AGE","SEX","RACE","SCHOOL","INCTOT"))
+
 generate_spew(input_dir = in_dir, output_dir = out_dir, folders = folders, 
               parallel = FALSE, data_group, sampling_type = "uniform", 
-              convert_count = convert_count, 
-	            vars = list(household = c("COUNTRY","YEAR","SAMPLE","SERIAL","PERSONS","HHWT",
-								                        "FORMTYPE","REGIONW","GEOLEV1","GEOLEV2","HHTYPE",
-								                        "PERNUM","PERWT","RELATE","RELATED"), 
-				                  person = c("SERIAL","AGE","SEX","RACE","SCHOOL","INCTOT"))              
-)
+              convert_count = convert_count, vars = vars)
 ```
 
 
