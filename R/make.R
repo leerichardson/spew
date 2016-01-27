@@ -29,7 +29,11 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
     
     for (place in 1:num_places) { 
       msg <- paste0("Generating place: ", place, " out of ", num_places)
+      node_name <- paste0("Node: ", Sys.info()[['nodename']])      
+      session_id <- paste0("R Session ID: ", Sys.getpid())
       print(msg)
+      print(node_name)
+      print(session_id)
       
       make_place(place, pop_table, shapefile, pums_h, pums_p, 
                  sampling_type, output_dir, convert_count) 
@@ -58,7 +62,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
       print(msg)
       print(node_name)
       print(session_id)
-      
+        
       make_place(place, pop_table, shapefile, pums_h, pums_p, 
                  sampling_type, output_dir, convert_count)
     }
