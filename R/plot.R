@@ -41,36 +41,45 @@ plot_pop <- function(region_name, hh_pop, region_shape, zoom=8, title_map=region
 #' @return logical
 # TODO:  MAKE parallel
 make_maps <- function(output_dir=output_dir, shapefile, pretty=FALSE, zoom=7, parallel=FALSE){
+    
     country_name <- toupper(basename(output_dir))
     stopifnot("PUMA_ID" %in% colnames(shapefile@data))
-    if(!parallel)
+    
+    if (!parallel) {
         sub_dirs <- list.files(output_dir)
         #loop through each puma_id and make a map
         for(dir_ind in 1:length(sub_dirs)){
             print(sub_dirs[dir_ind])
+            
             #TODO:  put below in separate function
             #subset shapefile
             sub_shp <- shapefile[shapefile@data$PUMA_ID== as.numeric(sub_dirs[dir_ind]),]
+            
             #get the files to load in
             filenames <- list.files(paste0(output_dir, sub_dirs[dir_ind]))
             household_files <- filenames[ grep("household", filenames) ]
             full_path <- paste0(output_dir, sub_dirs[dir_ind], "/", household_files)
+            
             #load in files
             hh_pop<- do.call('rbind', lapply(full_path, read.table, sep=",", skip=1))
+            
             #get the header
             header <- readLines(full_path[1], n=1)
             header <- unlist(strsplit(header, split=","))
             header <- gsub("[[:punct:]]", "", header)
             print(header)
             colnames(hh_pop) <- header
+            
             #do plotting
             region_name <- toupper(paste(sub_dirs[dir_ind], country_name))
             g <- plot_pop(region_name, hh_pop, sub_shp, zoom=zoom)
-            out_nm <- paste0(output_dir, sub_dirs[dir_ind], "/", sub_dirs[dir_ind], "_", country_name, ".png")
+            out_nm <- paste0(output_dir, sub_dirs[dir_ind], 
+                             "/", sub_dirs[dir_ind], "_", 
+                             country_name, ".png")
+            
             ggsave(out_nm, g, dpi=50)
         }
     }
-
     return(TRUE)
 }
 
