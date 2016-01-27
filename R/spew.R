@@ -37,7 +37,7 @@ generate_spew <- function(input_dir, folders, data_group, output_dir, parallel =
   make_data(pop_table = formatted_data$pop_table, shapefile = formatted_data$shapefiles, 
             pums_h = formatted_data$pums$pums_h, pums_p = formatted_data$pums$pums_p, 
             parallel = parallel, sampling_type = sampling_type, output_dir = output_dir, 
-            convert_count = convert_count, make_plots = make_plots)
+            convert_count = convert_count)
 
   if (make_plots) {
       # if desired make diagnostic maps
