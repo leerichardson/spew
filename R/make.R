@@ -32,28 +32,41 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
       print(msg)
       
       make_place(place, pop_table, shapefile, pums_h, pums_p, 
-                 sampling_type, output_dir, convert_count, 
-                 make_plots = make_plots) 
+                 sampling_type, output_dir, convert_count) 
     }    
   } else {
     # Set up the worker cores and export all of the necessary 
     # data needed to call the make_place function 
     num_workers <- parallel::detectCores()
-    doParallel::registerDoParallel(num_workers)
+    cluster <- parallel::makeCluster(num_workers, outfile = "")
+    
+    export_objects <- c("num_places", "make_place", "pop_table", 
+                        "shapefile", "pums_h", "pums_p", "sampling_type", 
+                        "output_dir", "convert_count", "people_to_households", 
+                        "sample_households", "sample_locations", "sample_people", 
+                        "write_data", "people_to_households")
+    
+    parallel::clusterExport(cl = cluster, varlist = export_objects, envir = environment())    
+    doParallel::registerDoParallel(cluster)    
     
     foreach(place = 1:num_places) %dopar% {
       
+      # Print out relevant information pertaining to the job 
       msg <- paste0("Generating place: ", place, " out of ", num_places)
+      node_name <- paste0("Node: ", Sys.info()[['nodename']])      
+      session_id <- paste0("R Session ID: ", Sys.getpid())
       print(msg)
+#       print(node_name)
+#       print(session_id)
       
       make_place(place, pop_table, shapefile, pums_h, pums_p, 
-                 sampling_type, output_dir, convert_count, 
-                 make_plots = make_plots)
+                 sampling_type, output_dir, convert_count)
     }
+    
     parallel::stopCluster(cluster)
   }
   
-  # Print the diagnostics and summaries of the entire country 
+  # Print the diagnostics and summaries of the entire place 
   overall_time <- difftime(Sys.time(), start_time,units = "secs")
   overall_time <- round(overall_time, digits = 2)
   
