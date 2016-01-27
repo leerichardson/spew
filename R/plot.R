@@ -43,7 +43,7 @@ plot_pop <- function(region_name, hh_pop, region_shape, zoom=8, title_map=region
 make_maps <- function(output_dir=output_dir, shapefile, pretty=FALSE, zoom=7, parallel=FALSE){
     country_name <- toupper(basename(output_dir))
     stopifnot("PUMA_ID" %in% colnames(shapefile@data))
-    if(!parallel)
+    if(!parallel){
         sub_dirs <- list.files(output_dir)
         #loop through each puma_id and make a map
         for(dir_ind in 1:length(sub_dirs)){
