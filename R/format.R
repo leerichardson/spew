@@ -169,6 +169,23 @@ allocate_count <- function(counts, count_id) {
   return(new_counts)
 }
 
+#' Combine multiple rows of a pop_table into one and rename the aggregated row
+#'
+#' @param pop_table dataframe to update
+#' @param places character vector of places to combine together
+#' @return pop_table a data-frame with the places' counts combined together, and renamed by new_name
+
+combine_many_counts <- function(pop_table, places, new_name){
+    place1 <- places[1]
+    if (length(places) == 1) return(pop_table)
+    for( place in places[-1] ){
+        pop_table <- spew:::combine_counts(pop_table, place1, place)
+    }
+    pop_table[pop_table$place_id == place1,]$place_id <- new_name
+    return(pop_table)
+    
+}
+
 #' Combine two rows of a pop_table into one 
 #' 
 #' @param pop_table dataframe to update 
