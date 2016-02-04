@@ -193,8 +193,13 @@ sample_households <- function(n_house, pums_h, puma_id = NULL,
     
     # Subset to a specific PUMA if we have data to do this 
       if (!is.na(puma_id)) {
-        sample_inds <- which(pums_h$puma_id == puma_id)
-        stopifnot(length(sample_inds) < nrow(pums_h))
+        if (!(puma_id %in% unique(pums_h$puma_id))) {
+          sample_inds <- 1:nrow(pums_h)
+        }
+        else {
+          sample_inds <- which(pums_h$puma_id == puma_id)
+          stopifnot(length(sample_inds) < nrow(pums_h))
+        }
       } else {
           sample_inds <- 1:nrow(pums_h)
       }
