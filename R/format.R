@@ -179,6 +179,7 @@ combine_many_counts <- function(pop_table, places, new_name){
     place1 <- places[1]
     if (length(places) == 1) return(pop_table)
     for( place in places[-1] ){
+        print(place)
         pop_table <- spew:::combine_counts(pop_table, place1, place)
     }
     pop_table[pop_table$place_id == place1,]$place_id <- new_name

@@ -42,7 +42,7 @@ generate_spew <- function(input_dir, folders, data_group, output_dir, parallel =
   if (make_plots) {
       # if desired make diagnostic maps
       # NEEDS TESTED
-      make_maps(output_dir, formatted_data$shapefiles, zoom=7)
+      make_maps(output_dir, formatted_data$shapefiles, zoom=6)
 
   }
   
