@@ -294,7 +294,7 @@ folders <- list(pop_table = "counts",
 #                      shapefiles = "/data/shared_group_data/syneco/input/west/north_america/canada/shapefiles/canada_shapefiles.shp")
 
 in_dir <- "/data/shared_group_data/syneco/input/east/africa/zambia"
-out_dir <- "/data/shared_group_data/syneco/outputs/spew/east/africa/zambia/"
+out_dir <- "~/output/zambia/"
 
 vars = list(household = c("COUNTRY","YEAR","SAMPLE","SERIAL","PERSONS","HHWT",
                             "FORMTYPE","REGIONW","GEOLEV1","GEOLEV2","HHTYPE",
