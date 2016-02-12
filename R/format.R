@@ -314,7 +314,11 @@ remove_excess_words <- function(names) {
 #' @param shapefile_names names exactly corresponding to shapefile_names
 #' @return data frame that matches pop_table and shapefile names exactly, splitting the population evenly
 force_pop <- function(pop_table, shapefile_names){
-    total <- pop_table$n_house[pop_table$place_id== "total"]
+    total <- pop_table$n_house[pop_table$place_id == "total"]
+    if(class(total) %in% c("character", factor)){
+        total <- gsub("[^0-9]+", "", total)
+    }
+    total <- as.numeric(as.character(total))
     pop_table <- data.frame(place_id = shapefile_names, n_house = floor(total/length(shapefile_names)), level="total")
     return(pop_table)
 }
