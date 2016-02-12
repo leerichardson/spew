@@ -9,7 +9,7 @@ uruguay_data <- read_data(input_dir = "data-raw/uruguay",
                           data_group = "ipums", 
                           folders = list(pop_table = "counts", 
                                          pums = "PUMS", 
-                                         shapefiles = "shapefile"))
+                                         shapefiles = "shapefile_ipums"))
 
 # devtools::use_data(uruguay_data, overwrite = TRUE)
 library(stringdist)

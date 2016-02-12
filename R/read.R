@@ -100,7 +100,7 @@ read_pop_table <- function(input_dir, folders, data_group) {
     
   } else if (data_group == "none") {
     pop_table <- read.csv(folders$pop_table, stringsAsFactors = FALSE, 
-                          colClasses = c("character", "numeric", "numeric"))
+                          colClasses = "character")
     return(pop_table)
   }
   
@@ -320,13 +320,10 @@ standardize_shapefiles <- function(shapefiles, data_group) {
     shapefiles$place_id  <- as.character(shapefiles$place_id)
     
     names(shapefiles)[which(names(shapefiles) == "GEOLEVEL1")] <- "puma_id"
-    
-  
+
   } else if (data_group == "none") {
-  
     shapefiles$place_id <- as.character(shapefiles$place_id)
     check_shapefile(shapefiles)
-  
   }
   
   return(shapefiles)

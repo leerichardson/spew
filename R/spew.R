@@ -36,14 +36,11 @@ generate_spew <- function(input_dir, folders, data_group, output_dir, parallel =
   # Use the formatted data to generate synthetic populations 
   make_data(pop_table = formatted_data$pop_table, shapefile = formatted_data$shapefiles, 
             pums_h = formatted_data$pums$pums_h, pums_p = formatted_data$pums$pums_p, 
-            parallel = parallel, sampling_type = sampling_type, output_dir = output_dir, 
-            convert_count = convert_count)
+            schools = formatted_data$schools, parallel = parallel, output_dir = output_dir, 
+            sampling_type = sampling_type, convert_count = convert_count)
 
-  if (make_plots) {
-      # if desired make diagnostic maps
-      # NEEDS TESTED
-      make_maps(output_dir, formatted_data$shapefiles, zoom=6)
-
+  if (make_plots == TRUE) {
+      make_maps(output_dir, formatted_data$shapefiles, zoom = 6)
   }
   
   # End the timer and return this as output

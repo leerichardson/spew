@@ -15,7 +15,7 @@
 #' successfully 
 #' @examples
 #' make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
-make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE, 
+make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, parallel = FALSE, 
                       sampling_type = "uniform", output_dir = "/home/lee/south_dakota/", 
                       convert_count) {
   
@@ -35,7 +35,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
       print(node_name)
       print(session_id)
       
-      make_place(place, pop_table, shapefile, pums_h, pums_p, 
+      make_place(place, pop_table, shapefile, pums_h, pums_p, schools, 
                  sampling_type, output_dir, convert_count) 
     }    
   } else {
@@ -44,11 +44,10 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
     num_workers <- parallel::detectCores()
     cluster <- parallel::makeCluster(num_workers, outfile = "")
     
-    export_objects <- c("num_places", "make_place", "pop_table", 
-                        "shapefile", "pums_h", "pums_p", "sampling_type", 
-                        "output_dir", "convert_count", "people_to_households", 
-                        "sample_households", "sample_locations", "sample_people", 
-                        "write_data", "people_to_households")
+    export_objects <- c("num_places", "make_place", "pop_table", "shapefile", "pums_h", 
+                        "pums_p", "schools","sampling_type", "output_dir", "convert_count", 
+                        "people_to_households", "sample_households", "sample_locations", 
+                        "sample_people", "write_data", "people_to_households")
     
     parallel::clusterExport(cl = cluster, varlist = export_objects, envir = environment())    
     doParallel::registerDoParallel(cluster)    
@@ -63,7 +62,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
       print(node_name)
       print(session_id)
         
-      make_place(place, pop_table, shapefile, pums_h, pums_p, 
+      make_place(place, pop_table, shapefile, pums_h, pums_p, schools,
                  sampling_type, output_dir, convert_count)
     }
     
@@ -99,7 +98,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, parallel = FALSE,
 #' synthetic population  
 #' @return synthetic population .csv file for both household and person 
 #' level data  
-make_place <- function(index, pop_table, shapefile, pums_h, pums_p, 
+make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
                        sampling_type, output_dir, convert_count) {
   
   start_time <- Sys.time()
@@ -150,6 +149,13 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p,
   sampled_people <- sample_people(sampled_households, pums_p)
   sampled_people$place_id <- place_id
   sampled_people$puma_id <- puma_id
+  
+  # Assign schools to people if the data exists 
+  if (!is.null(schools)) {
+    school_ids <- assign_schools(sampled_people, schools)
+    sampled_people$school_id <- school_ids
+    stopifnot("school_id" %in% names(sampled_people))
+  }
   
   # Write the synthetic populations as CSV's
   write_data(df = sampled_households, place_id = place_id, 

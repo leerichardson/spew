@@ -123,7 +123,7 @@ test_that("ipums functions", {
                                 data_group = "ipums", 
                                 folders = list(pop_table = "counts", 
                                                pums = "PUMS", 
-                                               shapefiles = "shapefile"))
+                                               shapefiles = "shapefile_ipums"))
   
   expect_equal(class(uruguay_counts), "data.frame")
   
@@ -135,7 +135,7 @@ test_that("ipums functions", {
                             data_group = "ipums", 
                             folders = list(pop_table = "counts", 
                                            pums = "PUMS", 
-                                           shapefiles = "shapefile"), 
+                                           shapefiles = "shapefile_ipums"), 
                             vars = list(household = NA, person = NA))
   
   expect_equal(class(uruguay_pums), "list")
@@ -150,26 +150,25 @@ test_that("ipums functions", {
                                    data_group = "ipums", 
                                    folders = list(pop_table = "counts", 
                                                   pums = "PUMS", 
-                                                  shapefiles = "shapefile"))
+                                                  shapefiles = "shapefile_ipums"))
   
   expect_equal(class(uruguay_shape) == "SpatialPolygonsDataFrame", TRUE)
-  expect_equal("NAME_1" %in% names(uruguay_shape), TRUE)
+  expect_equal("place_id" %in% names(uruguay_shape), TRUE)
   
   standard_shape <- standardize_shapefiles(uruguay_shape, data_group = "ipums")
-  expect_equal("place_id" %in% names(standard_shape), TRUE)  
+  expect_equal("puma_id" %in% names(standard_shape), TRUE)  
 
   # Overall ----------------------------------
   uruguay_data <- read_data(data_path, 
                             data_group = "ipums", 
                             folders = list(pop_table = "counts", 
                                            pums = "PUMS", 
-                                           shapefiles = "shapefile"))
+                                           shapefiles = "shapefile_ipums"))
   
   expect_equal("SERIALNO" %in% names(uruguay_data$pums$pums_p), TRUE)
   expect_equal("puma_id" %in% names(uruguay_data$pums$pums_h), TRUE)
   expect_equal(class(uruguay_data) == "list", TRUE)
 })
-
 
 test_that("no group functions", {
   
@@ -179,38 +178,37 @@ test_that("no group functions", {
   data_path <- paste0(spew_dir, "/", "data-raw/")  
   
   # Counts --------------------------------
-  
   counts <- read_pop_table(input_dir = NULL, 
-                           folders = list(pop_table = paste0(data_path, "uruguay/counts/uruguay_admin.csv"), 
-                                          pums = list(pums_h = paste0(data_path, "uruguay/PUMS/858.csv"), 
-                                                      pums_p = paste0(data_path, "uruguay/PUMS/858.csv")), 
-                                          shapefiles = paste0(data_path, "uruguay/shapefile/URY_adm1.shp")), 
+                           folders = list(pop_table = paste0(data_path, "uruguay/counts/uruguay_revised.csv"), 
+                                          pums = list(pums_h = paste0(data_path, "uruguay/PUMS/uruguay.csv"), 
+                                                      pums_p = paste0(data_path, "uruguay/PUMS/uruguay.csv")), 
+                                          shapefiles = paste0(data_path, "uruguay/shapefile_ipums/uruguay_revised.shp")), 
                            data_group = "none")
+  
   
   expect_equal(class(counts), "data.frame")
   expect_error(standardize_pop_table(counts, data_group = "none"), "%in% pt_names is not TRUE", fixed = TRUE)
   
+  # Shapefile -----------------------------
   shapefile <- read_shapefiles(input_dir = NULL, 
-                               folders = list(pop_table = paste0(data_path, "uruguay/counts/uruguay_admin.csv"), 
-                                              pums = list(pums_h = paste0(data_path, "uruguay/PUMS/858.csv"), 
-                                                          pums_p = paste0(data_path, "uruguay/PUMS/858.csv")), 
-                                              shapefiles = paste0(data_path, "uruguay/shapefile/URY_adm1.shp")), 
+                               folders = list(pop_table = paste0(data_path, "uruguay/counts/uruguay_revised.csv"), 
+                                              pums = list(pums_h = paste0(data_path, "uruguay/PUMS/uruguay.csv"), 
+                                                          pums_p = paste0(data_path, "uruguay/PUMS/uruguay.csv")), 
+                                              shapefiles = paste0(data_path, "uruguay/shapefile_ipums/uruguay_revised.shp")), 
                                data_group = "none")
   
   expect_equal(as.character(class(shapefile)), "SpatialPolygonsDataFrame")
-  expect_error(standardize_shapefiles(shapefile, data_group = "none"))
-  
+
+  # Pums ---------------------------------
   pums <- read_pums(input_dir = NULL, 
-                    folders = list(pop_table = paste0(data_path, "uruguay/counts/uruguay_admin.csv"), 
-                                   pums = list(pums_h = paste0(data_path, "uruguay/PUMS/858.csv"), 
-                                               pums_p = paste0(data_path, "uruguay/PUMS/858.csv")), 
-                                   shapefiles = paste0(data_path, "uruguay/shapefile/URY_adm1.shp")), 
-                    data_group = "none", 
-                    vars = list(household = NA, person = NA))
+                    folders = list(pop_table = paste0(data_path, "uruguay/counts/uruguay_revised.csv"), 
+                                   pums = list(pums_h = paste0(data_path, "uruguay/PUMS/uruguay.csv"), 
+                                               pums_p = paste0(data_path, "uruguay/PUMS/uruguay.csv")), 
+                                   shapefiles = paste0(data_path, "uruguay/shapefile_ipums/uruguay_revised.shp")), 
+                    data_group = "none", vars = list(household = NA, person = NA))
   
   expect_equal(class(pums), "list")
   expect_equal(class(pums$pums_h), "data.frame")
-  expect_error(standardize_pums(pums, data_group = "none"))  
-  
+  expect_error(standardize_pums(pums, data_group = "none"))
 })
 

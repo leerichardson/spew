@@ -70,4 +70,7 @@ test_that("Sampling functions", {
   expect_equal(abs( (nrow(synth_pums_p) / original_nhouse) - 1) < .2, TRUE)
   
   unlink("tmp/", recursive = TRUE)
+  
+  # Testing the schools function 
+  
 })
