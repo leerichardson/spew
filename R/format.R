@@ -154,6 +154,22 @@ remove_words <- function(word, names) {
   return(names)
 }
 
+
+#' Force counts to shapefiles despite bad matches from shapefiles and pop_table names
+#' 
+#' @param shapefile_names names of the regions that will be allocated counts
+#' @param pop_table data frame to update
+#' @param split_type in c("uniform")
+#' @return new_table data frame with counts that match the shapefile, total population should match the sum of the old pop_table counts
+
+force_counts <- function(shapefile_names, pop_table, split_type="uniform"){
+    #get the good matches
+    #separate them from bad
+    #split up remaining counts to unmatches shapefile_names
+    #avoid lakes?
+    print("WARNING:  There is at least one mismatch between population region names and shapefile region names.  We split the unmatched population totals evenly into the unmatched shapefile names.")
+
+}
 #' Re-allocate excess counts to other locations 
 #' 
 #' @param counts numeric vector of current counts 
@@ -291,4 +307,13 @@ remove_excess_words <- function(names) {
   return(names)
 }
 
-
+#' Brute force a shapefile into a 1-1 pop table
+#'
+#' Take the total population and divide it by the number of regions
+#' @param total total number of households in the coutry
+#' @param shapefile_names names exactly corresponding to shapefile_names
+#' @return data frame that matches pop_table and shapefile names exactly, splitting the population evenly
+force_pop <- function(total, shapefile_names){
+    pop_table <- data.frame(place_id = shapefile_names, n_house = floor(total/length(shapefile_names)), level="total")
+    return(pop_table)
+}

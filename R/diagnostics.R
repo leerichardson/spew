@@ -214,3 +214,19 @@ run_diags <- function(input_dir="./", output_dir=input_dir, save_plots=TRUE, pre
     return(row)
 
 }
+
+## #' Make a log file, either creating a new file or adding on to an old one
+## #'
+## #' @param text string of text to add to log file
+## #' @param filename full path to the output log file, preferably .txt
+## #' @param new_file logical, should we overwrite an old file?
+## #' @return made_log logical
+
+## make_log_file <- function(text, filename, new_file=FALSE){
+##     if(new_file){
+##         if(file.exists(filename)) file.remove(filename)
+##         file.create(filename)
+##     }
+##     write(text, filename, append=TRUE)
+##     return(TRUE)
+## }
