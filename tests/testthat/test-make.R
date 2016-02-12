@@ -35,16 +35,14 @@ test_that("Sampling functions", {
   regular_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles, 
                                       sd_data$pums$pums_h, sd_data$pums$pums_p, 
                                       convert_count = FALSE))
-  
   parallel_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles, 
                                       sd_data$pums$pums_h, sd_data$pums$pums_p, 
                                       parallel = TRUE, convert_count = FALSE))
   
-  
   sink()
   file.remove("test_output.txt")
   
-  expect_equal(as.logical(parallel_md[3] < regular_md[3]), TRUE)
+  expect_equal(as.logical(parallel_md[1] < regular_md[1]), TRUE)
 
   # Test the Serial Synth and convert count functions ---------------
   data(uruguay_data)
@@ -72,5 +70,4 @@ test_that("Sampling functions", {
   expect_equal(abs( (nrow(synth_pums_p) / original_nhouse) - 1) < .2, TRUE)
   
   unlink("tmp/", recursive = TRUE)
-  
 })

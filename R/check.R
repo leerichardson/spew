@@ -43,7 +43,7 @@ check_pums <- function(pums) {
   stopifnot("puma_id" %in% names(pums$pums_h))
   
   if (!("PERSONS" %in% names(pums$pums_h))) {
-    print("PERSONS not in pums_h for convert_count")
+    warning("PERSONS not in pums_h for convert_count")
   }
   
   stopifnot("SERIALNO" %in% names(pums$pums_h))

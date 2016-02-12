@@ -4,7 +4,7 @@ test_that("United States functions", {
   
   # Make sure we are using the correct data-raw directory 
   # as opposed to the test/testthat one within the package 
-  spew_dir <- system.file("", package="spew")
+  spew_dir <- system.file("", package = "spew")
   data_path <- paste0(spew_dir, "/", "data-raw/46")
   
   # Pop Table -------------------------------- 
@@ -88,15 +88,24 @@ test_that("United States functions", {
   expect_equal(length(standard_shape$place_id) == 222, TRUE)
   expect_equal(class(standard_shape$place_id) == "character", TRUE)
   
-
-  # Lookup -----------------------------
-
-  
   # Schools ----------------------------
+  sd_schools <- read_schools(data_path, 
+                                data_group = "US", 
+                                folders = list(pop_table = "popTables", 
+                                               pums = "pums", 
+                                               schools = "schools/2013", 
+                                               lookup = "tables", 
+                                               shapefiles = "tiger", 
+                                               workplaces = "workplaces")) 
   
+  expect_equal(class(sd_schools) == "list", TRUE)
+  expect_equal(all(names(sd_schools) == c("public", "private")), TRUE)
+  expect_equal(class(sd_schools$public$StNo), "character")
+  expect_equal(class(sd_schools$public$CoNo), "character")
   
   # Workplace --------------------------
   
+  # Overall ----------------------------
   
 }) 
 

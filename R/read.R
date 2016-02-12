@@ -15,7 +15,7 @@
 read_data <- function(input_dir, 
                       folders = list(pop_table = "popTables", 
                                            pums = "pums/2013", 
-                                           schools = "schools", 
+                                           schools = "schools/2013", 
                                            lookup = "tables", 
                                            shapefiles = "tiger", 
                                            workplaces = "workplaces"), 
@@ -338,17 +338,22 @@ read_schools <- function(input_dir, folders, data_group){
   schools_path <- paste0(input_dir, "/", folders$schools, "/")
   
   if (data_group == "US") {
-      
-    # Read in public school dataframe  
-    public_fn <- paste0(schools_path, "ELSI_2011_public_f.csv")
-    public_df <- read.csv(public_fn, stringsAsFactors = FALSE)
-    public_df$State.Code = gsub("=", "", public_df$State.Code)
-
-    # Read in private school dataframe 
-    private_fn <- paste0(schools_path, "ELSI_2010_private_f.csv")
-    private_df <- read.csv(private_fn, stringsAsFactors = FALSE)
-    private_df$State.Code = gsub("=", "", private_df$State.Code)
     
+    school_files <- list.files(schools_path)
+    
+    # Read in public and private school data-frames 
+    public_file_index <- grep("public", school_files)
+    public_file <- paste0(schools_path, school_files[public_file_index])
+    public_df <- read.csv(public_file, stringsAsFactors = FALSE, 
+                          colClasses = c(StNo = "character", CoNo = "character", 
+                                         ID = "character"))
+      
+    private_file_index <- grep("private", school_files)
+    private_file <- paste0(schools_path, school_files[private_file_index])
+    private_df <- read.csv(private_file, stringsAsFactors = FALSE, 
+                           colClasses = c(StNo = "character", CoNo = "character", 
+                                          ID = "character"))
+
     # Combine the public and private schools into a list 
     schools <- list(public = public_df, private = private_df)
     return(schools)

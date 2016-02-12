@@ -24,9 +24,9 @@ test_that("data has all the required pieces", {
   # American South Dakota Data 
   data(sd_data)
   
-  expect_equal(check_pop_table(sd_data$pop_table), "Pop table is ready!")
+  expect_match(check_pop_table(sd_data$pop_table), "Pop table is ready!")
   expect_equal(check_shapefile(sd_data$shapefiles), "Shapefile is ready!")
-  expect_error(check_pums(sd_data$pums))
+  expect_equal(check_pums(sd_data$pums), "Pums is ready!")
   
   sd_count_ids <- sd_data$pop_table$place_id
   sd_count_pumas <- sd_data$pop_table$puma_id
