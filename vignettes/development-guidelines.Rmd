@@ -262,6 +262,7 @@ Now, we can call the `generate_spew` function on Olympus for a given input direc
 Finally, once you re-load the package, it's useful to debug it in Interactive mode on Olympus, just to make sure things are working as expected. you can submit an interactive job (ie: Log onto one of the compute nodes) with the command `qsub -I -l walltime=3:00:00`. To save time, I usually run the US version on State 01 to find bugs:
 
 ```{r, eval=FALSE}
+library(plyr)
 library(spew)
 library(ggmap)
 library(maptools)
@@ -270,21 +271,25 @@ library(doParallel)
 library(stringdist)
 options(error = recover)
 
+data_group <- "US"
+convert_count = FALSE
+folders <- list(pop_table = "popTables", 
+                      pums = "pums/2013", 
+                      schools = "schools/2013", 
+                      lookup = "tables", 
+                      shapefiles = "tiger", 
+                      workplaces = "workplaces")
+vars = list(household = NA, person = NA)
 
-# data_group <- "US"
-# convert_count = FALSE
-# folders <- list(pop_table = "popTables", 
-#                      pums = "pums/2013", 
-#                      schools = "schools", 
-#                      lookup = "tables", 
-#                      shapefiles = "tiger", 
-#                      workplaces = "workplaces")
-
-data_group = "ipums"
-convert_count = TRUE
-folders <- list(pop_table = "counts", 
-                    pums = "PUMS", 
-                    shapefiles = "shapefile_ipums")
+# data_group = "ipums"
+# convert_count = TRUE
+# folders <- list(pop_table = "counts", 
+#                     pums = "PUMS", 
+#                     shapefiles = "shapefile_ipums")
+# vars = list(household = c("COUNTRY","YEAR","SAMPLE","SERIAL","PERSONS","HHWT",
+#                             "FORMTYPE","REGIONW","GEOLEV1","GEOLEV2","HHTYPE",
+#                             "PERNUM","PERWT","RELATE","RELATED"), 
+#             person = c("SERIAL","AGE","SEX","RACE","SCHOOL","INCTOT"))
 
 # # data_group <- "none"
 # convert_count = FALSE
@@ -293,18 +298,12 @@ folders <- list(pop_table = "counts",
 #                                  pums_p = "/data/shared_group_data/syneco/input/west/north_america/canada/pums/pums_p.csv"),  
 #                      shapefiles = "/data/shared_group_data/syneco/input/west/north_america/canada/shapefiles/canada_shapefiles.shp")
 
-in_dir <- "/data/shared_group_data/syneco/input/east/africa/zambia"
-out_dir <- "~/output/zambia/"
-
-vars = list(household = c("COUNTRY","YEAR","SAMPLE","SERIAL","PERSONS","HHWT",
-                            "FORMTYPE","REGIONW","GEOLEV1","GEOLEV2","HHTYPE",
-                            "PERNUM","PERWT","RELATE","RELATED"), 
-            person = c("SERIAL","AGE","SEX","RACE","SCHOOL","INCTOT"))
+in_dir <- "/data/shared_group_data/syneco/input/west/north_america/united_states/46"
+out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/south_dakota/"
 
 generate_spew(input_dir = in_dir, output_dir = out_dir, folders = folders, 
-              parallel = FALSE, data_group, sampling_type = "uniform", 
-              convert_count = convert_count, vars = vars, make_plots=TRUE)
-
+              parallel = TRUE, data_group, sampling_type = "uniform", 
+              convert_count = convert_count, vars = vars, make_plots = FALSE)
 ```
 
 

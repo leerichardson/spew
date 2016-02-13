@@ -14,8 +14,8 @@
 #' population totals to househole counts
 #' @param vars list with two components: household and person. This specifies 
 #' which variables to include in the corresponding PUMS data-set  
-#' @param make_plots boolean indicating whether we should make maps of the synthetic households.  
-#' WARNING:  Approximately doubles the run time.
+#' @param make_plots logical indicating whether we should make maps of 
+#' the synthetic households.  
 #' @export
 #' @return logical indicating whether or not this run of spew ended successfully 
 generate_spew <- function(input_dir, folders, data_group, output_dir, parallel = TRUE, 

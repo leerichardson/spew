@@ -47,14 +47,16 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, parallel = 
     export_objects <- c("num_places", "make_place", "pop_table", "shapefile", "pums_h", 
                         "pums_p", "schools","sampling_type", "output_dir", "convert_count", 
                         "people_to_households", "sample_households", "sample_locations", 
-                        "sample_people", "write_data", "people_to_households")
+                        "sample_people", "write_data", "people_to_households", "assign_schools", 
+                        "assign_schools_inner", "weight_dists", "get_dists", "haversine", 
+                        "subset_schools")
     
     parallel::clusterExport(cl = cluster, varlist = export_objects, envir = environment())    
     doParallel::registerDoParallel(cluster)    
     
-    foreach(place = 1:num_places) %dopar% {
+    foreach(place = 1:num_places, .packages = c("plyr")) %dopar% {
       
-      # Print out relevant information pertaining to the job 
+      # Print out relevant information pertaining to the job
       msg <- paste0("Generating place: ", place, " out of ", num_places)
       node_name <- paste0("Node: ", Sys.info()[['nodename']])      
       session_id <- paste0("R Session ID: ", Sys.getpid())
@@ -62,8 +64,8 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, parallel = 
       print(node_name)
       print(session_id)
         
-      make_place(place, pop_table, shapefile, pums_h, pums_p, schools,
-                 sampling_type, output_dir, convert_count)
+      make_place(place, pop_table, shapefile, pums_h, pums_p, schools, 
+                 sampling_type, output_dir, convert_count) 
     }
     
     parallel::stopCluster(cluster)

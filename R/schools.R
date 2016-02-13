@@ -32,7 +32,7 @@ assign_schools <- function(people, schools) {
   original_order <- order(people_ord)
   people <- people[people_ord, ]
   
-  school_assignments <- ddply(people, .variables = c('SCH', 'SCHG', 'grade', 'age', 'co'), 
+  school_assignments <- plyr::ddply(people, .variables = c('SCH', 'SCHG', 'grade', 'age', 'co'), 
                               .fun = assign_schools_inner, schools = schools)
   school_ids <- school_assignments$ids[original_order]
   
