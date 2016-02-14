@@ -5,7 +5,9 @@
 #' @param shapefile sp class object used for assigning households to 
 #' particular locations  
 #' @param pums_h dataframe with microdata corresponding to housegolds 
-#' @param pums_p dataframe with microdata corresponding to people 
+#' @param pums_p dataframe with microdata corresponding to people
+#' @param schools list with names "public" and "private" with a dataframe of schools corresponding to public or private, respectively
+#' @param workplaces dataframe of workplaces with a workplace_id column, employees column, and stcotr column
 #' @param parallel logical indicating whether or not we will generate our 
 #' synthetic populations in parallel
 #' @param sampling_type character vector indicating the type oof sampling used. 
@@ -15,7 +17,7 @@
 #' successfully 
 #' @examples
 #' make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
-make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, parallel = FALSE, 
+make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces, parallel = FALSE, 
                       sampling_type = "uniform", output_dir = "/home/lee/south_dakota/", 
                       convert_count) {
   
@@ -158,6 +160,15 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
     sampled_people$school_id <- school_ids
     stopifnot("school_id" %in% names(sampled_people))
   }
+
+  # Assign workplaces to people if the data exists 
+  if (!is.null(workplaces)) {
+    workplace_ids <- assign_schools(sampled_people, workplaces)
+    sampled_people$workplace_id <- workplace_ids
+    stopifnot("workplace_id" %in% names(sampled_people))
+  }
+
+    
   
   # Write the synthetic populations as CSV's
   write_data(df = sampled_households, place_id = place_id, 

@@ -18,9 +18,10 @@ assign_schools <- function(people, schools) {
   
   # Create new variables for age, grade, county, and state. 
   # School Enrollment: 1: NO, 2: PUBLIC, 3: PRIVATE 
-  # Grade: 01-14. Kindergarten-12th grade. 15-16 (College)
+  # Grade: 01-14. Pre-Kindergarten-12th grade. 15-16 (College)
   people$age <- ifelse(people$AGEP >= 3 & people$AGEP <= 20, 1, 0) 
-  # Lee: changed above to account for 19/20 year old 12th graders 
+  # Lee: changed above to account for 19/20 year old 12th graders
+  #SKG:  that's some old high schoolers!
   people$grade <- ifelse(people$SCHG >= 1 & people$SCHG <= 14, people$SCHG , 0)
   people$co <- substr(people$place_id, 3, 5)
   people$st <- substr(people$place_id, 1, 2)
@@ -44,15 +45,20 @@ assign_schools <- function(people, schools) {
 #' @param schools list of schools, one data frame of private and one of public 
 #' @return column of school ID assignments
 assign_schools_inner <- function(df, schools) {
-  # This line is very confusing, we need to turn it into multiple lines for clarity. 
+  # This line is very confusing, we need to turn it into multiple lines for clarity.
+  # This line is looking for conditions of a school age child.
   if (df$SCH[1] < 2 | df$age[1] == 0 | df$grade[1] < 1 | df$grade[1] > 14 | is.na(df$SCH[1]) | is.na(df$SCHG[1])| is.na(df$age[1]) | is.na(df$grade[1])) {
+      # If not a school age child, then we return NA
     ids <- rep(NA, nrow(df))
   } else {
-    # Let's comment in the logic of these procdures. 
+    # Let's comment in the logic of these procdures.
+    # First we subset the schools to look at only the schools with appropriate region, and grade
     schools_sub <- subset_schools(df, schools)
+    # We then get the physical distance between the schools and child if applicable
     dist_mat <- get_dists(df, schools_sub, dist = "haversine")
+    # We finally weight the probability of child going to the school by distance and number of students in the school
     weight_mat <- weight_dists(dist_mat, schools_sub)
-    
+    # We then sample a school
     school_inds <- apply(weight_mat, 1, function(row) sample(1:nrow(schools_sub), size = 1, prob = row))
     ids <- as.character(schools_sub[school_inds, 'ID'])
   }
@@ -95,12 +101,14 @@ get_dists <- function(df, schools, dist){
   
   # Lee: I'm guessing this check if there is 
   # private schools or public. Let's make this 
-  # explicit in the code. 
+  # explicit in the code.
+  # SKG:  It's supposed to be even more generic than that.  If we have lat/lon, then use that.  if not, then just use the schools in the county (or equivalent).
   if (!any(grepl("Lat", colnames(schools)))){
     return(matrix(0, nrow = m, ncol = n))
   }
   
-  # Lee: We should explain what's happening here, hard to parse 
+  # Lee: We should explain what's happening here, hard to parse
+  # SKG: We extract the x and y coordinates of m the people and the n schools.  We then find the haversine distance (distance on a great sphere) between each pair of people and schools.  The people are the rows and the schools are the columns after we transpose due to a quirk in the 'apply' function.
   dist_mat <- apply(df, 1, function(row){
     x1 <- as.numeric(as.character(rep(row['longitude'], n)))
     stopifnot(!is.null(row['longitude']))
@@ -120,12 +128,12 @@ get_dists <- function(df, schools, dist){
   return(t(dist_mat))
 }
 
-#' Get the haversine distance between two points (x1, y1) and (x2, y2)
+#' Get the haversine distance between two points (x1, y1) and (x2, y2) scaled between 0 and 1.
 #' 
-#' @param x1 longitude of object 1
-#' @param y1 latitude of object 1
-#' @param x2 longitude of object 2
-#' @param y2 latitude of object 2
+#' @param x1 longitude of object 1 (vector)
+#' @param y1 latitude of object 1 (vector)
+#' @param x2 longitude of object 2 (vector)
+#' @param y2 latitude of object 2 (vector)
 #' @references http://andrew.hedges.name/experiments/haversine/
 #' @return numeric 
 haversine <- function(x1, y1, x2, y2){
@@ -133,7 +141,7 @@ haversine <- function(x1, y1, x2, y2){
   dy <- y2 - y1 
   a <- (sin(dy/2))^2 + cos(y1) * cos(y2) * (sin(dx/2))^2
   d <- atan2( sqrt(a), sqrt(1-a))
-  d <- (d + 2*pi/ pi) 
+  d <- (d + 2*pi/ pi)  # scales between 0 and 1
   return(d)
 }
 
