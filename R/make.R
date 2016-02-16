@@ -38,7 +38,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
       print(session_id)
       
       make_place(place, pop_table, shapefile, pums_h, pums_p, schools, 
-                 sampling_type, output_dir, convert_count) 
+                 workplaces, sampling_type, output_dir, convert_count) 
     }    
   } else {
     # Set up the worker cores and export all of the necessary 
@@ -51,7 +51,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
                         "people_to_households", "sample_households", "sample_locations", 
                         "sample_people", "write_data", "people_to_households", "assign_schools", 
                         "assign_schools_inner", "weight_dists", "get_dists", "haversine", 
-                        "subset_schools")
+                        "subset_schools", "assign_workplaces", "assign_workplaces_inner")
     
     parallel::clusterExport(cl = cluster, varlist = export_objects, envir = environment())    
     doParallel::registerDoParallel(cluster)    
@@ -67,7 +67,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
       print(session_id)
         
       make_place(place, pop_table, shapefile, pums_h, pums_p, schools, 
-                 sampling_type, output_dir, convert_count) 
+                 workplaces, sampling_type, output_dir, convert_count) 
     }
     
     parallel::stopCluster(cluster)
@@ -103,8 +103,8 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
 #' @return synthetic population .csv file for both household and person 
 #' level data  
 make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
-                       sampling_type, output_dir, convert_count) {
-  
+                       workplaces, sampling_type, output_dir, convert_count) {
+
   start_time <- Sys.time()
   
   # Make sure there are people living in this particular 
@@ -163,12 +163,10 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
 
   # Assign workplaces to people if the data exists 
   if (!is.null(workplaces)) {
-    workplace_ids <- assign_schools(sampled_people, workplaces)
+    workplace_ids <- assign_workplaces(sampled_people, workplaces)
     sampled_people$workplace_id <- workplace_ids
     stopifnot("workplace_id" %in% names(sampled_people))
   }
-
-    
   
   # Write the synthetic populations as CSV's
   write_data(df = sampled_households, place_id = place_id, 

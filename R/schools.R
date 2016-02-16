@@ -19,9 +19,9 @@ assign_schools <- function(people, schools) {
   # Create new variables for age, grade, county, and state. 
   # School Enrollment: 1: NO, 2: PUBLIC, 3: PRIVATE 
   # Grade: 01-14. Pre-Kindergarten-12th grade. 15-16 (College)
-  people$age <- ifelse(people$AGEP >= 3 & people$AGEP <= 20, 1, 0) 
-  # Lee: changed above to account for 19/20 year old 12th graders
-  #SKG:  that's some old high schoolers!
+  # Lee: Removed age restriction, there seems to be no limit on 
+  # how old you must be to enter high school 
+  people$age <- ifelse(people$AGEP >= 3, 1, 0)
   people$grade <- ifelse(people$SCHG >= 1 & people$SCHG <= 14, people$SCHG , 0)
   people$co <- substr(people$place_id, 3, 5)
   people$st <- substr(people$place_id, 1, 2)
@@ -45,20 +45,23 @@ assign_schools <- function(people, schools) {
 #' @param schools list of schools, one data frame of private and one of public 
 #' @return column of school ID assignments
 assign_schools_inner <- function(df, schools) {
-  # This line is very confusing, we need to turn it into multiple lines for clarity.
-  # This line is looking for conditions of a school age child.
-  if (df$SCH[1] < 2 | df$age[1] == 0 | df$grade[1] < 1 | df$grade[1] > 14 | is.na(df$SCH[1]) | is.na(df$SCHG[1])| is.na(df$age[1]) | is.na(df$grade[1])) {
-      # If not a school age child, then we return NA
+  # Check for the conditions of a school age child 
+  if (df$SCH[1] < 2 | df$age[1] == 0 | df$grade[1] < 1 | df$grade[1] > 14 | 
+        is.na(df$SCH[1]) | is.na(df$SCHG[1])| is.na(df$age[1]) | 
+        is.na(df$grade[1])) {
+    
+    # If not a school age child, then we return NA
     ids <- rep(NA, nrow(df))
   } else {
-    # Let's comment in the logic of these procdures.
-    # First we subset the schools to look at only the schools with appropriate region, and grade
+    # Subset schools with appropriate schools and grade, get 
+    # the physical distance between schools and child, and 
+    # generate probabilities for each child attending a school 
+    # using a combination of distance and school size.
     schools_sub <- subset_schools(df, schools)
-    # We then get the physical distance between the schools and child if applicable
     dist_mat <- get_dists(df, schools_sub, dist = "haversine")
-    # We finally weight the probability of child going to the school by distance and number of students in the school
     weight_mat <- weight_dists(dist_mat, schools_sub)
-    # We then sample a school
+    
+    # Use these weights to assign schools 
     school_inds <- apply(weight_mat, 1, function(row) sample(1:nrow(schools_sub), size = 1, prob = row))
     ids <- as.character(schools_sub[school_inds, 'ID'])
   }
@@ -102,7 +105,9 @@ get_dists <- function(df, schools, dist){
   # Lee: I'm guessing this check if there is 
   # private schools or public. Let's make this 
   # explicit in the code.
-  # SKG:  It's supposed to be even more generic than that.  If we have lat/lon, then use that.  if not, then just use the schools in the county (or equivalent).
+  # SKG:  It's supposed to be even more generic than that.  
+  # If we have lat/lon, then use that.  if not, then just use the 
+  # schools in the county (or equivalent).
   if (!any(grepl("Lat", colnames(schools)))){
     return(matrix(0, nrow = m, ncol = n))
   }
@@ -161,6 +166,8 @@ subset_schools <- function(df, schools){
   stopifnot(sch %in% c(2,3)) #2 is public, 3 is private
   school_type <- ifelse(sch == 2, "public", "private")
   school <- schools[school_type][[1]]
+
+  school <- schools[school_type][[1]]
   
   # TODO:  FIX formatting of state or county number of schools
   # have to at least be in the right state
@@ -168,9 +175,13 @@ subset_schools <- function(df, schools){
   
   # Lee: Let's try to keep individual lines under 80 characters. This one 
   # is too long and hard to understand 
-  inds <- which(as.numeric(as.character(school$CoNo)) == as.numeric(co) & as.numeric(as.character(school$StNo)) == as.numeric(st))
-  school_sub <- school[inds,]
-  grade_inds <- which(school_sub$Low <= grade & school_sub$High >= grade | school_sub$Low == -2 | school_sub$High == -2)
+  inds <- which(as.numeric(as.character(school$CoNo)) == as.numeric(co) & 
+                  as.numeric(as.character(school$StNo)) == as.numeric(st))
+  
+  school_sub <- school[inds, ]
+  grade_inds <- which(school_sub$Low <= grade & school_sub$High >= grade | 
+                        school_sub$Low == -2 | school_sub$High == -2)
+  
   if (length(grade_inds) == 0) {
     if (nrow(school_sub) == 0) {
       school_sub <- school 

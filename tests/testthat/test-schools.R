@@ -64,4 +64,3 @@ test_that("United States School Assignment", {
   non_school_assignments <- school_df$assignments[non_school_indices]
   expect_equal(all(is.na(non_school_assignments)), TRUE)
 })
-

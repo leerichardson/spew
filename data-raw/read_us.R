@@ -82,11 +82,12 @@ sd_data <- format_data(data_list = sd_data, data_group = "US")
 library(parallel)
 library(foreach)
 library(doSNOW)
-make_data(pop_table = sd_data$pop_table, 
+make_data(pop_table = sd_data$pop_table[1:2, ], 
           pums_h = sd_data$pums$pums_h, 
           pums_p = sd_data$pums$pums_p, 
           shapefile = sd_data$shapefiles, 
           schools = sd_data$schools, 
+          workplaces = sd_data$workplaces, 
           parallel = TRUE, 
           output_dir = "/home/lee/south_dakota/", 
           sampling_type = "uniform", 

@@ -22,6 +22,7 @@ test_that("Sampling functions", {
   
   expect_output(make_place(test_ind, sd_data$pop_table, sd_data$shapefiles, 
                          sd_data$pums$pums_h, sd_data$pums$pums_p, 
+                         schools = sd_data$schools, workplaces = sd_data$workplaces,
                          sampling_type = "uniform", output_dir = "/home/lee", convert_count = FALSE), 
                           "Place has 0 Households!")
   
@@ -33,11 +34,13 @@ test_that("Sampling functions", {
   sink("test_output.txt")
   
   regular_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles, 
+                                      schools = sd_data$schools, workplaces = sd_data$workplaces, 
                                       sd_data$pums$pums_h, sd_data$pums$pums_p, 
                                       convert_count = FALSE))
-  parallel_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles, 
-                                      sd_data$pums$pums_h, sd_data$pums$pums_p, 
-                                      parallel = TRUE, convert_count = FALSE))
+  parallel_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles,
+                                       schools = sd_data$schools, workplaces = sd_data$workplaces,
+                                       sd_data$pums$pums_h, sd_data$pums$pums_p, 
+                                       parallel = TRUE, convert_count = FALSE))
   
   sink()
   file.remove("test_output.txt")
@@ -53,6 +56,7 @@ test_that("Sampling functions", {
   dir.create("tmp")
   make_place(index = 1, pop_table = uruguay_format$pop_table, 
              shapefile = uruguay_format$shapefiles, pums_h = uruguay_format$pums$pums_h, 
+             schools = uruguay_format$schools, workplaces = uruguay_format$workplaces,
              pums_p = uruguay_format$pums$pums_p, sampling_type = "uniform", 
              output_dir = "tmp/", convert_count = TRUE)
   
@@ -71,6 +75,7 @@ test_that("Sampling functions", {
   
   unlink("tmp/", recursive = TRUE)
   
-  # Testing the schools function 
+  # Testing that the schools an workplace functions 
+  # are integrated into make properly 
   
 })
