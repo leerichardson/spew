@@ -33,10 +33,10 @@ test_that("Sampling functions", {
   places <- 1:4 
   sink("test_output.txt")
   
-  regular_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles, 
-                                      schools = sd_data$schools, workplaces = sd_data$workplaces, 
+  regular_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles,
+                                      schools = sd_data$schools, workplaces = sd_data$workplaces,
                                       sd_data$pums$pums_h, sd_data$pums$pums_p, 
-                                      convert_count = FALSE))
+                                      parallel = FALSE, convert_count = FALSE))
   parallel_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles,
                                        schools = sd_data$schools, workplaces = sd_data$workplaces,
                                        sd_data$pums$pums_h, sd_data$pums$pums_p, 

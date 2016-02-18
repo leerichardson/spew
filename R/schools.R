@@ -113,7 +113,9 @@ get_dists <- function(df, schools, dist){
   }
   
   # Lee: We should explain what's happening here, hard to parse
-  # SKG: We extract the x and y coordinates of m the people and the n schools.  We then find the haversine distance (distance on a great sphere) between each pair of people and schools.  The people are the rows and the schools are the columns after we transpose due to a quirk in the 'apply' function.
+  # SKG: We extract the x and y coordinates of m the people and the n schools.  
+  # We then find the haversine distance (distance on a great sphere) between each pair of people and schools.  
+  # The people are the rows and the schools are the columns after we transpose due to a quirk in the 'apply' function.
   dist_mat <- apply(df, 1, function(row){
     x1 <- as.numeric(as.character(rep(row['longitude'], n)))
     stopifnot(!is.null(row['longitude']))

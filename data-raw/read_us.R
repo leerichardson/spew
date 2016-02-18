@@ -70,7 +70,7 @@ sd_workplaces <- read_workplaces("data-raw/46", data_group = "US", folders = lis
 # this as an .rdata file in the /data folder for use in debugging 
 # the other parts of spew ---------------------------------------
 sd_data <- read_data("data-raw/46", data_group = "US", folders = list(pop_table = "popTables", 
-                                                                      pums = "pums", 
+                                                                      pums = "pums/2013", 
                                                                       schools = "schools/2013", 
                                                                       lookup = "tables", 
                                                                       shapefiles = "tiger", 
@@ -79,10 +79,13 @@ sd_data <- read_data("data-raw/46", data_group = "US", folders = list(pop_table 
 sd_data <- format_data(data_list = sd_data, data_group = "US")
 # devtools::use_data(sd_data, overwrite = TRUE)
 
+
+# Test make_data with the south dakota data ----------------------
+data(sd_data)
 library(parallel)
 library(foreach)
 library(doSNOW)
-make_data(pop_table = sd_data$pop_table[1:2, ], 
+make_data(pop_table = sd_data$pop_table[1:5, ], 
           pums_h = sd_data$pums$pums_h, 
           pums_p = sd_data$pums$pums_p, 
           shapefile = sd_data$shapefiles, 
@@ -92,4 +95,3 @@ make_data(pop_table = sd_data$pop_table[1:2, ],
           output_dir = "/home/lee/south_dakota/", 
           sampling_type = "uniform", 
           convert_count = FALSE)
-

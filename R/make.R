@@ -17,9 +17,9 @@
 #' successfully 
 #' @examples
 #' make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
-make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces, parallel = FALSE, 
-                      sampling_type = "uniform", output_dir = "/home/lee/south_dakota/", 
-                      convert_count) {
+make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces, 
+                      parallel = FALSE, sampling_type = "uniform", 
+                      output_dir = "/home/lee/south_dakota/", convert_count) {
   
   start_time <- Sys.time()
   
@@ -46,26 +46,26 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
     num_workers <- parallel::detectCores()
     cluster <- parallel::makeCluster(num_workers, outfile = "")
     
-    export_objects <- c("num_places", "make_place", "pop_table", "shapefile", "pums_h", 
-                        "pums_p", "schools","sampling_type", "output_dir", "convert_count", 
-                        "people_to_households", "sample_households", "sample_locations", 
-                        "sample_people", "write_data", "people_to_households", "assign_schools", 
-                        "assign_schools_inner", "weight_dists", "get_dists", "haversine", 
-                        "subset_schools", "assign_workplaces", "assign_workplaces_inner")
+    export_objects <- c("make_place", "people_to_households", "sample_households", 
+                        "sample_locations", "sample_people", "write_data", 
+                        "people_to_households", "assign_schools", "assign_schools_inner", 
+                        "weight_dists", "get_dists", "haversine", "subset_schools", 
+                        "assign_workplaces", "assign_workplaces_inner")
     
     parallel::clusterExport(cl = cluster, varlist = export_objects, envir = environment())    
-    doParallel::registerDoParallel(cluster)    
+    doSNOW::registerDoSNOW(cluster)
     
-    foreach(place = 1:num_places, .packages = c("plyr")) %dopar% {
+    foreach(place = 1:num_places, .packages = c("plyr"), .export = export_objects) %dopar% {
       
       # Print out relevant information pertaining to the job
       msg <- paste0("Generating place: ", place, " out of ", num_places)
-      node_name <- paste0("Node: ", Sys.info()[['nodename']])      
+      node_name <- paste0("Node: ", Sys.info()[['nodename']])
       session_id <- paste0("R Session ID: ", Sys.getpid())
       print(msg)
       print(node_name)
       print(session_id)
-        
+      
+      print(ls())  
       make_place(place, pop_table, shapefile, pums_h, pums_p, schools, 
                  workplaces, sampling_type, output_dir, convert_count) 
     }
@@ -106,7 +106,7 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
                        workplaces, sampling_type, output_dir, convert_count) {
 
   start_time <- Sys.time()
-  
+
   # Make sure there are people living in this particular 
   # place. If not, skip!
   if (pop_table[index, "n_house"] == 0) {
@@ -153,7 +153,7 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   sampled_people <- sample_people(sampled_households, pums_p)
   sampled_people$place_id <- place_id
   sampled_people$puma_id <- puma_id
-  
+
   # Assign schools to people if the data exists 
   if (!is.null(schools)) {
     school_ids <- assign_schools(sampled_people, schools)
