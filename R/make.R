@@ -65,7 +65,6 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
       print(node_name)
       print(session_id)
       
-      print(ls())  
       make_place(place, pop_table, shapefile, pums_h, pums_p, schools, 
                  workplaces, sampling_type, output_dir, convert_count) 
     }

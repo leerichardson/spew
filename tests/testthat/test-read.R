@@ -92,7 +92,7 @@ test_that("United States functions", {
   sd_schools <- read_schools(data_path, 
                                 data_group = "US", 
                                 folders = list(pop_table = "popTables", 
-                                               pums = "pums", 
+                                               pums = "pums/2013", 
                                                schools = "schools/2013", 
                                                lookup = "tables", 
                                                shapefiles = "tiger", 
@@ -104,9 +104,29 @@ test_that("United States functions", {
   expect_equal(class(sd_schools$public$CoNo), "character")
   
   # Workplace --------------------------
+  sd_workplaces <- read_workplaces(data_path, 
+                                data_group = "US", 
+                                folders = list(pop_table = "popTables", 
+                                               pums = "pums/2013", 
+                                               schools = "schools/2013", 
+                                               lookup = "tables", 
+                                               shapefiles = "tiger", 
+                                               workplaces = "workplaces"))
+  expect_equal(class(sd_workplaces) == "data.frame", TRUE)
   
+  
+#   sd_workplaces$stcotr <- as.character(sd_workplaces$stcotr)
+#   sd_workplaces$stcotr <- substr(sd_workplaces$stcotr, 2, nchar(sd_workplaces))
+#   sd_workplaces <- spew:::read_workplaces("/data/shared_group_data/syneco/input/west/north_america/united_states/01", 
+#                                           data_group = "US", 
+#                                           folders = list(pop_table = "popTables", 
+#                                                          pums = "pums/2013", 
+#                                                          schools = "schools/2013", 
+#                                                          lookup = "tables", 
+#                                                          shapefiles = "tiger", 
+#                                                          workplaces = "workplaces"))
+    
   # Overall ----------------------------
-  
 }) 
 
 

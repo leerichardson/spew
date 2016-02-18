@@ -11,6 +11,7 @@ assign_workplaces <- function(people, workplaces){
   
   # Verify the ESR value is a number
   people$ESR <- as.numeric(as.character(people$ESR))
+  
   # Extract the state and county number
   people$co <- substr(people$place_id, 3, 5)
   people$st <- substr(people$place_id, 1, 2)
@@ -20,8 +21,7 @@ assign_workplaces <- function(people, workplaces){
   
   # Assign the people to workplaces, as necessary. Note that to run ddply, 
   # we need to have the data-frame ordered. To solve this, we preserve 
-  # the original ordering and return the assigned ID's in this order.
-  
+  # the original ordering and return the assigned ID's in this order.  
   people_ord <- with(people, order(emp, co))
   original_order <- order(people_ord)
   people <- people[people_ord, ]
@@ -41,19 +41,23 @@ assign_workplaces_inner <- function(df, workplaces){
   if (df$emp[1] == 0){
     # If the person is not employed, no workplace ID is returned
     ids <- rep(NA, nrow(df))
-  } else {
+  } else {    
     # We then subset the workplaces to the county of the people
     stno <- df$st[1]
     cono <- df$co[1]
     workplaces$st <- substr(workplaces$stcotr, 1, 2) # Extract the state number
     workplaces$co <- substr(workplaces$stcotr, 3, 5) # Extract the co. number
-    # Try to have the workplaces be in the stsate and county
     workplaces_sub <- subset(workplaces, (st == stno & co == cono))
+
     # If not, then use any workplace in the state
-    if( nrow(workplaces_sub) == 0) workplaces_sub <- workplaces[workplaces$st == stno,]
+    if (nrow(workplaces_sub) == 0) {
+      workplaces_sub <- workplaces[workplaces$st == stno, ] 
+    }
     stopifnot( nrow(workplaces_sub) > 0)
+    
     probs <- workplaces_sub$employees / sum(workplaces_sub$employees)
-    stopifnot( length(probs) == nrow(workplaces_sub))
+    stopifnot(length(probs) == nrow(workplaces_sub))
+    
     id_inds <- sample(1:nrow(workplaces_sub), nrow(df), replace = TRUE, prob = probs)
     ids <- workplaces_sub$workplace_id[id_inds]
     stopifnot( sum(is.na(ids)) == 0)

@@ -371,6 +371,17 @@ read_workplaces <- function(input_dir, folders, data_group) {
     
     if (length(workplace_files == 1)) {
       filename <- workplace_files
+      workplaces <- read.csv(paste0(input_dir, "/", folders$workplaces, "/", filename), 
+                             stringsAsFactors = FALSE)
+      geog <- workplaces$stcotr
+      
+      # Make sure that the stcotr variable has 
+      # 11 characters. If not, add a 0 in the beginning 
+      if (all(nchar(geog) == 10)) {
+        geog <- paste0("0", geog)
+        workplaces$stcotr <- geog
+      }
+      
     } else if (length(workplace_files) > 1) {
       stop("Expecting only one file in the workplaces directory")
     }
@@ -381,8 +392,5 @@ read_workplaces <- function(input_dir, folders, data_group) {
     #  do stuff
   }
   
-  #  Read in shapefile
-  workplaces <- read.csv(paste0(input_dir, "/", folders$workplaces, "/", filename), 
-                         stringsAsFactors = FALSE)
   return(workplaces)
 }
