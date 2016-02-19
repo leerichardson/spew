@@ -17,7 +17,7 @@ assign_workplaces <- function(people, workplaces){
   people$st <- substr(people$place_id, 1, 2)
   
   # Create new employment variable
-  people$emp <- ifelse(people$ESR %in% c(1,2,4,5), 1, 0)
+  people$emp <- ifelse(people$ESR %in% c(1, 2, 4, 5), 1, 0)
   
   # Assign the people to workplaces, as necessary. Note that to run ddply, 
   # we need to have the data-frame ordered. To solve this, we preserve 
@@ -27,7 +27,8 @@ assign_workplaces <- function(people, workplaces){
   people <- people[people_ord, ]
   
   work_assignments <- plyr::ddply(people, .variables = c('emp', 'co'), 
-                                  .fun = assign_workplaces_inner, workplaces = workplaces)
+                                  .fun = assign_workplaces_inner, 
+                                  workplaces = workplaces)
   work_ids <- work_assignments$ids[original_order]
   return(work_ids)
 }
@@ -37,8 +38,8 @@ assign_workplaces <- function(people, workplaces){
 #' @param df subset of people with emp either 0 or 1 and the county number
 #' @param workplaces dataframe or ESRI schools
 #' @return ID of ESRI workplace or NA
-assign_workplaces_inner <- function(df, workplaces){
-  if (df$emp[1] == 0){
+assign_workplaces_inner <- function(df, workplaces) {
+  if (df$emp[1] == 0) {
     # If the person is not employed, no workplace ID is returned
     ids <- rep(NA, nrow(df))
   } else {    
@@ -47,15 +48,28 @@ assign_workplaces_inner <- function(df, workplaces){
     cono <- df$co[1]
     workplaces$st <- substr(workplaces$stcotr, 1, 2) # Extract the state number
     workplaces$co <- substr(workplaces$stcotr, 3, 5) # Extract the co. number
-    workplaces_sub <- subset(workplaces, (st == stno & co == cono))
+    
+    # Lee: Removing NA's from workplaces$employees as this also shows 
+    # up in the Kansas file 
+    missing_employees <- which(is.na(workplaces$employees))
+    workplaces <- workplaces[-missing_employees, ]
+    
+    # Lee: This doesn't work (not sure why). Found this error while running 
+    # kansas and there was no workplaces for the particular country 
+    county_indices <- which(workplaces$co == cono)
+    workplaces_sub <- workplaces[county_indices, ]
 
     # If not, then use any workplace in the state
     if (nrow(workplaces_sub) == 0) {
-      workplaces_sub <- workplaces[workplaces$st == stno, ] 
+      state_indices <- which(workplaces$st == stno)
+      workplaces_sub <- workplaces[state_indices, ] 
     }
-    stopifnot( nrow(workplaces_sub) > 0)
+    stopifnot(nrow(workplaces_sub) > 0)
     
-    probs <- workplaces_sub$employees / sum(workplaces_sub$employees)
+    # Lee: Needed to add na.rm = TRUE to the sum function here... let's 
+    # try to check these things before committing. That way we know the 
+    # code can handle off of the conditons it's testing for 
+    probs <- workplaces_sub$employees / sum(workplaces_sub$employees, na.rm = TRUE)
     stopifnot(length(probs) == nrow(workplaces_sub))
     
     id_inds <- sample(1:nrow(workplaces_sub), nrow(df), replace = TRUE, prob = probs)
