@@ -275,9 +275,7 @@ sample_people <- function(household_pums, pums_p) {
 #' @return data indicating the indices of people to sample 
 write_data <- function(df, place_id, puma_id, type, output_dir) {
   
-  # Make a sub-directory for the puma_id if it exists 
-  if (!(is.na(puma_id))) {
-    directory <- paste0(output_dir, puma_id, "/")  
+    directory <- paste0(output_dir, "output_", puma_id, "/", "eco/")  
     
     if (!dir.exists(directory)) {
       dir.create(directory, recursive = TRUE)          
@@ -285,11 +283,7 @@ write_data <- function(df, place_id, puma_id, type, output_dir) {
     
     filename <- paste0(directory, type, "_", as.character(place_id), ".csv")
     write.table(df, filename, sep = ",", row.names = FALSE, qmethod = "double")
-    
-  } else {
-    filename <- paste0(output_dir, type, "_", as.character(place_id), ".csv")
-    write.table(df, filename, sep = ",", row.names = FALSE, qmethod = "double")
-  }  
+      
   return(TRUE)
 }
 
