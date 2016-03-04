@@ -231,35 +231,19 @@ Since our project is all hosted on github, we should in theory be able to simply
 
 This will replace the default R 3.1 with the latest versions. From here, to download spew onto Olympus we type in R to enter an R session, then the following:
 
-```{r, eval=FALSE}
-  library(devtools)
-  devtools::install_github(repo="leerichardson/spew")
-  library(spew)
-```
-
-Note that this certainly did not run smoothly for me the first time I tried it. There were some issues downloading spew into the correct library, which in devtools by default goes to the system packages available for all users. Next, I had to remove some lines from the DESCRIPTION file that were causing errors, and remember to "export" the functions I wanted to run, to the NAMESPACE of the package. I'm mainly writing this here so I don't forget, and here are the commands I ended up using:  
+Next, we want to update the version of SPEW on Olympus in our personal R libraries with the version of Github which presumably we have changed. To be safe, I remove the current version of SPEW downloaded and then re-install SPEW from Github with the following commands:
 
 ```{r, eval=FALSE}
 library(devtools)
 library(httr)
 personal_lib <- .libPaths()[2]
+remove.packages(pkgs = "spew", lib = personal_lib)
 with_libpaths(new = personal_lib, install_github("leerichardson/spew"))
 library(spew)
 ?generate_spew
 ```
 
-Other times, you will realize that spew as is doesn't quite work, and we need to make changes to it. In this case, to run on Olympus we will need to remove spew as is, and re-install it:
-
-```{r, eval=FALSE}
-personal_lib <- .libPaths()[2]
-remove.packages(pkgs = "spew", lib = personal_lib)
-```
-
-Then we can reset R and delete our current workspace, and things should now work as expected.
-
-Now, we can call the `generate_spew` function on Olympus for a given input directory, and it works just as it does on our local computers. 
-
-Finally, once you re-load the package, it's useful to debug it in Interactive mode on Olympus, just to make sure things are working as expected. you can submit an interactive job (ie: Log onto one of the compute nodes) with the command `qsub -I -l walltime=3:00:00`. To save time, I usually run the US version on State 01 to find bugs:
+Once you re-load the package, it's useful to debug it in Interactive mode on Olympus, o make sure things are working as expected. you can submit an interactive job (ie: Log onto one of the compute nodes) with the command `qsub -I -l walltime=3:00:00`. Then we can use the following commands, which are similar to the commands we run when calling SPEW from the command line, to run SPEW for any of our three data groups (just comment out the data-group you are looking to run with here:)
 
 ```{r, eval=FALSE}
 library(plyr)
@@ -298,14 +282,13 @@ vars = list(household = NA, person = NA)
 #                                  pums_p = "/data/shared_group_data/syneco/input/west/north_america/canada/pums/pums_p.csv"),  
 #                      shapefiles = "/data/shared_group_data/syneco/input/west/north_america/canada/shapefiles/canada_shapefiles.shp")
 
-in_dir <- "/data/shared_group_data/syneco/input/west/north_america/united_states/46"
-out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/south_dakota/"
+in_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/united_states/46"
+out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/test/united_states/46/"
 
 generate_spew(input_dir = in_dir, output_dir = out_dir, folders = folders, 
               parallel = TRUE, data_group, sampling_type = "uniform", 
               convert_count = convert_count, vars = vars, make_plots = FALSE)
 ```
-
 
 ## Shell Scripting 
 In our use of spew, we will make a lot of use of the Olympus infrastructure to speed up our calculations. In order to use these capabilities, we will need to submit jobs to olympus which request the requisite amount of processors and time. To submit jobs and interact with Olympus, we make use of shell scripts. 

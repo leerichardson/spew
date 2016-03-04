@@ -39,7 +39,7 @@ assign_workplaces <- function(people, workplaces){
 #' @param workplaces dataframe or ESRI schools
 #' @return ID of ESRI workplace or NA
 assign_workplaces_inner <- function(df, workplaces) {
-  if (df$emp[1] == 0) {
+if (df$emp[1] == 0) {
     # If the person is not employed, no workplace ID is returned
     ids <- rep(NA, nrow(df))
   } else {    
@@ -50,15 +50,17 @@ assign_workplaces_inner <- function(df, workplaces) {
     workplaces$co <- substr(workplaces$stcotr, 3, 5) # Extract the co. number
     
     # Lee: Removing NA's from workplaces$employees as this also shows 
-    # up in the Kansas file 
+    # up in the Kansas file
     missing_employees <- which(is.na(workplaces$employees))
-    workplaces <- workplaces[-missing_employees, ]
+    if (length(missing_employees) > 0) {
+      workplaces <- workplaces[-missing_employees, ]      
+    }
     
     # Lee: This doesn't work (not sure why). Found this error while running 
     # kansas and there was no workplaces for the particular country 
     county_indices <- which(workplaces$co == cono)
     workplaces_sub <- workplaces[county_indices, ]
-
+  
     # If not, then use any workplace in the state
     if (nrow(workplaces_sub) == 0) {
       state_indices <- which(workplaces$st == stno)
@@ -75,7 +77,7 @@ assign_workplaces_inner <- function(df, workplaces) {
     id_inds <- sample(1:nrow(workplaces_sub), nrow(df), replace = TRUE, prob = probs)
     ids <- workplaces_sub$workplace_id[id_inds]
     stopifnot( sum(is.na(ids)) == 0)
-  }
-  stopifnot(length(ids) == nrow(df))
-  return(data.frame(ids = ids, stringsAsFactors = FALSE))
+    }
+    stopifnot(length(ids) == nrow(df))
+    return(data.frame(ids = ids, stringsAsFactors = FALSE))
 }
