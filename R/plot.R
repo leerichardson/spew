@@ -124,8 +124,9 @@ make_maps <- function(output_dir=output_dir, shapefile, pretty=FALSE, zoom=7, pa
 #' @param addBoundaries logical indicating whether we should find the corresponding shapefile to add inner region boundaries
 #' @param map_title default is NULL is also what we save the file as
 #' @param maptype arguments for ggmap default is "roadmap"
+#' @param savePlot logical
 #' @return a low res png 
-plot_region <- function(region_file, addBoundaries = FALSE, map_title = NULL,  maptype="roadmap"){
+plot_region <- function(region_file, addBoundaries = FALSE, map_title = NULL,  maptype="roadmap", savePlot = TRUE, output_dir = "../diags/"){
     hh_pop <- read.csv(region_file, stringsAsFactors = FALSE)
     hh_pop <- removeExtraHeaders(hh_pop)
     hh_pop$longitude <- as.numeric(hh_pop$longitude)
@@ -150,7 +151,7 @@ plot_region <- function(region_file, addBoundaries = FALSE, map_title = NULL,  m
     # making the actual map.
     g <- ggmap(google.map) +
         geom_point(aes(x = longitude, y = latitude, col=factor(place_id)), data=df_coords, size = .5) +
-        geom_text(aes(label = region_name, x = longitude, y = latitude), 
+        geom_text(aes(x = longitude, y = latitude), label = map_title,
                     data = center_df, cex = 6) +
         theme_nothing(legend=FALSE) +
         ggtitle(map_title) +
@@ -171,10 +172,14 @@ plot_region <- function(region_file, addBoundaries = FALSE, map_title = NULL,  m
     }
 
     # Save the plot as a low res png
-    filename <- paste0("../diags/", map_title, ".png")
+    filename <- paste0(output_dir, map_title, ".png")
     print(filename)
-    ggsave(filename, g, dpi=50)
-
+    if (savePlot){
+        ggsave(filename, g, dpi=50)
+    } else {
+        print(g)
+    }
+    
 }
 
 #' Remove Extra Headers
@@ -238,4 +243,4 @@ getCenters <- function(hh_pop){
 ## setwd("~/Desktop/eco")
 
 ## region_file <- list.files()
-## plot_region(region_file)
+## plot_region(region_file, savePlot = FALSE)
