@@ -117,3 +117,125 @@ make_maps <- function(output_dir=output_dir, shapefile, pretty=FALSE, zoom=7, pa
     }
     return(TRUE)
 }
+
+#' Plot the households
+#'
+#' @param region_file file name of SPEW household output
+#' @param addBoundaries logical indicating whether we should find the corresponding shapefile to add inner region boundaries
+#' @param map_title default is NULL is also what we save the file as
+#' @param maptype arguments for ggmap default is "roadmap"
+#' @return a low res png 
+plot_region <- function(region_file, addBoundaries = FALSE, map_title = NULL,  maptype="roadmap"){
+    hh_pop <- read.csv(region_file, stringsAsFactors = FALSE)
+    hh_pop <- removeExtraHeaders(hh_pop)
+    hh_pop$longitude <- as.numeric(hh_pop$longitude)
+    hh_pop$latitude <- as.numeric(hh_pop$latitude)
+    bbox <- getBBox(hh_pop)
+    center_df<- getCenters(hh_pop)
+
+    # Get the google map
+    google.map <- get_map(c(center_df$longitude, center_df$latitude), zoom = 5, maptype = maptype)
+
+    # Extract the latitude and longitude coordinates
+    stopifnot(sum( colnames(hh_pop) %in%
+                   c("latitude", "longitude")) >= 2)
+    df_coords <- subset(hh_pop, select=c("latitude","longitude", "place_id"))
+
+    if (is.null(map_title)){
+        map_title <- toupper(hh_pop$place_id)[1]
+    }
+
+    
+    
+    # making the actual map.
+    g <- ggmap(google.map) +
+        geom_point(aes(x = longitude, y = latitude, col=factor(place_id)), data=df_coords, size = .5) +
+        geom_text(aes(label = region_name, x = longitude, y = latitude), 
+                    data = center_df, cex = 6) +
+        theme_nothing(legend=FALSE) +
+        ggtitle(map_title) +
+        scale_y_continuous(limits =  c(bbox$lat_min, bbox$lat_max), expand = c(0,0)) +
+        scale_x_continuous(limits = c(bbox$long_min, bbox$long_max), expand = c(0,0))
+    g
+    
+    if (addBoundaries){
+        # TODO
+        # get the shapefile
+        # format the shapefile
+        # add the boundary lines to the plot
+    }
+
+    # If ../diags does not exist, make the folder
+    if( !file.exists("../diags")){
+        dir.create("../diags")
+    }
+
+    # Save the plot as a low res png
+    filename <- paste0("../diags/", map_title, ".png")
+    print(filename)
+    ggsave(filename, g, dpi=50)
+
+}
+
+#' Remove Extra Headers
+#'
+#' @param hh_pop a household population output from SPEW
+#' @return hh_pop minus extra headers
+removeExtraHeaders <- function(hh_pop){
+    header_inds <- which(hh_pop$place_id == "place_id")
+    if (length(header_inds) > 0 ){
+        hh_pop <- hh_pop[-header_inds,]
+    }
+    return(hh_pop)
+}
+
+#' Get the bounding box of a pop
+#'
+#' @param hh_pop SPEW household population output has longitude and lat parameters
+#' @return list with long_min, long_max, lat_min, lat_max
+getBBox <- function(hh_pop){
+    hh_pop$longitude <- as.numeric(hh_pop$longitude)
+    hh_pop$latitude <- as.numeric(hh_pop$latitude)
+    long_min <- floor(min(hh_pop$longitude, na.rm = TRUE))
+    long_max <- ceiling(max(hh_pop$longitude, na.rm = TRUE))
+    lat_min <- floor(min(hh_pop$latitude, na.rm = TRUE))
+    lat_max <- ceiling(max(hh_pop$latitude, na.rm= TRUE))
+    bbox <- list(long_min = long_min, long_max = long_max,
+                 lat_min = lat_min, lat_max = lat_max)
+    return(bbox)
+}
+
+#' Get the geographic center of a population
+#'
+#' @param hh_pop SPEW output for household population
+#' @return data frame with region name, long and lat
+getCenters <- function(hh_pop){
+    region_name <- toupper(hh_pop$place_id[1])
+    longitude <- mean(hh_pop$longitude, na.rm = TRUE)
+    latitude <- mean(hh_pop$latitude, na.rm = TRUE)
+    center_df <- data.frame(region_name = region_name,
+                            longitude = longitude,
+                            latitude = latitude)
+    return(center_df)
+}
+
+
+## # testing
+## setwd("~/Desktop/uruguay/eco")
+## region_file <- "output_858019_household.csv"
+
+## plot_region(region_file)
+
+## files <- list.files()
+## hh_files <- files[grepl("household", files)]
+
+## # loop through
+## for (hh_file in hh_files){
+##     plot_region(hh_file)
+## }
+
+
+## setwd("~/Desktop/eco")
+
+## region_file <- list.files()
+## plot_region(region_file)
