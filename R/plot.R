@@ -167,8 +167,9 @@ plot_region <- function(region_file, addBoundaries = FALSE, map_title = NULL,  m
     }
 
     # If ../diags does not exist, make the folder
-    if( !file.exists("../diags")){
-        dir.create("../diags")
+    output_dir <- file.path(dirname(region_file), "../diags/")
+    if( !file.exists(output_dir)){
+        dir.create(output_dir)
     }
 
     # Save the plot as a low res png
