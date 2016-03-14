@@ -125,8 +125,11 @@ make_maps <- function(output_dir=output_dir, shapefile, pretty=FALSE, zoom=7, pa
 #' @param map_title default is NULL is also what we save the file as
 #' @param maptype arguments for ggmap default is "roadmap"
 #' @param savePlot logical
+#' @param hexbin logial - should we use hexagons instead of points?
+#' @param nBins how many bins should we use
+#' @param alpha transparency as in ggplot
 #' @return a low res png 
-plot_region <- function(region_file, addBoundaries = FALSE, map_title = NULL,  maptype="roadmap", savePlot = TRUE, output_dir = "../diags/"){
+plot_region <- function(region_file, addBoundaries = FALSE, map_title = NULL,  maptype="roadmap", savePlot = TRUE, output_dir = "../diags/", hexBin = TRUE, nBins = 50, alpha = .3){
     hh_pop <- read.csv(region_file, stringsAsFactors = FALSE)
     hh_pop <- removeExtraHeaders(hh_pop)
     hh_pop$longitude <- as.numeric(hh_pop$longitude)
@@ -141,22 +144,39 @@ plot_region <- function(region_file, addBoundaries = FALSE, map_title = NULL,  m
     stopifnot(sum( colnames(hh_pop) %in%
                    c("latitude", "longitude")) >= 2)
     df_coords <- subset(hh_pop, select=c("latitude","longitude", "place_id"))
+    df_coords <- na.omit(df_coords)
 
     if (is.null(map_title)){
         map_title <- toupper(hh_pop$place_id)[1]
     }
 
     
-    
+    if(hexBin){
+         gp <- ggmap(google.map) 
+         bins <- nBins
+         g <- gp +  stat_bin2d(bins=bins, data = df_coords,
+                                           aes(x = longitude, y = latitude
+                               ),
+                                           alpha = alpha, inherit.aes = FALSE) +
+             coord_equal(ratio = 1/1)+
+             scale_fill_gradient(low = "blue", high = "goldenrod") +
+             ggtitle(map_title) +
+             scale_y_continuous(limits =  c(bbox$lat_min, bbox$lat_max), expand = c(0,0)) +
+             scale_x_continuous(limits = c(bbox$long_min, bbox$long_max), expand = c(0,0)) +
+             coord_map() + theme_nothing(legend = FALSE)
+  
+    } else {
     # making the actual map.
-    g <- ggmap(google.map) +
-        geom_point(aes(x = longitude, y = latitude, col=factor(place_id)), data=df_coords, size = .5) +
-        geom_text(aes(x = longitude, y = latitude), label = map_title,
-                    data = center_df, cex = 6) +
-        theme_nothing(legend=FALSE) +
-        ggtitle(map_title) +
-        scale_y_continuous(limits =  c(bbox$lat_min, bbox$lat_max), expand = c(0,0)) +
-        scale_x_continuous(limits = c(bbox$long_min, bbox$long_max), expand = c(0,0))
+        g <- ggmap(google.map) + 
+            geom_point(aes(x = longitude, y = latitude, col=factor(place_id)),
+                       data=df_coords, size = .5) +
+            theme_nothing(legend=FALSE) +
+            ggtitle(map_title) +
+            scale_y_continuous(limits =  c(bbox$lat_min, bbox$lat_max), expand = c(0,0)) +
+            scale_x_continuous(limits = c(bbox$long_min, bbox$long_max), expand = c(0,0))
+    }
+    g <- g + geom_text(aes(x = longitude, y = latitude), label = map_title,
+                      data = center_df, cex = 6)
     g
     
     if (addBoundaries){
@@ -227,10 +247,10 @@ getCenters <- function(hh_pop){
 
 
 ## # testing
+## library(ggmap)
 ## setwd("~/Desktop/uruguay/eco")
 ## region_file <- "output_858019_household.csv"
-
-## plot_region(region_file)
+## plot_region(region_file, savePlot = FALSE)
 
 ## files <- list.files()
 ## hh_files <- files[grepl("household", files)]
@@ -243,5 +263,10 @@ getCenters <- function(hh_pop){
 
 ## setwd("~/Desktop/eco")
 
-## region_file <- list.files()
-## plot_region(region_file, savePlot = FALSE)
+## region_file <- list.files()[1]
+
+## t <- proc.time()[3]
+## nBins <- 30
+## alpha <- .3
+## plot_region(region_file[1], savePlot = FALSE, hexBin = TRUE, nBins = nBins, alpha = alpha)
+## print(proc.time()[3] - t)
