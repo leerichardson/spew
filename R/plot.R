@@ -128,8 +128,9 @@ make_maps <- function(output_dir=output_dir, shapefile, pretty=FALSE, zoom=7, pa
 #' @param hexbin logial - should we use hexagons instead of points?
 #' @param nBins how many bins should we use
 #' @param alpha transparency as in ggplot
+#' @param subSample logical - should we plot the whole thing (possibly very long) or a subset?
 #' @return a low res png 
-plot_region <- function(region_file, addBoundaries = FALSE, map_title = NULL,  maptype="roadmap", savePlot = TRUE, output_dir = "../diags/", hexBin = TRUE, nBins = 50, alpha = .3){
+plot_region <- function(region_file, addBoundaries = FALSE, map_title = NULL,  maptype="roadmap", savePlot = TRUE, output_dir = "../diags/", hexBin = FALSE, nBins = 50, alpha = .3, subSample = TRUE, K = 10^4){
     hh_pop <- read.csv(region_file, stringsAsFactors = FALSE)
     hh_pop <- removeExtraHeaders(hh_pop)
     hh_pop$longitude <- as.numeric(hh_pop$longitude)
@@ -155,17 +156,26 @@ plot_region <- function(region_file, addBoundaries = FALSE, map_title = NULL,  m
          gp <- ggmap(google.map) 
          bins <- nBins
          g <- gp +  stat_bin2d(bins=bins, data = df_coords,
-                                           aes(x = longitude, y = latitude
+                                           aes(x = longitude, y = latitude, fill = factor(place_id)
                                ),
-                                           alpha = alpha, inherit.aes = FALSE) +
+                                           alpha = alpha, 
+                               inherit.aes = FALSE) +
              coord_equal(ratio = 1/1)+
-             scale_fill_gradient(low = "blue", high = "goldenrod") +
+           #  scale_fill_gradient(low = "blue", high = "goldenrod") +
              ggtitle(map_title) +
              scale_y_continuous(limits =  c(bbox$lat_min, bbox$lat_max), expand = c(0,0)) +
              scale_x_continuous(limits = c(bbox$long_min, bbox$long_max), expand = c(0,0)) +
              coord_map() + theme_nothing(legend = FALSE)
   
     } else {
+        if (subSample){
+            # take a sample of min(#Points, 10^5) points to plot
+            if (nrow(df_coords) > K){
+                inds <- sample(1:nrow(df_coords), K)
+                df_coords <- df_coords[inds,]
+            }
+        }
+        
     # making the actual map.
         g <- ggmap(google.map) + 
             geom_point(aes(x = longitude, y = latitude, col=factor(place_id)),
@@ -250,7 +260,7 @@ getCenters <- function(hh_pop){
 ## library(ggmap)
 ## setwd("~/Desktop/uruguay/eco")
 ## region_file <- "output_858019_household.csv"
-## plot_region(region_file, savePlot = FALSE)
+## plot_region(region_file, savePlot = FALSE, hexBin = FALSE, nBins = 50, alpha=.8, subSample = TRUE)
 
 ## files <- list.files()
 ## hh_files <- files[grepl("household", files)]
@@ -267,6 +277,7 @@ getCenters <- function(hh_pop){
 
 ## t <- proc.time()[3]
 ## nBins <- 30
-## alpha <- .3
-## plot_region(region_file[1], savePlot = FALSE, hexBin = TRUE, nBins = nBins, alpha = alpha)
+## alpha <- .5
+## K <- 10^5
+## plot_region(region_file[1], savePlot = TRUE, hexBin = FALSE, nBins = nBins, alpha = alpha, subSample = TRUE, K = K)
 ## print(proc.time()[3] - t)
