@@ -129,8 +129,9 @@ make_maps <- function(output_dir=output_dir, shapefile, pretty=FALSE, zoom=7, pa
 #' @param nBins how many bins should we use
 #' @param alpha transparency as in ggplot
 #' @param subSample logical - should we plot the whole thing (possibly very long) or a subset?
+#' @param zoom as in get_map from ggmap larger number is more zoomed in
 #' @return a low res png 
-plot_region <- function(region_file, addBoundaries = FALSE, map_title = NULL,  maptype="roadmap", savePlot = TRUE, output_dir = "../diags/", hexBin = FALSE, nBins = 50, alpha = .3, subSample = TRUE, K = 10^4){
+plot_region <- function(region_file, addBoundaries = FALSE, map_title = NULL,  maptype="roadmap", savePlot = TRUE, output_dir = "../diags/", hexBin = FALSE, nBins = 50, alpha = .3, subSample = TRUE, K = 10^5, zoom=4){
     hh_pop <- read.csv(region_file, stringsAsFactors = FALSE)
     hh_pop <- removeExtraHeaders(hh_pop)
     hh_pop$longitude <- as.numeric(hh_pop$longitude)
@@ -139,7 +140,7 @@ plot_region <- function(region_file, addBoundaries = FALSE, map_title = NULL,  m
     center_df<- getCenters(hh_pop)
 
     # Get the google map
-    google.map <- get_map(c(center_df$longitude, center_df$latitude), zoom = 5, maptype = maptype)
+    google.map <- get_map(c(center_df$longitude, center_df$latitude), zoom = zoom, maptype = maptype)
 
     # Extract the latitude and longitude coordinates
     stopifnot(sum( colnames(hh_pop) %in%
