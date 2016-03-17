@@ -4,9 +4,12 @@ test_that("Sampling functions", {
   
   # Load in the formatted data 
   data(sd_data)
+  data(uruguay_format)
+  library(stringdist)
+  library(sp)
   
   # Sample locations --------------
-  multiple_polygons <- sample_locations(place_id = 46027965700, n_house = 110, 
+  multiple_polygons <- sample_locations(place_id = 46027965700, n_house = 100, 
                                         shapefile = sd_data$shapefiles)
   expect_equal(is.null(multiple_polygons), FALSE)
   
@@ -15,6 +18,13 @@ test_that("Sampling functions", {
   single_polygon <-sample_locations(place_id = sd_data$pop_table[rand_row, "place_id"], 
                                     n_house = num_samples, shapefile = sd_data$shapefiles)
   expect_equal(length(single_polygon), num_samples)
+  
+  # Verify the ipums shapefiles work as well using Uruguay data 
+  place_names <- uruguay_format$shapefiles$place_id
+  for (place in place_names) {
+    samp <- sample_locations(place, num_samples, uruguay_format$shapefiles)
+    expect_equal(length(samp), num_samples)
+  }
   
   # Make sure the 0 household places are caught
   test_ind <- 100
@@ -48,11 +58,6 @@ test_that("Sampling functions", {
   expect_equal(as.logical(parallel_md[1] < regular_md[1]), TRUE)
 
   # Test the Serial Synth and convert count functions ---------------
-  data(uruguay_data)
-  library(stringdist)
-  uruguay_format <- format_data(data_list = uruguay_data, 
-                                data_group = "ipums")
-  
   dir.create("tmp")
   make_place(index = 1, pop_table = uruguay_format$pop_table, 
              shapefile = uruguay_format$shapefiles, pums_h = uruguay_format$pums$pums_h, 
@@ -60,8 +65,8 @@ test_that("Sampling functions", {
              pums_p = uruguay_format$pums$pums_p, sampling_type = "uniform", 
              output_dir = "tmp/", convert_count = TRUE)
   
-  synth_pums_h <- read.csv("tmp/household_Artigas.csv")
-  synth_pums_p <- read.csv("tmp/people_Artigas.csv")
+  synth_pums_h <- read.csv("tmp/output_858002/eco/household_artigas.csv")
+  synth_pums_p <- read.csv("tmp/output_858002/eco/people_artigas.csv")
   
   # Make sure the synthetic serial I.D. makes it in, and that 
   # there are less of these than the original, in case of duplicated columns
@@ -76,6 +81,6 @@ test_that("Sampling functions", {
   unlink("tmp/", recursive = TRUE)
   
   # Testing that the schools an workplace functions 
-  # are integrated into make properly 
+  # are integrated into make properly --------------
   
 })

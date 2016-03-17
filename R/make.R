@@ -6,8 +6,10 @@
 #' particular locations  
 #' @param pums_h dataframe with microdata corresponding to housegolds 
 #' @param pums_p dataframe with microdata corresponding to people
-#' @param schools list with names "public" and "private" with a dataframe of schools corresponding to public or private, respectively
-#' @param workplaces dataframe of workplaces with a workplace_id column, employees column, and stcotr column
+#' @param schools list with names "public" and "private" with a 
+#' dataframe of schools corresponding to public or private, respectively
+#' @param workplaces dataframe of workplaces with a workplace_id column, 
+#' employees column, and stcotr column
 #' @param parallel logical indicating whether or not we will generate our 
 #' synthetic populations in parallel
 #' @param sampling_type character vector indicating the type oof sampling used. 
@@ -97,8 +99,6 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
 #' @param sampling_type character vector indicating the type of sample to use for 
 #' generating microdata. Right now the only value here is "uniform"
 #' @param output dir character vector containing the location to save the
-#' @param make_plots boolean indicating whether spew  makes plots of the synthetic households
-#' synthetic population  
 #' @return synthetic population .csv file for both household and person 
 #' level data  
 make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
@@ -233,25 +233,38 @@ sample_households <- function(n_house, pums_h, puma_id = NULL,
 #' @param shapefile sp class with all of the locations for each place id
 #' @return SpatialPoints object with coordinates for the n households
 sample_locations <- function(place_id, n_house, shapefile) {
+  # Subset the shapefile to the polygon 
+  # specified by the place_id argument 
   slots <- methods::slot(shapefile, "polygons")
   region <- which(shapefile$place_id == place_id)
+  poly <- slots[[region]]
   
-  # Contingency if either the shapefile has duplicate 
-  # regions, or if the Polygon has multiple polygons. In 
-  # both cases, subset the first and remove the second
-  if (length(region) > 1) {
-    region <- region[1]
-    locs <- sp::spsample(slots[[region]], n = n_house, offset = c(0, 0), 
-                         type = "random", iter = 50)
-  } else if (length(slots[[region]]@Polygons) > 1) {
-    first_polygon <- slots[[region]]@Polygons[[1]]
-    locs <- sp::spsample(first_polygon, n = n_house, offset = c(0, 0), 
-                         type = "random", iter = 50)
-  } else {
-    locs <- sp::spsample(slots[[region]], n = n_house, offset = c(0, 0), 
-                         type = "random", iter = 50)    
+  # Remove holes from polygon if any are found 
+  is_hole <- lapply(poly@Polygons, function(p) p@hole)
+  if (any(unlist(is_hole)) == TRUE) {
+    poly <- remove_holes(poly)
   }
+  
+  # Obtain a Uniform, simple random sample of size n_house
+  locs <- sp::spsample(poly, n = n_house, offset = c(0, 0), 
+                       type = "random", iter = 50)
   return(locs)
+}
+
+#' Remove holes from an object of class Polygon 
+#' 
+#' @param polygon object of class Polygon or Polygons 
+#' 
+#' @note Borrowed the idea from the wild1 package, which 
+#' I wasn't able to load for R 3.2.2, so I found the source code here:
+#' https://github.com/cran/wild1/blob/master/R/remove.holes.r
+#' @return polygon without and Polygons with holes 
+remove_holes <- function(polygon) {
+  is_hole <- lapply(polygon@Polygons, function(p) p@hole)
+  is_hole <- unlist(is_hole)
+  polys <- polygon@Polygons[!is_hole]
+  polygon <- Polygons(polys, ID = polygon@ID)
+  return(polygon)
 }
 
 #' Sample from the individual person PUMS data frame 
