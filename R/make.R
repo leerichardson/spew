@@ -133,9 +133,17 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   households <- sample_households(n_house, pums_h, puma_id)
   sampled_households <- pums_h[households, ]
   
-  # Attach locations to the sample households 
-  locations <- sample_locations(place_id = place_id, n_house = n_house, 
-                                shapefile = shapefile)
+  # Attach locations to the sample households
+  if ( class(shapefile) == "list"){
+      # Check if the roads name is a feature
+      stopifnot(any(names(shapefile) == "roads"))
+      locations <- sample_locations_from_roads(place_id = place_id,
+                                               n_house = n_house, shapefile = shapefile,
+                                               noise = .0002)
+  } else {
+      locations <- sample_locations(place_id = place_id, n_house = n_house, 
+                                    shapefile = shapefile)
+  }
   sampled_households$longitude <- locations@coords[, 1]
   sampled_households$latitude <- locations@coords[, 2]
   
@@ -229,7 +237,7 @@ sample_households <- function(n_house, pums_h, puma_id = NULL,
 #' 
 #' @param place_id numeric specifiying the ID of the region we are 
 #' subsampling  
-#' @param nhouse numeric indicating the number of households
+#' @param n_house numeric indicating the number of households
 #' @param shapefile sp class with all of the locations for each place id
 #' @return SpatialPoints object with coordinates for the n households
 sample_locations <- function(place_id, n_house, shapefile) {
@@ -311,4 +319,73 @@ people_to_households <- function(hh_sizes, n_people) {
   hh_avg <- mean(hh_sizes)
   num_households <- n_people / hh_avg
   return(num_households)
+}
+
+
+    
+#' Sample coordinates from roads
+#'
+#' @param place_id numeric specifiying the ID of the region we are 
+#' subsampling  
+#' @param n_house numeric indicating the number of households
+#' @param shapefile sp class with all of the locations for each place id.  In addition, we must have road shapefiles so shapefile is a list with both the tracts and the roads,  tracts is the first object and roads the second.
+#' @param noise the standard deviation of how much we jitter the road locations in each direction
+#' @return SpatialPoints object with coordinates for the n households
+sample_locations_from_roads <- function(place_id, n_house, shapefile, noise = .0001) {
+    newShp <- subset_shapes_roads(place_id, shapefile)
+    locs <- samp_roads(n_house, newShp, noise)
+    return(locs)
+}
+
+
+    
+
+#' Subset the shapefile and road lines to proper roads within specified tract
+#'
+#' @param place_id numeric specifiying the ID of the region we are 
+#' subsampling  
+#' @param shapefile sp class with all of the locations for each place id.  In addition, we must have road shapefiles so shapefile is a list with both the tracts and the roads, tracts is the first object and roads the second.
+#' @return newShp - roads within the tract, a SpatialLines object
+subset_shapes_roads <- function(place_id, shapefile){
+    stopifnot(class(shapefile) == "list")
+    stopifnot(length(shapefile) == 2)
+
+    # Subset the regions to the place_id polygon
+    regions <- shapefile[[1]]
+    poly <- regions[regions@data$place_id == place_id, ]
+
+    # Add the roads in to make a SpatialLines Object
+    roads_sub <- shapefile[[2]][poly,]
+    newShp <- rgeos::gIntersection(roads_sub, poly)
+    return(newShp)
+}
+
+#' Sample the locations from the liens of a SpatialLines object
+#'
+#' @param n_house number of households
+#' @param newShp SpatialLines object
+#' @param noise std deviation of Gaussian noise added to coordinates, default is .001
+#' @return SpatialPoints object with coordinates for the n_house households
+samp_roads <- function(n_house, newShp, noise){
+    if( "lineobj" %in% slotNames(lines)){
+        pts <- spsample(newShp@lineobj, n = n_house, type = "random", iter = 50)
+    } else {
+        pts <- sp::spsample(newShp, n = n_house, type = "random", iter = 50)
+    }
+
+    # Sometimes sampling fails.  If so, we resample from already selected points to fill in the rest.
+
+    if (n_house != length(pts)){
+        resampled_pts <- n_house - length(pts)
+        inds <- sample(1:length(pts), resampled_pts)
+        pts <- pts[c(1:length(pts), inds),]
+    }
+
+    err_x <- rnorm(length(pts), 0, noise)
+    err_y <- rnorm(length(pts), 0, noise)
+    pts@coords[,1] <- pts@coords[,1] + err_x
+    pts@coords[,2] <- pts@coords[,2] + err_y
+
+    stopifnot(n_house == length(pts))
+    return(pts)
 }

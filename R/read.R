@@ -34,8 +34,14 @@ read_data <- function(input_dir,
   pums <- standardize_pums(pums, data_group)
   
   shapefiles <- read_shapefiles(input_dir, folders, data_group)
-  shapefiles <- standardize_shapefiles(shapefiles, data_group)
 
+  if (class(shapefiles) != "list"){
+      shapefiles <- standardize_shapefiles(shapefiles, data_group)
+  } else {
+      if ( any(names(shapefiles) == "roads")){
+          shapefiles[[1]] <- standardize_shapefiles(shapefiles[[1]], data_group)
+      }
+  }
   if (!is.null(folders$lookup)) {
     lookup <- read_lookup(input_dir, folders, data_group)
     lookup <- standardize_lookup(lookup, data_group)
@@ -271,20 +277,41 @@ standardize_lookup <- function(lookup, data_group){
 #  Function for reading in shapefiles data
 read_shapefiles <- function(input_dir, folders, data_group) {
 
-  shapefiles_files <- list.files(paste0(input_dir, "/", folders$shapefiles))
+    shapefiles_files <- list.files(paste0(input_dir, "/", folders$shapefiles))
+
+    sample_roads <- FALSE
   
   if (data_group == "US") {
     
     #  Navigate to correct folder
-    if (length(shapefiles_files) == 1 & !grepl(pattern = "\\.", x = shapefiles_files)){
+    if (length(shapefiles_files) == 1 && !grepl(pattern = "\\.", x = shapefiles_files)){
       folders$shapefiles <- paste0(folders$shapefiles, "/", shapefiles_files)
       shapefiles_files <- list.files(paste0(input_dir, "/", folders$shapefiles))
-    }
-    
+
+ 
     #  Read in correct file
     ind_shp <- which(grepl(pattern = "\\.shp", x = shapefiles_files) & 
                         !grepl(pattern = "\\.xml", x = shapefiles_files))
     filename <- shapefiles_files[ind_shp]
+
+          # If there is a roads file then
+    } else if ( any( grepl("roads", x = shapefiles_files) ) ){
+        sample_roads <- TRUE
+        
+        # Read the shapefile in like normal
+        shapefile_ind <- grepl("2010", shapefiles_files)
+        shapefile_name <- shapefiles_files[shapefile_ind]
+        shapefile_path <- list.files(file.path(input_dir, folders$shapefiles, shapefile_name))
+         #  Read in correct file
+        ind_shp <- which(grepl(pattern = "\\.shp", x = shapefile_path) &
+                         !grepl(pattern = "\\.xml", x = shapefile_path))
+        filename <- shapefile_path[ind_shp]
+        full_path <- file.path(input_dir, folders$shapefiles, shapefile_name, filename)
+
+        road_ind <- grepl("roads", shapefiles_files)
+        road_name <- shapefiles_files[road_ind]
+        roads_path <- file.path(input_dir, folders$shapefiles, road_name)           
+    }
   
   } else if (data_group == "ipums") {
     revised_indices <- grep("revised.shp", shapefiles_files)
@@ -302,9 +329,21 @@ read_shapefiles <- function(input_dir, folders, data_group) {
   }
   
   #  Read in shapefile
-  shapefile <- maptools::readShapeSpatial(paste0(input_dir, "/", 
-                                          folders$shapefiles, "/", filename))
-  return(shapefile)
+    if(!sample_roads){ # if we are not sampling roads then shapefile is simply a a spatial points data frame
+        shapefile <- maptools::readShapeSpatial(paste0(input_dir, "/", 
+                                                       folders$shapefiles, "/", filename))
+        return(shapefile)
+    } else {
+        # We must read in the roads as well
+        # We return a list of length 2, first entry is the polygons, second is the roads
+        shapefile <- maptools::readShapeSpatial(full_path)
+        roads <- read_roads(roads_path)
+        shapefile <- list(regions = shapefile, roads = roads)
+
+        
+        return(shapefile)
+    }
+  
 }
 
 #  Standardize the shapefiles 
@@ -393,4 +432,37 @@ read_workplaces <- function(input_dir, folders, data_group) {
   }
   
   return(workplaces)
+}
+
+#' Read in road lines shapefiles
+#'
+#' @param path_to_roads full path to the directory of where the roads are stored, the directory should have zip files that have been unzipped for each county
+#' @return an appended SpatialDataFrame object with all the roads in the state
+read_roads <- function(path_to_roads){
+    road_files <- list.files(path_to_roads)
+    road_shapes <- road_files[ grepl("shp", road_files) & !grepl("xml", road_files)]
+    if (any(grepl("APPENDED", road_shapes))){
+        appended_roads <- road_shapes[grepl("APPENDED", road_shapes)]
+        stopifnot(length(appended_roads) == 1)
+        roads <- readShapeSpatial(file.path(path_to_roads, appended_roads))
+        
+    } else {
+        roads_paths <- file.path(path_to_roads, road_shapes)
+        roads_list <- lapply(roads_paths, maptools::readShapeSpatial)
+        
+         # Make unique IDs for each polygon
+        roads_list2 <- lapply(1:length(roads_list), function(i) {
+            road <- spChFIDs(roads_list[[i]], paste0(i,"-", 1:nrow(roads_list[[i]])))
+            return(road)
+        })
+        
+         # Combine the polygons together
+        roads <- do.call('rbind', roads_list2)
+
+        # Write it so we don't have to go through this nonsense again
+        bnm <- basename(path_to_roads)
+        fn <- file.path(path_to_roads, paste0(bnm, "_APPENDED.shp"))
+        writeSpatialShape(roads, fn)
+        return(roads)
+    }
 }
