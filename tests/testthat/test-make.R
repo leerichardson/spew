@@ -29,27 +29,31 @@ test_that("Sampling functions", {
   # Make sure the 0 household places are caught
   test_ind <- 100
   sd_data$pop_table[test_ind, "n_house"] <- 0
+
+  print("Changes found")
   
   expect_output(make_place(test_ind, sd_data$pop_table, sd_data$shapefiles, 
                          sd_data$pums$pums_h, sd_data$pums$pums_p, 
                          schools = sd_data$schools, workplaces = sd_data$workplaces,
-                         sampling_type = "uniform", output_dir = "/home/lee", convert_count = FALSE), 
-                          "Place has 0 Households!")
+                         sampling_type = "uniform", output_dir = "~/Desktop/46", convert_count = FALSE), 
+                         "Place has 0 Households!")
   
   # Test that the Parallel version is quicker ----------------
   library(doParallel)
   library(foreach)
   
-  places <- 1:4 
+  places <- 1:4
+  print(getwd())
   sink("test_output.txt")
   
   regular_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles,
                                       schools = sd_data$schools, workplaces = sd_data$workplaces,
-                                      sd_data$pums$pums_h, sd_data$pums$pums_p, 
+                                      sd_data$pums$pums_h, sd_data$pums$pums_p,
+                                      output_dir = "~/Desktop",
                                       parallel = FALSE, convert_count = FALSE))
   parallel_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles,
                                        schools = sd_data$schools, workplaces = sd_data$workplaces,
-                                       sd_data$pums$pums_h, sd_data$pums$pums_p, 
+                                       sd_data$pums$pums_h, sd_data$pums$pums_p, output_dir = "~/Desktop",
                                        parallel = TRUE, convert_count = FALSE))
   
   sink()

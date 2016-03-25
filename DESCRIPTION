@@ -7,18 +7,17 @@ Author: Lee Richardson, Shannon Gallagher, Sam Ventura
 Maintainer: Lee Richardson <leerich@cmu.edu>
 Description: Updating soon...
 License: What license is it under?
-Suggests: 
+Suggests:
     testthat,
     knitr,
     rmarkdown,
     doParallel,
     foreach,
     stringdist,
-    ggmap
+    ggmap,
     rgeos
-    
 VignetteBuilder: knitr
-Imports: 
+Imports:
     sp,
     maptools,
     plyr

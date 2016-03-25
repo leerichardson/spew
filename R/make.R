@@ -21,7 +21,7 @@
 #' make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
 make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces, 
                       parallel = FALSE, sampling_type = "uniform", 
-                      output_dir = "/home/lee/south_dakota/", convert_count) {
+                      output_dir , convert_count) {
   
   start_time <- Sys.time()
   
@@ -368,7 +368,7 @@ subset_shapes_roads <- function(place_id, shapefile){
 #' @return SpatialPoints object with coordinates for the n_house households
 samp_roads <- function(n_house, newShp, noise){
     if( "lineobj" %in% slotNames(lines)){
-        pts <- spsample(newShp@lineobj, n = n_house, type = "random", iter = 50)
+        pts <- sp::spsample(newShp@lineobj, n = n_house, type = "random", iter = 50)
     } else {
         pts <- sp::spsample(newShp, n = n_house, type = "random", iter = 50)
     }
