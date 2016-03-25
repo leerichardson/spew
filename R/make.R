@@ -25,6 +25,9 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
   
   start_time <- Sys.time()
   
+  # Write out the final, formatted population table  
+  write_pop_table(pop_table, output_dir)
+  
   # Call the make_place function for each place in our pop_table. Either 
   # run this in parallel of not (usually I don't for debugging purposes)
   num_places <- nrow(pop_table) 
@@ -62,10 +65,8 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
       # Print out relevant information pertaining to the job
       msg <- paste0("Generating place: ", place, " out of ", num_places)
       node_name <- paste0("Node: ", Sys.info()[['nodename']])
-      session_id <- paste0("R Session ID: ", Sys.getpid())
       print(msg)
       print(node_name)
-      print(session_id)
       
       make_place(place, pop_table, shapefile, pums_h, pums_p, schools, 
                  workplaces, sampling_type, output_dir, convert_count) 
@@ -121,11 +122,9 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   # Convert people counts to household counts 
   if (convert_count == TRUE) {
     hh_sizes <- pums_h$PERSONS
-    
     if (is.null(hh_sizes)) {
       hh_sizes <- nrow(pums_p) / nrow(pums_h)
     }
-    
     n_house <- people_to_households(hh_sizes, n_house)
   }
   
@@ -134,16 +133,18 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   sampled_households <- pums_h[households, ]
   
   # Attach locations to the sample households
-  if ( class(shapefile) == "list"){
-      # Check if the roads name is a feature
+  if (class(shapefile) == "list") {
       stopifnot(any(names(shapefile) == "roads"))
       locations <- sample_locations_from_roads(place_id = place_id,
-                                               n_house = n_house, shapefile = shapefile,
+                                               n_house = n_house, 
+                                               shapefile = shapefile, 
                                                noise = .0002)
   } else {
-      locations <- sample_locations(place_id = place_id, n_house = n_house, 
+      locations <- sample_locations(place_id = place_id, 
+                                    n_house = n_house, 
                                     shapefile = shapefile)
   }
+  
   sampled_households$longitude <- locations@coords[, 1]
   sampled_households$latitude <- locations@coords[, 2]
   
@@ -308,6 +309,21 @@ write_data <- function(df, place_id, puma_id, type, output_dir) {
   return(TRUE)
 }
 
+#' Write out the final, formatted table 
+#' 
+#' @param pop_table the population table df 
+#' @param output_dir character vector of the directory 
+#' to write the population table 
+#' 
+#' @return logical TRUE if completed. As well as a written 
+#' pop_table to the given output directory 
+write_pop_table <- function(pop_table, output_dir) {
+  filename <- paste0(output_dir, "final_pop_table.csv")
+  write.table(pop_table, filename, sep = ",", row.names = FALSE, qmethod = "double")
+  
+  return(TRUE)
+}
+
 #' Convert a population count to household count 
 #' 
 #' @param hh_sizes numeric vector with the household 
@@ -320,15 +336,15 @@ people_to_households <- function(hh_sizes, n_people) {
   num_households <- n_people / hh_avg
   return(num_households)
 }
-
-
     
 #' Sample coordinates from roads
 #'
 #' @param place_id numeric specifiying the ID of the region we are 
 #' subsampling  
 #' @param n_house numeric indicating the number of households
-#' @param shapefile sp class with all of the locations for each place id.  In addition, we must have road shapefiles so shapefile is a list with both the tracts and the roads,  tracts is the first object and roads the second.
+#' @param shapefile sp class with all of the locations for each place id.  
+#' In addition, we must have road shapefiles so shapefile is a list with both 
+#' the tracts and the roads, tracts is the first object and roads the second.
 #' @param noise the standard deviation of how much we jitter the road locations in each direction
 #' @return SpatialPoints object with coordinates for the n households
 sample_locations_from_roads <- function(place_id, n_house, shapefile, noise = .0001) {
@@ -337,14 +353,13 @@ sample_locations_from_roads <- function(place_id, n_house, shapefile, noise = .0
     return(locs)
 }
 
-
-    
-
 #' Subset the shapefile and road lines to proper roads within specified tract
 #'
 #' @param place_id numeric specifiying the ID of the region we are 
 #' subsampling  
-#' @param shapefile sp class with all of the locations for each place id.  In addition, we must have road shapefiles so shapefile is a list with both the tracts and the roads, tracts is the first object and roads the second.
+#' @param shapefile sp class with all of the locations for each place id.  
+#' In addition, we must have road shapefiles so shapefile is a list with both the 
+#' tracts and the roads, tracts is the first object and roads the second.
 #' @return newShp - roads within the tract, a SpatialLines object
 subset_shapes_roads <- function(place_id, shapefile){
     stopifnot(class(shapefile) == "list")
@@ -373,7 +388,8 @@ samp_roads <- function(n_house, newShp, noise){
         pts <- sp::spsample(newShp, n = n_house, type = "random", iter = 50)
     }
 
-    # Sometimes sampling fails.  If so, we resample from already selected points to fill in the rest.
+    # Sometimes sampling fails.  If so, we resample from already 
+    # selected points to fill in the rest.
 
     if (n_house != length(pts)){
         resampled_pts <- n_house - length(pts)
