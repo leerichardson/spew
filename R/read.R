@@ -42,6 +42,7 @@ read_data <- function(input_dir,
           shapefiles[[1]] <- standardize_shapefiles(shapefiles[[1]], data_group)
       }
   }
+  
   if (!is.null(folders$lookup)) {
     lookup <- read_lookup(input_dir, folders, data_group)
     lookup <- standardize_lookup(lookup, data_group)

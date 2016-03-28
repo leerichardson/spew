@@ -32,3 +32,19 @@ uruguay <- make_data(pop_table = uruguay_format$pop_table,
            sampling_type = "uniform", 
            convert_count = TRUE, 
            output_dir = "/home/lee/uruguay/")
+
+# Run the full South Dakota data-set 
+library(sp)
+library(stringdist)
+generate_spew(input_dir = "data-raw/uruguay", 
+              folders = list(pop_table = "counts", 
+                             pums = "PUMS", 
+                             shapefiles = "shapefile_ipums"), 
+              data_group = "ipums", 
+              output_dir = "/home/lee/uruguay/", 
+              parallel = TRUE, 
+              sampling_type = "uniform", 
+              convert_count = FALSE, 
+              vars = list(household = NA, person = NA), 
+              make_plots = FALSE)
+

@@ -36,8 +36,8 @@ generate_spew <- function(input_dir, folders, data_group, output_dir, parallel =
   # Use the formatted data to generate synthetic populations 
   make_data(pop_table = formatted_data$pop_table, shapefile = formatted_data$shapefiles, 
             pums_h = formatted_data$pums$pums_h, pums_p = formatted_data$pums$pums_p, 
-            schools = formatted_data$schools, workplaces = formatted_data$workplaces, parallel = parallel, output_dir = output_dir, 
-            sampling_type = sampling_type, convert_count = convert_count)
+            schools = formatted_data$schools, workplaces = formatted_data$workplaces, parallel = parallel, 
+            output_dir = output_dir, sampling_type = sampling_type, convert_count = convert_count)
 
   if (make_plots == TRUE) {
       make_maps(output_dir, formatted_data$shapefiles, zoom = 6)
@@ -50,5 +50,5 @@ generate_spew <- function(input_dir, folders, data_group, output_dir, parallel =
   statement <- paste0("SPEW Runs in: ", overall_time)
   print(statement)
   
-  return(overall_time)
+  return(TRUE)
 }

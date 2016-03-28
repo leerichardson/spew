@@ -35,13 +35,6 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
   if (parallel == FALSE) {
     
     for (place in 1:num_places) { 
-      msg <- paste0("Generating place: ", place, " out of ", num_places)
-      node_name <- paste0("Node: ", Sys.info()[['nodename']])      
-      session_id <- paste0("R Session ID: ", Sys.getpid())
-      print(msg)
-      print(node_name)
-      print(session_id)
-      
       make_place(place, pop_table, shapefile, pums_h, pums_p, schools, 
                  workplaces, sampling_type, output_dir, convert_count) 
     }    
@@ -55,7 +48,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
                         "sample_locations", "sample_people", "write_data", 
                         "people_to_households", "assign_schools", "assign_schools_inner", 
                         "weight_dists", "get_dists", "haversine", "subset_schools", 
-                        "assign_workplaces", "assign_workplaces_inner")
+                        "assign_workplaces", "assign_workplaces_inner", "remove_holes")
     
     parallel::clusterExport(cl = cluster, varlist = export_objects, envir = environment())    
     doSNOW::registerDoSNOW(cluster)
@@ -63,11 +56,6 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
     foreach(place = 1:num_places, .packages = c("plyr"), .export = export_objects) %dopar% {
       
       # Print out relevant information pertaining to the job
-      msg <- paste0("Generating place: ", place, " out of ", num_places)
-      node_name <- paste0("Node: ", Sys.info()[['nodename']])
-      print(msg)
-      print(node_name)
-      
       make_place(place, pop_table, shapefile, pums_h, pums_p, schools, 
                  workplaces, sampling_type, output_dir, convert_count) 
     }
@@ -76,14 +64,10 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
   }
   
   # Print the diagnostics and summaries of the entire place 
-  overall_time <- difftime(Sys.time(), start_time,units = "secs")
-  overall_time <- round(overall_time, digits = 2)
+  overall_time <- difftime(Sys.time(), start_time, units = "secs")
+  overall_time <- round(overall_time, digits = 2)  
+  time_statement <- paste0("Time Running Make Data: ", overall_time)
   
-  total_hh <- sum(pop_table$n_house)
-  hh_statement <- paste0("Total Households: ", total_hh)
-  time_statement <- paste0("Total Time: ", overall_time)
-  
-  print(hh_statement)
   print(time_statement)
   return(overall_time)
 }
@@ -163,14 +147,18 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   sampled_people$puma_id <- puma_id
 
   # Assign schools to people if the data exists 
+  school_msg <- "no"
   if (!is.null(schools)) {
+    school_msg <- "yes"
     school_ids <- assign_schools(sampled_people, schools)
     sampled_people$school_id <- school_ids
     stopifnot("school_id" %in% names(sampled_people))
   }
 
   # Assign workplaces to people if the data exists 
+  workplace_msg <- "no"
   if (!is.null(workplaces)) {
+    workplace_msg <- "yes"
     workplace_ids <- assign_workplaces(sampled_people, workplaces)
     sampled_people$workplace_id <- workplace_ids
     stopifnot("workplace_id" %in% names(sampled_people))
@@ -188,18 +176,25 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   overall_time <- difftime(Sys.time(), start_time, units = "secs")
   overall_time <- round(overall_time, digits = 2)
   
+  msg <- paste0("Place: ", index, " out of ", nrow(pop_table))        
+  
   total_households <- nrow(sampled_households)
   total_people <- nrow(sampled_people)
   
   hh_statement <- paste0("Households: ", total_households)
   people_statement <- paste0("People: ", total_people)
   time_statement <- paste0("Time: ", overall_time)
+  school_statement <- paste0("Schools: ", school_msg)
+  workplace_statement <- paste0("Workplaces: ", workplace_msg)  
   
-  print(paste0("Place: ", place_id))
+  print(msg)
+  print(paste0("Place Name: ", place_id))
   print(paste0("Puma: ", puma_id))
   print(hh_statement)
   print(people_statement)
   print(time_statement)
+  print(school_statement)
+  print(workplace_statement)
   return(overall_time)
 }
 
