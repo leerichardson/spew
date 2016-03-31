@@ -96,7 +96,7 @@ weight_dists <- function(dist_mat, schools){
 #'
 #' @param df data frame of people
 #' @param schools dataframe of subsetted schools
-#' @param "haversine"
+#' @param dist "haversine"
 #' @return distance between two points on the globe
 get_dists <- function(df, schools, dist){
   m <- nrow(df) # number of people
@@ -148,7 +148,9 @@ haversine <- function(x1, y1, x2, y2){
   dy <- y2 - y1 
   a <- (sin(dy/2))^2 + cos(y1) * cos(y2) * (sin(dx/2))^2
   d <- atan2( sqrt(a), sqrt(1-a))
-  d <- (d + 2*pi/ pi)  # scales between 0 and 1
+  d <- (d / pi)  # scales between 0 and 1
+  stopifnot( all(d >= 0 ))
+  stopifnot( all( d <= 1))
   return(d)
 }
 
