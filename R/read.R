@@ -108,6 +108,7 @@ read_pop_table <- function(input_dir, folders, data_group) {
   } else if (data_group == "none") {
     pop_table <- read.csv(folders$pop_table, stringsAsFactors = FALSE, 
                           colClasses = "character")
+    pop_table$n_house <- as.numeric(pop_table$n_house)
     return(pop_table)
   }
   
@@ -118,6 +119,7 @@ read_pop_table <- function(input_dir, folders, data_group) {
 
 #' Make sure pop_table has the appropriate columns
 standardize_pop_table <- function(pop_table, data_group){
+  
   
   if (data_group == "US") {
     
