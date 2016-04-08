@@ -1,8 +1,8 @@
 context("General Place Assignment Functions")
 
 test_that("Place Assignment Functions", {
-    # Check that dfs have longitude and latitude columns
-    # checkDF
+  # Check that dfs have longitude and latitude columns
+  # checkDF
   expect_false(checkDF(data.frame("longi" = 1, "latitude" = 0)))
   expect_true(checkDF(data.frame("longitude" = 1, "latitude" = 0)))
   expect_false(checkDF(data.frame("longitude" = 1)))

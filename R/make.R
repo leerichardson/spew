@@ -117,18 +117,12 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   sampled_households <- pums_h[households, ]
   
   # Attach locations to the sample households
-  if (class(shapefile) == "list") {
-      stopifnot(any(names(shapefile) == "roads"))
-      locations <- sample_locations_from_roads(place_id = place_id,
-                                               n_house = n_house, 
-                                               shapefile = shapefile, 
-                                               noise = .0002)
-  } else {
-      locations <- sample_locations(place_id = place_id, 
-                                    n_house = n_house, 
-                                    shapefile = shapefile)
-  }
-  
+  locations <- sample_locations(method = "uniform", 
+                                place_id = place_id,
+                                n_house = n_house, 
+                                shapefile = shapefile, 
+                                noise = .0002)
+
   sampled_households$longitude <- locations@coords[, 1]
   sampled_households$latitude <- locations@coords[, 2]
   
@@ -229,48 +223,6 @@ sample_households <- function(n_house, pums_h, puma_id = NULL,
   }
 }
 
-#' Sample from a particular polygon shapefile 
-#' 
-#' @param place_id numeric specifiying the ID of the region we are 
-#' subsampling  
-#' @param n_house numeric indicating the number of households
-#' @param shapefile sp class with all of the locations for each place id
-#' @return SpatialPoints object with coordinates for the n households
-sample_locations <- function(place_id, n_house, shapefile) {
-  # Subset the shapefile to the polygon 
-  # specified by the place_id argument 
-  slots <- methods::slot(shapefile, "polygons")
-  region <- which(shapefile$place_id == place_id)
-  poly <- slots[[region]]
-  
-  # Remove holes from polygon if any are found 
-  is_hole <- lapply(poly@Polygons, function(p) p@hole)
-  if (any(unlist(is_hole)) == TRUE) {
-    poly <- remove_holes(poly)
-  }
-  
-  # Obtain a Uniform, simple random sample of size n_house
-  locs <- sp::spsample(poly, n = n_house, offset = c(0, 0), 
-                       type = "random", iter = 50)
-  return(locs)
-}
-
-#' Remove holes from an object of class Polygon 
-#' 
-#' @param polygon object of class Polygon or Polygons 
-#' 
-#' @note Borrowed the idea from the wild1 package, which 
-#' I wasn't able to load for R 3.2.2, so I found the source code here:
-#' https://github.com/cran/wild1/blob/master/R/remove.holes.r
-#' @return polygon without and Polygons with holes 
-remove_holes <- function(polygon) {
-  is_hole <- lapply(polygon@Polygons, function(p) p@hole)
-  is_hole <- unlist(is_hole)
-  polys <- polygon@Polygons[!is_hole]
-  polygon <- Polygons(polys, ID = polygon@ID)
-  return(polygon)
-}
-
 #' Sample from the individual person PUMS data frame 
 #' 
 #' @param household_pums dataframe with the sampled houehold PUMS 
@@ -315,7 +267,6 @@ write_data <- function(df, place_id, puma_id, type, output_dir) {
 write_pop_table <- function(pop_table, output_dir) {
   filename <- paste0(output_dir, "final_pop_table.csv")
   write.table(pop_table, filename, sep = ",", row.names = FALSE, qmethod = "double")
-  
   return(TRUE)
 }
 
@@ -331,72 +282,4 @@ people_to_households <- function(hh_sizes, n_people) {
   num_households <- n_people / hh_avg
   return(num_households)
 }
-    
-#' Sample coordinates from roads
-#'
-#' @param place_id numeric specifiying the ID of the region we are 
-#' subsampling  
-#' @param n_house numeric indicating the number of households
-#' @param shapefile sp class with all of the locations for each place id.  
-#' In addition, we must have road shapefiles so shapefile is a list with both 
-#' the tracts and the roads, tracts is the first object and roads the second.
-#' @param noise the standard deviation of how much we jitter the road locations in each direction
-#' @return SpatialPoints object with coordinates for the n households
-sample_locations_from_roads <- function(place_id, n_house, shapefile, noise = .0001) {
-    newShp <- subset_shapes_roads(place_id, shapefile)
-    locs <- samp_roads(n_house, newShp, noise)
-    return(locs)
-}
 
-#' Subset the shapefile and road lines to proper roads within specified tract
-#'
-#' @param place_id numeric specifiying the ID of the region we are 
-#' subsampling  
-#' @param shapefile sp class with all of the locations for each place id.  
-#' In addition, we must have road shapefiles so shapefile is a list with both the 
-#' tracts and the roads, tracts is the first object and roads the second.
-#' @return newShp - roads within the tract, a SpatialLines object
-subset_shapes_roads <- function(place_id, shapefile){
-    stopifnot(class(shapefile) == "list")
-    stopifnot(length(shapefile) == 2)
-
-    # Subset the regions to the place_id polygon
-    regions <- shapefile[[1]]
-    poly <- regions[regions@data$place_id == place_id, ]
-
-    # Add the roads in to make a SpatialLines Object
-    roads_sub <- shapefile[[2]][poly,]
-    newShp <- rgeos::gIntersection(roads_sub, poly)
-    return(newShp)
-}
-
-#' Sample the locations from the liens of a SpatialLines object
-#'
-#' @param n_house number of households
-#' @param newShp SpatialLines object
-#' @param noise std deviation of Gaussian noise added to coordinates, default is .001
-#' @return SpatialPoints object with coordinates for the n_house households
-samp_roads <- function(n_house, newShp, noise){
-    if( "lineobj" %in% slotNames(lines)){
-        pts <- sp::spsample(newShp@lineobj, n = n_house, type = "random", iter = 50)
-    } else {
-        pts <- sp::spsample(newShp, n = n_house, type = "random", iter = 50)
-    }
-
-    # Sometimes sampling fails.  If so, we resample from already 
-    # selected points to fill in the rest.
-
-    if (n_house != length(pts)){
-        resampled_pts <- n_house - length(pts)
-        inds <- sample(1:length(pts), resampled_pts)
-        pts <- pts[c(1:length(pts), inds),]
-    }
-
-    err_x <- rnorm(length(pts), 0, noise)
-    err_y <- rnorm(length(pts), 0, noise)
-    pts@coords[,1] <- pts@coords[,1] + err_x
-    pts@coords[,2] <- pts@coords[,2] + err_y
-
-    stopifnot(n_house == length(pts))
-    return(pts)
-}
