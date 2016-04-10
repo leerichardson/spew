@@ -14,10 +14,8 @@ sample_locations <- function(method, place_id, n_house, shapefile, noise = .0001
   # Call the appropriate location sampling function based on
   # the input sampling method  
   if (method == "uniform") {
-    print("Sampling Uniformly!")
     locs <- sample_locations_uniform(place_id, n_house, shapefile)
   } else if (method == "roads") {
-    print("Sampling from Roads!")
     locs <- sample_locations_from_roads(place_id, n_house, shapefile, noise = .0001)
   } else {
     stop("location sampling method must be uniform or roads")
@@ -111,22 +109,23 @@ subset_shapes_roads <- function(place_id, shapefile) {
 #' Sample the locations from the liens of a SpatialLines object
 #'
 #' @param n_house number of households
-#' @param newShp SpatialLines object
+#' @param new_shp SpatialLines object
 #' @param noise std deviation of Gaussian noise added to coordinates, default is .001
 #' @return SpatialPoints object with coordinates for the n_house households
-samp_roads <- function(n_house, newShp, noise){
-  if ("lineobj" %in% slotNames(lines)) {
-    pts <- sp::spsample(newShp@lineobj, n = n_house, type = "random", iter = 50)
-  } else {
-    pts <- sp::spsample(newShp, n = n_house, type = "random", iter = 50)
-  }
-  
+samp_roads <- function(n_house, new_shp, noise) { 
+  stopifnot("lineobj" %in% slotNames(new_shp))
+
+  # Sample from the lineobj of the intersected Spatial object 
+  pts <- sp::spsample(new_shp@lineobj, n = n_house, type = "random", iter = 50)
+
   # Sometimes sampling fails.  If so, we resample from already 
   # selected points to fill in the rest.
+  # Lee: This is a bit strange, why does it return less than n_house?
+  # I added replace = TRUE to get around this for now...
   if (n_house != length(pts)) {
     resampled_pts <- n_house - length(pts)
-    inds <- sample(1:length(pts), resampled_pts)
-    pts <- pts[c(1:length(pts), inds),]
+    inds <- sample(1:length(pts), resampled_pts, replace = TRUE)
+    pts <- pts[c(1:length(pts), inds), ]
   }
   
   err_x <- rnorm(length(pts), 0, noise)
