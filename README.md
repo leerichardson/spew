@@ -2,7 +2,7 @@
 [Style Guide](http://adv-r.had.co.nz/Style.html)
 [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet)
 
-<img src="./images/spew2.png" alt="spew_logo" style="width: 300px;"/>
+<img src="./images/spew2.png" alt="spew_logo" style="width: 100px;"/>
 
 SPEW stands for *S*ynthetic *P*opulations and *E*cosystems of the *W*orld, and is a `R` package which generates synthetic populations. 
 
