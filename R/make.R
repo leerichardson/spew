@@ -12,16 +12,18 @@
 #' employees column, and stcotr column
 #' @param parallel logical indicating whether or not we will generate our 
 #' synthetic populations in parallel
-#' @param sampling_type character vector indicating the type oof sampling used. 
-#' Default's to "uniform"
+#' @param sampling_method character vector indicating the type of sampling 
+#' method to use, defaults to "uniform"
+#' @param locations_method character vector indicating the type of location 
+#' sampling to use, defaults to "uniform", can also be "roads" 
 #' @param output_dir character vector specifying where to write the synthetic microdata 
 #' @return logical specifying whether the microdata was generated 
 #' successfully 
 #' @examples
 #' make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
 make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces, 
-                      parallel = FALSE, sampling_type = "uniform", 
-                      output_dir , convert_count) {
+                      convert_count, output_dir, parallel = FALSE, 
+                      sampling_method = "uniform", locations_method = "uniform") {
   
   start_time <- Sys.time()
   
@@ -35,8 +37,11 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
   if (parallel == FALSE) {
     
     for (place in 1:num_places) { 
-      make_place(place, pop_table, shapefile, pums_h, pums_p, schools, 
-                 workplaces, sampling_type, output_dir, convert_count) 
+      make_place(index = place, pop_table = pop_table, shapefile = shapefile, 
+                 pums_h = pums_h, pums_p = pums_p, schools = schools, 
+                 workplaces = workplaces, sampling_method = sampling_method, 
+                 locations_method = locations_method, output_dir = output_dir, 
+                 convert_count = convert_count) 
     }    
   } else {
     # Set up the worker cores and export all of the necessary 
@@ -48,18 +53,21 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
                         "sample_locations", "sample_people", "write_data", 
                         "people_to_households", "assign_schools", "assign_schools_inner", 
                         "weight_dists", "get_dists", "haversine", "subset_schools", 
-                        "assign_workplaces", "assign_workplaces_inner", "remove_holes")
+                        "assign_workplaces", "assign_workplaces_inner", "remove_holes", 
+                        "sample_locations_uniform", "sample_locations_from_roads", "subset_shapes_roads", 
+                        "samp_roads")
     
     parallel::clusterExport(cl = cluster, varlist = export_objects, envir = environment())    
     doSNOW::registerDoSNOW(cluster)
-    
+  
+    # Run each region in parallel     
     foreach(place = 1:num_places, .packages = c("plyr"), .export = export_objects) %dopar% {
-      
-      # Print out relevant information pertaining to the job
-      make_place(place, pop_table, shapefile, pums_h, pums_p, schools, 
-                 workplaces, sampling_type, output_dir, convert_count) 
+      make_place(index = place, pop_table = pop_table, shapefile = shapefile, 
+                   pums_h = pums_h, pums_p = pums_p, schools = schools, 
+                   workplaces = workplaces, sampling_method = sampling_method, 
+                   locations_method = locations_method, output_dir = output_dir, 
+                   convert_count = convert_count)    
     }
-    
     parallel::stopCluster(cluster)
   }
   
@@ -81,14 +89,18 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
 #' particular locations  
 #' @param pums_h dataframe with microdata corresponding to housegolds 
 #' @param pums_p dataframe with microdata corresponding to people 
-#' @param sampling_type character vector indicating the type of sample to use for 
-#' generating microdata. Right now the only value here is "uniform"
+#' @param schools dataframe with data corresponding to available schools 
+#' @param workplaces dataframe with data corresponding to available workplaces 
+#' @param sampling_method character vector indicating the type of sampling 
+#' method to use, defaults to "uniform"
+#' @param locations_method character vector indicating the type of location 
+#' sampling to use, defaults to "uniform", can also be "roads" 
 #' @param output dir character vector containing the location to save the
 #' @return synthetic population .csv file for both household and person 
 #' level data  
 make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
-                       workplaces, sampling_type, output_dir, convert_count) {
-
+                       workplaces, output_dir, convert_count, sampling_method, 
+                       locations_method) {
   start_time <- Sys.time()
 
   # Make sure there are people living in this particular 
@@ -113,33 +125,38 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   }
   
   # Sample n indices from the household pums 
-  households <- sample_households(n_house, pums_h, puma_id)
+  households <- sample_households(method = sampling_method, 
+                                  n_house = n_house, 
+                                  pums_h = pums_h, 
+                                  puma_id = puma_id)
   sampled_households <- pums_h[households, ]
-  
+
+  # Add ID, place, and puma columns to the synthetic household 
+  sampled_households$SYNTHETIC_SERIAL <- 1:nrow(sampled_households)
+  stopifnot(!any(duplicated(sampled_households$SYNTHETIC_SERIAL)))
+  sampled_households$place_id <- place_id
+  sampled_households$puma_id <- puma_id
+    
   # Attach locations to the sample households
-  locations <- sample_locations(method = "uniform", 
+  locations <- sample_locations(method = locations_method, 
                                 place_id = place_id,
                                 n_house = n_house, 
                                 shapefile = shapefile, 
                                 noise = .0002)
-
   sampled_households$longitude <- locations@coords[, 1]
   sampled_households$latitude <- locations@coords[, 2]
   
-  # Add a synthetic serial ID and place ID 
-  # to the sampled households 
-  sampled_households$SYNTHETIC_SERIAL <- 1:nrow(sampled_households)
-  stopifnot(!any(duplicated(sampled_households$SYNTHETIC_SERIAL)))
-  
-  sampled_households$place_id <- place_id
-  sampled_households$puma_id <- puma_id
-  
   # Attach people to the sampled households and make 
   # sure to include both the place and puma id
-  sampled_people <- sample_people(sampled_households, pums_p)
+  sampled_people <- sample_people(method = sampling_method, 
+                                  household_pums = sampled_households, 
+                                  pums_p = pums_p)
+  
   sampled_people$place_id <- place_id
   sampled_people$puma_id <- puma_id
-
+  sampled_people$SYNTHETIC_PID <- 1:nrow(sampled_people)
+  stopifnot(!any(duplicated(sampled_people$SYNTHETIC_PID)))
+  
   # Assign schools to people if the data exists 
   school_msg <- "no"
   if (!is.null(schools)) {
@@ -192,47 +209,6 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   return(overall_time)
 }
 
-#' Sample appropriate indices from household PUMS 
-#' 
-#' @param n_house numeric indicating the number of households to sample 
-#' @param pums_h dataframe of the households we are sampling from 
-#' @param puma_id vector indicating which specific puma in PUMS we are sampling 
-#' from, if any 
-#' @param sampling_type character indicating the method for sampling 
-#' @return numeric with the indicies of the household PUMS to sample 
-sample_households <- function(n_house, pums_h, puma_id = NULL,
-                              sampling_type = "uniform") {
-  
-  if (sampling_type == "uniform") {
-    
-    # Subset to a specific PUMA if we have data to do this 
-      if (!is.na(puma_id)) {
-        if (!(puma_id %in% unique(pums_h$puma_id))) {
-          sample_inds <- 1:nrow(pums_h)
-        }
-        else {
-          sample_inds <- which(pums_h$puma_id == puma_id)
-          stopifnot(length(sample_inds) < nrow(pums_h))
-        }
-      } else {
-          sample_inds <- 1:nrow(pums_h)
-      }
-    
-      households <- sample(sample_inds, n_house, replace = TRUE)
-      return(households)
-  }
-}
-
-#' Sample from the individual person PUMS data frame 
-#' 
-#' @param household_pums dataframe with the sampled houehold PUMS 
-#' @param pums_p dataframe of the individual microdata 
-#' @return data indicating the indices of people to sample 
-sample_people <- function(household_pums, pums_p) {
-  people <- plyr::join(household_pums, pums_p, type = "left", by = "SERIALNO")
-  return(people)
-}
-
 #' Output our final synthetic populations as csv's 
 #' 
 #' @param df dataframe with the final synthetic population 
@@ -282,4 +258,3 @@ people_to_households <- function(hh_sizes, n_people) {
   num_households <- n_people / hh_avg
   return(num_households)
 }
-

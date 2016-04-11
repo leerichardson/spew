@@ -7,7 +7,7 @@ test_that("United States functions", {
   spew_dir <- system.file("", package = "spew")
   data_path <- paste0(spew_dir, "/", "data-raw/46")
   
-  # Pop Table -------------------------------- 
+  # Pop Table -------------------------------- 0
   sd_poptable <- read_pop_table(data_path, 
                                 data_group = "US", 
                                 folders = list(pop_table = "popTables", 
@@ -29,11 +29,9 @@ test_that("United States functions", {
   standard_poptable <- standardize_pop_table(pop_table = sd_poptable, data_group = "US")
   expect_equal("place_id" %in% names(standard_poptable), TRUE)
   
-  
   # PUMS -------------------------------
   sd_pums <- read_pums(data_path, 
                        data_group = "US", 
-                       
                        folders = list(pop_table = "popTables", 
                                       pums = "pums", 
                                       schools = "schools", 
@@ -57,7 +55,6 @@ test_that("United States functions", {
   # Make sure that the subset variables function works 
   sd_pums <- read_pums(data_path, 
                        data_group = "US", 
-                       
                        folders = list(pop_table = "popTables", 
                                       pums = "pums", 
                                       schools = "schools", 
@@ -73,20 +70,25 @@ test_that("United States functions", {
   
   # Shapefile --------------------------
   library(maptools)
+  library(rgeos)
   sd_shape <- read_shapefiles(data_path, 
-                              data_group = "US", 
-                              folders = list(pop_table = "popTables", 
-                                         pums = "pums", 
-                                         schools = "schools", 
-                                         lookup = "tables", 
-                                         shapefiles = "tiger", 
-                                         workplaces = "workplaces")) 
-  expect_equal(class(sd_shape) == "SpatialPolygonsDataFrame", TRUE)
+                            data_group = "US", 
+                            folders = list(pop_table = "popTables", 
+                                       pums = "pums", 
+                                       schools = "schools", 
+                                       lookup = "tables", 
+                                       shapefiles = "tiger", 
+                                       workplaces = "workplaces"))
+  
+  # Verify it's the correct class based on whether or 
+  # not we have roads 
+  expect_equal(class(sd_shape$shapefile) == "SpatialPolygonsDataFrame", TRUE)
+  expect_equal(class(sd_shape$roads) == "SpatialLinesDataFrame", TRUE)
   
   # Test the standardization functions
   standard_shape <- standardize_shapefiles(sd_shape, data_group = "US")
-  expect_equal(length(standard_shape$place_id) == 222, TRUE)
-  expect_equal(class(standard_shape$place_id) == "character", TRUE)
+  expect_equal(length(standard_shape$shapefile$place_id) == 222, TRUE)
+  expect_equal(class(standard_shape$shapefile$place_id) == "character", TRUE)
   
   # Schools ----------------------------
   sd_schools <- read_schools(data_path, 
@@ -113,19 +115,7 @@ test_that("United States functions", {
                                                shapefiles = "tiger", 
                                                workplaces = "workplaces"))
   expect_equal(class(sd_workplaces) == "data.frame", TRUE)
-  
-  
-#   sd_workplaces$stcotr <- as.character(sd_workplaces$stcotr)
-#   sd_workplaces$stcotr <- substr(sd_workplaces$stcotr, 2, nchar(sd_workplaces))
-#   sd_workplaces <- spew:::read_workplaces("/data/shared_group_data/syneco/input/west/north_america/united_states/01", 
-#                                           data_group = "US", 
-#                                           folders = list(pop_table = "popTables", 
-#                                                          pums = "pums/2013", 
-#                                                          schools = "schools/2013", 
-#                                                          lookup = "tables", 
-#                                                          shapefiles = "tiger", 
-#                                                          workplaces = "workplaces"))
-    
+
   # Overall ----------------------------
 }) 
 

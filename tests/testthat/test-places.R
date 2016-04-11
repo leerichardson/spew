@@ -2,7 +2,6 @@ context("General Place Assignment Functions")
 
 test_that("Place Assignment Functions", {
   # Check that dfs have longitude and latitude columns
-  # checkDF
   expect_false(checkDF(data.frame("longi" = 1, "latitude" = 0)))
   expect_true(checkDF(data.frame("longitude" = 1, "latitude" = 0)))
   expect_false(checkDF(data.frame("longitude" = 1)))
@@ -11,16 +10,14 @@ test_that("Place Assignment Functions", {
   pop <- data.frame(longitude = c(1, 2, 3), latitude = c(1, 2, 3))
   places <- data.frame(longitude = c(1, -3), latitude = c(1, -3))
   dist_mat <- get_dist_mat(pop, places)
-  dist_mat
-  expect_equal(dist_mat[1,1], 0)
+  expect_equal(dist_mat[1, 1], 0)
 
   # check get_weight_dists
-  weight_mat <- get_weight_dists(dist_mat, places, method="uniform")
+  weight_mat <- get_weight_dists(dist_mat, places, method = "uniform")
   expect_equal(dim(dist_mat), dim(weight_mat))
   expect_equal(rowSums(weight_mat), rep(1, nrow(weight_mat)))
-
   places$capacity <- c(10, 100)
-  weight_mat <- get_weight_dists(dist_mat, places, method="capacity")
+  weight_mat <- get_weight_dists(dist_mat, places, method = "capacity")
 
   # Checking the sampling
   places$ID <- c("A", "B")
@@ -28,10 +25,7 @@ test_that("Place Assignment Functions", {
   expect_true(length(place_inds) == nrow(pop))
   pop <- data.frame(pop, out = as.character(places[place_inds, "ID"]), stringsAsFactors = FALSE)
 
-  ###################################################
-  ###############################################3
-
-   # Get the data for a randomly sampled tract set up ------------------------
+  # Get the data for a randomly sampled tract set up ------------------------
   data(sd_data)
   index <- sample(x = 1:nrow(sd_data$pop_table), size = 1)
   
@@ -41,12 +35,15 @@ test_that("Place Assignment Functions", {
   place_id <- sd_data$pop_table[index, "place_id"]
   
   # Sample n indices from the household pums 
-  households <- spew:::sample_households(n_house, sd_data$pums$pums_h, puma_id)
+  households <- sample_households(method = "uniform", n_house, sd_data$pums$pums_h, puma_id)
   sampled_households <- sd_data$pums$pums_h[households, ]
   
   # Attach locations to the sample households 
-  locations <- spew:::sample_locations(place_id = place_id, n_house = n_house, 
-                                shapefile = sd_data$shapefile)
+  locations <- spew:::sample_locations(method = "uniform", 
+                                       place_id = place_id, 
+                                       n_house = n_house, 
+                                       shapefile = sd_data$shapefile)
+  
   sampled_households$longitude <- locations@coords[, 1]
   sampled_households$latitude <- locations@coords[, 2]
   
@@ -60,7 +57,7 @@ test_that("Place Assignment Functions", {
   
   # Attach people to the sampled households and make 
   # sure to include both the place and puma id
-  sampled_people <- spew:::sample_people(sampled_households, sd_data$pums$pums_p)
+  sampled_people <- sample_people(sampled_households, sd_data$pums$pums_p)
   sampled_people$place_id <- place_id
   sampled_people$puma_id <- puma_id
   
@@ -72,7 +69,6 @@ test_that("Place Assignment Functions", {
   school_grades <- sampled_people$SCHG
 
   # Pop and place
-  
   places <- sd_data$schools$public
   names(places)[c(5,6)] <- c("longitude", "latitude")
   places$capacity <- places$Students
@@ -81,7 +77,7 @@ test_that("Place Assignment Functions", {
   st <- substr(pid, 1, 2)
   co <- substr(pid, 3, 5)
   places2 <- places[ as.numeric(as.character(places$CoNo)) == as.numeric(co),]
-  if(nrow(places) > 0){
+  if (nrow(places) > 0) {
       places <- places2
   }
       
@@ -89,18 +85,15 @@ test_that("Place Assignment Functions", {
   expect_true(checkDF(places))
   dist_mat <- get_dist_mat(pop, places)
 
-
   expect_true(min(dist_mat)  >= 0)
   expect_true(max(dist_mat) <= 1)
 
-  ## Testing weight_mat
+  # Testing weight_mat
   weight_mat <- get_weight_dists(dist_mat, places, method="capacity")
   expect_equal(dim(dist_mat), dim(weight_mat))
 
   # Testing whole function
-
   pop2 <- assign_place_coords(pop, places)
-  
 })
 
 

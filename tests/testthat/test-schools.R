@@ -12,11 +12,11 @@ test_that("United States School Assignment", {
   place_id <- sd_data$pop_table[index, "place_id"]
   
   # Sample n indices from the household pums 
-  households <- sample_households(n_house, sd_data$pums$pums_h, puma_id)
+  households <- sample_households(method = "uniform", n_house, sd_data$pums$pums_h, puma_id)
   sampled_households <- sd_data$pums$pums_h[households, ]
   
   # Attach locations to the sample households 
-  locations <- sample_locations(place_id = place_id, n_house = n_house, 
+  locations <- sample_locations(method = "uniform", place_id = place_id, n_house = n_house, 
                                 shapefile = sd_data$shapefile)
   sampled_households$longitude <- locations@coords[, 1]
   sampled_households$latitude <- locations@coords[, 2]
@@ -64,3 +64,4 @@ test_that("United States School Assignment", {
   non_school_assignments <- school_df$assignments[non_school_indices]
   expect_equal(all(is.na(non_school_assignments)), TRUE)
 })
+

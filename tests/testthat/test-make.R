@@ -9,65 +9,62 @@ test_that("Sampling functions", {
   library(sp)
   
   # Sample locations --------------
-  multiple_polygons <- sample_locations(place_id = 46027965700, n_house = 100, 
+  multiple_polygons <- sample_locations(method = "uniform", place_id = 46027965700, n_house = 100, 
                                         shapefile = sd_data$shapefiles)
   expect_equal(is.null(multiple_polygons), FALSE)
   
   num_samples <- floor(runif(1, min = 1, max = 200))
   rand_row <- floor(runif(1, min = 1, max = nrow(sd_data$pop_table)))  
-  single_polygon <-sample_locations(place_id = sd_data$pop_table[rand_row, "place_id"], 
+  single_polygon <- sample_locations(method = "uniform", place_id = sd_data$pop_table[rand_row, "place_id"], 
                                     n_house = num_samples, shapefile = sd_data$shapefiles)
   expect_equal(length(single_polygon), num_samples)
   
   # Verify the ipums shapefiles work as well using Uruguay data 
   place_names <- uruguay_format$shapefiles$place_id
   for (place in place_names) {
-    samp <- sample_locations(place, num_samples, uruguay_format$shapefiles)
+    samp <- sample_locations(method = "uniform", place, num_samples, uruguay_format$shapefiles)
     expect_equal(length(samp), num_samples)
   }
   
   # Make sure the 0 household places are caught
   test_ind <- 100
   sd_data$pop_table[test_ind, "n_house"] <- 0
-
-  print("Changes found")
-  
   expect_output(make_place(test_ind, sd_data$pop_table, sd_data$shapefiles, 
                          sd_data$pums$pums_h, sd_data$pums$pums_p, 
                          schools = sd_data$schools, workplaces = sd_data$workplaces,
-                         sampling_type = "uniform", output_dir = "~/Desktop/46", convert_count = FALSE), 
+                         sampling_method = "uniform", locations_method = "uniform", 
+                         output_dir = "~/Desktop/46", convert_count = FALSE), 
                          "Place has 0 Households!")
   
   # Test that the Parallel version is quicker ----------------
-  library(doParallel)
+  library(doSNOW)
   library(foreach)
   
-  places <- 1:4
-  print(getwd())
+  # Open a file to store the outputs of this test-run 
+  dir.create("tmp")
   sink("test_output.txt")
   
-  regular_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles,
+  places <- 1:4
+  regular_md <- system.time(make_data(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles,
                                       schools = sd_data$schools, workplaces = sd_data$workplaces,
-                                      sd_data$pums$pums_h, sd_data$pums$pums_p,
-                                      output_dir = "~/Desktop",
-                                      parallel = FALSE, convert_count = FALSE))
-  parallel_md <- system.time(make_data(sd_data$pop_table[places, ], sd_data$shapefiles,
+                                      pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
+                                      output_dir = "tmp/", parallel = FALSE, convert_count = FALSE, 
+                                      sampling_method = "uniform", locations_method = "uniform"))
+  
+  parallel_md <- system.time(make_data(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles,
                                        schools = sd_data$schools, workplaces = sd_data$workplaces,
-                                       sd_data$pums$pums_h, sd_data$pums$pums_p, output_dir = "~/Desktop",
-                                       parallel = TRUE, convert_count = FALSE))
-  
-  sink()
-  file.remove("test_output.txt")
-  
+                                       pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
+                                       output_dir = "tmp/", parallel = TRUE, convert_count = FALSE, 
+                                       sampling_method = "uniform", locations_method = "uniform"))
+
   expect_equal(as.logical(parallel_md[1] < regular_md[1]), TRUE)
 
   # Test the Serial Synth and convert count functions ---------------
-  dir.create("tmp")
   make_place(index = 1, pop_table = uruguay_format$pop_table, 
              shapefile = uruguay_format$shapefiles, pums_h = uruguay_format$pums$pums_h, 
              schools = uruguay_format$schools, workplaces = uruguay_format$workplaces,
-             pums_p = uruguay_format$pums$pums_p, sampling_type = "uniform", 
-             output_dir = "tmp/", convert_count = TRUE)
+             pums_p = uruguay_format$pums$pums_p, sampling_method = "uniform", 
+             locations_method = "uniform", output_dir = "tmp/", convert_count = TRUE)
   
   synth_pums_h <- read.csv("tmp/output_858002/eco/household_artigas.csv")
   synth_pums_p <- read.csv("tmp/output_858002/eco/people_artigas.csv")
@@ -82,9 +79,17 @@ test_that("Sampling functions", {
   expect_equal(nrow(synth_pums_h) == original_nhouse, FALSE)
   expect_equal(abs( (nrow(synth_pums_p) / original_nhouse) - 1) < .2, TRUE)
   
-  unlink("tmp/", recursive = TRUE)
-  
   # Testing that the schools an workplace functions 
-  # are integrated into make properly --------------
+  # are integrated into make properly -------------
+    
   
+  # Test that the new sampling methods are integrated 
+  # correctly ---------------------------------------
+  
+  
+  # Remove all of the temporary outputs we used for testing 
+  sink()
+  unlink("test_output.txt")
+  unlink("tmp/", recursive = TRUE)
 })
+

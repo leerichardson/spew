@@ -6,10 +6,12 @@
 #' @param data-group character vector, either "US", "ipums", or "none".
 #' @param output_dir character vector indicating the directory to write 
 #' the synthetic populations 
-#' @param paralel logical indicating whether or not the make_data function 
+#' @param parallel logical indicating whether or not the make_data function 
 #' should be run in parallel
-#' @param sampling_type character vector indicating the type of sampling 
-#' to use, defaults to "uniform"
+#' @param sampling_method character vector indicating the type of sampling 
+#' method to use, defaults to "uniform"
+#' @param locations_method character vector indicating the type of location 
+#' sampling to use, defaults to "uniform", can also be "roads". 
 #' @param convert_count logical meant to indicate if we are going to convert 
 #' population totals to househole counts
 #' @param vars list with two components: household and person. This specifies 
@@ -19,8 +21,8 @@
 #' @export
 #' @return logical indicating whether or not this run of spew ended successfully 
 generate_spew <- function(input_dir, folders, data_group, output_dir, parallel = TRUE, 
-                          sampling_type = "uniform", convert_count = FALSE, 
-                          vars = list(household = NA, person = NA), make_plots = FALSE){
+                          sampling_method = "uniform", locations_method = "uniform", 
+                          convert_count = FALSE, vars = list(household = NA, person = NA)) {
   
   # Start timing the function 
   start_time <- Sys.time()
@@ -36,14 +38,11 @@ generate_spew <- function(input_dir, folders, data_group, output_dir, parallel =
   # Use the formatted data to generate synthetic populations 
   make_data(pop_table = formatted_data$pop_table, shapefile = formatted_data$shapefiles, 
             pums_h = formatted_data$pums$pums_h, pums_p = formatted_data$pums$pums_p, 
-            schools = formatted_data$schools, workplaces = formatted_data$workplaces, parallel = parallel, 
-            output_dir = output_dir, sampling_type = sampling_type, convert_count = convert_count)
+            schools = formatted_data$schools, workplaces = formatted_data$workplaces, 
+            parallel = parallel, output_dir = output_dir, sampling_method = sampling_method, 
+            locations_method = locations_method, convert_count = convert_count)
 
-  if (make_plots == TRUE) {
-      make_maps(output_dir, formatted_data$shapefiles, zoom = 6)
-  }
-  
-  # End the timer and return this as output
+  # Print out the overall run-time of SPEW!
   overall_time <- difftime(Sys.time(), start_time,units = "secs")
   overall_time <- round(overall_time, digits = 2)
   
