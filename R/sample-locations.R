@@ -114,7 +114,7 @@ subset_shapes_roads <- function(place_id, shapefile) {
 #' @return SpatialPoints object with coordinates for the n_house households
 samp_roads <- function(n_house, new_shp, noise) { 
   stopifnot("lineobj" %in% slotNames(new_shp) | "lines" %in% slotNames(new_shp))
-
+  
   # Sample from the lineobj of the intersected Spatial 
   # object or the SpatialLines object 
   if ("lineobj" %in% slotNames(new_shp)) {
@@ -129,10 +129,13 @@ samp_roads <- function(n_house, new_shp, noise) {
   # selected points to fill in the rest.
   # Lee: This is a bit strange, why does it return less than n_house?
   # I added replace = TRUE to get around this for now...
-  if (n_house != length(pts)) {
-    resampled_pts <- n_house - length(pts)
-    inds <- sample(1:length(pts), resampled_pts, replace = TRUE)
-    pts <- pts[c(1:length(pts), inds), ]
+  num_points <- length(pts)
+  if (num_points < n_house) {
+    resampled_pts <- n_house - num_points
+    inds <- sample(1:num_points, resampled_pts, replace = TRUE)
+    pts <- pts[c(1:num_points, inds), ]
+  } else if (num_points > n_house) {
+    pts <- pts[1:n_house, ]
   }
   
   err_x <- rnorm(length(pts), 0, noise)
