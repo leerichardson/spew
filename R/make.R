@@ -132,7 +132,7 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   sampled_households <- pums_h[households, ]
 
   # Add ID, place, and puma columns to the synthetic household 
-  sampled_households$SYNTHETIC_SERIAL <- 1:nrow(sampled_households)
+  sampled_households$SYNTHETIC_HID <- paste0(place_id, "-", 1:nrow(sampled_households))
   stopifnot(!any(duplicated(sampled_households$SYNTHETIC_SERIAL)))
   sampled_households$place_id <- place_id
   sampled_households$puma_id <- puma_id
@@ -154,7 +154,7 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   
   sampled_people$place_id <- place_id
   sampled_people$puma_id <- puma_id
-  sampled_people$SYNTHETIC_PID <- 1:nrow(sampled_people)
+  sampled_people$SYNTHETIC_PID <- paste0(sampled_people$SYNTHETIC_HID, "-", 1:nrow(sampled_people))
   stopifnot(!any(duplicated(sampled_people$SYNTHETIC_PID)))
   
   # Assign schools to people if the data exists 
@@ -187,8 +187,6 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   overall_time <- difftime(Sys.time(), start_time, units = "secs")
   overall_time <- round(overall_time, digits = 2)
   
-  msg <- paste0("Place: ", index, " out of ", nrow(pop_table))        
-  
   total_households <- nrow(sampled_households)
   total_people <- nrow(sampled_people)
   
@@ -197,8 +195,9 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   time_statement <- paste0("Time: ", overall_time)
   school_statement <- paste0("Schools: ", school_msg)
   workplace_statement <- paste0("Workplaces: ", workplace_msg)  
-  
-  print(msg)
+
+  print(paste0("Place: ", index)) 
+  print(paste0("Total Places: ", nrow(pop_table)))
   print(paste0("Place Name: ", place_id))
   print(paste0("Puma: ", puma_id))
   print(hh_statement)
@@ -206,7 +205,9 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   print(time_statement)
   print(school_statement)
   print(workplace_statement)
-  return(overall_time)
+  return(list(total_households = total_households, 
+              total_people = total_people, 
+              overall_time = overall_time))
 }
 
 #' Output our final synthetic populations as csv's 

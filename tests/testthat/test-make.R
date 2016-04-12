@@ -44,19 +44,19 @@ test_that("Sampling functions", {
   dir.create("tmp")
   sink("test_output.txt")
   
+  # Make sure the parallel runs faster than the regular ---------
   places <- 1:4
   regular_md <- system.time(make_data(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles,
                                       schools = sd_data$schools, workplaces = sd_data$workplaces,
                                       pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
                                       output_dir = "tmp/", parallel = FALSE, convert_count = FALSE, 
                                       sampling_method = "uniform", locations_method = "uniform"))
-  
   parallel_md <- system.time(make_data(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles,
                                        schools = sd_data$schools, workplaces = sd_data$workplaces,
                                        pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
                                        output_dir = "tmp/", parallel = TRUE, convert_count = FALSE, 
                                        sampling_method = "uniform", locations_method = "uniform"))
-
+  
   expect_equal(as.logical(parallel_md[1] < regular_md[1]), TRUE)
 
   # Test the Serial Synth and convert count functions ---------------
@@ -71,7 +71,8 @@ test_that("Sampling functions", {
   
   # Make sure the synthetic serial I.D. makes it in, and that 
   # there are less of these than the original, in case of duplicated columns
-  expect_equal("SYNTHETIC_SERIAL" %in% names(synth_pums_h), TRUE)
+  expect_equal("SYNTHETIC_HID" %in% names(synth_pums_h), TRUE)
+  expect_equal("SYNTHETIC_PID" %in% names(synth_pums_p), TRUE)
   expect_equal(max(table(synth_pums_p$SYNTHETIC_SERIAL)) < max(table(synth_pums_p$SERIALNO)), TRUE)
   
   # Make sure the convert_count functions work...

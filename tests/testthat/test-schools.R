@@ -31,7 +31,9 @@ test_that("United States School Assignment", {
   
   # Attach people to the sampled households and make 
   # sure to include both the place and puma id
-  sampled_people <- sample_people(sampled_households, sd_data$pums$pums_p)
+  sampled_people <- sample_people(method = "uniform", 
+                                  household_pums = sampled_households, 
+                                  pums_p = sd_data$pums$pums_p)
   sampled_people$place_id <- place_id
   sampled_people$puma_id <- puma_id
   
