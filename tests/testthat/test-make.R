@@ -51,23 +51,27 @@ test_that("Sampling functions", {
                                       pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
                                       output_dir = "tmp/", parallel = FALSE, convert_count = FALSE, 
                                       sampling_method = "uniform", locations_method = "uniform"))
+  
   parallel_md <- system.time(make_data(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles,
                                        schools = sd_data$schools, workplaces = sd_data$workplaces,
                                        pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
                                        output_dir = "tmp/", parallel = TRUE, convert_count = FALSE, 
                                        sampling_method = "uniform", locations_method = "uniform"))
-  
+
   expect_equal(as.logical(parallel_md[1] < regular_md[1]), TRUE)
 
   # Test the Serial Synth and convert count functions ---------------
-  make_place(index = 1, pop_table = uruguay_format$pop_table, 
-             shapefile = uruguay_format$shapefiles, pums_h = uruguay_format$pums$pums_h, 
-             schools = uruguay_format$schools, workplaces = uruguay_format$workplaces,
-             pums_p = uruguay_format$pums$pums_p, sampling_method = "uniform", 
-             locations_method = "uniform", output_dir = "tmp/", convert_count = TRUE)
+  uruguay_region <- make_place(index = 1, pop_table = uruguay_format$pop_table, 
+                               shapefile = uruguay_format$shapefiles, pums_h = uruguay_format$pums$pums_h, 
+                               schools = uruguay_format$schools, workplaces = uruguay_format$workplaces,
+                               pums_p = uruguay_format$pums$pums_p, sampling_method = "uniform", 
+                               locations_method = "uniform", output_dir = "tmp/", convert_count = TRUE)
   
   synth_pums_h <- read.csv("tmp/output_858002/eco/household_artigas.csv")
   synth_pums_p <- read.csv("tmp/output_858002/eco/people_artigas.csv")
+  
+  # Verify the printing of region lists works as expected 
+  expect_true(print_region_list(uruguay_region))  
   
   # Make sure the synthetic serial I.D. makes it in, and that 
   # there are less of these than the original, in case of duplicated columns

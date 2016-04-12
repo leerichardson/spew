@@ -25,7 +25,7 @@ generate_spew <- function(input_dir, folders, data_group, output_dir, parallel =
                           convert_count = FALSE, vars = list(household = NA, person = NA)) {
   
   # Start timing the function 
-  start_time <- Sys.time()
+  spew_start_time <- Sys.time()
   
   # Given information on our input data, read in everything to memory and 
   # save everything in a list 
@@ -43,11 +43,10 @@ generate_spew <- function(input_dir, folders, data_group, output_dir, parallel =
             locations_method = locations_method, convert_count = convert_count)
 
   # Print out the overall run-time of SPEW!
-  overall_time <- difftime(Sys.time(), start_time,units = "secs")
-  overall_time <- round(overall_time, digits = 2)
-  
-  statement <- paste0("SPEW Runs in: ", overall_time)
-  print(statement)
+  spew_time <- difftime(Sys.time(), spew_start_time, units = "secs")
+  spew_time <- round(overall_time, digits = 2)
+  spew_statement <- paste0("SPEW Runs in: ", spew_time)
+  print(spew_statement)
   
   return(TRUE)
 }

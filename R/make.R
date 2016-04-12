@@ -25,7 +25,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
                       convert_count, output_dir, parallel = FALSE, 
                       sampling_method = "uniform", locations_method = "uniform") {
   
-  start_time <- Sys.time()
+  location_start_time <- Sys.time()
   
   # Write out the final, formatted population table  
   write_pop_table(pop_table, output_dir)
@@ -35,14 +35,15 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
   num_places <- nrow(pop_table) 
   
   if (parallel == FALSE) {
-    
+    region_list <- vector(mode = "list", length = num_places)
     for (place in 1:num_places) { 
-      make_place(index = place, pop_table = pop_table, shapefile = shapefile, 
-                 pums_h = pums_h, pums_p = pums_p, schools = schools, 
-                 workplaces = workplaces, sampling_method = sampling_method, 
-                 locations_method = locations_method, output_dir = output_dir, 
-                 convert_count = convert_count) 
-    }    
+      region_list[[place]] <- make_place(index = place, pop_table = pop_table, shapefile = shapefile, 
+                                         pums_h = pums_h, pums_p = pums_p, schools = schools, 
+                                         workplaces = workplaces, sampling_method = sampling_method, 
+                                         locations_method = locations_method, output_dir = output_dir, 
+                                         convert_count = convert_count) 
+    }
+
   } else {
     # Set up the worker cores and export all of the necessary 
     # data needed to call the make_place function 
@@ -61,23 +62,25 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
     doSNOW::registerDoSNOW(cluster)
   
     # Run each region in parallel     
-    foreach(place = 1:num_places, .packages = c("plyr"), .export = export_objects) %dopar% {
-      make_place(index = place, pop_table = pop_table, shapefile = shapefile, 
-                   pums_h = pums_h, pums_p = pums_p, schools = schools, 
-                   workplaces = workplaces, sampling_method = sampling_method, 
-                   locations_method = locations_method, output_dir = output_dir, 
-                   convert_count = convert_count)    
-    }
+    region_list <- foreach(place = 1:num_places, .packages = c("plyr"), .export = export_objects) %dopar% {
+                      make_place(index = place, pop_table = pop_table, shapefile = shapefile, 
+                                   pums_h = pums_h, pums_p = pums_p, schools = schools, 
+                                   workplaces = workplaces, sampling_method = sampling_method, 
+                                   locations_method = locations_method, output_dir = output_dir, 
+                                   convert_count = convert_count)    
+                    }
     parallel::stopCluster(cluster)
   }
-  
+
   # Print the diagnostics and summaries of the entire place 
-  overall_time <- difftime(Sys.time(), start_time, units = "secs")
-  overall_time <- round(overall_time, digits = 2)  
-  time_statement <- paste0("Time Running Make Data: ", overall_time)
+  print_region_list(region_list)
   
-  print(time_statement)
-  return(overall_time)
+  location_time <- difftime(Sys.time(), location_start_time, units = "secs")
+  location_time <- round(location_time, digits = 2)  
+  location_time_statement <- paste0("Location runs in: ", location_time)
+  print(location_time_statement)
+  
+  return(TRUE)
 }
 
 #' Create microdata for individual places 
@@ -101,7 +104,8 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
 make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
                        workplaces, output_dir, convert_count, sampling_method, 
                        locations_method) {
-  start_time <- Sys.time()
+  # Start the clock on this specific place 
+  place_start_time <- Sys.time()
 
   # Make sure there are people living in this particular 
   # place. If not, skip!
@@ -158,21 +162,29 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   stopifnot(!any(duplicated(sampled_people$SYNTHETIC_PID)))
   
   # Assign schools to people if the data exists 
-  school_msg <- "no"
+  school_time <- 0
   if (!is.null(schools)) {
-    school_msg <- "yes"
+    school_start_time <- Sys.time()
+    
     school_ids <- assign_schools(sampled_people, schools)
     sampled_people$school_id <- school_ids
     stopifnot("school_id" %in% names(sampled_people))
+    
+    school_time <- difftime(Sys.time(), school_start_time, units = "secs")
+    school_time <- round(school_time, digits = 2)
   }
 
   # Assign workplaces to people if the data exists 
-  workplace_msg <- "no"
+  workplace_time <- 0
   if (!is.null(workplaces)) {
-    workplace_msg <- "yes"
+    workplace_start_time <- Sys.time()
+    
     workplace_ids <- assign_workplaces(sampled_people, workplaces)
     sampled_people$workplace_id <- workplace_ids
     stopifnot("workplace_id" %in% names(sampled_people))
+    
+    workplace_time <- difftime(Sys.time(), workplace_start_time, units = "secs")
+    workplace_time <- round(school_time, digits = 2)
   }
   
   # Write the synthetic populations as CSV's
@@ -183,31 +195,30 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
              puma_id = puma_id, type = "people", 
              output_dir = output_dir)
 
-  # Print out diagnostics/summaries of this place 
-  overall_time <- difftime(Sys.time(), start_time, units = "secs")
-  overall_time <- round(overall_time, digits = 2)
+  # Collect diagnostic and summary information on this particular 
+  # job and return this to the make_data function for analysis 
+  place_time <- difftime(Sys.time(), place_start_time, units = "secs")
+  place_time <- as.numeric(round(place_time, digits = 2))
+  place_time_statement <- paste0("Time: ", place_time)
   
-  total_households <- nrow(sampled_households)
-  total_people <- nrow(sampled_people)
+  hh_statement <- paste0("Households: ", nrow(sampled_households))
+  people_statement <- paste0("People: ", nrow(sampled_people))
+  school_statement <- paste0("Schools: ", school_time)
+  workplace_statement <- paste0("Workplaces: ", workplace_time)  
+  place_statement <- paste0("Place: ", index) 
+  total_place_statement <- paste0("Total Places: ", nrow(pop_table))
+  place_name_statement <- paste0("Place Name: ", place_id)
+  puma_statement <- paste0("Puma: ", puma_id)
   
-  hh_statement <- paste0("Households: ", total_households)
-  people_statement <- paste0("People: ", total_people)
-  time_statement <- paste0("Time: ", overall_time)
-  school_statement <- paste0("Schools: ", school_msg)
-  workplace_statement <- paste0("Workplaces: ", workplace_msg)  
-
-  print(paste0("Place: ", index)) 
-  print(paste0("Total Places: ", nrow(pop_table)))
-  print(paste0("Place Name: ", place_id))
-  print(paste0("Puma: ", puma_id))
-  print(hh_statement)
-  print(people_statement)
-  print(time_statement)
-  print(school_statement)
-  print(workplace_statement)
-  return(list(total_households = total_households, 
-              total_people = total_people, 
-              overall_time = overall_time))
+  return(list(place_name = place_name_statement,
+              place_num = place_statement, 
+              total_places = total_place_statement, 
+              total_households = hh_statement, 
+              total_people = people_statement, 
+              place_time = place_time_statement, 
+              schools = school_statement, 
+              workplaces = workplace_statement, 
+              puma_name = puma_statement))
 }
 
 #' Output our final synthetic populations as csv's 
@@ -258,4 +269,21 @@ people_to_households <- function(hh_sizes, n_people) {
   hh_avg <- mean(hh_sizes)
   num_households <- n_people / hh_avg
   return(num_households)
+}
+
+#' Write out information on each region 
+#' 
+#'  @param region_list a list containing all of the 
+#'  summary and diagnostic information for each  
+print_region_list <- function(region_list) {
+  # Loop through each element of a list and 
+  # print our each element within that list 
+  for (region in seq_along(region_list)) {
+    for (diag in seq_along(region_list[[region]])) {
+      diag_statement <- region_list[[region]][[diag]]
+      print(diag_statement)
+    }
+  }
+  
+  return(TRUE)
 }

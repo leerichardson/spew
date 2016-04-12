@@ -9,7 +9,6 @@
 #' the pre-formatted data-types we have on our Olympus
 #' @param vars list with two components: household and person. This specifies 
 #' which variables to include in the corresponding PUMS data-set  
-#' 
 #' @return list in which each element contains one of our standardized 
 #' data sources
 read_data <- function(input_dir, 
@@ -21,6 +20,7 @@ read_data <- function(input_dir,
                                            workplaces = "workplaces"), 
                       data_group = "US", 
                       vars = list(household = NA, person = NA)) {
+  read_start_time <- Sys.time()
   
   if (data_group != "US" & data_group != "ipums" & data_group != "none") {
     stop("spew only accepts data_group: 'US', 'ipums', or 'none'")
@@ -54,7 +54,12 @@ read_data <- function(input_dir,
   } else {
     workplaces <- NULL
   }
-      
+  
+  read_time <- difftime(Sys.time(), read_start_time, units = "secs")
+  read_time <- round(read_time, digits = 2)  
+  read_time_statement <- paste0("Read runs in: ", read_time)
+  print(read_time_statement)
+  
   return(list(pop_table = pop_table, 
               pums = pums, 
               lookup = lookup, 
