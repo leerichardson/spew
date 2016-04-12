@@ -446,13 +446,8 @@ read_roads <- function(path_to_roads) {
             return(road)
         })
         
-         # Combine the polygons together
+        # Combine the polygons together
         roads <- do.call('rbind', roads_list2)
-
-        # Write it so we don't have to go through this nonsense again
-        bnm <- basename(path_to_roads)
-        fn <- file.path(path_to_roads, paste0(bnm, "_APPENDED.shp"))
-        writeSpatialShape(roads, fn)
         return(roads)
     }
 }
