@@ -85,6 +85,9 @@ data(sd_data)
 library(parallel)
 library(foreach)
 library(doSNOW)
+library(sp)
+library(maptools)
+
 make_data(pop_table = sd_data$pop_table[1:5, ], 
           pums_h = sd_data$pums$pums_h, 
           pums_p = sd_data$pums$pums_p, 
@@ -96,19 +99,3 @@ make_data(pop_table = sd_data$pop_table[1:5, ],
           sampling_type = "uniform", 
           convert_count = FALSE)
 
-# Run the full South Dakota data-set 
-library(sp)
-generate_spew(input_dir = "data-raw/46", 
-              folders = list(pop_table = "popTables", 
-                                       pums = "pums/2013", 
-                                       schools = "schools/2013", 
-                                       lookup = "tables", 
-                                       shapefiles = "tiger", 
-                                       workplaces = "workplaces"), 
-              data_group = "US", 
-              output_dir = "/home/lee/south_dakota/", 
-              parallel = TRUE, 
-              sampling_type = "uniform", 
-              convert_count = FALSE, 
-              vars = list(household = NA, person = NA), 
-              make_plots = FALSE)

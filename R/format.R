@@ -10,7 +10,8 @@
 #' to sample, and the puma id.  Note the the place_id should correspond to 
 #' the place_id from the shapefile 
 format_data <- function(data_list, data_group) {
-    
+  format_start_time <- Sys.time()
+  
   # Assert that we have all the REQUIRED (shapefile, pums, counts) elements 
   # for generating the synthetic population....
   if (is.null(data_list$pop_table) | is.null(data_list$shapefile) | is.null(data_list$pums)) {
@@ -71,6 +72,12 @@ format_data <- function(data_list, data_group) {
     check_place_ids(pop_table_places, shapefile_places)
     check_puma_ids(pop_table_pumas, pums_pumas)
   }
+
+  # Print out the length of time it takes for format to run   
+  format_time <- difftime(Sys.time(), format_start_time, units = "secs")
+  format_time <- as.numeric(round(format_time, digits = 2))  
+  format_time_statement <- paste0("Format runs in: ", format_time)
+  print(format_time_statement)
   
   return(data_list)
 }

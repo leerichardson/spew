@@ -113,10 +113,17 @@ subset_shapes_roads <- function(place_id, shapefile) {
 #' @param noise std deviation of Gaussian noise added to coordinates, default is .001
 #' @return SpatialPoints object with coordinates for the n_house households
 samp_roads <- function(n_house, new_shp, noise) { 
-  stopifnot("lineobj" %in% slotNames(new_shp))
+  stopifnot("lineobj" %in% slotNames(new_shp) | "lines" %in% slotNames(new_shp))
 
-  # Sample from the lineobj of the intersected Spatial object 
-  pts <- sp::spsample(new_shp@lineobj, n = n_house, type = "random", iter = 50)
+  # Sample from the lineobj of the intersected Spatial 
+  # object or the SpatialLines object 
+  if ("lineobj" %in% slotNames(new_shp)) {
+    pts <- sp::spsample(new_shp@lineobj, n = n_house, type = "random", iter = 50)
+  } else if ("lines" %in% slotNames(new_shp)) {
+    pts <- sp::spsample(new_shp, n = n_house, type = "random", iter = 50)
+  } else {
+    stop("Roads shapefile must have lines or lineobj as slotNames!")
+  }
 
   # Sometimes sampling fails.  If so, we resample from already 
   # selected points to fill in the rest.

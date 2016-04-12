@@ -44,7 +44,7 @@ generate_spew <- function(input_dir, folders, data_group, output_dir, parallel =
 
   # Print out the overall run-time of SPEW!
   spew_time <- difftime(Sys.time(), spew_start_time, units = "secs")
-  spew_time <- round(overall_time, digits = 2)
+  spew_time <- round(spew_time, digits = 2)
   spew_statement <- paste0("SPEW Runs in: ", spew_time)
   print(spew_statement)
   
