@@ -246,58 +246,6 @@ library(spew)
 Once you re-load the package, it's useful to debug it in Interactive mode on Olympus, o make sure things are working as expected. you can submit an interactive job (ie: Log onto one of the compute nodes) with the command `qsub -I -l walltime=3:00:00`. Then we can use the following commands, which are similar to the commands we run when calling SPEW from the command line, to run SPEW for any of our three data groups (just comment out the data-group you are looking to run with here:)
 
 ```{r, eval=FALSE}
-library(plyr)
-library(spew)
-library(ggmap)
-library(maptools)
-library(foreach)
-library(doParallel)
-library(stringdist)
-options(error = recover)
-
-data_group <- "US"
-convert_count = FALSE
-folders <- list(pop_table = "popTables", 
-                      pums = "pums/2013", 
-                      schools = "schools/2013", 
-                      lookup = "tables", 
-                      shapefiles = "tiger", 
-                      workplaces = "workplaces")
-vars = list(household = NA, person = NA)
-in_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/united_states/46"
-out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/test/united_states/46/"
-sampling_method <- "uniform"
-locations_method <- "roads"
-
-# data_group = "ipums"
-# convert_count = TRUE
-# folders <- list(pop_table = "counts", 
-#                     pums = "PUMS", 
-#                     shapefiles = "shapefile_ipums")
-# vars = list(household = c("COUNTRY","YEAR","SAMPLE","SERIAL","PERSONS","HHWT",
-#                             "FORMTYPE","REGIONW","GEOLEV1","GEOLEV2","HHTYPE",
-#                             "PERNUM","PERWT","RELATE","RELATED"), 
-#             person = c("SERIAL","AGE","SEX","RACE","SCHOOL","INCTOT"))
-# sampling_method <- "uniform"
-# locations_method <- "uniform"
-
-# data_group <- "none"
-# convert_count = FALSE
-# folders = list(pop_table = "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/canada/input/counts/canada_pop_table.csv", 
-#                      pums = list(pums_h = "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/canada/input/pums/pums_h.csv", 
-#                                  pums_p = "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/canada/input/pums/pums_p.csv"),  
-#                      shapefiles = "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/canada/input/shapefiles/canada_shapefiles.shp")
-# 
-# vars = list(household = c("SERIALNO", "puma_id"), 
-# 				    person = c("SERIALNO", "EF_ID","CF_ID","PP_ID","ABOID","AGEGRP","AGEIMM","ATTSCH","BFNMEMB","BEDRM","BUILT","CF_RP","CFSTAT","CFSTRUCT","CIP2011","CITIZEN", "CONDO","COW","DIST","DTYPE","DUR","EF_RP","EFDECILE","EFDIMBM","EMPIN","ETHDER","FCOND","FOL","FPTWK","GENSTAT","GROSRT","GTRFS","HDGREE","HHMAINP","HLAEN","HLAFR","HLANO","HLBEN","HLBFR","HLBNO", "HRSWRK","IMMSTAT","INCTAX","KOL","LEAVE","LFTAG","LOC_ST_RES","LOCSTUD","LOLICOA","LOLICOB","LOLIMA","LOLIMB", "LOLIMMI","LOMBM","LSTWRK","LWAEN","LWAFR","LWANO","LWBEN","LWBFR","LWBNO","MARSTH","MOB1","MOB5","MODE", "MRKINC","MTNEN","MTNFR","MTNNO","NAICS","NOCEE","NOCS","NOL","NOS","OCC","OMP","POB","POBF","POBM","POWST", "PR","PR1","PR5","PRESMORTG","PRIHM","PWPR","REGIND","RELIGION","REPAIR","ROOM","SEX","SSGRAD","SUBSIDY","TENUR", "TOTINC","TOTINC_AT","VALUE","VISMIN","WEIGHT","WKSWRK","WRKACT","WT1","WT2","WT3","WT4","WT5","WT6","WT7","WT8","YRIMM"))
-sampling_method <- "uniform"
-locations_method <- "uniform"
-
-
-in_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/canada"
-out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/test/canada/"
-
-generate_spew(input_dir = library(plyr)
 library(spew)
 library(ggmap)
 library(maptools)
@@ -341,9 +289,8 @@ locations_method <- "roads"
 # 
 # vars = list(household = c("SERIALNO", "puma_id"), 
 #   			    person = c("SERIALNO", "EF_ID","CF_ID","PP_ID","ABOID","AGEGRP","AGEIMM","ATTSCH","BFNMEMB","BEDRM","BUILT","CF_RP","CFSTAT","CFSTRUCT","CIP2011","CITIZEN", "CONDO","COW","DIST","DTYPE","DUR","EF_RP","EFDECILE","EFDIMBM","EMPIN","ETHDER","FCOND","FOL","FPTWK","GENSTAT","GROSRT","GTRFS","HDGREE","HHMAINP","HLAEN","HLAFR","HLANO","HLBEN","HLBFR","HLBNO", "HRSWRK","IMMSTAT","INCTAX","KOL","LEAVE","LFTAG","LOC_ST_RES","LOCSTUD","LOLICOA","LOLICOB","LOLIMA","LOLIMB", "LOLIMMI","LOMBM","LSTWRK","LWAEN","LWAFR","LWANO","LWBEN","LWBFR","LWBNO","MARSTH","MOB1","MOB5","MODE", "MRKINC","MTNEN","MTNFR","MTNNO","NAICS","NOCEE","NOCS","NOL","NOS","OCC","OMP","POB","POBF","POBM","POWST", "PR","PR1","PR5","PRESMORTG","PRIHM","PWPR","REGIND","RELIGION","REPAIR","ROOM","SEX","SSGRAD","SUBSIDY","TENUR", "TOTINC","TOTINC_AT","VALUE","VISMIN","WEIGHT","WKSWRK","WRKACT","WT1","WT2","WT3","WT4","WT5","WT6","WT7","WT8","YRIMM"))
-sampling_method <- "uniform"
-locations_method <- "uniform"
-
+# sampling_method <- "uniform"
+# locations_method <- "uniform"
 
 in_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/canada"
 out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/test/canada/"
@@ -362,7 +309,7 @@ generate_spew(input_dir = in_dir,
 ## Shell Scripting 
 In our use of spew, we will make a lot of use of the Olympus infrastructure to speed up our calculations. In order to use these capabilities, we will need to submit jobs to olympus which request the requisite amount of processors and time. To submit jobs and interact with Olympus, we make use of shell scripts. 
 
-Right now, all of the scripts are located in the `/data/shared_group_data/syneco/spew` directory. All of the files in here have a specific purpose, but the main idea is this. There's a lookup table in the `/input/spew_lookup.csv` directory, which contains all of the inputs necessary to run spew. What we want to do, is to subset this lookup table corresponding to whichever synthetic population we are interested in generated, grab the inputs, and then use these inputs to call spew. This is what the `/spew/run_spew.sh` does, we pass it a query, and this grabs the appropriate inputs from the lookup table. Then, it submits a job for each row of the lookup table that remains after the subset. 
+Right now, all of the scripts are located in the `/data/shared_group_data/syneco/spew` directory. All of the files in here have a specific purpose, but the main idea is this. There's a lookup table in the `/input/spew_lookup.csv` directory, which contains all of the inputs necessary to run spew. What we want to do, is to subset this lookup table corresponding to whichever synthetic population we are interested in generated, grab the inputs, and then use these inputs to call spew. This is what the `/spew/run_spew.sh` does, we pass it a query, and this grabs the appropriate inputs from the lookup table. Then, it submits a job for each row of the lookup table that remains after the subset.  
 
 For example, to run a particular state, we can call:
 `/data/shared_group_data/syneco/spew/run_spew.sh "which(lookup[, 'state_dirs'] == '56')"`

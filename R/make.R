@@ -56,8 +56,8 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
                         "people_to_households", "assign_schools", "assign_schools_inner", 
                         "weight_dists", "get_dists", "haversine", "subset_schools", 
                         "assign_workplaces", "assign_workplaces_inner", "remove_holes", 
-                        "sample_locations_uniform", "sample_locations_from_roads", "subset_shapes_roads", 
-                        "samp_roads")
+                        "sample_locations_uniform", "sample_locations_from_roads", 
+                        "subset_shapes_roads", "samp_roads")
     
     parallel::clusterExport(cl = cluster, varlist = export_objects, envir = environment())    
     doSNOW::registerDoSNOW(cluster)
