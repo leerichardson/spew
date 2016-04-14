@@ -91,22 +91,24 @@ sample_locations_from_roads <- function(place_id, n_house, shapefile, noise = .0
 #' @param shapefile sp class with all of the locations for each place id.  
 #' In addition, we must have road shapefiles so shapefile is a list with both the 
 #' tracts and the roads, tracts is the first object and roads the second.
-#' @return newShp - roads within the tract, a SpatialLines object
+#' @return new_shp - roads within the tract, a SpatialLines object
 subset_shapes_roads <- function(place_id, shapefile) {
   stopifnot(class(shapefile) == "list")
   stopifnot(length(shapefile) == 2)
+  stopifnot(class(shapefile[[1]]) == "SpatialPolygonsDataFrame")
+  stopifnot(class(shapefile[[2]]) == "SpatialLinesDataFrame")
   
   # Subset the regions to the place_id polygon
   regions <- shapefile[[1]]
   poly <- regions[regions@data$place_id == place_id, ]
   
   # Add the roads in to make a SpatialLines Object
-  roads_sub <- shapefile[[2]][poly,]
+  roads_sub <- shapefile[[2]][poly, ]
   new_shp <- rgeos::gIntersection(roads_sub, poly)
   return(new_shp)
 }
 
-#' Sample the locations from the liens of a SpatialLines object
+#' Sample the locations from a SpatialLines object
 #'
 #' @param n_house number of households
 #' @param new_shp SpatialLines object

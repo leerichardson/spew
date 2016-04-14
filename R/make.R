@@ -57,15 +57,16 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
                         "weight_dists", "get_dists", "haversine", "subset_schools", 
                         "assign_workplaces", "assign_workplaces_inner", "remove_holes", 
                         "sample_locations_uniform", "sample_locations_from_roads", 
-                        "subset_shapes_roads", "samp_roads")
+                        "subset_shapes_roads", "samp_roads", "print_region_list")
     
     parallel::clusterExport(cl = cluster, varlist = export_objects, envir = environment())    
     doSNOW::registerDoSNOW(cluster)
   
     # Run each region in parallel     
-    region_list <- foreach(place = 1:num_places, .packages = c("plyr"), .export = export_objects) %dopar% {
+    region_list <- foreach(place = 1:num_places, .packages = c("plyr", "methods", "sp", "rgeos"), 
+                           .export = export_objects) %dopar% {
                     print(paste0("Region ", place, " out of ", num_places))
-                      make_place(index = place, pop_table = pop_table, shapefile = shapefile, 
+                    make_place(index = place, pop_table = pop_table, shapefile = shapefile, 
                                    pums_h = pums_h, pums_p = pums_p, schools = schools, 
                                    workplaces = workplaces, sampling_method = sampling_method, 
                                    locations_method = locations_method, output_dir = output_dir, 
