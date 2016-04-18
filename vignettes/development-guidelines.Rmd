@@ -246,13 +246,18 @@ library(spew)
 Once you re-load the package, it's useful to debug it in Interactive mode on Olympus, o make sure things are working as expected. you can submit an interactive job (ie: Log onto one of the compute nodes) with the command `qsub -I -l walltime=3:00:00`. Then we can use the following commands, which are similar to the commands we run when calling SPEW from the command line, to run SPEW for any of our three data groups (just comment out the data-group you are looking to run with here:)
 
 ```{r, eval=FALSE}
+options(error = recover)
+
 library(spew)
 library(ggmap)
+library(sp)
 library(maptools)
 library(foreach)
-library(doParallel)
 library(stringdist)
-options(error = recover)
+library(doSNOW)
+library(methods) 
+library(plyr)
+library(rgeos)
 
 data_group <- "US"
 convert_count = FALSE
@@ -263,10 +268,10 @@ folders <- list(pop_table = "popTables",
                       shapefiles = "tiger", 
                       workplaces = "workplaces")
 vars = list(household = NA, person = NA)
-in_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/united_states/46"
-out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/test/united_states/46/"
 sampling_method <- "uniform"
 locations_method <- "roads"
+in_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/united_states/01/input"
+out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/test/united_states/01/"
 
 # data_group = "ipums"
 # convert_count = TRUE
@@ -292,9 +297,6 @@ locations_method <- "roads"
 # sampling_method <- "uniform"
 # locations_method <- "uniform"
 
-in_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/canada"
-out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/test/canada/"
-
 generate_spew(input_dir = in_dir, 
         			folders = folders, 
       				data_group = data_group, 
@@ -303,7 +305,7 @@ generate_spew(input_dir = in_dir,
       				parallel = TRUE, 
       				sampling_method = sampling_method,  
       				locations_method = locations_method,	
-      				vars = vars) 
+      				vars = vars)
 ```
 
 ## Shell Scripting 

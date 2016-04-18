@@ -64,7 +64,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
   
     # Run each region in parallel     
     region_list <- foreach(place = 1:num_places, .packages = c("plyr", "methods", "sp", "rgeos"), 
-                           .export = export_objects) %dopar% {
+                           .export = export_objects, .verbose = TRUE) %dopar% {
                     print(paste0("Region ", place, " out of ", num_places))
                     make_place(index = place, pop_table = pop_table, shapefile = shapefile, 
                                    pums_h = pums_h, pums_p = pums_p, schools = schools, 
