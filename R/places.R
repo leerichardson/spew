@@ -6,7 +6,7 @@
 #' @param method c("uniform", "capacity") The method on how we assign places
 #' @param dist_fxn (haversine_dist) or a function with args x1, y1, x2, y2
 #' @return pop data frame with column of place_name with the place_ids
-assign_place_coords<- function(pop, places, place_name ="place", method = "uniform", dist_fxn = haversine_dist){
+assign_place_coords<- function(pop, places, place_name ="place", method = "uniform", dist_fxn = euclidean_dist){
 
     # First check if the pop df and the places df are in the right format
     stopifnot(checkDF(pop, type = "coords"))
@@ -17,6 +17,15 @@ assign_place_coords<- function(pop, places, place_name ="place", method = "unifo
     # Get the distance matrix
     dist_mat <- get_dist_mat(pop, places, dist_fxn)
 
+    # Scale distance mat between 0 and 1 for each row
+    dist_mat <- t(apply(dist_mat, 1, function(row){
+        out <- (row - min(row, na.rm = TRUE)) /
+            (max(row, na.rm = TRUE) - min(row,
+                                               na.rm = TRUE))
+        return(out)
+            }))
+    print(dim(dist_mat))
+    
     # If there is no capacity column, do uniform sampling
     if(!("capacity" %in% names(places))){
         method <- "uniform"
@@ -90,7 +99,7 @@ get_dist_mat <- function(pop, places, dist_fxn = haversine_dist){
 #' @param y2 latitude of object 2 (vector)
 #' @references http://andrew.hedges.name/experiments/haversine/
 #' @return numeric 
-haversine_dist<- function(x1, y1, x2, y2){
+haversine_dist <- function(x1, y1, x2, y2){
   dx <- x2 - x1 
   dy <- y2 - y1 
   a <- (sin(dy/2))^2 + cos(y1) * cos(y2) * (sin(dx/2))^2
@@ -99,6 +108,18 @@ haversine_dist<- function(x1, y1, x2, y2){
   stopifnot( all(d >= 0 ))
   stopifnot( all( d <= 1))
   return(d)
+}
+
+#' Get the euclidean distance between two points (x1, y1) and (x2, y2) 
+#' 
+#' @param x1 longitude of object 1 (vector)
+#' @param y1 latitude of object 1 (vector)
+#' @param x2 longitude of object 2 (vector)
+#' @param y2 latitude of object 2 (vector)
+#' @return numeric 
+euclidean_dist <- function(x1, y1, x2, y2){
+    d <- sqrt((x1 - x2)^2 + (y1 - y2)^2)
+    return(d)
 }
 
 
@@ -118,16 +139,25 @@ get_weight_dists <- function(dist_mat, places, method="uniform"){
       places$capacity <- 100
   }
   stopifnot("capacity" %in% names(places))
-  
+
   capacity <- as.numeric(as.character(places$capacity))
   stopifnot(length(capacity) == n)
   
   places_weight <- ceiling(capacity/20)
   places_weight <- ifelse(is.na(places_weight), 1, places_weight)
-  
-  weights <- (1-dist_mat) * places_weight
+  print("places weight")
+  print(head(places_weight))
+  places_weight_mat <- matrix(rep(places_weight, each = m)
+                            , nrow = m)
+  print("dist")
+  print(head(1-dist_mat))
+  dist_mat <- dist_mat
+  weights <- (1-dist_mat) * places_weight_mat
+  weights <- ifelse(is.na(weights),
+                    .01, weights)
   weights <- weights/rowSums(weights)
-  weights <- ifelse(is.na(weights), 0.0001, weights)
+  print("weights")
+  print(head(weights))
   stopifnot(dim(weights) == c(m,n))
   return(weights)
 }

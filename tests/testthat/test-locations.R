@@ -17,7 +17,7 @@ test_that("Sampling functions", {
                                         n_house = number_houses, 
                                         shapefile = sd_data$shapefiles)
   
-  tract_rds <- readShapeSpatial("/home/lee/spew/data-raw/46/tiger/roads_46/tl_2015_46137_roads.shp")
+  tract_rds <- readShapeSpatial("~/spew/data-raw/46/tiger/roads_46/tl_2015_46137_roads.shp")
   roads_shapefile <- list(regions = sd_data$shapefiles, roads = tract_rds)
 
   road_locs <- sample_locations(method = "roads",                                         
