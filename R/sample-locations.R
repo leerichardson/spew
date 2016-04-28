@@ -118,19 +118,34 @@ samp_roads <- function(n_house, new_shp, noise) {
   stopifnot("lineobj" %in% slotNames(new_shp) | "lines" %in% slotNames(new_shp))
   
   # Sample from the lineobj of the intersected Spatial 
-  # object or the SpatialLines object 
-  if ("lineobj" %in% slotNames(new_shp)) {
-    pts <- sp::spsample(new_shp@lineobj, n = n_house, type = "random", iter = 50)
-  } else if ("lines" %in% slotNames(new_shp)) {
-    pts <- sp::spsample(new_shp, n = n_house, type = "random", iter = 50)
-  } else {
-    stop("Roads shapefile must have lines or lineobj as slotNames!")
+  # object or the SpatialLines object. A few checks are in here to 
+  # make sure we still sample if there is no lineobj slot, and 
+  # if there is too few points 
+  pts <- NULL 
+  orig_n_house <- n_house
+  while (is.null(pts)) {
+    if ("lineobj" %in% slotNames(new_shp)) {
+      pts <- sp::spsample(new_shp@lineobj, n = n_house, type = "random", iter = 50)
+    } else if ("lines" %in% slotNames(new_shp)) {
+      pts <- sp::spsample(new_shp, n = n_house, type = "random", iter = 50)
+    } else {
+      stop("Roads shapefile must have lines or lineobj as slotNames!")
+    }
+    
+    # If the number of households is too low, add ten and 
+    # try to re-sample. Eventually, we will have enough samples 
+    # to get the required samples. This page:
+    # https://github.com/edzer/sp/blob/master/R/spsample.R
+    # shows the details, lines 178-181 show how the number of samples 
+    # is determined
+    if (is.null(pts)) {
+      n_house <- n_house + 10
+    }
   }
-
-  # Sometimes sampling fails.  If so, we resample from already 
-  # selected points to fill in the rest.
-  # Lee: This is a bit strange, why does it return less than n_house?
-  # I added replace = TRUE to get around this for now...
+  
+  # Sometimes sampling fails to get the exact number of households correct.  
+  # If so, we resample from already selected points to fill in the rest. If 
+  # we sample too many points in a similar way, we can subset the correct amount 
   num_points <- length(pts)
   if (num_points < n_house) {
     resampled_pts <- n_house - num_points
@@ -139,12 +154,19 @@ samp_roads <- function(n_house, new_shp, noise) {
   } else if (num_points > n_house) {
     pts <- pts[1:n_house, ]
   }
+  stopifnot(n_house == length(pts))
   
   err_x <- rnorm(length(pts), 0, noise)
   err_y <- rnorm(length(pts), 0, noise)
-  pts@coords[,1] <- pts@coords[,1] + err_x
-  pts@coords[,2] <- pts@coords[,2] + err_y
+  pts@coords[, 1] <- pts@coords[, 1] + err_x
+  pts@coords[, 2] <- pts@coords[, 2] + err_y
   
-  stopifnot(n_house == length(pts))
+  # If we needed to increase the number of samples, 
+  # make sure we re-set the number of households with locations
+  if (n_house != orig_n_house) {
+    pts <- pts[1:orig_n_house, ]
+  }
+  stopifnot(orig_n_house == length(pts))
+  
   return(pts)
 }
