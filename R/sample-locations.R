@@ -111,11 +111,18 @@ subset_shapes_roads <- function(place_id, shapefile) {
 #' Sample the locations from a SpatialLines object
 #'
 #' @param n_house number of households
-#' @param new_shp SpatialLines object
+#' @param new_shp SpatialLines or Spatial Points object
 #' @param noise std deviation of Gaussian noise added to coordinates, default is .001
+#' @note When the class is Spatial Points, the following sampling 
+#' method takes place: "When x is of a class deriving from Spatial-class for which 
+#' no spsample-methods exists, sampling is done in the bounding box 
+#' of the object, using spsample.Spatial"
+#'s This was added because the Puerto Rico intersection gave SpatialPoints
 #' @return SpatialPoints object with coordinates for the n_house households
 samp_roads <- function(n_house, new_shp, noise) { 
-  stopifnot("lineobj" %in% slotNames(new_shp) | "lines" %in% slotNames(new_shp))
+  stopifnot("lineobj" %in% slotNames(new_shp) | 
+              "lines" %in% slotNames(new_shp) | 
+              class(new_shp) == "SpatialPoints")
   
   # Sample from the lineobj of the intersected Spatial 
   # object or the SpatialLines object. A few checks are in here to 
@@ -127,6 +134,8 @@ samp_roads <- function(n_house, new_shp, noise) {
     if ("lineobj" %in% slotNames(new_shp)) {
       pts <- sp::spsample(new_shp@lineobj, n = n_house, type = "random", iter = 50)
     } else if ("lines" %in% slotNames(new_shp)) {
+      pts <- sp::spsample(new_shp, n = n_house, type = "random", iter = 50)
+    } else if (class(new_shp) == "SpatialPoints") {
       pts <- sp::spsample(new_shp, n = n_house, type = "random", iter = 50)
     } else {
       stop("Roads shapefile must have lines or lineobj as slotNames!")

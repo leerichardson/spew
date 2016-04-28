@@ -5,6 +5,7 @@ test_that("Sampling functions", {
   # Load in the South Dakota data
   library(maptools)
   library(rgeos)
+  library(sp)
   data(sd_data)
 
   # Verify the Uniform sampling methodology still works
@@ -41,6 +42,15 @@ test_that("Sampling functions", {
                                 noise = .01)
   expect_true(length(small_road_locs) == small_number_houses)
   
+  # Verify the Spatial Points class works for road sampling 
+  road_pts <- sp::spsample(tract_rds, n = 100, type = "random")
+  road_pts_locs <- samp_roads(100, road_pts, .01)
+  expect_true(class(road_pts_locs) == "SpatialPoints")
+  
+  road_pts2 <- road_pts[1:2, ]
+  road_pts_locs2 <- samp_roads(100, road_pts2, .01)
+  expect_true(class(road_pts_locs) == "SpatialPoints")
+  expect_true(length(road_pts_locs) == length(road_pts_locs2))
 
 #   # Plot for the UP-STAT presentation
 #   par(mfrow = c(1, 2))
