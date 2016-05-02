@@ -79,7 +79,17 @@ remove_holes <- function(polygon) {
 sample_locations_from_roads <- function(place_id, n_house, shapefile, noise = .0001) {
   stopifnot(any(names(shapefile) == "roads"))
   
+  # Get the intersection of the boundary shapefile 
+  # and the roads shapefile 
   new_shp <- subset_shapes_roads(place_id, shapefile)
+  
+  # If the new shape is NULL, sample uniform instead of roads  
+  if (is.null(new_shp)) {
+    locs <- sample_locations_uniform(place_id, n_house, shapefile[[1]])
+    return(locs)
+  }
+  
+  # Sample from the roads shapefile with noise added 
   locs <- samp_roads(n_house, new_shp, noise)
   return(locs)
 }
@@ -146,7 +156,7 @@ samp_roads <- function(n_house, new_shp, noise) {
     # to get the required samples. This page:
     # https://github.com/edzer/sp/blob/master/R/spsample.R
     # shows the details, lines 178-181 show how the number of samples 
-    # is determined
+    # is determined. 
     if (is.null(pts)) {
       n_house <- n_house + 10
     }

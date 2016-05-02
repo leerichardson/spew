@@ -77,7 +77,6 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p,
     households <- sample_households(pop_table[place, "n_house"], 
                                     pop_table[place, "puma_id"], 
                                     pums_h)
-    browser()
   }
 
 }
@@ -95,7 +94,6 @@ Then, all we need to do is run roxygen, and the documentation will be made avail
 
 ## Code Reviews 
   
-
 
 # Common Tasks 
 
@@ -249,29 +247,35 @@ Once you re-load the package, it's useful to debug it in Interactive mode on Oly
 options(error = recover)
 
 library(spew)
-library(ggmap)
+library(methods) 
 library(sp)
 library(maptools)
-library(foreach)
-library(stringdist)
-library(doSNOW)
-library(methods) 
-library(plyr)
 library(rgeos)
+library(foreach)
+library(doSNOW)
+library(stringdist)
+library(plyr)
 
-data_group <- "US"
-convert_count = FALSE
-folders <- list(pop_table = "popTables", 
-                      pums = "pums/2013", 
-                      schools = "schools/2013", 
-                      lookup = "tables", 
-                      shapefiles = "tiger", 
-                      workplaces = "workplaces")
-vars = list(household = NA, person = NA)
-sampling_method <- "uniform"
-locations_method <- "roads"
-in_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/united_states/01/input"
-out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/test/united_states/01/"
+# data_group <- "US"
+# convert_count = FALSE
+# folders <- list(pop_table = "popTables", 
+#                       pums = "pums/2013", 
+#                       schools = "schools/2013", 
+#                       lookup = "tables", 
+#                       shapefiles = "tiger", 
+#                       workplaces = "workplaces")
+# vars = list(household = NA, person = NA)
+# sampling_method <- "uniform"
+# locations_method <- "roads"
+# in_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/united_states/72/input"
+# out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/test/united_states/72/"
+# if (in_dir == "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/united_states/72/input") {
+#   folders <- list(pop_table = "popTables", 
+#                       pums = "pums/2013", 
+#                       lookup = "tables", 
+#                       shapefiles = "tiger")
+# }
+
 
 # data_group = "ipums"
 # convert_count = TRUE
@@ -285,26 +289,29 @@ out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/test/united_states/01/"
 # sampling_method <- "uniform"
 # locations_method <- "uniform"
 
-# data_group <- "none"
-# convert_count = FALSE
-# folders = list(pop_table = "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/canada/input/counts/canada_pop_table.csv", 
-#                      pums = list(pums_h = "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/canada/input/pums/pums_h.csv", 
-#                                  pums_p = "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/canada/input/pums/pums_p.csv"),  
-#                      shapefiles = "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/canada/input/shapefiles/canada_shapefiles.shp")
-# 
-# vars = list(household = c("SERIALNO", "puma_id"), 
-#   			    person = c("SERIALNO", "EF_ID","CF_ID","PP_ID","ABOID","AGEGRP","AGEIMM","ATTSCH","BFNMEMB","BEDRM","BUILT","CF_RP","CFSTAT","CFSTRUCT","CIP2011","CITIZEN", "CONDO","COW","DIST","DTYPE","DUR","EF_RP","EFDECILE","EFDIMBM","EMPIN","ETHDER","FCOND","FOL","FPTWK","GENSTAT","GROSRT","GTRFS","HDGREE","HHMAINP","HLAEN","HLAFR","HLANO","HLBEN","HLBFR","HLBNO", "HRSWRK","IMMSTAT","INCTAX","KOL","LEAVE","LFTAG","LOC_ST_RES","LOCSTUD","LOLICOA","LOLICOB","LOLIMA","LOLIMB", "LOLIMMI","LOMBM","LSTWRK","LWAEN","LWAFR","LWANO","LWBEN","LWBFR","LWBNO","MARSTH","MOB1","MOB5","MODE", "MRKINC","MTNEN","MTNFR","MTNNO","NAICS","NOCEE","NOCS","NOL","NOS","OCC","OMP","POB","POBF","POBM","POWST", "PR","PR1","PR5","PRESMORTG","PRIHM","PWPR","REGIND","RELIGION","REPAIR","ROOM","SEX","SSGRAD","SUBSIDY","TENUR", "TOTINC","TOTINC_AT","VALUE","VISMIN","WEIGHT","WKSWRK","WRKACT","WT1","WT2","WT3","WT4","WT5","WT6","WT7","WT8","YRIMM"))
-# sampling_method <- "uniform"
-# locations_method <- "uniform"
+data_group <- "none"
+convert_count = FALSE
+folders = list(pop_table = "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/canada/input/counts/canada_pop_table.csv", 
+                     pums = list(pums_h = "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/canada/input/pums/pums_h.csv", 
+                                 pums_p = "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/canada/input/pums/pums_p.csv"),  
+                     shapefiles = "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/canada/input/shapefiles/canada_shapefiles.shp")
+
+vars = list(household = c("SERIALNO", "puma_id"), 
+  			    person = c("SERIALNO", "EF_ID","CF_ID","PP_ID","ABOID","AGEGRP","AGEIMM","ATTSCH","BFNMEMB","BEDRM","BUILT","CF_RP","CFSTAT","CFSTRUCT","CIP2011","CITIZEN", "CONDO","COW","DIST","DTYPE","DUR","EF_RP","EFDECILE","EFDIMBM","EMPIN","ETHDER","FCOND","FOL","FPTWK","GENSTAT","GROSRT","GTRFS","HDGREE","HHMAINP","HLAEN","HLAFR","HLANO","HLBEN","HLBFR","HLBNO", "HRSWRK","IMMSTAT","INCTAX","KOL","LEAVE","LFTAG","LOC_ST_RES","LOCSTUD","LOLICOA","LOLICOB","LOLIMA","LOLIMB", "LOLIMMI","LOMBM","LSTWRK","LWAEN","LWAFR","LWANO","LWBEN","LWBFR","LWBNO","MARSTH","MOB1","MOB5","MODE", "MRKINC","MTNEN","MTNFR","MTNNO","NAICS","NOCEE","NOCS","NOL","NOS","OCC","OMP","POB","POBF","POBM","POWST", "PR","PR1","PR5","PRESMORTG","PRIHM","PWPR","REGIND","RELIGION","REPAIR","ROOM","SEX","SSGRAD","SUBSIDY","TENUR", "TOTINC","TOTINC_AT","VALUE","VISMIN","WEIGHT","WKSWRK","WRKACT","WT1","WT2","WT3","WT4","WT5","WT6","WT7","WT8","YRIMM"))
+sampling_method <- "uniform"
+locations_method <- "uniform"
+in_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/canada/input"
+out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/test/canada/"
+
 
 generate_spew(input_dir = in_dir, 
         			folders = folders, 
       				data_group = data_group, 
       				output_dir = out_dir, 
       				convert_count = convert_count, 
-      				parallel = TRUE, 
+      				parallel = FALSE, 
       				sampling_method = sampling_method,  
-      				locations_method = locations_method,	
+      				locations_method = locations_method,
       				vars = vars)
 ```
 

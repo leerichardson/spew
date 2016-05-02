@@ -150,6 +150,14 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
                                 n_house = n_house, 
                                 shapefile = shapefile, 
                                 noise = .0002)
+  
+  # If the location sampling returns NULL, skip this place 
+  # and write out an error 
+  if (is.null(locations)) {
+    print(paste0("Error place, ", place_id, ": sample locations returned NULL!"))
+    return(TRUE)
+  }
+  
   sampled_households$longitude <- locations@coords[, 1]
   sampled_households$latitude <- locations@coords[, 2]
   
