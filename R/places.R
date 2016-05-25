@@ -19,9 +19,9 @@ assign_place_coords<- function(pop, places, place_name ="place", method = "unifo
 
     # Scale distance mat between 0 and 1 for each row
     dist_mat <- t(apply(dist_mat, 1, function(row){
-        out <- (row - min(row, na.rm = TRUE)) /
+        out <- (row - min(row, na.rm = TRUE) ) /
             (max(row, na.rm = TRUE) - min(row,
-                                               na.rm = TRUE))
+                                               na.rm = TRUE)  + .001)
         return(out)
             }))
     print(dim(dist_mat))

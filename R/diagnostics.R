@@ -261,18 +261,187 @@ run_diags <- function(input_dir="./", output_dir=input_dir, save_plots=TRUE, pre
 
 }
 
-## #' Make a log file, either creating a new file or adding on to an old one
-## #'
-## #' @param text string of text to add to log file
-## #' @param filename full path to the output log file, preferably .txt
-## #' @param new_file logical, should we overwrite an old file?
-## #' @return made_log logical
 
-## make_log_file <- function(text, filename, new_file=FALSE){
-##     if(new_file){
-##         if(file.exists(filename)) file.remove(filename)
-##         file.create(filename)
-##     }
-##     write(text, filename, append=TRUE)
-##     return(TRUE)
-## }
+#' Sumarize the files within the output dir
+#'
+#' @param output_dir path to output of SPEW region name
+#' @param doPrint logical
+#' @param type either "ipums" or "us"
+#' @return list
+summarizeFileStructure <- function(output_dir, doPrint = FALSE, type = "ipums"){
+    stopifnot(type %in% c("ipums", "us"))
+    # Region Name
+    base_region <- gsub("output_", "", basename(output_dir))
+    pretty_print(doPrint, paste("The region is", toupper(base_region)))
+    stopifnot("eco" %in% list.files(output_dir))
+    paths <- list.files(output_dir, recursive = T)
+    output_paths <- paths[grepl("output", paths)]
+    if (length(output_paths) < 1){
+           hh_paths <- paths[grepl("household", paths)]
+    } else {
+        hh_paths <- output_paths[grepl("household", output_paths)]
+    }
+    paths_df <- pathsToDF(hh_paths)
+    # Number of levels in file hierarchy
+    nLevels <- getLevels(paths_df)
+    pretty_print(doPrint, paste("There are", nLevels,
+                                "level(s) of nested ecosystems in this region."))
+    nRegions <- nrow(paths_df)
+    pretty_print(doPrint, paste("There are", nRegions, "lowest level subregions in", toupper(base_region)))
+    return(list(base_region = base_region, paths_df = paths_df, nLevels = nLevels))
+}
+
+#' Convert paths to data frame based on folders
+#'
+#' @param paths paths separated by a single /
+#' @return df of paths
+pathsToDF <- function(paths){
+    ll <- strsplit(paths, "/")
+    nLevels <- max(sapply(ll, length))
+    inds <- sapply(ll, function(val) length(val) == nLevels)
+    mat <- do.call(rbind, ll[inds])
+    df <- as.data.frame(mat)
+    colnames(df) <- paste0("folder", 1:ncol(df))
+    return(df)
+}
+
+
+
+
+#' Print text if doPrint
+#'
+#' @param doPrint logical
+#' @param text string
+#' @return print statement
+pretty_print <- function(doPrint = TRUE, text){
+    if (doPrint){
+        print(text)
+    }
+}
+
+
+#' Get the number of levels in the structure
+#'
+#' @param paths_df paths df
+#' @return number of levels in file path
+getLevels <- function(paths_df){
+    if (ncol(paths_df) < 3){
+        return(1)
+    }else if (ncol(paths_df) == 3){
+        un1 <- length(unique(paths_df[, 1]))
+        un2 <- length(unique(paths_df[, 3]))
+        if (un1 == un2){
+            return(1)
+        } else {
+            return(2)
+        }
+    } else {
+        return( floor(ncol(paths_df) / 2) + 1)
+    }
+}
+
+#' Summarize ipums populations
+#'
+#' @param output_dir path
+#' @param ipums_fs output from summarizeFileStructure
+# #' @param shapefile_path default is NA, uses output_dir
+#' @param varsToSummarize list with first entry as vector of household ipums vars and the second as person ipums vars.  The default value is 'base' which includes total number of records.  For households 'base' includes longitude and latitude and the names.  For people, this includes gender.  Otherwise we summarize the base variables and the the variable names which we should summarize.  For the summary output to be something other than a factor variable then see var_list.
+#' @param doPrint logical
+#' @param sampSize number of people to retain (default is 10000) per region for plotting
+summarize_ipums <-  function(output_dir, ipums_fs,
+                             varsToSummarize = list(vars_hh = "base", vars_p = "base"),
+                             doPrint = FALSE, sampSize = 10^4){
+    stopifnot(ncol(ipums_fs$paths_df) == 3)
+    paths_df <- ipums_fs$paths_df
+    vars_hh <- getVars_ipums(varsToSummarize$vars_hh, type = "hh")
+    vars_p <- getVars_ipums(varsToSummarize$vars_p, type = "p")
+    hh_sum_list <- vector(mode = "list", length = nrow(paths_df))
+    pretty_print(doPrint, "Summarizing households!")
+    header <- NULL  ## HOUSEHOLDS!!
+    for (ind in 1:nrow(paths_df)){
+        fp <- paste(paths_df[ind, ], collapse = "/")
+        tab <- as.data.frame(fread(file.path(output_dir, fp)))
+        sum_features_cat <- sapply(vars_hh$cat, summarizeFeatures, tab, type = "cat")
+        sum_features_cont <- sapply(vars_hh$cont, summarizeFeatures, tab, type = "cont")
+        sum_features <- c(sum_features_cat, sum_features_cont)
+        header_hh<- colnames(tab)
+        sampSize <- ifelse(sampSize > nrow(tab), nrow(tab), sampSize)
+        sub_inds <- sample(1:nrow(tab), sampSize, replace = T)
+        sub_df <- subset(tab[sub_inds,], select = c("longitude", "latitude"))
+        regionID <- gsub("household_", "", basename(fp))
+        region_id<- gsub(".csv", "", regionID)
+        region_no <- gsub("output_", "", paths_df[ind, 1])
+        pretty_print(doPrint, region_id)
+        if ("longitude" %in% colnames(tab)){
+            coords <- colMeans(tab[, c("longitude", "latitude")])        
+        }
+        region_sum <- data.frame(region_id = region_id,
+                                 region_no = region_no, nRecords = 12,
+                                 avg_lon = coords[1], avg_lat = coords[2])
+        rownames(region_sum) <- NULL
+        hh_sum_list[[ind]] <- list(region_sum = region_sum,
+                                   sum_features = sum_features,
+                                   sub_df = sub_df, header = header_hh)
+
+    }
+    p_sum_list <- vector(mode = "list", length = nrow(paths_df))
+    ### PEOPLE!!
+    pretty_print(doPrint, "Summarizing people!")
+    for (ind in 1:nrow(paths_df)){
+        paths_df_p <- paths_df
+        paths_df_p[, ncol(paths_df)] <- gsub("household", "people", paths_df[, ncol(paths_df)])
+        fp <- paste(paths_df_p[ind, ], collapse = "/")
+        tab <- as.data.frame(fread(file.path(output_dir, fp)))
+        sum_features_cat <- sapply(vars_p$cat, summarizeFeatures, tab, type = "cat")
+        sum_features_cont <- sapply(vars_p$cont, summarizeFeatures, tab, type = "cont")
+        sum_features <- c(sum_features_cat, sum_features_cont)
+        sampSize <- ifelse(sampSize > nrow(tab), nrow(tab), sampSize)
+        sub_inds <- sample(1:nrow(tab), sampSize, replace = T)
+        regionID <- gsub("people_", "", basename(fp))
+        region_id<- gsub(".csv", "", regionID)
+        region_no <- gsub("output_", "", paths_df[ind, 1])
+        pretty_print(doPrint, region_id)
+        if ("longitude" %in% colnames(tab)){
+            coords <- colMeans(tab[, c("longitude", "latitude")])        
+        }
+        region_sum <- data.frame(region_id = region_id,
+                                 region_no = region_no, nRecords = 12)
+        rownames(region_sum) <- NULL
+        p_sum_list[[ind]] <- list(region_sum = region_sum,
+                                   sum_features = sum_features)
+
+    }
+    return(list(hh_sum_list = hh_sum_list, header_hh = header_hh, p_sum_list = p_sum_list))
+}
+
+
+
+getVars_ipums <- function(summary_vars, type){
+     if ( type == "hh"){
+        if( summary_vars == "base"){
+            var_names <- NULL
+        } else{
+            var_names <- summary_vars
+        }
+    } else {
+        if (summary_vars == "base"){
+            var_names <- c("SEX")
+        } else {
+            var_names <- c("SEX", summary_vars)
+        }
+    }
+    return(list(cat = var_names, cont = NULL))
+}
+
+
+summarizeFeatures <- function(var, tab, type = "cat"){
+    if (is.null(var)){
+        return(TRUE)
+    } else if ( type == "cat"){
+        sum_tab <- table(tab[, var])
+        names(sum_tab) <- paste0(var, "-", names(sum_tab))
+        return(sum_tab)                                 
+    } else {
+        return(FALSE)
+    }
+}
