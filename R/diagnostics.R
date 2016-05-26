@@ -415,7 +415,11 @@ summarize_ipums <-  function(output_dir, ipums_fs,
 }
 
 
-
+#' Add the base variables to the vars to summarize
+#'
+#' @param summary_vars character vector with variables matching the microdata
+#' @param type "hh" for household or "p" for people
+#' @return list of the categorical and continuous variables na mes
 getVars_ipums <- function(summary_vars, type){
      if ( type == "hh"){
         if( summary_vars == "base"){
@@ -433,7 +437,12 @@ getVars_ipums <- function(summary_vars, type){
     return(list(cat = var_names, cont = NULL))
 }
 
-
+#' Summarizing a synthetic ecosystem
+#'
+#' @param var variable name
+#' @param tab dataframe of the syneco
+#' @param type "cat" or "cont" for categorical or continuous data.  right now continuous data is not summarized
+#' @return summary info
 summarizeFeatures <- function(var, tab, type = "cat"){
     if (is.null(var)){
         return(TRUE)
@@ -444,4 +453,104 @@ summarizeFeatures <- function(var, tab, type = "cat"){
     } else {
         return(FALSE)
     }
+}
+
+#' Plot the region diagnostics
+#'
+#' @param ipums_sum_list output from summarize_ipums()
+#' @param ipums_fs output from summarizeFileStructure()
+#' @param pretty ggplot or base R
+#' @param borders logical inclusion of shapefile boundaries
+#' @param data_path input directory to plot the borders
+#' @param savePlot logical
+#' @param plot_name what to save the plot as
+#' @param map_type for ggplot use, default is toner-lite
+#' @param diags_path path to diags folder
+#' @param ... plotting params
+#' @return logical or ggplot object
+plot_region <- function(ipums_sum_list, ipums_fs, pretty = TRUE, borders = FALSE,
+                        data_path = input_dir, savePlot = FALSE, plot_name,
+                        map_type = "toner-lite", diags_path = ".", ...){
+    region <- toupper(ipums_fs$base_region)
+    plot_df <- makePlotDF(ipums_sum_list)
+    centers_df <- getCenters(ipums_sum_list)
+    nRegions <- length(unique(plot_df$reg))
+    if (borders){
+        bds <- getBorders(data_path, ipums_sum_list, ipums_fs)
+    }
+    if (pretty){
+        bbox <- make_bbox(plot_df$lon, plot_df$lat, f =.25)
+        map <- get_map(bbox, maptype = map_type)
+        #cols <- brewer.pal(nRegions, "Spectral")
+        #names(cols) <- levels(plot_df$reg)
+       # The palette with grey:
+        cbbPalette <- c("#999999", "#E69F00", "#56B4E9",
+                       "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+        cols <- cbbPalette[1:nRegions]
+        colScale <- scale_colour_manual(name = "reg", values = cols)
+        g <- ggmap(map) + geom_point(data = plot_df,
+                                aes(x = longitude, y = latitude, colour = factor(reg)),
+                                cex = .4) +
+            geom_text(data = centers_df, aes(x = avg_lon, y = avg_lat, label = reg), size = 3) +
+            ggtitle(region) + colScale +
+#            guides(colour = guide_legend(title = "Region", override.aes = list(size = 10))) +
+            theme(axis.line=element_blank(),
+                  axis.text.x=element_blank(),
+                  axis.text.y=element_blank(),
+                  axis.ticks=element_blank(),
+                  axis.title.x=element_blank(),
+                  axis.title.y=element_blank(),
+                  legend.position = "none",
+                  panel.background=element_blank(),
+                  panel.border=element_blank(),
+                  panel.grid.major=element_blank(),
+                  panel.grid.minor=element_blank(),
+                  plot.background=element_blank())
+        print(g)
+        if(savePlot){
+            ggsave(file.path(data_path, plot_name))
+        }
+        return(g)
+    } else {
+        # TODO
+    }
+    
+
+}
+
+#' Convert ipums_sum_list into a data frame for plotting
+#'
+#' @param ipums_sum_list  output from summarize_ipums()
+#' @return data frame for plotting
+makePlotDF <- function(ipums_sum_list){
+    hh_sum_list <- ipums_sum_list$hh_sum_list
+    nRegions <- length(hh_sum_list)
+    plot_df <- NULL
+    for ( reg in 1:nRegions){
+        ll <- hh_sum_list[[reg]]
+        reg_name <- ll$region_sum$region_id
+        df <- ll$sub_df
+        df$reg <- toupper(reg_name)
+        plot_df <- rbind(plot_df, df)
+    }
+    return(plot_df)
+}
+
+
+#' Get the centers df for each region
+#'
+#'  @param ipums_sum_list  output from summarize_ipums()
+#' @return data frame for plotting
+getCenters <- function(ipums_sum_list){
+    hh_sum_list <- ipums_sum_list$hh_sum_list
+    nRegions <- length(hh_sum_list)
+    plot_df <- NULL
+     for ( reg in 1:nRegions){
+        ll <- hh_sum_list[[reg]]
+        df <- ll$region_sum
+        df$reg <- toupper(df$region_id)
+        plot_df <- rbind(plot_df, df)
+    }
+    return(plot_df)
+
 }
