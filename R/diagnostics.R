@@ -340,6 +340,166 @@ getLevels <- function(paths_df){
     }
 }
 
+#' Extract the StCoTr number and put it in a df
+#'
+#' @param paths_df data frame last column has stco tr number in it
+#' @return data frame
+extractStCoTr <- function(paths_df){
+    stcotr_col <- paths_df[, ncol(paths_df)]
+    stcotr <- gsub("[^0-9]", "", stcotr_col)
+    stopifnot(all(nchar(stcotr) == 11))
+    st <- substr(stcotr, 1, 2)
+    co <- substr(stcotr, 3, 5)
+    tr <- substr(stcotr, 6, 11)
+    df <- data.frame(state = st, county = co, tract = tr)
+    return(df)
+}
+
+
+#' Summarize us populations
+#'
+#' @param output_dir path
+#' @param us_fs output from summarizeFileStructure
+# #' @param shapefile_path default is NA, uses output_dir
+#' @param varsToSummarize list with first entry as vector of household ipums vars and the second as person ipums vars.  The default value is 'base' which includes total number of records.  For households 'base' includes longitude and latitude and the names.  For people, this includes gender.  Otherwise we summarize the base variables and the the variable names which we should summarize.  For the summary output to be something other than a factor variable then see var_list.
+#' @param doPrint logical
+#' @param sampSize number of people to retain (default is 10000) per region for plotting
+#' @param sum_level 1 - state, 2- country or 3- tract - the subregions which we summarize and eventually plot
+#' @return list
+summarize_us <-  function(output_dir, us_fs,
+                             varsToSummarize = list(
+                                 vars_hh = "base",
+                                 vars_p = "base"
+                             ),
+                          doPrint = FALSE,
+                          sampSize = 10^4,
+                          sum_level = 2
+                          ){
+    # Get the data frame for use
+    paths_df <- us_fs$paths_df
+    stcotr <- extractStCoTr(paths_df)
+    # TODO switch this to us
+    vars_hh <- getVars_ipums(varsToSummarize$vars_hh, type = "hh")
+    vars_p <- getVars_ipums(varsToSummarize$vars_p, type = "p")
+    hh_sum_list <- vector(mode = "list", length = nrow(paths_df))
+
+     #sum level is 1 (st) 2 (co) 3 (tr)
+    sum_col <- unique(stcotr[, 1:sum_level] )
+    # Aggregate!!
+    if (is.null(dim(sum_col))){
+        nSubReg <- 1
+        sum_col <- as.data.frame(sum_col)
+    } else {
+        nSubReg <- nrow(sum_col)
+    }
+    
+    # Loop through the AGGREGATED regions to summarize the households
+    pretty_print(doPrint, "Summarizing households!")
+    hh_sum_list <- vector(mode = "list", length = nSubReg)
+    header <- NULL  ## HOUSEHOLDS!!
+    for (lev in 1:nSubReg){
+        # Lowest level regions in subregion
+        reg <- paste(sum_col[lev, ], collapse= "")
+        if (nSubReg > 1){
+            all_reg <- apply(stcotr[, 1:sum_level], 1,
+                         paste, collapse = "")
+        } else {
+            all_reg <- stcotr[, sum_level]
+        }
+        reg_inds <- which(all_reg == reg)
+        # Get the Full file path(s)
+        fp <- sapply(reg_inds, function(ind) paste(paths_df[ind, ], collapse = "/"))
+        # Read in the lowest level csvs
+        #tab <- as.data.frame(fread(file.path(output_dir, fp)))
+        tab <- do.call('rbind', lapply(file.path(output_dir, fp), read.csv))
+
+        # Summarize the features, first categorical then cont.
+        sum_features_cat <- sapply(vars_hh$cat, summarizeFeatures,
+                                   tab, type = "cat")
+        sum_features_cont <- sapply(vars_hh$cont, summarizeFeatures, tab, type = "cont")
+        sum_features <- list(cat = sum_features_cat,
+                             cont = sum_features_cont)
+        # Extract the header
+        header_hh<- colnames(tab)
+        # Sample a portion of them to plot
+        sampSize <- ifelse(sampSize > nrow(tab),
+                           nrow(tab), sampSize)
+        sub_inds <- sample(1:nrow(tab), sampSize, replace = T)
+        sub_df <- subset(tab[sub_inds,], select = c("longitude", "latitude"))
+        # Extract the useful details
+        region_id<- reg # TODO get the pretty county name
+        region_no <- reg #
+        pretty_print(doPrint, region_id)
+        if ("longitude" %in% colnames(tab)){
+            coords <- colMeans(tab[, c("longitude", "latitude")])        
+        }
+        # Put region specific summaries in a df
+        region_sum <- data.frame(region_id = region_id,
+                                 region_no = region_no,
+                                 nRecords = nrow(tab),
+                                 avg_lon = coords[1],
+                                 avg_lat = coords[2])
+        rownames(region_sum) <- NULL
+        place_id <- region_id
+        # Return a list of the details
+        hh_sum_list[[lev]] <- list(region_sum = region_sum,
+                                   sum_features = sum_features,
+                                   sub_df = sub_df,
+                                   header = header_hh,
+                                   place_id = place_id)
+
+    }
+    p_sum_list <- vector(mode = "list", length = nSubReg)
+    ### PEOPLE!!
+    pretty_print(doPrint, "Summarizing people!")
+    for (lev in 1:nSubReg){
+        # Lowest level regions in subregion
+        reg <- paste(sum_col[lev, ], collapse= "")
+        if (nSubReg > 1){
+            all_reg <- apply(stcotr[, 1:sum_level], 1,
+                         paste, collapse = "")
+        } else {
+            all_reg <- stcotr[, sum_level]
+        }
+        reg_inds <- which(all_reg == reg)
+        # Change the paths from household to people
+        paths_df_p <- paths_df
+        paths_df_p[, ncol(paths_df)] <- gsub("household", "people", paths_df[, ncol(paths_df)])
+        # Get the Full file path(s)
+        fp <- sapply(reg_inds, function(ind) paste(paths_df_p[ind, ], collapse = "/"))
+        tab <- do.call('rbind', lapply(file.path(output_dir, fp), read.csv))
+        # Summarize the features
+        sum_features_cat <- sapply(vars_p$cat, summarizeFeatures, tab, type = "cat")
+        sum_features_cont <- sapply(vars_p$cont, summarizeFeatures, tab, type = "cont")
+        sum_features <- list(cat = sum_features_cat,
+                             cont = sum_features_cont)
+        sampSize <- ifelse(sampSize > nrow(tab), nrow(tab), sampSize)
+        sub_inds <- sample(1:nrow(tab), sampSize, replace = T)
+#        regionID <- gsub("people_", "", basename(fp))
+        region_id<- reg
+        region_no <- reg
+        pretty_print(doPrint, region_id)
+        if ("longitude" %in% colnames(tab)){
+            coords <- colMeans(tab[, c("longitude", "latitude")])        
+        }
+        place_id <- region_id
+        region_sum <- data.frame(region_id = region_id,
+                                 region_no = region_no,
+                                 nRecords = nrow(tab))
+        rownames(region_sum) <- NULL
+        p_sum_list[[lev]] <- list(region_sum = region_sum,
+                                   sum_features = sum_features,
+                                  place_id = place_id)
+
+    }
+    
+    return(list(hh_sum_list = hh_sum_list,
+                header_hh = header_hh, p_sum_list = p_sum_list))
+}
+
+
+
+
 #' Summarize ipums populations
 #'
 #' @param output_dir path
@@ -350,7 +510,7 @@ getLevels <- function(paths_df){
 #' @param sampSize number of people to retain (default is 10000) per region for plotting
 summarize_ipums <-  function(output_dir, ipums_fs,
                              varsToSummarize = list(vars_hh = "base", vars_p = "base"),
-                             doPrint = FALSE, sampSize = 10^4){
+                             doPrint = FALSE, sampSize = 10^3){
     stopifnot(ncol(ipums_fs$paths_df) == 3)
     paths_df <- ipums_fs$paths_df
     vars_hh <- getVars_ipums(varsToSummarize$vars_hh, type = "hh")
@@ -363,26 +523,30 @@ summarize_ipums <-  function(output_dir, ipums_fs,
         tab <- as.data.frame(fread(file.path(output_dir, fp)))
         sum_features_cat <- sapply(vars_hh$cat, summarizeFeatures, tab, type = "cat")
         sum_features_cont <- sapply(vars_hh$cont, summarizeFeatures, tab, type = "cont")
-        sum_features <- c(sum_features_cat, sum_features_cont)
+        sum_features <- list(cat = sum_features_cat,
+                             cont = sum_features_cont)
         header_hh<- colnames(tab)
         sampSize <- ifelse(sampSize > nrow(tab), nrow(tab), sampSize)
         sub_inds <- sample(1:nrow(tab), sampSize, replace = T)
         sub_df <- subset(tab[sub_inds,], select = c("longitude", "latitude"))
-        regionID <- gsub("household_", "", basename(fp))
-        region_id<- gsub(".csv", "", regionID)
+        region_id <- gsub("household_", "",  paths_df[ind, 3])
+        region_id <- gsub(".csv", "", region_id)
         region_no <- gsub("output_", "", paths_df[ind, 1])
         pretty_print(doPrint, region_id)
         if ("longitude" %in% colnames(tab)){
-            coords <- colMeans(tab[, c("longitude", "latitude")])        
+            coords <- colMeans(tab[, c("longitude",
+                                       "latitude")])        
         }
         region_sum <- data.frame(region_id = region_id,
-                                 region_no = region_no, nRecords = 12,
-                                 avg_lon = coords[1], avg_lat = coords[2])
+                                 region_no = region_no,
+                                 nRecords = nrow(tab),
+                                 avg_lon = coords[1],
+                                 avg_lat = coords[2])
         rownames(region_sum) <- NULL
         hh_sum_list[[ind]] <- list(region_sum = region_sum,
                                    sum_features = sum_features,
-                                   sub_df = sub_df, header = header_hh)
-
+                                   sub_df = sub_df,
+                                   header = header_hh)        
     }
     p_sum_list <- vector(mode = "list", length = nrow(paths_df))
     ### PEOPLE!!
@@ -394,24 +558,29 @@ summarize_ipums <-  function(output_dir, ipums_fs,
         tab <- as.data.frame(fread(file.path(output_dir, fp)))
         sum_features_cat <- sapply(vars_p$cat, summarizeFeatures, tab, type = "cat")
         sum_features_cont <- sapply(vars_p$cont, summarizeFeatures, tab, type = "cont")
-        sum_features <- c(sum_features_cat, sum_features_cont)
+        sum_features <- list(cat = sum_features_cat,
+                             cont = sum_features_cont)
         sampSize <- ifelse(sampSize > nrow(tab), nrow(tab), sampSize)
         sub_inds <- sample(1:nrow(tab), sampSize, replace = T)
-        regionID <- gsub("people_", "", basename(fp))
-        region_id<- gsub(".csv", "", regionID)
+        region_id <- gsub("household_", "",  paths_df[ind, 3])
+        region_id <- gsub(".csv", "", region_id)
         region_no <- gsub("output_", "", paths_df[ind, 1])
+        place_id <- region_id
         pretty_print(doPrint, region_id)
         if ("longitude" %in% colnames(tab)){
             coords <- colMeans(tab[, c("longitude", "latitude")])        
         }
         region_sum <- data.frame(region_id = region_id,
-                                 region_no = region_no, nRecords = 12)
+                                 region_no = region_no,
+                                 nRecords = nrow(tab))
         rownames(region_sum) <- NULL
         p_sum_list[[ind]] <- list(region_sum = region_sum,
                                    sum_features = sum_features)
 
     }
-    return(list(hh_sum_list = hh_sum_list, header_hh = header_hh, p_sum_list = p_sum_list))
+    return(list(hh_sum_list = hh_sum_list,
+                header_hh = header_hh, p_sum_list = p_sum_list,
+                place_id = place_id))
 }
 
 
@@ -445,13 +614,13 @@ getVars_ipums <- function(summary_vars, type){
 #' @return summary info
 summarizeFeatures <- function(var, tab, type = "cat"){
     if (is.null(var)){
-        return(TRUE)
+        return(0)
     } else if ( type == "cat"){
         sum_tab <- table(tab[, var])
         names(sum_tab) <- paste0(var, "-", names(sum_tab))
         return(sum_tab)                                 
     } else {
-        return(FALSE)
+        return(0)
     }
 }
 
@@ -468,12 +637,12 @@ summarizeFeatures <- function(var, tab, type = "cat"){
 #' @param diags_path path to diags folder
 #' @param ... plotting params
 #' @return logical or ggplot object
-plot_region <- function(ipums_sum_list, ipums_fs, pretty = TRUE, borders = FALSE,
+plot_region_diags<- function(ipums_sum_list, ipums_fs, pretty = TRUE, borders = FALSE,
                         data_path = input_dir, savePlot = FALSE, plot_name,
                         map_type = "toner-lite", diags_path = ".", ...){
     region <- toupper(ipums_fs$base_region)
     plot_df <- makePlotDF(ipums_sum_list)
-    centers_df <- getCenters(ipums_sum_list)
+    centers_df <- getCentersDiags(ipums_sum_list)
     nRegions <- length(unique(plot_df$reg))
     if (borders){
         bds <- getBorders(data_path, ipums_sum_list, ipums_fs)
@@ -486,7 +655,8 @@ plot_region <- function(ipums_sum_list, ipums_fs, pretty = TRUE, borders = FALSE
        # The palette with grey:
         cbbPalette <- c("#999999", "#E69F00", "#56B4E9",
                        "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
-        cols <- cbbPalette[1:nRegions]
+        cols <- rep(cbbPalette, length.out = nRegions)
+        #cols <- cbbPalette[1:nRegions]
         colScale <- scale_colour_manual(name = "reg", values = cols)
         g <- ggmap(map) + geom_point(data = plot_df,
                                 aes(x = longitude, y = latitude, colour = factor(reg)),
@@ -541,7 +711,7 @@ makePlotDF <- function(ipums_sum_list){
 #'
 #'  @param ipums_sum_list  output from summarize_ipums()
 #' @return data frame for plotting
-getCenters <- function(ipums_sum_list){
+getCentersDiags <- function(ipums_sum_list){
     hh_sum_list <- ipums_sum_list$hh_sum_list
     nRegions <- length(hh_sum_list)
     plot_df <- NULL
@@ -552,5 +722,12 @@ getCenters <- function(ipums_sum_list){
         plot_df <- rbind(plot_df, df)
     }
     return(plot_df)
+
+}
+
+#' Aggregate us tracts
+
+aggregate_us <- function(us_list, sum_level){
+    nRegions <- length(us_list)
 
 }
