@@ -422,8 +422,8 @@ summarize_us <-  function(output_dir, us_fs,
         # Extract the header
         header_hh<- colnames(tab)
         # Sample a portion of them to plot
-        sampSize <- ifelse(sampSize > nrow(tab),
-                           nrow(tab), sampSize)
+       # sampSize <- ifelse(sampSize > nrow(tab),
+           #                nrow(tab), sampSize)
         sub_inds <- sample(1:nrow(tab), sampSize, replace = T)
         sub_df <- subset(tab[sub_inds,], select = c("longitude", "latitude"))
         # Extract the useful details
@@ -468,12 +468,13 @@ summarize_us <-  function(output_dir, us_fs,
         # Get the Full file path(s)
         fp <- sapply(reg_inds, function(ind) paste(paths_df_p[ind, ], collapse = "/"))
         tab <- do.call('rbind', lapply(file.path(output_dir, fp), read.csv))
+        header_p<- colnames(tab)
         # Summarize the features
         sum_features_cat <- sapply(vars_p$cat, summarizeFeatures, tab, type = "cat")
         sum_features_cont <- sapply(vars_p$cont, summarizeFeatures, tab, type = "cont")
         sum_features <- list(cat = sum_features_cat,
                              cont = sum_features_cont)
-        sampSize <- ifelse(sampSize > nrow(tab), nrow(tab), sampSize)
+      #  sampSize <- ifelse(sampSize > nrow(tab), nrow(tab), sampSize)
         sub_inds <- sample(1:nrow(tab), sampSize, replace = T)
 #        regionID <- gsub("people_", "", basename(fp))
         region_id<- reg
@@ -494,7 +495,8 @@ summarize_us <-  function(output_dir, us_fs,
     }
     
     return(list(hh_sum_list = hh_sum_list,
-                header_hh = header_hh, p_sum_list = p_sum_list))
+                header_hh = header_hh, p_sum_list = p_sum_list,
+                header_p = header_p))
 }
 
 
@@ -526,9 +528,10 @@ summarize_ipums <-  function(output_dir, ipums_fs,
         sum_features <- list(cat = sum_features_cat,
                              cont = sum_features_cont)
         header_hh<- colnames(tab)
-        sampSize <- ifelse(sampSize > nrow(tab), nrow(tab), sampSize)
-        sub_inds <- sample(1:nrow(tab), sampSize, replace = T)
+       # sampSize <- ifelse(sampSize > nrow(tab), nrow(tab), sampSize)
+        sub_inds <- sample(1:nrow(tab), sampSize, replace = TRUE)
         sub_df <- subset(tab[sub_inds,], select = c("longitude", "latitude"))
+       # print(dim(sub_df))
         region_id <- gsub("household_", "",  paths_df[ind, 3])
         region_id <- gsub(".csv", "", region_id)
         region_no <- gsub("output_", "", paths_df[ind, 1])
@@ -561,7 +564,6 @@ summarize_ipums <-  function(output_dir, ipums_fs,
         sum_features <- list(cat = sum_features_cat,
                              cont = sum_features_cont)
         header_p<- colnames(tab)
-        sampSize <- ifelse(sampSize > nrow(tab), nrow(tab), sampSize)
         sub_inds <- sample(1:nrow(tab), sampSize, replace = T)
         region_id <- gsub("household_", "",  paths_df[ind, 3])
         region_id <- gsub(".csv", "", region_id)
@@ -636,14 +638,20 @@ summarizeFeatures <- function(var, tab, type = "cat"){
 #' @param plot_name what to save the plot as
 #' @param map_type for ggplot use, default is toner-lite
 #' @param diags_path path to diags folder
+#' @param type either "ipums" or "us"
 #' @param ... plotting params
 #' @return logical or ggplot object
 plot_region_diags<- function(ipums_sum_list, ipums_fs, pretty = TRUE, borders = FALSE,
                         data_path = input_dir, savePlot = FALSE, plot_name,
-                        map_type = "toner-lite", diags_path = ".", ...){
+                        map_type = "toner-lite", diags_path = ".",
+                        type = "ipums", ...){
     region <- toupper(ipums_fs$base_region)
     plot_df <- makePlotDF(ipums_sum_list)
     centers_df <- getCentersDiags(ipums_sum_list)
+    if (type == "us"){
+        centers_df$reg <- sapply(centers_df$reg,
+                                 fipsToPlaceName, level = "county")
+    }
     nRegions <- length(unique(plot_df$reg))
     if (borders){
         bds <- getBorders(data_path, ipums_sum_list, ipums_fs)
@@ -662,8 +670,8 @@ plot_region_diags<- function(ipums_sum_list, ipums_fs, pretty = TRUE, borders = 
         g <- ggmap(map) + geom_point(data = plot_df,
                                 aes(x = longitude, y = latitude, colour = factor(reg)),
                                 cex = .4) +
-            geom_text(data = centers_df, aes(x = avg_lon, y = avg_lat, label = reg), size = 3) +
-            ggtitle(region) + colScale +
+            geom_text(data = centers_df, aes(x = avg_lon, y = avg_lat, label = reg), size = 3) + #ggtitle(region) + 
+              colScale +
 #            guides(colour = guide_legend(title = "Region", override.aes = list(size = 10))) +
             theme(axis.line=element_blank(),
                   axis.text.x=element_blank(),
@@ -695,14 +703,22 @@ plot_region_diags<- function(ipums_sum_list, ipums_fs, pretty = TRUE, borders = 
 #' @return data frame for plotting
 makePlotDF <- function(ipums_sum_list){
     hh_sum_list <- ipums_sum_list$hh_sum_list
+    nRecords <- do.call('rbind', lapply(hh_sum_list, "[[", 1))$nRecords
+    nRecsP <- nRecords / sum(nRecords)
+   # print(nRecsP)
     nRegions <- length(hh_sum_list)
+   # nRecsMax <- max(lapply(lapply(hh_sum_list, "[[", 3), nrow))
     plot_df <- NULL
     for ( reg in 1:nRegions){
         ll <- hh_sum_list[[reg]]
         reg_name <- ll$region_sum$region_id
         df <- ll$sub_df
-        df$reg <- toupper(reg_name)
-        plot_df <- rbind(plot_df, df)
+        nInds <- floor(nRecsP[reg] * nrow(df))
+       # print(nInds)
+        inds <- sample(1:nrow(df), nInds)
+        sub_df <- df[inds, ]
+        sub_df$reg <- toupper(reg_name)
+        plot_df <- rbind(plot_df, sub_df)
     }
     return(plot_df)
 }
@@ -716,7 +732,7 @@ getCentersDiags <- function(ipums_sum_list){
     hh_sum_list <- ipums_sum_list$hh_sum_list
     nRegions <- length(hh_sum_list)
     plot_df <- NULL
-     for ( reg in 1:nRegions){
+    for ( reg in 1:nRegions){
         ll <- hh_sum_list[[reg]]
         df <- ll$region_sum
         df$reg <- toupper(df$region_id)
@@ -724,11 +740,37 @@ getCentersDiags <- function(ipums_sum_list){
     }
     return(plot_df)
 
-}
+vv}
 
 #' Aggregate us tracts
 
 aggregate_us <- function(us_list, sum_level){
     nRegions <- length(us_list)
 
+}
+
+#' Translate FIPS number to place name
+#'
+#' @param fips string id
+#' length 2 for state
+#' length 5 for county
+#' @param level ("state", "county")
+
+fipsToPlaceName <- function(fips, level, df = us){
+ #   print("FIPS code is")
+ #   print(fips)
+    stopifnot(level %in% c("state", "county"))
+    stopifnot(!is.null(df))
+    if (level == "state"){
+        ind <- which(as.character(df$STATEFP) == fips)
+        state <- df$STATE[ind][1]
+        return(state)
+    } else {
+        stopifnot(nchar(fips) == 5)
+        ind <- which(as.character(df$COUNTYFP) == fips)
+        stopifnot(length(ind) > 0)
+        pn <- df$County[ind][1]
+        pn <- gsub(" County", "", pn)
+        return(pn)
+    }
 }
