@@ -1,11 +1,11 @@
 Package: spew
 Type: Package
-Title: Generates Synthetic Ecosystems 
-Version: 1.0
+Title: Generates Synthetic Ecosystems
+Version: 0.0.1
 Date: 2015-11-03
 Author: Lee Richardson, Shannon Gallagher, Sam Ventura
 Maintainer: Lee Richardson <leerich@cmu.edu>
-Description: Updating soon...
+Description: Functions for generating synthetic ecosystems
 License: What license is it under?
 Suggests:
     testthat,
