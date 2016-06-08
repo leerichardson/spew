@@ -1,8 +1,0 @@
----
-title: "Spew To-do List"
-output: html_document
-author: "Sam, Shannon, and Lee"
----
-
-# Write the new sampling methods module 
-- Make it so "sample households" does everything, no extra subsetting afterwards 
