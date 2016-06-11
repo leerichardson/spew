@@ -7,7 +7,7 @@ Author: Lee Richardson, Shannon Gallagher, Sam Ventura
 Maintainer: Lee Richardson <leerich@cmu.edu>
 Description: Functions for generating synthetic ecosystems
 License: What license is it under?
-Suggests:
+Suggests: 
     testthat,
     knitr,
     rmarkdown,
@@ -17,8 +17,9 @@ Suggests:
     ggmap,
     rgeos
 VignetteBuilder: knitr
-Imports:
+Imports: 
     sp,
     maptools,
-    plyr
+    plyr,
+    data.table
 RoxygenNote: 5.0.1

@@ -24,8 +24,7 @@ assign_place_coords<- function(pop, places, place_name ="place", method = "unifo
                                                na.rm = TRUE)  + .001)
         return(out)
             }))
-    print(dim(dist_mat))
-    
+
     # If there is no capacity column, do uniform sampling
     if(!("capacity" %in% names(places))){
         method <- "uniform"
@@ -122,7 +121,6 @@ euclidean_dist <- function(x1, y1, x2, y2){
     return(d)
 }
 
-
 #' Weight place assignment probabilities  
 #'
 #' @param dist_mat a m x n matrix where m is the number of people and 
@@ -145,19 +143,12 @@ get_weight_dists <- function(dist_mat, places, method="uniform"){
   
   places_weight <- ceiling(capacity/20)
   places_weight <- ifelse(is.na(places_weight), 1, places_weight)
-  print("places weight")
-  print(head(places_weight))
-  places_weight_mat <- matrix(rep(places_weight, each = m)
-                            , nrow = m)
-  print("dist")
-  print(head(1-dist_mat))
+  places_weight_mat <- matrix(rep(places_weight, each = m), nrow = m)
   dist_mat <- dist_mat
   weights <- (1-dist_mat) * places_weight_mat
   weights <- ifelse(is.na(weights),
                     .01, weights)
   weights <- weights/rowSums(weights)
-  print("weights")
-  print(head(weights))
   stopifnot(dim(weights) == c(m,n))
   return(weights)
 }

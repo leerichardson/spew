@@ -242,7 +242,6 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
 #' write the final csv's 
 #' @return data indicating the indices of people to sample 
 write_data <- function(df, place_id, puma_id, type, output_dir) {
-  
     directory <- paste0(output_dir, "output_", puma_id, "/", "eco/")  
     
     if (!dir.exists(directory)) {
@@ -250,7 +249,7 @@ write_data <- function(df, place_id, puma_id, type, output_dir) {
     }
     
     filename <- paste0(directory, type, "_", as.character(place_id), ".csv")
-    write.table(df, filename, sep = ",", row.names = FALSE, qmethod = "double")
+    data.table::fwrite(df, filename, sep = ",", qmethod = "double")
       
   return(TRUE)
 }
@@ -265,7 +264,7 @@ write_data <- function(df, place_id, puma_id, type, output_dir) {
 #' pop_table to the given output directory 
 write_pop_table <- function(pop_table, output_dir) {
   filename <- paste0(output_dir, "final_pop_table.csv")
-  write.table(pop_table, filename, sep = ",", row.names = FALSE, qmethod = "double")
+  data.table::fwrite(pop_table, filename, sep = ",", qmethod = "double")
   return(TRUE)
 }
 

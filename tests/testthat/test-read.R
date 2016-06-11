@@ -1,6 +1,7 @@
 context("Read Functions")
 
 test_that("United States functions", {
+  library(data.table)
   
   # Make sure we are using the correct data-raw directory 
   # as opposed to the test/testthat one within the package 
@@ -122,6 +123,7 @@ test_that("United States functions", {
 
 
 test_that("ipums functions", {
+  library(data.table)
   
   # Make sure we are using the correct data-raw directory 
   # as opposed to the test/testthat one within the package 
@@ -181,6 +183,7 @@ test_that("ipums functions", {
 })
 
 test_that("no group functions", {
+  library(data.table)
   
   # Make sure we are using the correct data-raw directory 
   # as opposed to the test/testthat one within the package 

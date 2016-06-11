@@ -104,23 +104,20 @@ read_pop_table <- function(input_dir, folders, data_group) {
     }
     
   } else if (data_group == "none") {
-    pop_table <- read.csv(folders$pop_table, stringsAsFactors = FALSE, 
-                          colClasses = "character")
+    pop_table <- data.table::fread(folders$pop_table, stringsAsFactors = FALSE, 
+                                   data.table = FALSE, colClasses = "character")
     pop_table$n_house <- as.numeric(pop_table$n_house)
     return(pop_table)
   }
   
-  pop_table <- read.csv(paste0(input_dir, "/", folders$pop_table, "/",
-                               pop_table_file), stringsAsFactors = FALSE)
+  pop_table <- fread(paste0(input_dir, "/", folders$pop_table, "/",pop_table_file), 
+                     stringsAsFactors = FALSE, data.table = FALSE)
   return(pop_table)
 }
 
 #' Make sure pop_table has the appropriate columns
 standardize_pop_table <- function(pop_table, data_group){
-  
-  
-  if (data_group == "US") {
-    
+    if (data_group == "US") {
     # Make sure we aren't stripping off a leading 0 
     # if we are dealing with one of the first 10 states 
     if (all(nchar(pop_table$Id2) == 10)) {
@@ -176,24 +173,24 @@ read_pums <- function(input_dir, folders, data_group, vars) {
     index_p <- which(hp == "p")
     
     #  Read in the person and household level files
-    pums_h <- read.csv(paste0(input_dir, "/", folders$pums, "/", pums_files[index_h]), 
-                       stringsAsFactors = FALSE)
-    pums_p <- read.csv(paste0(input_dir, "/", folders$pums, "/", pums_files[index_p]), 
-                       stringsAsFactors = FALSE)
+    pums_h <- data.table::fread(paste0(input_dir, "/", folders$pums, "/", pums_files[index_h]), 
+                       stringsAsFactors = FALSE, data.table = FALSE)
+    pums_p <- data.table::fread(paste0(input_dir, "/", folders$pums, "/", pums_files[index_p]), 
+                       stringsAsFactors = FALSE, data.table = FALSE)
     
   } else if (data_group == "ipums") {
 
     stopifnot(length(pums_files) == 1)
-    pums_p <- read.csv(paste0(input_dir, "/", folders$pums, "/", pums_files), 
-                     stringsAsFactors = FALSE)
+    pums_p <- data.table::fread(paste0(input_dir, "/", folders$pums, "/", pums_files), 
+                     stringsAsFactors = FALSE, data.table = FALSE)
     
     # Use the unique household ID's for household pums  
     unique_hh_indices <- !duplicated(pums_p$SERIAL)
     pums_h <- pums_p[unique_hh_indices, ]
   
   } else if (data_group == "none") {
-    pums_h <- read.csv(folders$pums$pums_h, stringsAsFactors = FALSE)
-    pums_p <- read.csv(folders$pums$pums_p, stringsAsFactors = FALSE)
+    pums_h <- data.table::fread(folders$pums$pums_h, stringsAsFactors = FALSE, data.table = FALSE)
+    pums_p <- data.table::fread(folders$pums$pums_p, stringsAsFactors = FALSE, data.table = FALSE)
   }
 
   # If specified, subset the household and person level PUMS 
@@ -243,8 +240,8 @@ read_lookup <- function(input_dir, folders, data_group){
   }
   
   #  Read in lookup table
-  lookup <- read.csv(paste0(input_dir, "/", folders$lookup, "/", filename), 
-                     stringsAsFactors = FALSE)
+  lookup <- data.table::fread(paste0(input_dir, "/", folders$lookup, "/", filename), 
+                     stringsAsFactors = FALSE, data.table = FALSE)
   return(lookup)
 }
 
@@ -357,7 +354,6 @@ standardize_shapefiles <- function(shapefiles, data_group) {
 
 #  Function for reading in schools data
 read_schools <- function(input_dir, folders, data_group){
-
   schools_path <- paste0(input_dir, "/", folders$schools, "/")
   
   if (data_group == "US") {
@@ -367,15 +363,13 @@ read_schools <- function(input_dir, folders, data_group){
     # Read in public and private school data-frames 
     public_file_index <- grep("public", school_files)
     public_file <- paste0(schools_path, school_files[public_file_index])
-    public_df <- read.csv(public_file, stringsAsFactors = FALSE, 
-                          colClasses = c(StNo = "character", CoNo = "character", 
-                                         ID = "character"))
+    public_df <- data.table::fread(public_file, stringsAsFactors = FALSE, data.table = FALSE, 
+                          colClasses = c(StNo = "character", CoNo = "character", ID = "character"))
       
     private_file_index <- grep("private", school_files)
     private_file <- paste0(schools_path, school_files[private_file_index])
-    private_df <- read.csv(private_file, stringsAsFactors = FALSE, 
-                           colClasses = c(StNo = "character", CoNo = "character", 
-                                          ID = "character"))
+    private_df <- data.table::fread(private_file, stringsAsFactors = FALSE, data.table = FALSE,
+                           colClasses = c(StNo = "character", CoNo = "character", ID = "character"))
 
     # Combine the public and private schools into a list 
     schools <- list(public = public_df, private = private_df)
@@ -397,8 +391,8 @@ read_workplaces <- function(input_dir, folders, data_group) {
     
     if (length(workplace_files == 1)) {
       filename <- workplace_files
-      workplaces <- read.csv(paste0(input_dir, "/", folders$workplaces, "/", filename), 
-                             stringsAsFactors = FALSE)
+      workplaces <- data.table::fread(paste0(input_dir, "/", folders$workplaces, "/", filename), 
+                             stringsAsFactors = FALSE, data.table = FALSE)
       geog <- workplaces$stcotr
       
       # Make sure that the stcotr variable has 

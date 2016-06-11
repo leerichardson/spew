@@ -7,6 +7,7 @@ test_that("Sampling functions", {
   data(uruguay_format)
   library(stringdist)
   library(sp)
+  library(data.table)
   
   # Sample locations --------------
   multiple_polygons <- sample_locations(method = "uniform", place_id = 46027965700, n_house = 100, 

@@ -15,7 +15,7 @@ format_data <- function(data_list, data_group) {
   # Assert that we have all the REQUIRED (shapefile, pums, counts) elements 
   # for generating the synthetic population....
   if (is.null(data_list$pop_table) | is.null(data_list$shapefile) | is.null(data_list$pums)) {
-    stop("data_list must contain pop_table, shapefile, and pums ")
+    stop("data_list must contain pop_table, shapefile, and pums")
   }
   
   if (data_group == "US") {
