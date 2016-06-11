@@ -763,7 +763,7 @@ fipsToPlaceName <- function(fips, level, df = us){
     stopifnot(!is.null(df))
     if (level == "state"){
         ind <- which(as.character(df$STATEFP) == fips)
-        state <- df$STATE[ind][1]
+        state <- df$STATE_NAME[ind][1]
         return(state)
     } else {
         stopifnot(nchar(fips) == 5)
