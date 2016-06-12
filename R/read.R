@@ -382,7 +382,6 @@ read_schools <- function(input_dir, folders, data_group){
   }
 }
 
-
 #  Function for reading in workplaces data
 read_workplaces <- function(input_dir, folders, data_group) {
   workplace_files<- list.files(paste0(input_dir, "/", folders$workplaces))
@@ -429,7 +428,6 @@ read_roads <- function(path_to_roads) {
         appended_roads <- road_shapes[grepl("APPENDED", road_shapes)]
         stopifnot(length(appended_roads) == 1)
         roads <- readShapeSpatial(file.path(path_to_roads, appended_roads))
-        
     } else {
         roads_paths <- file.path(path_to_roads, road_shapes)
         roads_list <- lapply(roads_paths, maptools::readShapeSpatial)
