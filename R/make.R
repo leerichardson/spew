@@ -48,7 +48,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
   } else {
     # Set up the worker cores and export all of the necessary 
     # data needed to call the make_place function 
-    num_workers <- parallel::detectCores()
+    num_workers <- min(num_places, parallel::detectCores())
     cluster <- parallel::makeCluster(num_workers, outfile = "")
     
     export_objects <- c("make_place", "people_to_households", "sample_households", 

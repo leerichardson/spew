@@ -15,7 +15,8 @@ test_that("Sampling functions", {
   uniform_locations <- sample_locations(method = "uniform",
                                         place_id = pid,
                                         n_house = number_houses,
-                                        shapefile = sd_data$shapefiles)
+                                        shapefile = sd_data$shapefiles, 
+                                        noise = .01)
   
   spew_dir <- system.file("", package = "spew")
   roads_path <- paste0(spew_dir, "/data-raw/46/tiger/roads_46//tl_2015_46137_roads.shp")
@@ -28,10 +29,19 @@ test_that("Sampling functions", {
                                shapefile = roads_shapefile,
                                noise = .01)
 
+  # Verify  uniform sampling works for a large number of points 
+  large_num_houses <- 3000000
+  uniform_locations_large <- sample_locations(method = "uniform",
+                                              place_id = pid,
+                                              n_house = large_num_houses,
+                                              shapefile = sd_data$shapefiles, 
+                                              noise = .1)
+  
   # Verify the results are the correct class and equal length
   expect_true(class(uniform_locations) == "SpatialPoints")
-  expect_true(class(uniform_locations) == "SpatialPoints")
+  expect_true(class(road_locs) == "SpatialPoints")
   expect_true(length(uniform_locations) == length(road_locs))
+  expect_true(length(uniform_locations_large) == large_num_houses)
   
   # Verify sampling from roads works with a small number of houses
   small_number_houses <- 10
@@ -52,7 +62,10 @@ test_that("Sampling functions", {
   expect_true(class(road_pts_locs) == "SpatialPoints")
   expect_true(length(road_pts_locs) == length(road_pts_locs2))
 
-#   # Plot for the UP-STAT presentation
+  # Test the reading roads functions, look for speedups 
+  
+  
+#   # Plot for the UP-STAT presentation -----------------------
 #   par(mfrow = c(1, 2))
 # 
 #   plot(sd_data$shapefiles[sid, ], main = "Uniform Sampling")
@@ -75,5 +88,4 @@ test_that("Sampling functions", {
 #   plot(france1)
 #   plot(france2)
 #   plot(france3)
-  
 })

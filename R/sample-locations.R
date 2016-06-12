@@ -10,13 +10,13 @@
 #' @param noise the standard deviation of how much 
 #' we jitter the road locations in each direction (only if method is "roads")
 #' @return SpatialPoints object with coordinates for the n households
-sample_locations <- function(method, place_id, n_house, shapefile, noise = .0001) {
+sample_locations <- function(method, place_id, n_house, shapefile, noise = .001) {
   # Call the appropriate location sampling function based on
   # the input sampling method  
   if (method == "uniform") {
-    locs <- sample_locations_uniform(place_id, n_house, shapefile)
+    locs <- sample_locations_uniform(place_id, n_house, shapefile, noise)
   } else if (method == "roads") {
-    locs <- sample_locations_from_roads(place_id, n_house, shapefile, noise = .0001)
+    locs <- sample_locations_from_roads(place_id, n_house, shapefile, noise)
   } else {
     stop("location sampling method must be uniform or roads")
   }
@@ -30,8 +30,12 @@ sample_locations <- function(method, place_id, n_house, shapefile, noise = .0001
 #' subsampling  
 #' @param n_house numeric indicating the number of households
 #' @param shapefile sp class with all of the locations for each place id
+#' @param noise numeric indicating how must noise to add to sampled points
+#' This is only used if the number of points to sample exceeds 100,000, in which 
+#' case the spsample function takes too long. Instead, we sample 100,000 points, 
+#' sample n_house from these 100,000, and then add random noise.
 #' @return SpatialPoints object with coordinates for the n households
-sample_locations_uniform <- function(place_id, n_house, shapefile) {
+sample_locations_uniform <- function(place_id, n_house, shapefile, noise = .001) {
   # Subset the shapefile to the polygon 
   # specified by the place_id argument 
   slots <- methods::slot(shapefile, "polygons")
@@ -44,9 +48,22 @@ sample_locations_uniform <- function(place_id, n_house, shapefile) {
     poly <- remove_holes(poly)
   }
   
-  # Obtain a Uniform, simple random sample of size n_house
-  locs <- sp::spsample(poly, n = n_house, offset = c(0, 0), 
-                       type = "random", iter = 50)
+  # Obtain a Uniform, simple random sample of size n_house. If there 
+  # are less the 100K points, use the 
+  if (n_house < 100000) {
+    locs <- sp::spsample(poly, n = n_house, offset = c(0, 0), 
+                         type = "random", iter = 50)
+  } else {
+    # Sample 100,000 points, then sample n_house of these with replacement 
+    locs <- sp::spsample(poly, n = 100000, offset = c(0, 0), 
+                         type = "random", iter = 50)
+    sample_inds <- sample(x = 1:100000, size = n_house, replace = TRUE)
+    locs@coords <- locs@coords[sample_inds, ]
+    
+    # Add noise so we don't duplicate poitns 
+    locs@coords[, 1] <- locs@coords[, 1] + rnorm(n_house, 0, noise)
+    locs@coords[, 2] <- locs@coords[, 2] + rnorm(n_house, 0, noise)
+  }
   return(locs)
 }
 
@@ -93,6 +110,8 @@ sample_locations_from_roads <- function(place_id, n_house, shapefile, noise = .0
   locs <- samp_roads(n_house, new_shp, noise)
   return(locs)
 }
+
+
 
 #' Subset the shapefile and road lines to proper roads within specified tract
 #'
