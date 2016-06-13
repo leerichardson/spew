@@ -35,10 +35,12 @@ sample_households <- function(method, n_house, pums_h, puma_id = NULL) {
 #' @param pums_p dataframe of the individual microdata 
 #' @return people numeric vector indicating the indices of people to sample 
 sample_people <- function(method, household_pums, pums_p) {
-
+  
   if (method == "uniform") {
     people <- plyr::join(household_pums, pums_p, type = "left", by = "SERIALNO")
   }
   
   return(people)
 }
+
+

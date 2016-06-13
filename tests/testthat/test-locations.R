@@ -35,7 +35,7 @@ test_that("Sampling functions", {
                                               place_id = pid,
                                               n_house = large_num_houses,
                                               shapefile = sd_data$shapefiles, 
-                                              noise = .1)
+                                              noise = .001)
   
   # Verify the results are the correct class and equal length
   expect_true(class(uniform_locations) == "SpatialPoints")

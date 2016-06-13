@@ -111,8 +111,6 @@ sample_locations_from_roads <- function(place_id, n_house, shapefile, noise = .0
   return(locs)
 }
 
-
-
 #' Subset the shapefile and road lines to proper roads within specified tract
 #'
 #' @param place_id numeric specifiying the ID of the region we are 
