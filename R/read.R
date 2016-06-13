@@ -387,28 +387,27 @@ read_workplaces <- function(input_dir, folders, data_group) {
   workplace_files<- list.files(paste0(input_dir, "/", folders$workplaces))
   
   if (data_group == "US") {
-    
     if (length(workplace_files == 1)) {
       filename <- workplace_files
       workplaces <- data.table::fread(paste0(input_dir, "/", folders$workplaces, "/", filename), 
                              stringsAsFactors = FALSE, data.table = FALSE)
-      geog <- workplaces$stcotr
-      
+
       # Make sure that the stcotr variable has 
       # 11 characters. If not, add a 0 in the beginning 
+      geog <- as.character(workplaces$stcotr)
       if (all(nchar(geog) == 10)) {
         geog <- paste0("0", geog)
-        workplaces$stcotr <- geog
       }
+      workplaces$stcotr <- geog
       
     } else if (length(workplace_files) > 1) {
       stop("Expecting only one file in the workplaces directory")
     }
     
   } else if (data_group == "ipums") {
-    #  do stuff
+    #  No IPUMS workplaces 
   } else {
-    #  do stuff
+    #  No other workplaces 
   }
   
   return(workplaces)

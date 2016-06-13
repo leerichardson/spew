@@ -78,6 +78,7 @@ if (df$emp[1] == 0) {
     ids <- workplaces_sub$workplace_id[id_inds]
     stopifnot( sum(is.na(ids)) == 0)
     }
+    
     stopifnot(length(ids) == nrow(df))
     return(data.frame(ids = ids, stringsAsFactors = FALSE))
 }

@@ -244,6 +244,7 @@ library(spew)
 Once you re-load the package, it's useful to debug it in Interactive mode on Olympus, o make sure things are working as expected. you can submit an interactive job (ie: Log onto one of the compute nodes) with the command `qsub -I -l walltime=3:00:00`. Then we can use the following commands, which are similar to the commands we run when calling SPEW from the command line, to run SPEW for any of our three data groups (just comment out the data-group you are looking to run with here:)
 
 ```{r, eval=FALSE}
+rm(list = ls())
 options(error = recover)
 
 library(spew)
@@ -256,34 +257,59 @@ library(stringdist)
 library(plyr)
 library(rgeos)
 library(data.table)
+library(bit64)
 
-# data_group <- "US"
-# convert_count = FALSE
-# folders <- list(pop_table = "popTables", 
-#                       pums = "pums/2013", 
-#                       schools = "schools/2013", 
-#                       lookup = "tables", 
-#                       shapefiles = "tiger", 
-#                       workplaces = "workplaces")
+data_group <- "US"
+convert_count = FALSE
+folders <- list(pop_table = "popTables", 
+                      pums = "pums/2013", 
+                      schools = "schools/2013", 
+                      lookup = "tables", 
+                      shapefiles = "tiger", 
+                      workplaces = "workplaces")
+
+	vars = list(household = c("RT", "SERIALNO", "DIVISION", "PUMA", "REGION", "ST", "ADJHSG", "ADJINC", "WGTP", "NP", "TYPE", "ACCESS", "ACR", "AGS", "BATH", "BDSP", "BLD", "BROADBND", "BUS", 
+							"COMPOTHX", "CONP", "DIALUP", "DSL", "ELEP", "FIBEROP", "FS", "FULP", "GASP", "HANDHELD", "HFL", "INSP", "LAPTOP", "MHP", "MODEM", "MRGI", 
+							"MRGP", "MRGT", "MRGX", "OTHSVCEX", "REFR", "RMSP", "RNTM", "RNTP", "RWAT", "RWATPR", "SATELLITE", "SINK", "SMP", "STOV", 
+							"TEL", "TEN", "TOIL", "VACS", "VALP", "VEH", "WATP", "YBL", "FES", "FFINCP", "FGRNTP", "FHINCP", "FINCP", "FPARC", "FSMOCP",
+							"GRNTP", "GRPIP", "HHL", "HHT", "HINCP", "HUGCL", "HUPAC", "HUPAOC", "HUPARC", "KIT", "LNGI", "MULTG", "MV", "NOC", "NPF", 
+							"NPP", "NR", "NRC", "OCPIP", "PARTNER", "PLM", "PSF", "R18", "R60", "R65", "RESMODE", "SMOCP", "SMX", "SRNT", "SSMC", "SVAL", 
+							"TAXP", "WIF", "WKEXREL", "WORKSTAT", "FACCESSP", "FACRP", "FAGSP", "FBATHP", "FBDSP", "FBLDP", "FBROADBNDP", "FBUSP", "FCOMPOTHXP", "FCONP", 
+							"FDIALUPP", "FDSLP", "FELEP", "FFIBEROPP", "FFSP", "FFULP", "FGASP", "FHANDHELDP", "FHFLP", "FINSP", "FKITP", "FLAPTOPP", "FMHP", "FMODEMP", 
+							"FMRGIP", "FMRGP", "FMRGTP", "FMRGXP", "FMVP", "FOTHSVCEXP", "FPLMP", "FREFRP", "FRMSP", "FRNTMP", "FRNTP", "FRWATP", "FRWATPRP", 
+							"FSATELLITEP", "FSINKP", "FSMP", "FSMXHP", "FSMXSP", "FSTOVP", "FTAXP", "FTELP", "FTENP", "FTOILP",
+							"FVACSP", "FVALP", "FVEHP", "FWATP", "FYBLP"),
+				person = c("RT", "SERIALNO", "SPORDER", "PUMA", "ST", "ADJINC", "PWGTP", "AGEP", "CIT", "CITWP", "COW", "DDRS", "DEAR", "DEYE", "DOUT", "DPHY", "DRAT", "DRATX", "DREM", "ENG", 
+							"FER", "GCL", "GCM", "GCR", "HINS1", "HINS2", "HINS3", "HINS4", "HINS5", "HINS6", "HINS7", "INTP", "JWMNP", "JWRIP", "JWTR", "LANX", "MAR", "MARHD", "MARHM", 
+							"MARHT", "MARHW", "MARHYP", "MIG", "MIL", "MLPA", "MLPB", "MLPCD", "MLPE", "MLPFG", "MLPH", "MLPI", "MLPJ", "MLPK", "NWAB", "NWAV", "NWLA", "NWLK", "NWRE", "OIP", 
+							"PAP", "RELP", "RETP", "SCH", "SCHG", "SCHL", "SEMP", "SEX", "SSIP", "SSP", "WAGP", "WKHP", "WKL", "WKW", "WRK", "YOEP", "ANC", "ANC1P", "ANC2P", "DECADE", "DIS", 
+							"DRIVESP", "ESP", "ESR", "FOD1P", "FOD2P", "HICOV", "HISP", "INDP", "JWAP", "JWDP", "LANP", "MIGPUMA", "MIGSP", "MSP", "NAICSP", "NATIVITY", "NOP", "OC", "OCCP", 
+							"PAOC", "PERNP", "PINCP", "POBP", "POVPIP", "POWPUMA", "POWSP", "PRIVCOV", "PUBCOV", "QTRBIR", "RAC1P", "RAC2P", "RAC3P", "RACAIAN", "RACASN", "RACBLK", 
+							"RACNH", "RACNUM", "RACPI", "RACSOR", "RACWHT", "RC", "SCIENGP", "SCIENGRLP", "SFN", "SFR", "SOCP", "VPS", "WAOB", "FAGEP", "FANCP", "FCITP", "FCITWP", 
+							"FCOWP", "FDDRSP", "FDEARP", "FDEYEP", "FDISP", "FDOUTP", "FDPHYP", "FDRATP", "FDRATXP", "FDREMP", "FENGP", "FESRP", "FFERP", "FFODP", "FGCLP", "FGCMP", 
+							"FGCRP", "FHINS1P", "FHINS2P", "FHINS3C", "FHINS3P", "FHINS4C", "FHINS4P", "FHINS5C", "FHINS5P", "FHINS6P", "FHINS7P", "FHISP", "FINDP", "FINTP", "FJWDP", 
+							"FJWMNP", "FJWRIP", "FJWTRP", "FLANP", "FLANXP", "FMARHDP", "FMARHMP", "FMARHTP", "FMARHWP", "FMARHYP", "FMARP", "FMIGP", "FMIGSP", "FMILPP", "FMILSP", "FOCCP", 
+							"FOIP", "FPAP", "FPERNP", "FPINCP", "FPOBP", "FPOWSP", "FPRIVCOVP", "FPUBCOVP", "FRACP", "FRELP", "FRETP", "FSCHGP", "FSCHLP", "FSCHP", "FSEMP", "FSEXP", "FSSIP", 
+							"FSSP", "FWAGP", "FWKHP", "FWKLP", "FWKWP", "FWRKP"))
 # vars = list(household = NA, person = NA)
-# sampling_method <- "uniform"
-# locations_method <- "roads"
-# in_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/united_states/06/input"
-# out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/test/united_states/06/"
-
-data_group = "ipums"
-convert_count = TRUE
-folders <- list(pop_table = "counts", 
-                    pums = "PUMS", 
-                    shapefiles = "shapefile_ipums")
-vars = list(household = c("COUNTRY","YEAR","SAMPLE","SERIAL","PERSONS","HHWT",
-                            "FORMTYPE","REGIONW","GEOLEV1","GEOLEV2","HHTYPE",
-                            "PERNUM","PERWT","RELATE","RELATED"), 
-            person = c("SERIAL","AGE","SEX","RACE","SCHOOL","INCTOT"))
 sampling_method <- "uniform"
-locations_method <- "uniform"
-in_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/input/east/asia/bangladesh/input"
-out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/test/bangladesh/"
+locations_method <- "roads"
+in_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/united_states/06/input"
+out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/test/united_states/06/"
+
+# data_group = "ipums"
+# convert_count = TRUE
+# folders <- list(pop_table = "counts", 
+#                     pums = "PUMS", 
+#                     shapefiles = "shapefile_ipums")
+# vars = list(household = c("COUNTRY","YEAR","SAMPLE","SERIAL","PERSONS","HHWT",
+#                             "FORMTYPE","REGIONW","GEOLEV1","GEOLEV2","HHTYPE",
+#                             "PERNUM","PERWT","RELATE","RELATED"), 
+#             person = c("SERIAL","AGE","SEX","RACE","SCHOOL","INCTOT"))
+# sampling_method <- "uniform"
+# locations_method <- "uniform"
+# in_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/input/east/asia/bangladesh/input"
+# out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/test/bangladesh/"
 
 # data_group <- "none"
 # convert_count = FALSE
@@ -299,13 +325,12 @@ out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/test/bangladesh/"
 # in_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/canada/input"
 # out_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/test/canada/"
 
-
 generate_spew(input_dir = in_dir, 
         			folders = folders, 
       				data_group = data_group, 
       				output_dir = out_dir, 
       				convert_count = convert_count, 
-      				parallel = FALSE, 
+      				parallel = TRUE, 
       				sampling_method = sampling_method,  
       				locations_method = locations_method,
       				vars = vars)
