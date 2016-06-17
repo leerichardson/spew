@@ -104,14 +104,13 @@ read_pop_table <- function(input_dir, folders, data_group) {
     }
     
   } else if (data_group == "none") {
-    pop_table <- data.table::fread(folders$pop_table, stringsAsFactors = FALSE, 
-                                   data.table = FALSE, colClasses = "character")
+    pop_table <- read.csv(folders$pop_table, stringsAsFactors = FALSE, colClasses = "character")
     pop_table$n_house <- as.numeric(pop_table$n_house)
     return(pop_table)
   }
   
-  pop_table <- fread(paste0(input_dir, "/", folders$pop_table, "/",pop_table_file), 
-                     stringsAsFactors = FALSE, data.table = FALSE)
+  pop_table <- read.csv(paste0(input_dir, "/", folders$pop_table, "/",pop_table_file), 
+                     stringsAsFactors = FALSE)
   return(pop_table)
 }
 
