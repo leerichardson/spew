@@ -24,7 +24,6 @@
 make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces, 
                       convert_count, output_dir, parallel = FALSE, 
                       sampling_method = "uniform", locations_method = "uniform") {
-  
   location_start_time <- Sys.time()
   
   # Write out the final, formatted population table  
@@ -50,7 +49,6 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
     # data needed to call the make_place function 
     num_workers <- min(num_places, parallel::detectCores())
     cluster <- parallel::makeCluster(num_workers, outfile = "")
-    
     export_objects <- c("make_place", "people_to_households", "sample_households", 
                         "sample_locations", "sample_people", "write_data", 
                         "people_to_households", "assign_schools", "assign_schools_inner", 
@@ -58,24 +56,38 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
                         "assign_workplaces", "assign_workplaces_inner", "remove_holes", 
                         "sample_locations_uniform", "sample_locations_from_roads", 
                         "subset_shapes_roads", "samp_roads", "print_region_list")
-    
-    parallel::clusterExport(cl = cluster, varlist = export_objects, envir = environment())    
+    parallel::clusterExport(cl = cluster, varlist = export_objects, envir = environment())  
     doSNOW::registerDoSNOW(cluster)
-  
-    # Run each region in parallel     
-    region_list <- foreach(place = 1:num_places, 
-                           .packages = c("plyr", "methods", "sp", "rgeos", "data.table", "bit64"), 
-                           .export = export_objects, 
-                           .verbose = TRUE, 
-                           .errorhandling = 'pass') %dopar% {
-                              
-                            print(paste0("Region ", place, " out of ", num_places))
-                            make_place(index = place, pop_table = pop_table, shapefile = shapefile, 
-                                   pums_h = pums_h, pums_p = pums_p, schools = schools, 
-                                   workplaces = workplaces, sampling_method = sampling_method, 
-                                   locations_method = locations_method, output_dir = output_dir, 
-                                   convert_count = convert_count)    
-                    }
+    
+    # If there's more than 5000 regions (as in California and New York), 
+    # partition the pop table to reduce chances of a serialization error 
+    if (num_places > 5000) {
+      chunks <- partition_pt(total_size = num_places, partition_size = 500)
+    } else {
+      chunks <- c(1, num_places)
+    }
+    
+    # Loop through the chunks of the pop-table and generate a 
+    # synthetic ecoystem for each one 
+    num_chunks <- length(chunks)
+    for (i in 2:num_chunks) {
+      print(paste0("Chunk ", i - 1, " Regions: ", chunks[i - 1], " to ", chunks[i] - 1))
+      first <- chunks[i - 1]
+      last <- ifelse(i == num_chunks, chunks[i], chunks[i] - 1)
+      region_list <- foreach(place = first:last, 
+                             .packages = c("plyr", "methods", "sp", "rgeos", "data.table", "bit64"), 
+                             .export = export_objects, 
+                             .verbose = TRUE, 
+                             .errorhandling = 'pass') %dopar% {
+                               
+                               print(paste0("Region ", place, " out of ", num_places))
+                               make_place(index = place, pop_table = pop_table, shapefile = shapefile, 
+                                          pums_h = pums_h, pums_p = pums_p, schools = schools, 
+                                          workplaces = workplaces, sampling_method = sampling_method, 
+                                          locations_method = locations_method, output_dir = output_dir, 
+                                          convert_count = convert_count)    
+                             }
+    }
     
     parallel::stopCluster(cluster)
   }
@@ -301,4 +313,32 @@ print_region_list <- function(region_list) {
   }
   
   return(TRUE)
+}
+
+#' Partition the poptable into chunks 
+#' 
+#' @param total size numeric indicating the size of 
+#' the pop table 
+#' @param partition_size indicating the size of chunks 
+#' to partition the pop table into 
+#' @return 
+partition_pt <- function(total_size, partition_size) {
+  # Get the total number of partitions, and the the 
+  # remainder after this splitfor the final partition
+  number_partitions <- floor(total_size / partition_size)
+  final_partition_size <- total_size %% partition_size
+  partitions <- seq(1, (number_partitions * (partition_size)) + 1, by = partition_size)
+  
+  # If it's not ab equal split, add the final remainder. If
+  # it is, then make sure the final element is the same 
+  # as the total size. 
+  n <- length(partitions)
+  if (final_partition_size != 0) {
+    partitions <- c(partitions, partitions[n] + final_partition_size - 1)
+  } else {
+    partitions[n] <- total_size
+  }
+  stopifnot(partitions[length(partitions)] == total_size)
+  
+  return(partitions)
 }
