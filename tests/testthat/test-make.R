@@ -1,6 +1,6 @@
-context("Make functions")
+context("SPEW functions")
 
-test_that("Sampling functions", {
+test_that("SPEW functions", {
   
   # Load in the formatted data 
   data(sd_data)
@@ -17,12 +17,12 @@ test_that("Sampling functions", {
   num_samples <- floor(runif(1, min = 1, max = 200))
   rand_row <- floor(runif(1, min = 1, max = nrow(sd_data$pop_table)))  
   single_polygon <- sample_locations(method = "uniform", place_id = sd_data$pop_table[rand_row, "place_id"], 
-                                    n_house = num_samples, shapefile = sd_data$shapefiles)
+                                     n_house = num_samples, shapefile = sd_data$shapefiles)
   expect_equal(length(single_polygon), num_samples)
   
-  # Verify the ipums shapefiles work as well using Uruguay data 
+  # Verify the ipums shapefiles work as well using uruguay data 
   place_names <- uruguay_format$shapefiles$place_id
-  for (place in place_names) {
+  for (place in place_names[1:6]) {
     samp <- sample_locations(method = "uniform", place, num_samples, uruguay_format$shapefiles)
     expect_equal(length(samp), num_samples)
   }
@@ -90,12 +90,16 @@ test_that("Sampling functions", {
     
   
   # Test that the new sampling methods are integrated 
-  # correctly ---------------------------------------
+  # correctly ---------------------------------------s
   
+  # Test that we can partition large population tables 
+  # that cause the parallel runs to fails
+  expect_equal(partition_pt(222, 100), c(1, 101, 201, 222))
+  expect_equal(partition_pt(222, 200), c(1, 201, 222))
+  expect_equal(partition_pt(1000, 100), c(1, 101, 201, 301, 401, 501, 601, 701, 801, 901, 1000))
   
   # Remove all of the temporary outputs we used for testing 
   sink()
   unlink("test_output.txt")
   unlink("tmp/", recursive = TRUE)
 })
-

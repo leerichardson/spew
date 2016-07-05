@@ -54,27 +54,12 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
                         "people_to_households", "assign_schools", "assign_schools_inner", 
                         "weight_dists", "get_dists", "haversine", "subset_schools", 
                         "assign_workplaces", "assign_workplaces_inner", "remove_holes", 
-                        "sample_locations_uniform", "sample_locations_from_roads", 
+                        "sample_locations_uniform", "sample_locations_roads", 
                         "subset_shapes_roads", "samp_roads", "print_region_list")
     parallel::clusterExport(cl = cluster, varlist = export_objects, envir = environment())  
     doSNOW::registerDoSNOW(cluster)
-    
-    # If there's more than 5000 regions (as in California and New York), 
-    # partition the pop table to reduce chances of a serialization error 
-    if (num_places > 5000) {
-      chunks <- partition_pt(total_size = num_places, partition_size = 500)
-    } else {
-      chunks <- c(1, num_places)
-    }
-    
-    # Loop through the chunks of the pop-table and generate a 
-    # synthetic ecoystem for each one 
-    num_chunks <- length(chunks)
-    for (i in 2:num_chunks) {
-      print(paste0("Chunk ", i - 1, " Regions: ", chunks[i - 1], " to ", chunks[i] - 1))
-      first <- chunks[i - 1]
-      last <- ifelse(i == num_chunks, chunks[i], chunks[i] - 1)
-      region_list <- foreach(place = first:last, 
+
+    region_list <- foreach(place = 1:num_places, 
                              .packages = c("plyr", "methods", "sp", "rgeos", "data.table", "bit64"), 
                              .export = export_objects, 
                              .verbose = TRUE, 
@@ -87,7 +72,6 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
                                           locations_method = locations_method, output_dir = output_dir, 
                                           convert_count = convert_count)    
                              }
-    }
     
     parallel::stopCluster(cluster)
   }
@@ -281,7 +265,7 @@ write_data <- function(df, place_id, puma_id, type, output_dir) {
 #' pop_table to the given output directory 
 write_pop_table <- function(pop_table, output_dir) {
   filename <- paste0(output_dir, "final_pop_table.csv")
-  data.table::fwrite(pop_table, filename, sep = ",", qmethod = "double")
+  write.csv(pop_table, filename)
   return(TRUE)
 }
 

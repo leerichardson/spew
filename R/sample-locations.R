@@ -16,7 +16,7 @@ sample_locations <- function(method, place_id, n_house, shapefile, noise = .001)
   if (method == "uniform") {
     locs <- sample_locations_uniform(place_id, n_house, shapefile, noise)
   } else if (method == "roads") {
-    locs <- sample_locations_from_roads(place_id, n_house, shapefile, noise)
+    locs <- sample_locations_roads(place_id, n_house, shapefile, noise)
   } else {
     stop("location sampling method must be uniform or roads")
   }
@@ -64,6 +64,7 @@ sample_locations_uniform <- function(place_id, n_house, shapefile, noise = .001)
     locs@coords[, 1] <- locs@coords[, 1] + rnorm(n_house, 0, noise)
     locs@coords[, 2] <- locs@coords[, 2] + rnorm(n_house, 0, noise)
   }
+  
   return(locs)
 }
 
@@ -93,7 +94,7 @@ remove_holes <- function(polygon) {
 #' the tracts and the roads, tracts is the first object and roads the second.
 #' @param noise the standard deviation of how much we jitter the road locations in each direction
 #' @return SpatialPoints object with coordinates for the n households
-sample_locations_from_roads <- function(place_id, n_house, shapefile, noise = .0001) {
+sample_locations_roads <- function(place_id, n_house, shapefile, noise = .0001) {
   stopifnot(any(names(shapefile) == "roads"))
   
   # Get the intersection of the boundary shapefile 
@@ -102,6 +103,7 @@ sample_locations_from_roads <- function(place_id, n_house, shapefile, noise = .0
   
   # If the new shape is NULL, sample uniform instead of roads  
   if (is.null(new_shp)) {
+    warning("No new shape, sampling uniformly")
     locs <- sample_locations_uniform(place_id, n_house, shapefile[[1]])
     return(locs)
   }
@@ -123,15 +125,23 @@ subset_shapes_roads <- function(place_id, shapefile) {
   stopifnot(class(shapefile) == "list")
   stopifnot(length(shapefile) == 2)
   stopifnot(class(shapefile[[1]]) == "SpatialPolygonsDataFrame")
-  stopifnot(class(shapefile[[2]]) == "SpatialLinesDataFrame")
+  stopifnot(class(shapefile[[2]]) == "list")
+  stopifnot(class(shapefile[[2]][[1]]) == "SpatialLinesDataFrame")
   
   # Subset the regions to the place_id polygon
   regions <- shapefile[[1]]
   poly <- regions[regions@data$place_id == place_id, ]
   
-  # Add the roads in to make a SpatialLines Object
-  roads_sub <- shapefile[[2]][poly, ]
-  new_shp <- rgeos::gIntersection(roads_sub, poly)
+  # Subset the country in the roads list, then subset
+  # the potential roads in the county. Finally, intersect the
+  # potential roads with the polygon 
+  place_county <- substr(place_id, 1, 5)
+  place_county_id <- which(names(shapefile$roads) == place_county)
+  roads_sub <- shapefile$roads[[place_county_id]]
+  potential_roads <- roads_sub[poly, ]
+  new_shp <- rgeos::gIntersection(potential_roads, poly, drop_lower_td = TRUE)
+  stopifnot(class(new_shp) == "SpatialLines" | class(new_shp) == "SpatialPoints")
+  
   return(new_shp)
 }
 
@@ -147,8 +157,7 @@ subset_shapes_roads <- function(place_id, shapefile) {
 #'s This was added because the Puerto Rico intersection gave SpatialPoints
 #' @return SpatialPoints object with coordinates for the n_house households
 samp_roads <- function(n_house, new_shp, noise) { 
-  stopifnot("lineobj" %in% slotNames(new_shp) | 
-              "lines" %in% slotNames(new_shp) | 
+  stopifnot("lineobj" %in% slotNames(new_shp) | "lines" %in% slotNames(new_shp) | 
               class(new_shp) == "SpatialPoints")
   
   # Sample from the lineobj of the intersected Spatial 

@@ -20,6 +20,7 @@ read_data <- function(input_dir,
                                            workplaces = "workplaces"), 
                       data_group = "US", 
                       vars = list(household = NA, person = NA)) {
+  
   read_start_time <- Sys.time()
   
   if (data_group != "US" & data_group != "ipums" & data_group != "none") {
@@ -109,8 +110,8 @@ read_pop_table <- function(input_dir, folders, data_group) {
     return(pop_table)
   }
   
-  pop_table <- read.csv(paste0(input_dir, "/", folders$pop_table, "/",pop_table_file), 
-                     stringsAsFactors = FALSE)
+  pop_table <- read.csv(paste0(input_dir, "/", folders$pop_table, "/", pop_table_file), 
+                        stringsAsFactors = FALSE)
   return(pop_table)
 }
 
@@ -134,7 +135,6 @@ standardize_pop_table <- function(pop_table, data_group){
     
     if (all(names(pop_table) == c("place_id", "n_house", "level"))) {
       return(pop_table)
-      
     } else {
       # Extract the rows with the most recent counts, 
       # names of countries, and total numbers
@@ -247,10 +247,6 @@ read_lookup <- function(input_dir, folders, data_group){
 #  Standardize the lookup table
 standardize_lookup <- function(lookup, data_group){
   if (data_group == "US") {
-    # In the future, maybe take the subset of the lookup 
-    # table corresponding to the state
-    # lookup <- subset(lookup, STATE)
-    
     #  Below, we add 100, 1000, and 1000000 and then take the substrings
     #  so that each string has the same length
     new_state_fp <- lookup$STATEFP + 100  
@@ -419,25 +415,17 @@ read_workplaces <- function(input_dir, folders, data_group) {
 #' have been unzipped for each county
 #' @return an appended SpatialDataFrame object with all the roads in the state
 read_roads <- function(path_to_roads) {
+    # Get a vector of the roads .shp files 
     road_files <- list.files(path_to_roads)
     road_shapes <- road_files[grepl("shp", road_files) & !grepl("xml", road_files)]
 
-    if (any(grepl("APPENDED", road_shapes))) {
-        appended_roads <- road_shapes[grepl("APPENDED", road_shapes)]
-        stopifnot(length(appended_roads) == 1)
-        roads <- readShapeSpatial(file.path(path_to_roads, appended_roads))
-    } else {
-        roads_paths <- file.path(path_to_roads, road_shapes)
-        roads_list <- lapply(roads_paths, maptools::readShapeSpatial)
-        
-         # Make unique IDs for each polygon
-        roads_list2 <- lapply(1:length(roads_list), function(i) {
-            road <- spChFIDs(roads_list[[i]], paste0(i,"-", 1:nrow(roads_list[[i]])))
-            return(road)
-        })
-        
-        # Combine the polygons together
-        roads <- do.call('rbind', roads_list2)
-        return(roads)
-    }
+    # Read all of the country level roads into a list 
+    roads_paths <- file.path(path_to_roads, road_shapes)
+    roads_list <- lapply(roads_paths, maptools::readShapeSpatial)
+    
+    # Name the roads list by county
+    shape_names <- substr(road_shapes, 9, 13)
+    names(roads_list) <- shape_names
+
+    return(roads_list)
 }

@@ -84,7 +84,8 @@ test_that("United States functions", {
   # Verify it's the correct class based on whether or 
   # not we have roads 
   expect_equal(class(sd_shape$shapefile) == "SpatialPolygonsDataFrame", TRUE)
-  expect_equal(class(sd_shape$roads) == "SpatialLinesDataFrame", TRUE)
+  expect_equal(class(sd_shape$roads) == "list", TRUE)
+  expect_equal(class(sd_shape$roads[[1]]) == "SpatialLinesDataFrame", TRUE)
   
   # Test the standardization functions
   standard_shape <- standardize_shapefiles(sd_shape, data_group = "US")
