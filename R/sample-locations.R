@@ -103,7 +103,7 @@ sample_locations_roads <- function(place_id, n_house, shapefile, noise = .0001) 
   
   # If the new shape is NULL, sample uniform instead of roads  
   if (is.null(new_shp)) {
-    warning("No new shape, sampling uniformly")
+    warning("Can't sample from roads, sampling uniformly")
     locs <- sample_locations_uniform(place_id, n_house, shapefile[[1]])
     return(locs)
   }
@@ -137,6 +137,12 @@ subset_shapes_roads <- function(place_id, shapefile) {
   # potential roads with the polygon 
   place_county <- substr(place_id, 1, 5)
   place_county_id <- which(names(shapefile$roads) == place_county)
+  
+  # If there are no roads in this tract, sample uniformly 
+  if (length(place_county_id) == 0) {
+    return(NULL)
+  } 
+  
   roads_sub <- shapefile$roads[[place_county_id]]
   potential_roads <- roads_sub[poly, ]
   new_shp <- rgeos::gIntersection(potential_roads, poly, drop_lower_td = TRUE)
