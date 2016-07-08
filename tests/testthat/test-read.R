@@ -2,6 +2,7 @@ context("Read Functions")
 
 test_that("United States functions", {
   library(data.table)
+  library(bit64)
   
   # Make sure we are using the correct data-raw directory 
   # as opposed to the test/testthat one within the package 
@@ -53,7 +54,7 @@ test_that("United States functions", {
   expect_equal("puma_id" %in% names(standard_pums$pums_p), TRUE)    
   expect_equal("SERIALNO" %in% names(standard_pums$pums_p), TRUE) 
   
-  # Make sure that the subset variables function works 
+  # Make sure that the subset variables function works
   sd_pums <- read_pums(data_path, 
                        data_group = "US", 
                        folders = list(pop_table = "popTables", 
@@ -84,9 +85,8 @@ test_that("United States functions", {
   # Verify it's the correct class based on whether or 
   # not we have roads 
   expect_equal(class(sd_shape$shapefile) == "SpatialPolygonsDataFrame", TRUE)
-  expect_equal(class(sd_shape$roads) == "list", TRUE)
-  expect_equal(class(sd_shape$roads[[1]]) == "SpatialLinesDataFrame", TRUE)
-  
+  expect_equal(class(sd_shape$roads) == "character", TRUE)
+
   # Test the standardization functions
   standard_shape <- standardize_shapefiles(sd_shape, data_group = "US")
   expect_equal(length(standard_shape$shapefile$place_id) == 222, TRUE)
@@ -117,11 +117,7 @@ test_that("United States functions", {
                                                shapefiles = "tiger", 
                                                workplaces = "workplaces"))
   expect_equal(class(sd_workplaces) == "data.frame", TRUE)
-
-  # Overall ----------------------------
-}) 
-
-
+})
 
 test_that("ipums functions", {
   library(data.table)

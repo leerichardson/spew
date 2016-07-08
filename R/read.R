@@ -291,8 +291,7 @@ read_shapefiles <- function(input_dir, folders, data_group) {
         road_ind <- grepl("roads", shapefiles_files)
         road_name <- shapefiles_files[road_ind]
         roads_path <- file.path(input_dir, folders$shapefiles, road_name)           
-        roads <- read_roads(roads_path)
-        return(list(shapefile = shapefile, roads = roads))
+        return(list(shapefile = shapefile, roads = roads_path))
     } else {
       return(shapefile)
     }
@@ -315,7 +314,6 @@ read_shapefiles <- function(input_dir, folders, data_group) {
     shapefile <- maptools::readShapeSpatial(folders$shapefiles)
     return(shapefile)
   }
-  
 }
 
 #  Standardize the shapefiles 
@@ -414,18 +412,23 @@ read_workplaces <- function(input_dir, folders, data_group) {
 #' the roads are stored, the directory should have zip files that 
 #' have been unzipped for each county
 #' @return an appended SpatialDataFrame object with all the roads in the state
-read_roads <- function(path_to_roads) {
+read_roads <- function(path_to_roads, road_id) {
     # Get a vector of the roads .shp files 
     road_files <- list.files(path_to_roads)
     road_shapes <- road_files[grepl("shp", road_files) & !grepl("xml", road_files)]
-
-    # Read all of the country level roads into a list 
-    roads_paths <- file.path(path_to_roads, road_shapes)
-    roads_list <- lapply(roads_paths, maptools::readShapeSpatial)
-    
-    # Name the roads list by county
     shape_names <- substr(road_shapes, 9, 13)
-    names(roads_list) <- shape_names
-
-    return(roads_list)
+    
+    # Only subset the road_id 
+    road <- which(shape_names == road_id)
+    
+    # If road ID is null, then return a NULL, which
+    # will propogate sampling uniformly  
+    if (length(road) == 0) {
+      warning("No roads for this county")
+      return(NULL)
+    }
+    
+    path_to_road <- file.path(path_to_roads, road_shapes[road])
+    road_shp <- maptools::readShapeSpatial(path_to_road)
+    return(road_shp)
 }

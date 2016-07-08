@@ -96,7 +96,6 @@ remove_holes <- function(polygon) {
 #' @return SpatialPoints object with coordinates for the n households
 sample_locations_roads <- function(place_id, n_house, shapefile, noise = .0001) {
   stopifnot(any(names(shapefile) == "roads"))
-  
   # Get the intersection of the boundary shapefile 
   # and the roads shapefile 
   new_shp <- subset_shapes_roads(place_id, shapefile)
@@ -125,25 +124,26 @@ subset_shapes_roads <- function(place_id, shapefile) {
   stopifnot(class(shapefile) == "list")
   stopifnot(length(shapefile) == 2)
   stopifnot(class(shapefile[[1]]) == "SpatialPolygonsDataFrame")
-  stopifnot(class(shapefile[[2]]) == "list")
-  stopifnot(class(shapefile[[2]][[1]]) == "SpatialLinesDataFrame")
   
   # Subset the regions to the place_id polygon
   regions <- shapefile[[1]]
   poly <- regions[regions@data$place_id == place_id, ]
   
-  # Subset the country in the roads list, then subset
-  # the potential roads in the county. Finally, intersect the
-  # potential roads with the polygon 
+  # Extract the place-county ID. If it's not there, then 
+  # return NULL, which triggers uniform sampling
   place_county <- substr(place_id, 1, 5)
-  place_county_id <- which(names(shapefile$roads) == place_county)
-  
-  # If there are no roads in this tract, sample uniformly 
-  if (length(place_county_id) == 0) {
+
+  # Read in the specific roads shapefile. If there's no 
+  # corresponding file for this county, return NULL 
+  # which will call the uniform sampling instead 
+  roads_sub <- read_roads(path_to_roads = shapefile$roads, road_id = place_county)
+  if (is.null(roads_sub)) {
     return(NULL)
-  } 
+  }
   
-  roads_sub <- shapefile$roads[[place_county_id]]
+  # Subset the potential roads, intersect with the 
+  # polygon, verify it's the right class than return the 
+  # final intersected shapefile 
   potential_roads <- roads_sub[poly, ]
   new_shp <- rgeos::gIntersection(potential_roads, poly, drop_lower_td = TRUE)
   stopifnot(class(new_shp) == "SpatialLines" | class(new_shp) == "SpatialPoints")

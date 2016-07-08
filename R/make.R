@@ -47,31 +47,31 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
   } else {
     # Set up the worker cores and export all of the necessary 
     # data needed to call the make_place function 
-    num_workers <- min(num_places, parallel::detectCores())
-    cluster <- parallel::makeCluster(num_workers, outfile = "")
+    num_workers <- min(num_places, parallel::detectCores(), 64)
+    cluster <- parallel::makeCluster(num_workers, type = "SOCK", outfile = "", useXDR = FALSE)
     export_objects <- c("make_place", "people_to_households", "sample_households", 
                         "sample_locations", "sample_people", "write_data", 
                         "people_to_households", "assign_schools", "assign_schools_inner", 
                         "weight_dists", "get_dists", "haversine", "subset_schools", 
                         "assign_workplaces", "assign_workplaces_inner", "remove_holes", 
                         "sample_locations_uniform", "sample_locations_roads", 
-                        "subset_shapes_roads", "samp_roads", "print_region_list")
+                        "subset_shapes_roads", "samp_roads", "print_region_list", "read_roads")
     parallel::clusterExport(cl = cluster, varlist = export_objects, envir = environment())  
-    doSNOW::registerDoSNOW(cluster)
+    doParallel::registerDoParallel(cluster)
 
     region_list <- foreach(place = 1:num_places, 
-                             .packages = c("plyr", "methods", "sp", "rgeos", "data.table", "bit64"), 
-                             .export = export_objects, 
-                             .verbose = TRUE, 
-                             .errorhandling = 'pass') %dopar% {
-                               
-                               print(paste0("Region ", place, " out of ", num_places))
-                               make_place(index = place, pop_table = pop_table, shapefile = shapefile, 
-                                          pums_h = pums_h, pums_p = pums_p, schools = schools, 
-                                          workplaces = workplaces, sampling_method = sampling_method, 
-                                          locations_method = locations_method, output_dir = output_dir, 
-                                          convert_count = convert_count)    
-                             }
+                          .packages = c("plyr", "methods", "sp", "rgeos", "data.table", "bit64"), 
+                          .export = export_objects, 
+                          .verbose = TRUE, 
+                          .errorhandling = 'pass') %dopar% {
+                           
+                           print(paste0("Region ", place, " out of ", num_places))
+                           make_place(index = place, pop_table = pop_table, shapefile = shapefile, 
+                                      pums_h = pums_h, pums_p = pums_p, schools = schools, 
+                                      workplaces = workplaces, sampling_method = sampling_method, 
+                                      locations_method = locations_method, output_dir = output_dir, 
+                                      convert_count = convert_count)    
+                          }
     
     parallel::stopCluster(cluster)
   }

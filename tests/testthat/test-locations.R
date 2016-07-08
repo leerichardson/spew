@@ -18,11 +18,12 @@ test_that("Location functions", {
                                         shapefile = sd_data$shapefiles, 
                                         noise = .01)
   
+  # Set up the roads shapefile  
   spew_dir <- system.file("", package = "spew")
   roads_path <- paste0(spew_dir, "/data-raw/46/tiger/roads_46")
-  tract_rds <- read_roads(roads_path)
-  roads_shapefile <- list(regions = sd_data$shapefiles, roads = tract_rds)
-
+  roads_shapefile <- list(regions = sd_data$shapefiles, roads = roads_path)
+  
+  # Sample from the roads shapefile
   road_locs <- sample_locations(method = "roads",
                                place_id = pid,
                                n_house = number_houses,
@@ -53,7 +54,7 @@ test_that("Location functions", {
   expect_true(length(small_road_locs) == small_number_houses)
   
   # Verify the Spatial Points class works for road sampling 
-  road_pts <- sp::spsample(tract_rds[[1]], n = 100, type = "random")
+  road_pts <- sp::spsample(roads_shapefile[[1]], n = 100, type = "random")
   road_pts_locs <- samp_roads(100, road_pts, .01)
   expect_true(class(road_pts_locs) == "SpatialPoints")
   
@@ -63,6 +64,6 @@ test_that("Location functions", {
   expect_true(length(road_pts_locs) == length(road_pts_locs2))
 
   # Test the reading roads functions, look for speedups   
-  sd_roads <- read_roads(path_to_roads = "data-raw/46/tiger/roads_46")
-  expect_equal(class(sd_roads), "list")
+  sd_roads <- read_roads(path_to_roads = roads_path, road_id = "46111")
+  expect_true(class(sd_roads) == "SpatialLinesDataFrame")
 })
