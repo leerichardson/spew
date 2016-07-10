@@ -1,7 +1,7 @@
 Package: spew
 Type: Package
 Title: Synthetic Populations and Ecosystems of the World
-Version: 0.0.1
+Version: 1.1.0
 Date: 2015-11-03
 Author: Lee Richardson, Shannon Gallagher, Sam Ventura
 Maintainer: Lee Richardson <leerich@cmu.edu>
