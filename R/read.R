@@ -421,6 +421,8 @@ read_roads <- function(path_to_roads, road_id) {
     # Only subset the road_id 
     road <- which(shape_names == road_id)
     
+    
+    
     # If road ID is null, then return a NULL, which
     # will propogate sampling uniformly  
     if (length(road) == 0) {
@@ -430,5 +432,12 @@ read_roads <- function(path_to_roads, road_id) {
     
     path_to_road <- file.path(path_to_roads, road_shapes[road])
     road_shp <- maptools::readShapeSpatial(path_to_road)
+
+    # Take out the interstates
+    # US Specific
+    interstate_inds <- which(as.character(road_shp@data$RTTYP) == "I")
+    if (length(interstate_inds) > 0){
+        road_shp <- road_shp[-interstate_inds,]
+    }
     return(road_shp)
 }
