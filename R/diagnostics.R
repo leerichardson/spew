@@ -104,7 +104,6 @@ summary_diags2 <- function(type="hh",input_dir="./", output_dir=input_dir, summa
 #' @param pop_list list of  dataframe of the population subsetted to the summary variables and the actual names
 #' @param region_name string of region_name
 #' @return summary_list list of summary numbers with corresponding names
-
 summarize_pop <- function(pop_list, region_name){
     names <- c(region_name, colnames(pop_list$pop))
     i <- 1
@@ -350,7 +349,7 @@ extractStCoTr <- function(paths_df){
     st <- substr(stcotr, 1, 2)
     co <- substr(stcotr, 3, 5)
     tr <- substr(stcotr, 6, 11)
-    df <- data.frame(state = st, county = co, tract = tr)
+    df <- data.frame(state = st, county = co, tract = tr, stringsAsFactors = FALSE)
     return(df)
 }
 
@@ -377,6 +376,7 @@ summarize_us <-  function(output_dir, us_fs,
     # Get the data frame for use
     paths_df <- us_fs$paths_df
     stcotr <- extractStCoTr(paths_df)
+    
     # TODO switch this to us
     vars_hh <- getVars_ipums(varsToSummarize$vars_hh, type = "hh")
     vars_p <- getVars_ipums(varsToSummarize$vars_p, type = "p")
@@ -387,7 +387,7 @@ summarize_us <-  function(output_dir, us_fs,
     # Aggregate!!
     if (is.null(dim(sum_col))){
         nSubReg <- 1
-        sum_col <- as.data.frame(sum_col)
+        sum_col <- as.data.frame(sum_col, stringsAsFactors = FALSE)
     } else {
         nSubReg <- nrow(sum_col)
     }
