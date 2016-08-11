@@ -273,7 +273,6 @@ summarizeFileStructure <- function(output_dir, doPrint = FALSE, type = "ipums"){
     # Region Name
     base_region <- gsub("output_", "", basename(output_dir))
     pretty_print(doPrint, paste("The region is", toupper(base_region)))
-    stopifnot("eco" %in% list.files(output_dir))
     paths <- list.files(output_dir, recursive = T)
     output_paths <- paths[grepl("output", paths)]
     if (length(output_paths) < 1){
@@ -515,6 +514,7 @@ summarize_ipums <-  function(output_dir, ipums_fs,
                              doPrint = FALSE, sampSize = 10^3){
     stopifnot(ncol(ipums_fs$paths_df) == 3)
     paths_df <- ipums_fs$paths_df
+    paths_df <- data.frame(lapply(paths_df, as.character), stringsAsFactors = FALSE)
     vars_hh <- getVars_ipums(varsToSummarize$vars_hh, type = "hh")
     vars_p <- getVars_ipums(varsToSummarize$vars_p, type = "p")
     hh_sum_list <- vector(mode = "list", length = nrow(paths_df))
