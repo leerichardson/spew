@@ -406,8 +406,11 @@ summarize_us <-  function(output_dir, us_fs,
             all_reg <- stcotr[, sum_level]
         }
         reg_inds <- which(all_reg == reg)
+        
         # Get the Full file path(s)
+        paths_df <- data.frame(lapply(paths_df, as.character), stringsAsFactors=FALSE)
         fp <- sapply(reg_inds, function(ind) paste(paths_df[ind, ], collapse = "/"))
+        
         # Read in the lowest level csvs
         #tab <- as.data.frame(fread(file.path(output_dir, fp)))
         tab <- do.call('rbind', lapply(file.path(output_dir, fp), read.csv))
