@@ -273,7 +273,7 @@ summarizeFileStructure <- function(output_dir, doPrint = FALSE, type = "ipums"){
     # Region Name
     base_region <- gsub("output_", "", basename(output_dir))
     pretty_print(doPrint, paste("The region is", toupper(base_region)))
-    stopifnot("eco" %in% list.files(output_dir))
+   # stopifnot("eco" %in% list.files(output_dir))
     paths <- list.files(output_dir, recursive = T)
     output_paths <- paths[grepl("output", paths)]
     if (length(output_paths) < 1){
@@ -351,7 +351,7 @@ extractStCoTr <- function(paths_df){
     st <- substr(stcotr, 1, 2)
     co <- substr(stcotr, 3, 5)
     tr <- substr(stcotr, 6, 11)
-    df <- data.frame(state = st, county = co, tract = tr)
+    df <- data.frame(state = st, county = co, tract = tr, stringsAsFactors = FALSE)
     return(df)
 }
 
@@ -407,7 +407,9 @@ summarize_us <-  function(output_dir, us_fs,
             all_reg <- stcotr[, sum_level]
         }
         reg_inds <- which(all_reg == reg)
-        # Get the Full file path(s)
+        ## Get the Full file path(s)
+        
+        paths_df <- data.frame(lapply(paths_df, as.character), stringsAsFactors=FALSE)
         fp <- sapply(reg_inds, function(ind) paste(paths_df[ind, ], collapse = "/"))
         # Read in the lowest level csvs
         #tab <- as.data.frame(fread(file.path(output_dir, fp)))
@@ -462,9 +464,10 @@ summarize_us <-  function(output_dir, us_fs,
             all_reg <- stcotr[, sum_level]
         }
         reg_inds <- which(all_reg == reg)
-        # Change the paths from household to people
+        ##                      # Change the paths from household to people
         paths_df_p <- paths_df
         paths_df_p[, ncol(paths_df)] <- gsub("household", "people", paths_df[, ncol(paths_df)])
+##        paths_df <- data.frame(lapply(paths_df, as.character), stringsAsFactors=FALSE)
         # Get the Full file path(s)
         fp <- sapply(reg_inds, function(ind) paste(paths_df_p[ind, ], collapse = "/"))
         tab <- do.call('rbind', lapply(file.path(output_dir, fp), read.csv))
@@ -515,6 +518,7 @@ summarize_ipums <-  function(output_dir, ipums_fs,
                              doPrint = FALSE, sampSize = 10^3){
     stopifnot(ncol(ipums_fs$paths_df) == 3)
     paths_df <- ipums_fs$paths_df
+    paths_df <- data.frame(lapply(paths_df, as.character), stringsAsFactors=FALSE)
     vars_hh <- getVars_ipums(varsToSummarize$vars_hh, type = "hh")
     vars_p <- getVars_ipums(varsToSummarize$vars_p, type = "p")
     hh_sum_list <- vector(mode = "list", length = nrow(paths_df))
@@ -650,7 +654,7 @@ plot_region_diags<- function(ipums_sum_list, ipums_fs, pretty = TRUE, borders = 
     centers_df <- getCentersDiags(ipums_sum_list)
     if (type == "us"){
         centers_df$reg <- sapply(centers_df$reg,
-                                 fipsToPlaceName, level = "county")
+                                 fipsToPlaceName, level = "county", df = us)
     }
     nRegions <- length(unique(plot_df$reg))
     if (borders){
