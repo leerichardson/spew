@@ -104,7 +104,6 @@ summary_diags2 <- function(type="hh",input_dir="./", output_dir=input_dir, summa
 #' @param pop_list list of  dataframe of the population subsetted to the summary variables and the actual names
 #' @param region_name string of region_name
 #' @return summary_list list of summary numbers with corresponding names
-
 summarize_pop <- function(pop_list, region_name){
     names <- c(region_name, colnames(pop_list$pop))
     i <- 1
@@ -273,7 +272,10 @@ summarizeFileStructure <- function(output_dir, doPrint = FALSE, type = "ipums"){
     # Region Name
     base_region <- gsub("output_", "", basename(output_dir))
     pretty_print(doPrint, paste("The region is", toupper(base_region)))
+<<<<<<< HEAD
    # stopifnot("eco" %in% list.files(output_dir))
+=======
+>>>>>>> 62e02cd9942090549089f06d5953786c7facb22f
     paths <- list.files(output_dir, recursive = T)
     output_paths <- paths[grepl("output", paths)]
     if (length(output_paths) < 1){
@@ -378,6 +380,7 @@ summarize_us <-  function(output_dir, us_fs,
     # Get the data frame for use
     paths_df <- us_fs$paths_df
     stcotr <- extractStCoTr(paths_df)
+    
     # TODO switch this to us
     vars_hh <- getVars_ipums(varsToSummarize$vars_hh, type = "hh")
     vars_p <- getVars_ipums(varsToSummarize$vars_p, type = "p")
@@ -388,7 +391,7 @@ summarize_us <-  function(output_dir, us_fs,
     # Aggregate!!
     if (is.null(dim(sum_col))){
         nSubReg <- 1
-        sum_col <- as.data.frame(sum_col)
+        sum_col <- as.data.frame(sum_col, stringsAsFactors = FALSE)
     } else {
         nSubReg <- nrow(sum_col)
     }
@@ -407,10 +410,16 @@ summarize_us <-  function(output_dir, us_fs,
             all_reg <- stcotr[, sum_level]
         }
         reg_inds <- which(all_reg == reg)
+<<<<<<< HEAD
         ## Get the Full file path(s)
         
+=======
+        
+        # Get the Full file path(s)
+>>>>>>> 62e02cd9942090549089f06d5953786c7facb22f
         paths_df <- data.frame(lapply(paths_df, as.character), stringsAsFactors=FALSE)
         fp <- sapply(reg_inds, function(ind) paste(paths_df[ind, ], collapse = "/"))
+        
         # Read in the lowest level csvs
         #tab <- as.data.frame(fread(file.path(output_dir, fp)))
         tab <- do.call('rbind', lapply(file.path(output_dir, fp), read.csv))
@@ -518,7 +527,11 @@ summarize_ipums <-  function(output_dir, ipums_fs,
                              doPrint = FALSE, sampSize = 10^3){
     stopifnot(ncol(ipums_fs$paths_df) == 3)
     paths_df <- ipums_fs$paths_df
+<<<<<<< HEAD
     paths_df <- data.frame(lapply(paths_df, as.character), stringsAsFactors=FALSE)
+=======
+    paths_df <- data.frame(lapply(paths_df, as.character), stringsAsFactors = FALSE)
+>>>>>>> 62e02cd9942090549089f06d5953786c7facb22f
     vars_hh <- getVars_ipums(varsToSummarize$vars_hh, type = "hh")
     vars_p <- getVars_ipums(varsToSummarize$vars_p, type = "p")
     hh_sum_list <- vector(mode = "list", length = nrow(paths_df))
@@ -744,7 +757,7 @@ getCentersDiags <- function(ipums_sum_list){
     }
     return(plot_df)
 
-vv}
+}
 
 #' Aggregate us tracts
 
