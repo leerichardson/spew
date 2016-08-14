@@ -562,7 +562,7 @@ summarize_ipums <-  function(output_dir, ipums_fs,
         paths_df_p <- paths_df
         paths_df_p[, ncol(paths_df)] <- gsub("household", "people", paths_df[, ncol(paths_df)])
         fp <- paste(paths_df_p[ind, ], collapse = "/")
-        tab <- as.data.frame(read.csv(file.path(output_dir, fp))
+        tab <- read.csv(file.path(output_dir, fp))
         sum_features_cat <- sapply(vars_p$cat, summarizeFeatures, tab, type = "cat")
         sum_features_cont <- sapply(vars_p$cont, summarizeFeatures, tab, type = "cont")
         sum_features <- list(cat = sum_features_cat,
