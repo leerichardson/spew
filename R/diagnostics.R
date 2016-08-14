@@ -406,13 +406,9 @@ summarize_us <-  function(output_dir, us_fs,
             all_reg <- stcotr[, sum_level]
         }
         reg_inds <- which(all_reg == reg)
-<<<<<<< HEAD
+
         ## Get the Full file path(s)
-        
-=======
-        
-        # Get the Full file path(s)
->>>>>>> 62e02cd9942090549089f06d5953786c7facb22f
+
         paths_df <- data.frame(lapply(paths_df, as.character), stringsAsFactors=FALSE)
         fp <- sapply(reg_inds, function(ind) paste(paths_df[ind, ], collapse = "/"))
         
@@ -523,11 +519,7 @@ summarize_ipums <-  function(output_dir, ipums_fs,
                              doPrint = FALSE, sampSize = 10^3){
     stopifnot(ncol(ipums_fs$paths_df) == 3)
     paths_df <- ipums_fs$paths_df
-<<<<<<< HEAD
-    paths_df <- data.frame(lapply(paths_df, as.character), stringsAsFactors=FALSE)
-=======
     paths_df <- data.frame(lapply(paths_df, as.character), stringsAsFactors = FALSE)
->>>>>>> 62e02cd9942090549089f06d5953786c7facb22f
     vars_hh <- getVars_ipums(varsToSummarize$vars_hh, type = "hh")
     vars_p <- getVars_ipums(varsToSummarize$vars_p, type = "p")
     hh_sum_list <- vector(mode = "list", length = nrow(paths_df))
