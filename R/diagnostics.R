@@ -7,7 +7,7 @@
 append_pops <- function(input_dir, output_dir=input_dir, remove_pops=FALSE){
     filenames <- list.files(input_dir)
     filenames_hh <- filenames[ grep("household", filenames) ]
-    filenames_p <- filenames[ grep("people", filenames) ]
+    filenames_p <- filenames[ grep("people", filenamesS) ]
     #read in the files
     header_hh <- names(read.csv(paste0(input_dir, filenames_hh[1])))
     header_p <- names(read.csv(paste0(input_dir, filenames_p[1])))
@@ -138,7 +138,7 @@ read_pop2 <- function(type, input_dir, summary_vars){
     var_names <- get_var_names(type, summary_vars)
 
     #TODO:  FIX.  Seems to be losing records
-    pop <- data.table::fread(input_dir)
+    pop <- data.table::fread(input_dir, fill = TRUE)
     
     stopifnot(var_names %in% colnames(pop))
     all_vars <- colnames(pop)
@@ -161,7 +161,7 @@ read_pop <- function(type, input_dir, summary_vars){
     print(concat_file)
     #TODO:  FIX.  Seems to be losing records
     if( file.exists(concat_file)){
-        pop <- data.table::fread(concat_file)
+        pop <- data.table::fread(concat_file, fill = TRUE)
     } else {
         filenames <- list.files(input_dir)
         filenames <- filenames[ grep(key_word, filenames)]
@@ -211,7 +211,7 @@ run_diags <- function(input_dir="./", output_dir=input_dir, save_plots=TRUE, pre
     filename_hh <- filenames[ grep("household", filenames) ]
     filename_p <- filenames[ grep("people", filenames) ]
     stopifnot(length(filename_hh) * length(filename_p) == 1)
-    hh_df <- data.table::fread(paste0(input_dir, filename_hh))
+    hh_df <- data.table::fread(paste0(input_dir, filename_hh), fill = TRUE)
     # write log file
     
     puma_id <- unique(hh_df$puma_id)
@@ -240,7 +240,7 @@ run_diags <- function(input_dir="./", output_dir=input_dir, save_plots=TRUE, pre
     rm(hh_df)
 
     #the people information
-    p_df <- data.table::fread(paste0(input_dir, filename_p))
+    p_df <- data.table::fread(paste0(input_dir, filename_p), fill = TRUE)
   
     if(!pretty){
       sink(paste0(output_dir, log_filename), append=TRUE)
@@ -272,10 +272,6 @@ summarizeFileStructure <- function(output_dir, doPrint = FALSE, type = "ipums"){
     # Region Name
     base_region <- gsub("output_", "", basename(output_dir))
     pretty_print(doPrint, paste("The region is", toupper(base_region)))
-<<<<<<< HEAD
-   # stopifnot("eco" %in% list.files(output_dir))
-=======
->>>>>>> 62e02cd9942090549089f06d5953786c7facb22f
     paths <- list.files(output_dir, recursive = T)
     output_paths <- paths[grepl("output", paths)]
     if (length(output_paths) < 1){
@@ -421,7 +417,7 @@ summarize_us <-  function(output_dir, us_fs,
         fp <- sapply(reg_inds, function(ind) paste(paths_df[ind, ], collapse = "/"))
         
         # Read in the lowest level csvs
-        #tab <- as.data.frame(fread(file.path(output_dir, fp)))
+        #tab <- as.data.frame(fread(file.path(output_dir, fp), fill = TRUE))
         tab <- do.call('rbind', lapply(file.path(output_dir, fp), read.csv))
 
         # Summarize the features, first categorical then cont.
@@ -539,7 +535,7 @@ summarize_ipums <-  function(output_dir, ipums_fs,
     header <- NULL  ## HOUSEHOLDS!!
     for (ind in 1:nrow(paths_df)){
         fp <- paste(paths_df[ind, ], collapse = "/")
-        tab <- as.data.frame(fread(file.path(output_dir, fp)))
+        tab <- as.data.frame(fread(file.path(output_dir, fp), fill = TRUE))
         sum_features_cat <- sapply(vars_hh$cat, summarizeFeatures, tab, type = "cat")
         sum_features_cont <- sapply(vars_hh$cont, summarizeFeatures, tab, type = "cont")
         sum_features <- list(cat = sum_features_cat,
@@ -575,7 +571,7 @@ summarize_ipums <-  function(output_dir, ipums_fs,
         paths_df_p <- paths_df
         paths_df_p[, ncol(paths_df)] <- gsub("household", "people", paths_df[, ncol(paths_df)])
         fp <- paste(paths_df_p[ind, ], collapse = "/")
-        tab <- as.data.frame(fread(file.path(output_dir, fp), verbose = FALSE))
+        tab <- as.data.frame(fread(file.path(output_dir, fp), verbose = FALSE, fill = TRUE))
         sum_features_cat <- sapply(vars_p$cat, summarizeFeatures, tab, type = "cat")
         sum_features_cont <- sapply(vars_p$cont, summarizeFeatures, tab, type = "cont")
         sum_features <- list(cat = sum_features_cat,
