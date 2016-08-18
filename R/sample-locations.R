@@ -10,15 +10,20 @@
 #' @param noise the standard deviation of how much 
 #' we jitter the road locations in each direction (only if method is "roads")
 #' @return SpatialPoints object with coordinates for the n households
-sample_locations <- function(method, place_id, n_house, shapefile, noise = .001) {
+sample_locations <- function(method, place_id, n_house, shapefile, noise = .001, shapefile_id = NULL) {
   # Call the appropriate location sampling function based on
   # the input sampling method  
   if (method == "uniform") {
-    locs <- sample_locations_uniform(place_id, n_house, shapefile, noise)
+    locs <- sample_locations_uniform(place_id, n_house, shapefile, noise, shapefile_id)
   } else if (method == "roads") {
-    locs <- sample_locations_roads(place_id, n_house, shapefile, noise)
+    locs <- sample_locations_roads(place_id, n_house, shapefile, noise, shapefile_id)
   } else {
     stop("location sampling method must be uniform or roads")
+  }
+
+  # If locs are NULL, return an error!
+  if (is.null(locs)) {
+    stop(paste0("Error place, ", place_id, ": sample locations returned NULL!"))
   }
   
   return(locs)
@@ -26,8 +31,8 @@ sample_locations <- function(method, place_id, n_house, shapefile, noise = .001)
 
 #' Sample from a particular polygon shapefile 
 #' 
-#' @param place_id numeric specifiying the ID of the region we are 
-#' subsampling  
+#' @param place_id numeric specifiying the ID of the region we are
+#' subsampling
 #' @param n_house numeric indicating the number of households
 #' @param shapefile sp class with all of the locations for each place id
 #' @param noise numeric indicating how must noise to add to sampled points
@@ -35,11 +40,17 @@ sample_locations <- function(method, place_id, n_house, shapefile, noise = .001)
 #' case the spsample function takes too long. Instead, we sample 100,000 points, 
 #' sample n_house from these 100,000, and then add random noise.
 #' @return SpatialPoints object with coordinates for the n households
-sample_locations_uniform <- function(place_id, n_house, shapefile, noise = .001) {
+sample_locations_uniform <- function(place_id, n_house, shapefile, noise = .001, shapefile_id) {
+  # Extract the index of the appropriate polygon 
+  if (!is.null(shapefile_id)) {
+    region <- which(shapefile$shapefile_id == shapefile_id)
+  } else {
+    region <- which(shapefile$place_id == place_id)
+  }
+  
   # Subset the shapefile to the polygon 
   # specified by the place_id argument 
-  slots <- methods::slot(shapefile, "polygons")
-  region <- which(shapefile$place_id == place_id)
+  slots <- methods::slot(shapefile, "polygons")  
   poly <- slots[[region]]
   
   # Remove holes from polygon if any are found 
@@ -94,7 +105,7 @@ remove_holes <- function(polygon) {
 #' the tracts and the roads, tracts is the first object and roads the second.
 #' @param noise the standard deviation of how much we jitter the road locations in each direction
 #' @return SpatialPoints object with coordinates for the n households
-sample_locations_roads <- function(place_id, n_house, shapefile, noise = .0001) {
+sample_locations_roads <- function(place_id, n_house, shapefile, noise = .0001, shapefile_id) {
   stopifnot(any(names(shapefile) == "roads"))
   # Get the intersection of the boundary shapefile 
   # and the roads shapefile 

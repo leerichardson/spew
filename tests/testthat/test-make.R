@@ -1,8 +1,7 @@
 context("SPEW functions")
 
 test_that("SPEW functions", {
-  
-  # Load in the formatted data 
+  # Load in the formatted data and required libraries  
   data(sd_data)
   data(uruguay_format)
   library(stringdist)
@@ -36,6 +35,7 @@ test_that("SPEW functions", {
                          sampling_method = "uniform", locations_method = "uniform", 
                          output_dir = "~/Desktop/46", convert_count = FALSE), 
                          "Place has 0 Households!")
+  
   # Test that the Parallel version is quicker ----------------
   library(doSNOW)
   library(foreach)
@@ -78,7 +78,7 @@ test_that("SPEW functions", {
   # there are less of these than the original, in case of duplicated columns
   expect_equal("SYNTHETIC_HID" %in% names(synth_pums_h), TRUE)
   expect_equal("SYNTHETIC_PID" %in% names(synth_pums_p), TRUE)
-  expect_equal(max(table(synth_pums_p$SYNTHETIC_SERIAL)) < max(table(synth_pums_p$SERIALNO)), TRUE)
+  expect_equal(max(table(synth_pums_p$SYNTHETIC_PID)) < max(table(synth_pums_p$SERIALNO)), TRUE)
   
   # Make sure the convert_count functions work...
   original_nhouse <- uruguay_format$pop_table[1, "n_house"]

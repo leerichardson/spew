@@ -12,11 +12,10 @@ test_that("United States Workplace Assignment", {
   place_id <- sd_data$pop_table[index, "place_id"]
   
   # Sample n indices from the household pums 
-  households <- sample_households(method = "uniform", 
-                                  n_house, 
-                                  sd_data$pums$pums_h, 
-                                  puma_id)
-  sampled_households <- sd_data$pums$pums_h[households, ]
+  sampled_households <- sample_households(method = "uniform", 
+                                          n_house, 
+                                          sd_data$pums$pums_h, 
+                                          puma_id)
   
   # Attach locations to the sample households 
   locations <- sample_locations(method = "uniform", place_id = place_id, n_house = n_house, 
