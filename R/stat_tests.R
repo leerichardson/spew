@@ -12,6 +12,7 @@ stat_test_us_pums <- function(regionID, type = "p", level = "tract", output, PUM
     stopifnot(sum(variables %in% colnames(output)) == length(variables))
     PUMS_f <-  makeFactors(PUMS, PUMS, variables)
     output_f <- makeFactors(output, PUMS, variables)
+    stopifnot(nrow(output_f) == nrow(output))
     #print(variables)
     synth_tab <- table(output_f[, variables])
     ## Correct zero marginals
@@ -19,8 +20,10 @@ stat_test_us_pums <- function(regionID, type = "p", level = "tract", output, PUM
     stopifnot(length(synth_tab) == length(pums_tab))
     p <- pums_tab / sum(pums_tab)
     chi <- chisq.test(x = synth_tab, p = p, simulate.p.value = FALSE)
+    nObs <- nrow(output)
     print(regionID)
-    out_list <- list(regionID = regionID, obs = synth_tab, p = p, type = type, chi_sq = chi, variables = variables)
+    print(nrow(output))
+    out_list <- list(regionID = regionID, obs = synth_tab, p = p, type = type, chi_sq = chi, variables = variables, nObs = nObs)
     return(out_list)
 }
 
@@ -176,8 +179,10 @@ makeStatDF <- function(features_list){
     chisq <- sapply(features_list, function(ll) ll$chi_sq$statistic)
     dof <-  sapply(features_list, function(ll) ll$chi_sq$parameter)
     p.value <- sapply(features_list, function(ll) ll$chi_sq$p.value)
+    nObs <- sapply(features_list, function(ll) ll$nObs)
+    type <- sapply(features_list, function(ll) ll$type)
     stat_df <- data.frame(regionID = regionID, vars = vars, chisq = chisq,
-                          dof = dof, pval = p.value)
+                          dof = dof, pval = p.value, nObs = nObs, type = type)
     return(stat_df)
 }
 
@@ -188,7 +193,7 @@ makeStatDF <- function(features_list){
 ## library(devtools)
 ## library(plyr)
 ## setwd("~/spew")
-## #load_all()
+## # load_all()
 
 ## regionID <- "46113940800"
 ## variables <- c("RAC1P", "SEX")
@@ -217,47 +222,65 @@ makeStatDF <- function(features_list){
 
 ## t <- proc.time()[3]
 ## features_list <- test_features(output_folder, PUMS_folder,
-##                           household_vars = NULL,
-##                           people_vars = NULL,
-##                           householder_vars = c("RAC1P", "AGEP", "HINCP", "NP"))
+##                           household_vars = NULL, #c("NP", "HINCP"),
+##                           people_vars = NULL, #c("SEX", "AGEP")
+##                           householder_vars = c("RAC1P", "NP", "AGEP", "HINCP"))
 ## proc.time()[3] - t
 
 ## my_df <- makeStatDF(features_list)
+## my_df$pval <- ifelse(is.nan(my_df$pval), 1, my_df$pval)
 ## alpha <- .05/ (nrow(my_df))
 ## alpha_df <- data.frame(alpha = alpha, lt = "alpha value")
 ## ## ggplot
 ## library(ggplot2)
-## ggplot() + geom_boxplot(data = my_df, aes(factor(vars), log(pval ))) + geom_hline(data = alpha_df,
+## ggplot() + geom_boxplot(data = my_df, aes(factor(vars), log(pval) )) + geom_hline(data = alpha_df,
 ##                                                                                   aes(yintercept = log(alpha), linetype =lt,
 ##                                                                                       show.legend = TRUE), col = "red") +
-##     coord_flip() + ggtitle("Pearson Chi Square p-values \n Tracts in SD \n alpha = .05, Adjusted for Multiple Comparisons") +
-##     labs(y = "log(p-value)", x = "Variable Combinations") + theme_light()  +
-##     scale_linetype_manual(name = '',values = 1,guide = "legend")
-## ggsave("~/Desktop/sd_pvals.pdf")
+##     coord_flip() + ggtitle(expression(atop("Pearson Chi-Square p-values", paste("Tracts in SD; ", alpha, " = .05, Adjusted for Multiple Comparisons") ))) +     labs(y = "log(p-value)", x = "Population Characteristic(s)", col = "# Agents")  +
+##     scale_linetype_manual(name = "",values = 1,guide = "legend",  lab = expression(log(alpha))) + theme_light() +
+##        theme(
+##              axis.text.x = element_text(size = 12, family = "Palatino"),
+##              axis.text.y= element_text(size = 12, family = "Palatino"),
+##              axis.title.x= element_text(size = 16, family = "Palatino"),
+##              axis.title.y= element_text(size = 16, family = "Palatino"),
+##              plot.title = element_text(size = 20, family = "Palatino"),
+##              legend.title = element_text(size = 16, family = "Palatino"),
+##              legend.text = element_text(family = "Palatino")
+##        )  
+## #ggsave("~/Desktop/sd_pvals.pdf")
 
 ## ## Splitting by tract
-## ## Taking a sample of 10
-## regions <- sample(unique(my_df$regionID), 10)
+## ## Taking a sample of 20
+## regions <- sample(unique(my_df$regionID), 20)
 ## new_df <- my_df[as.character(my_df$regionID) %in% as.character(regions),]
-## ggplot() + geom_boxplot(data = new_df, aes(factor(regionID), log(pval ))) + geom_hline(data = alpha_df,
+## ggplot() + geom_boxplot(data = new_df, aes(factor(regionID), log(pval), col = nObs)) + geom_hline(data = alpha_df,
 ##                                                                                   aes(yintercept = log(alpha), linetype =lt,
-##                                                                                       show.legend = TRUE), col = "red") +
-##     coord_flip() + ggtitle("Pearson Chi Square p-values \n Tracts in SD \n alpha = .05, Adjusted for Multiple Comparisons") +
-##     labs(y = "log(p-value)", x = "Tract ID") + theme_light()  +
-##     scale_linetype_manual(name = '',values = 1,guide = "legend")
-## ggsave("~/Desktop/sd_pvals_region.pdf")
+##                                                                                       show.legend = TRUE), col = "red")  + 
+##     coord_flip() + ggtitle(expression(atop("Pearson Chi-Square p-values", paste("Tracts in SD; ", alpha, " = .05, Adjusted for Multiple Comparisons") )))+
+##     labs(y = "log(p-value)", x = "Tract ID", col = "# Agents") + 
+## scale_linetype_manual(name = "",values = 1,guide = "legend", lab = expression(log(alpha)))  + theme_light() +
+##     theme(
+##         axis.text.x = element_text(size = 10, family = "Palatino"),
+##         axis.text.y= element_text(size = 10, family = "Palatino"),
+##         axis.title.x= element_text(size = 16, family = "Palatino"),
+##         axis.title.y= element_text(size = 16, family = "Palatino"),
+##         plot.title = element_text(size = 20, family = "Palatino"),
+##         legend.title = element_text(size = 16, family = "Palatino"),
+##         legend.text = element_text(family = "Palatino")
+##     )  
+## #ggsave("~/Desktop/sd_pvals_region.pdf")
                          
 
 ## ## Think about binning variables...
 ## ## .bincode()
 
 
-## ## Took 3 and a half minutes to run SD
+## ## ## Took 3 and a half minutes to run SD
 
-## ## Cutting
-## age <- PUMS_full$AGEP
+## ## ## Cutting
+## ## age <- PUMS_full$AGEP
 
-## age_c <- cut(age, breaks=quantile(age, (1:10)/10, na.rm=TRUE) )
+## ## age_c <- cut(age, breaks=quantile(age, (1:10)/10, na.rm=TRUE) )
 
 
 
