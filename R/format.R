@@ -73,7 +73,7 @@ format_data <- function(data_list, data_group) {
     check_puma_ids(pop_table_pumas, pums_pumas)
   }
 
-  # Print out the length of time it takes for format to run   
+  # Print out the length of time it takes for format to run
   format_time <- difftime(Sys.time(), format_start_time, units = "secs")
   format_time <- as.numeric(round(format_time, digits = 2))  
   format_time_statement <- paste0("Format runs in: ", format_time)
@@ -160,22 +160,6 @@ remove_words <- function(word, names) {
   return(names)
 }
 
-
-#' Force counts to shapefiles despite bad matches from shapefiles and pop_table names
-#' 
-#' @param shapefile_names names of the regions that will be allocated counts
-#' @param pop_table data frame to update
-#' @param split_type in c("uniform")
-#' @return new_table data frame with counts that match the shapefile, total population should match the sum of the old pop_table counts
-
-force_counts <- function(shapefile_names, pop_table, split_type="uniform"){
-    #get the good matches
-    #separate them from bad
-    #split up remaining counts to unmatches shapefile_names
-    #avoid lakes?
-    print("WARNING:  There is at least one mismatch between population region names and shapefile region names.  We split the unmatched population totals evenly into the unmatched shapefile names.")
-
-}
 #' Re-allocate excess counts to other locations 
 #' 
 #' @param counts numeric vector of current counts 

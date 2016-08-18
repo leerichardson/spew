@@ -23,7 +23,8 @@
 #' make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
 make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces, 
                       convert_count, output_dir, parallel = FALSE, 
-                      sampling_method = "uniform", locations_method = "uniform") {
+                      sampling_method = "uniform", locations_method = "uniform", 
+                      outfile_loc = "") {
   location_start_time <- Sys.time()
   
   # Write out the final, formatted population table  
@@ -35,7 +36,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
   
   if (parallel == FALSE) {
     region_list <- vector(mode = "list", length = num_places)
-    for (place in 1:num_places) { 
+    for (place in 1:num_places) {
       print(paste0("Region ", place, " out of ", num_places))
       region_list[[place]] <- make_place(index = place, pop_table = pop_table, shapefile = shapefile, 
                                          pums_h = pums_h, pums_p = pums_p, schools = schools, 
@@ -45,10 +46,10 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
     }
 
   } else {
-    # Set up the worker cores and export all of the necessary 
+    # Set up the worker cores and export all of the necessary
     # data needed to call the make_place function 
     num_workers <- min(num_places, parallel::detectCores(), 64)
-    cluster <- parallel::makeCluster(num_workers, type = "SOCK", outfile = "", useXDR = FALSE)
+    cluster <- parallel::makeCluster(num_workers, type = "SOCK", outfile = outfile_loc, useXDR = FALSE)
     export_objects <- c("make_place", "people_to_households", "sample_households", 
                         "sample_locations", "sample_people", "write_data", 
                         "people_to_households", "assign_schools", "assign_schools_inner", 
@@ -108,20 +109,21 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
 make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
                        workplaces, output_dir, convert_count, sampling_method, 
                        locations_method) {
+  
   # Start the clock on this specific place 
   place_start_time <- Sys.time()
-
-  # Make sure there are people living in this particular 
-  # place. If not, skip!
-  if (pop_table[index, "n_house"] == 0) {
-    print("Place has 0 Households!")
-    return(TRUE)
-  }
   
   # Obtain the specific parameters for this run of make 
   n_house <- pop_table[index, "n_house"]
   puma_id <- pop_table[index, "puma_id"]
   place_id <- pop_table[index, "place_id"]
+  
+  # If there's a shapefile ID, exract from the pop table 
+  if ("shapefile_id" %in% names(pop_table)) {
+    shapefile_id <- pop_table[index, "shapefile_id"]
+  } else {
+    shapefile_id <- NULL
+  }
   
   # Convert people counts to household counts 
   if (convert_count == TRUE) {
@@ -129,7 +131,14 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
     if (is.null(hh_sizes)) {
       hh_sizes <- nrow(pums_p) / nrow(pums_h)
     }
-    n_house <- people_to_households(hh_sizes, n_house)
+    n_house <- floor(people_to_households(hh_sizes, n_house))
+  }
+  
+  # Make sure there are people living in this particular 
+  # place. If not, skip!
+  if (pop_table[index, "n_house"] == 0 | n_house == 0) {
+    print("Place has 0 Households!")
+    return(TRUE)
   }
   
   # Sample n indices from the household pums 
@@ -150,7 +159,8 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
                                 place_id = place_id,
                                 n_house = n_house, 
                                 shapefile = shapefile, 
-                                noise = .0002)
+                                noise = .0002, 
+                                shapefile_id)
   
   # If the location sampling returns NULL, skip this place 
   # and write out an error 

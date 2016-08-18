@@ -36,7 +36,6 @@ test_that("SPEW functions", {
                          sampling_method = "uniform", locations_method = "uniform", 
                          output_dir = "~/Desktop/46", convert_count = FALSE), 
                          "Place has 0 Households!")
-  
   # Test that the Parallel version is quicker ----------------
   library(doSNOW)
   library(foreach)
@@ -57,8 +56,9 @@ test_that("SPEW functions", {
                                        schools = sd_data$schools, workplaces = sd_data$workplaces,
                                        pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
                                        output_dir = "tmp/", parallel = TRUE, convert_count = FALSE, 
-                                       sampling_method = "uniform", locations_method = "uniform"))
-
+                                       sampling_method = "uniform", locations_method = "uniform", 
+                                       outfile_loc = "/dev/null"))
+  
   expect_equal(as.logical(parallel_md[1] < regular_md[1]), TRUE)
 
   # Test the Serial Synth and convert count functions ---------------
