@@ -8,22 +8,34 @@
 #' @return list of p value for region and original chi square value
 #' @details  to come
 stat_test_us_pums <- function(regionID, type = "p", level = "tract", output, PUMS,  variables = c("RAC1P", "SEX")){
-    ## TODO:  what happpens when we don't have all categories??
+    #browser()
     stopifnot(sum(variables %in% colnames(output)) == length(variables))
     PUMS_f <-  makeFactors(PUMS, PUMS, variables)
     output_f <- makeFactors(output, PUMS, variables)
     stopifnot(nrow(output_f) == nrow(output))
-    #print(variables)
     synth_tab <- table(output_f[, variables])
+    synth_p <- synth_tab / sum(synth_tab)
     ## Correct zero marginals
     pums_tab <- table(PUMS_f[, variables])
     stopifnot(length(synth_tab) == length(pums_tab))
     p <- pums_tab / sum(pums_tab)
-    chi <- chisq.test(x = synth_tab, p = p, simulate.p.value = FALSE)
+    ## n <- sum(synth_tab)
+    ## my own test
+    ## e <- n * p
+    ## chisq <- sum((e - synth_tab)^2/e)
+    ## if (length(variables) == 1){
+    ##     dof <- length(synth_tab) - 1
+    ## } else{
+    ##     dof <- (nrow(synth_tab) - 1) * (ncol(synth_tab) - 1)
+    ## }
+    ## pval <- 1 - pchisq(chisq, df = dof)
+    chi <- chisq.test(synth_tab, p = p)
     nObs <- nrow(output)
+    puma_id <- output$puma_id[1]
     print(regionID)
     print(nrow(output))
-    out_list <- list(regionID = regionID, obs = synth_tab, p = p, type = type, chi_sq = chi, variables = variables, nObs = nObs)
+    out_list <- list(regionID = regionID, obs = synth_tab, p = p, type = type,
+                     chi_sq = chi, variables = variables, nObs = nObs, puma_id = puma_id)
     return(out_list)
 }
 
@@ -34,6 +46,7 @@ stat_test_us_pums <- function(regionID, type = "p", level = "tract", output, PUM
 #' @param variables the variables to change
 #' @return out_df of factors
 makeFactors <- function(in_df, my_levels, variables){
+  #  browser()
     for(var in variables){
         ## If the unique values are too many (i.e. continuous) then cut into 10 categories
         ## This value is completely arbitrary
@@ -64,13 +77,15 @@ makeFactors <- function(in_df, my_levels, variables){
 #' @return list with region ID, variable comparisons, and chi square results
 #' @details  to come
 stat_test_us_pums_outer <- function(regionID, type = "p", level = "tract", output_folder,
-                                    PUMS_full, variables = c("RAC1P", "SEX", "AGEP")){
+                                    PUMS_full, variables = c("RAC1P", "SEX", "AGEP"),
+                                    puma_id = puma_id){
     ## Load in the output and PUMS
     ## THE OUTPUT
-    type_char<- ifelse(type == "p", "people", "household")
+   # browser()
+    type_char <- ifelse(type == "p", "people", "household")
     if(type == "b"){
-        hh <- read.csv(file.path(output_folder, paste0("people_", regionID, ".csv")))
-        p <-  read.csv(file.path(output_folder, paste0( "household_", regionID, ".csv")))
+        p <- read.csv(file.path(output_folder, paste0("people_", regionID, ".csv")))
+        hh <-  read.csv(file.path(output_folder, paste0( "household_", regionID, ".csv")))
         output <- join(hh, p, by = "SERIALNO", match = "first")
     } else{
         output <- read.csv(file.path(output_folder, paste0(type_char, "_", regionID, ".csv")))
@@ -92,14 +107,16 @@ stat_test_us_pums_outer <- function(regionID, type = "p", level = "tract", outpu
         kk <- kk + 1
     }
     ## Pairs of vars
-    var_pairs <- combn(variables, 2)
-    for (mm in 1:ncol(var_pairs)){
-        var <- var_pairs[, mm]
-        test <- stat_test_us_pums(regionID = regionID, type = type, level = level,
-                                  output = output, PUMS = PUMS,
-                                  variables = var)
-        ll[[kk]] <- test
-        kk <- kk + 1
+    if (length(variables) > 1){
+        var_pairs <- combn(variables, 2)
+        for (mm in 1:ncol(var_pairs)){
+            var <- var_pairs[, mm]
+            test <- stat_test_us_pums(regionID = regionID, type = type, level = level,
+                                      output = output, PUMS = PUMS,
+                                      variables = var)
+            ll[[kk]] <- test
+            kk <- kk + 1
+        }
     }
     return(ll)
 }
@@ -118,6 +135,7 @@ test_features <- function(output_folder, PUMS_folder, household_vars = c("HINCP"
                           people_vars = c("RAC1P", "SEX"),
                           householder_vars = c("RAC1P", "AGEP", "HINCP", "NP")){
     ## load in the PUMS
+    #browser()
     filepaths <- list.files(PUMS_folder)
     hh_ind <- which(substr(filepaths, 5, 5) == "h")[1] ## THIS IS FRAGILE!
     p_ind <- which(substr(filepaths, 5, 5) == "p")[1]
@@ -133,30 +151,35 @@ test_features <- function(output_folder, PUMS_folder, household_vars = c("HINCP"
         new_path <- file.path(output_folder, output_path, "eco")
         region_files <- list.files(new_path)
         regions <- unique(gsub("[^0-9]", "", region_files))
+        puma_id <- gsub("[^0-9]", "", output_path)
         ## Loop over the regions
         for (rr in 1:length(regions)){
             region <- regions[rr]
+            print(paste(puma_id, region))
           #  print(region)
             ## Household
             hh_list <- NULL
             if(length(household_vars) > 0){
                 hh_list <- stat_test_us_pums_outer(regionID = region, type = "hh",
                                                    level = "tract", output_folder = new_path,
-                                                   PUMS = hh_PUMS, variables = household_vars)
+                                                   PUMS = hh_PUMS, variables = household_vars,
+                                                   puma_id = puma_id)
             }
             ## Person
             p_list <- NULL
             if(length(people_vars) > 0){ 
                 p_list <- stat_test_us_pums_outer(regionID = region, type = "p",
                                                   level = "tract", output_folder = new_path,
-                                                  PUMS = p_PUMS, variables = people_vars)
+                                                  PUMS = p_PUMS, variables = people_vars,
+                                                  puma_id = puma_id)
             }
             ## Both
             b_list <- NULL
             if(length(householder_vars) >0 ){
                 b_list <- stat_test_us_pums_outer(regionID = region, type = "b",
                                                   level = "tract", output_folder = new_path,
-                                                  PUMS = b_PUMS, variables = householder_vars)
+                                                  PUMS = b_PUMS, variables = householder_vars,
+                                                  puma_id = puma_id)
             }
             ## Combining together into one long list
             new_list <- c(hh_list, p_list, b_list)
@@ -181,8 +204,9 @@ makeStatDF <- function(features_list){
     p.value <- sapply(features_list, function(ll) ll$chi_sq$p.value)
     nObs <- sapply(features_list, function(ll) ll$nObs)
     type <- sapply(features_list, function(ll) ll$type)
+    puma_id <- sapply(features_list, function(ll) ll$puma_id)
     stat_df <- data.frame(regionID = regionID, vars = vars, chisq = chisq,
-                          dof = dof, pval = p.value, nObs = nObs, type = type)
+                          dof = dof, pval = p.value, nObs = nObs, type = type, puma_id = puma_id)
     return(stat_df)
 }
 
@@ -195,19 +219,19 @@ makeStatDF <- function(features_list){
 ## setwd("~/spew")
 ## # load_all()
 
-## regionID <- "46113940800"
-## variables <- c("RAC1P", "SEX")
+## regionID <- "46019967600"
+## variables <- c("NP")
 ## alpha <- .05
-## output <- read.csv("~/Desktop/46/output_200/eco/people_46113940800.csv")
+## output <- read.csv(paste0("~/Desktop/46/output_100/eco/people_", regionID, ".csv"))
 ## ##
 ## output_folder <- "~/Desktop/46/output_200/eco/"
 ## PUMS_folder <- "~/Desktop/46/input/pums/2013/"
 ## ##
 ## puma_id <- unique(output$puma_id)[1]
-## PUMS_full <- read.csv(file.path("~/Desktop/46/input/pums/2013/ss13psd.csv"))
+## PUMS_full <- read.csv(file.path("~/Desktop/46/input/pums/2013/ss13hsd.csv"))
 ## PUMS <- PUMS_full[PUMS_full$PUMA== puma_id,]
 
-## spew:::stat_test_us_pums(regionID, type = "p", level = "tract", output, PUMS, variables = variables)
+## stat_test_us_pums(regionID, type = "h", level = "tract", output, PUMS, variables = variables)
 
 ## tests <- spew:::stat_test_us_pums_outer(regionID, type = "p", level = "tract", output_folder,
 ##                                  PUMS, variables = c("RAC1P", "SEX"))
@@ -218,26 +242,24 @@ makeStatDF <- function(features_list){
 
 ## output_folder <- "~/Desktop/46/"
 ## PUMS_folder <- "~/Desktop/46/input/pums/2013/"
-
-
 ## t <- proc.time()[3]
 ## features_list <- test_features(output_folder, PUMS_folder,
-##                           household_vars = NULL, #c("NP", "HINCP"),
-##                           people_vars = NULL, #c("SEX", "AGEP")
-##                           householder_vars = c("RAC1P", "NP", "AGEP", "HINCP"))
+##                           household_vars = NULL, # c("NP", "HINCP"),
+##                           people_vars = NULL, #c("SEX", "AGEP"),
+##                           householder_vars = c("NP", "HINCP", "RAC1P", "AGEP", "SEX" ))
 ## proc.time()[3] - t
-
 ## my_df <- makeStatDF(features_list)
+
 ## my_df$pval <- ifelse(is.nan(my_df$pval), 1, my_df$pval)
 ## alpha <- .05/ (nrow(my_df))
 ## alpha_df <- data.frame(alpha = alpha, lt = "alpha value")
 ## ## ggplot
 ## library(ggplot2)
-## ggplot() + geom_boxplot(data = my_df, aes(factor(vars), log(pval) )) + geom_hline(data = alpha_df,
-##                                                                                   aes(yintercept = log(alpha), linetype =lt,
+## ggplot() + geom_boxplot(data = my_df, aes(factor(vars), pval )) + geom_hline(data = alpha_df,
+##                                                                                   aes(yintercept = alpha, linetype =lt,
 ##                                                                                       show.legend = TRUE), col = "red") +
-##     coord_flip() + ggtitle(expression(atop("Pearson Chi-Square p-values", paste("Tracts in SD; ", alpha, " = .05, Adjusted for Multiple Comparisons") ))) +     labs(y = "log(p-value)", x = "Population Characteristic(s)", col = "# Agents")  +
-##     scale_linetype_manual(name = "",values = 1,guide = "legend",  lab = expression(log(alpha))) + theme_light() +
+##     coord_flip() + ggtitle(expression(atop(paste("Pearson ", chi^2,  " ", p, "-values"), paste("Tracts in SD; ", alpha, " = .05, Adjusted for Multiple Comparisons") ))) +     labs(y = "log(p-value)", x = "Population Characteristic(s)", col = "# Agents")  +
+##     scale_linetype_manual(name = "",values = 1,guide = "legend",  lab = expression(alpha)) + theme_light() +
 ##        theme(
 ##              axis.text.x = element_text(size = 12, family = "Palatino"),
 ##              axis.text.y= element_text(size = 12, family = "Palatino"),
@@ -247,18 +269,18 @@ makeStatDF <- function(features_list){
 ##              legend.title = element_text(size = 16, family = "Palatino"),
 ##              legend.text = element_text(family = "Palatino")
 ##        )  
-## #ggsave("~/Desktop/sd_pvals.pdf")
+## ggsave("~/Desktop/sd_pvals.pdf")
 
 ## ## Splitting by tract
 ## ## Taking a sample of 20
-## regions <- sample(unique(my_df$regionID), 20)
+## regions <- sample(unique(my_df$regionID), 10)
 ## new_df <- my_df[as.character(my_df$regionID) %in% as.character(regions),]
-## ggplot() + geom_boxplot(data = new_df, aes(factor(regionID), log(pval), col = nObs)) + geom_hline(data = alpha_df,
-##                                                                                   aes(yintercept = log(alpha), linetype =lt,
+## ggplot() + geom_boxplot(data = new_df, aes(factor(regionID), pval, col = nObs)) + geom_hline(data = alpha_df,
+##                                                                                   aes(yintercept = alpha, linetype =lt,
 ##                                                                                       show.legend = TRUE), col = "red")  + 
-##     coord_flip() + ggtitle(expression(atop("Pearson Chi-Square p-values", paste("Tracts in SD; ", alpha, " = .05, Adjusted for Multiple Comparisons") )))+
+##     coord_flip() + ggtitle(expression(atop(paste("Pearson ", chi^2,  " ", p, "-values"), paste("Tracts in SD; ", alpha, " = .05, Adjusted for Multiple Comparisons") )))+
 ##     labs(y = "log(p-value)", x = "Tract ID", col = "# Agents") + 
-## scale_linetype_manual(name = "",values = 1,guide = "legend", lab = expression(log(alpha)))  + theme_light() +
+## scale_linetype_manual(name = "",values = 1,guide = "legend", lab = expression(alpha))  + theme_light() +
 ##     theme(
 ##         axis.text.x = element_text(size = 10, family = "Palatino"),
 ##         axis.text.y= element_text(size = 10, family = "Palatino"),
@@ -267,12 +289,66 @@ makeStatDF <- function(features_list){
 ##         plot.title = element_text(size = 20, family = "Palatino"),
 ##         legend.title = element_text(size = 16, family = "Palatino"),
 ##         legend.text = element_text(family = "Palatino")
-##     )  
-## #ggsave("~/Desktop/sd_pvals_region.pdf")
+##     )
+## ggsave("~/Desktop/sd_pvals_region.pdf")
+
+## ## Testing whether what we see is normal
+
+## PUMS_file <- "~/Desktop/46/input/pums/2013/ss13hsd.csv"
+## PUMS_f<- read.csv(PUMS_file)
+
+## puma_id <- sample(PUMS_f$PUMA, 1)
+## PUMS <- PUMS_f[PUMS_f$PUMA == puma_id,]
+## nObs <- sample(my_df$nObs, 1)
+## inds <- sample(1:nrow(PUMS), nObs, replace = T)
+## synth_pop <- PUMS[inds,]
+## test <- spew:::stat_test_us_pums(regionID = "synth", type = "h", level = "tract", output = synth_pop,
+##                                  PUMS = PUMS,
+##                                  variables = c("HINCP"))
+## test$chi_sq
+
+## ### OK something is screwy
+
+## ## Testing tract vs. FULL PUMS
+## count <- 0
+## pval <- vector(mode = "numeric", length = 100)
+## df <- my_df[, c("regionID", "puma_id")]
+## df <- unique(df)
+## sinds <- 1:nrow(df)
+## for (ii in 1:nrow(df)){
+##     print(ii)
+##     sind <- sinds[ii]
+##     regionID <- as.character(df$regionID[sind])
+##     puma_id <- as.character(df$puma_id[sind])
+##     type <- "h"
+##     variables <- c("NP")
+##     alpha <- .05
+##     type_char <- ifelse(type == "p", "people", "household")
+##     output <- read.csv( paste0("~/Desktop/46/output_", puma_id, "/eco/", type_char, "_", regionID, ".csv"))
+##     ##
+##     ##
+##     puma_id <- unique(output$puma_id)[1]
+##     PUMS_full <- read.csv(paste0("~/Desktop/46/input/pums/2013/ss13", type, "sd.csv"))
+##     PUMS <- PUMS_full[PUMS_full$PUMA== puma_id,]
+##     out <- stat_test_us_pums(regionID, type = "h", level = "tract", output, PUMS, variables = variables)
+##     par(mfrow = c(1, 2) )
+##     barplot(table(output[, variables]) / sum(table(output[, variables])),
+##                                            ylim = c(0, .5), main = paste(regionID, "SynEco"))
+##     barplot(table(PUMS[, variables]) / sum(table(PUMS[, variables])),
+##             ylim = c(0, .5), main = paste(regionID, "PUMS"))
+##     ##print(regionID)
+##     pval[ii] <- out$chi_sq$p.value
+##     if( out$chi_sq$p.value < alpha){
+##         count <- count + 1
+##     }
+## }
+## print(count)
+## print(pval)
+
                          
 
-## ## Think about binning variables...
-## ## .bincode()
+## Think about binning variables...
+## .bincode()
 
 
 ## ## ## Took 3 and a half minutes to run SD
