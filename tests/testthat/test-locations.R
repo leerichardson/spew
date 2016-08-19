@@ -18,7 +18,7 @@ test_that("Location functions", {
                                         shapefile = sd_data$shapefiles, 
                                         noise = .01)
   
-  # Set up the roads shapefile  
+  # Set up the roads shapefile
   spew_dir <- system.file("", package = "spew")
   roads_path <- paste0(spew_dir, "/data-raw/46/tiger/roads_46")
   roads_shapefile <- list(regions = sd_data$shapefiles, roads = roads_path)

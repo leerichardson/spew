@@ -120,8 +120,9 @@ test_that("United States functions", {
 })
 
 test_that("ipums functions", {
-  library(data.table)
+  sink("read_output.txt")
   
+  library(data.table)
   # Make sure we are using the correct data-raw directory 
   # as opposed to the test/testthat one within the package 
   spew_dir <- system.file("", package = "spew")
@@ -177,6 +178,9 @@ test_that("ipums functions", {
   expect_equal("SERIALNO" %in% names(uruguay_data$pums$pums_p), TRUE)
   expect_equal("puma_id" %in% names(uruguay_data$pums$pums_h), TRUE)
   expect_equal(class(uruguay_data) == "list", TRUE)
+  
+  sink()
+  unlink("read_output.txt")
 })
 
 test_that("no group functions", {

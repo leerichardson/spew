@@ -1,6 +1,9 @@
 context("Format functions")
 
 test_that("United States formatting", { 
+  # Write all format output to a file 
+  sink("format_output.txt")
+  
   data(sd_data)
   
   # Check to make sure the merge is of the pop_table 
@@ -10,9 +13,14 @@ test_that("United States formatting", {
   merged_puma <- fd$pop_table$puma_id
   expect_equal(any(is.na(merged_puma)), FALSE)
   
+  sink()
+  unlink("format_output.txt")
 }) 
 
 test_that("ipums formatting", { 
+  # Write all format output to a file 
+  sink("format_output.txt")
+  
   data(uruguay_data)
   library(stringdist)
   
@@ -44,4 +52,7 @@ test_that("ipums formatting", {
 
   pt_remove <- remove_count(pop_table = uruguay_format$pop_table, place = "Rocha")
   expect_equal(nrow(pt_remove) == 18, TRUE)
+  
+  sink()
+  unlink("format_output.txt")
 })

@@ -1,8 +1,7 @@
 context("SPEW functions")
 
 test_that("SPEW functions", {
-  
-  # Load in the formatted data 
+  # Load in the formatted data and required libraries  
   data(sd_data)
   data(uruguay_format)
   library(stringdist)
@@ -57,8 +56,9 @@ test_that("SPEW functions", {
                                        schools = sd_data$schools, workplaces = sd_data$workplaces,
                                        pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
                                        output_dir = "tmp/", parallel = TRUE, convert_count = FALSE, 
-                                       sampling_method = "uniform", locations_method = "uniform"))
-
+                                       sampling_method = "uniform", locations_method = "uniform", 
+                                       outfile_loc = "/dev/null"))
+  
   expect_equal(as.logical(parallel_md[1] < regular_md[1]), TRUE)
 
   # Test the Serial Synth and convert count functions ---------------
@@ -78,7 +78,7 @@ test_that("SPEW functions", {
   # there are less of these than the original, in case of duplicated columns
   expect_equal("SYNTHETIC_HID" %in% names(synth_pums_h), TRUE)
   expect_equal("SYNTHETIC_PID" %in% names(synth_pums_p), TRUE)
-  expect_equal(max(table(synth_pums_p$SYNTHETIC_SERIAL)) < max(table(synth_pums_p$SERIALNO)), TRUE)
+  expect_equal(max(table(synth_pums_p$SYNTHETIC_PID)) < max(table(synth_pums_p$SERIALNO)), TRUE)
   
   # Make sure the convert_count functions work...
   original_nhouse <- uruguay_format$pop_table[1, "n_house"]
