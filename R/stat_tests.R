@@ -50,7 +50,7 @@ makeFactors <- function(in_df, my_levels, variables){
     for(var in variables){
         ## If the unique values are too many (i.e. continuous) then cut into 10 categories
         ## This value is completely arbitrary
-        if (length(unique(my_levels[, var])) > 20){
+        if ( length(unique(my_levels[, var])) > 20){
             print(paste("cutting", var))
             brks <- quantile(my_levels[, var], 1:10/10, na.rm = TRUE)
             cur_var <- cut(my_levels[,var], breaks=brks)
@@ -211,160 +211,48 @@ makeStatDF <- function(features_list){
 }
 
 
-## Lee must love this part
+#' Test schools/workplaces
+#'
+#' @param syneco_folder string
+#' @param input_folder string
+#' @param admin_level integer TBD
+#' @param syneco_vars variables to keep
+#' @param env_type "sch", "wpl", "both" currently
+#' @return list with two data frames.  One from the syneco, other with input data from schools, workplaces or other
+makeEnvironmentsDFs <- function(syneco_folder, input_folder, admin_level = 0,
+                               syneco_vars = c("school_id", "workplace_id", "SCH",
+                                               "SCHG", "AGEP", "ESR"),
+                               env_type = "both"){
+    stopifnot(env_type %in% c("sch", "wpl", "both"))
+    ## Read in synecos
+    syneco_df <- readSynecos(syneco_folder, type = "people", syneco_vars)
+    ## Read in input data
+    if(env_type == "both"){
 
-## ### TESTING
-## library(devtools)
-## library(plyr)
-## setwd("~/spew")
-## # load_all()
+    }
+}
 
-## regionID <- "46019967600"
-## variables <- c("NP")
-## alpha <- .05
-## output <- read.csv(paste0("~/Desktop/46/output_100/eco/people_", regionID, ".csv"))
-## ##
-## output_folder <- "~/Desktop/46/output_200/eco/"
-## PUMS_folder <- "~/Desktop/46/input/pums/2013/"
-## ##
-## puma_id <- unique(output$puma_id)[1]
-## PUMS_full <- read.csv(file.path("~/Desktop/46/input/pums/2013/ss13hsd.csv"))
-## PUMS <- PUMS_full[PUMS_full$PUMA== puma_id,]
-
-## stat_test_us_pums(regionID, type = "h", level = "tract", output, PUMS, variables = variables)
-
-## tests <- spew:::stat_test_us_pums_outer(regionID, type = "p", level = "tract", output_folder,
-##                                  PUMS, variables = c("RAC1P", "SEX"))
-
-## chi_list <- lapply(tests, function(ll) ll$chi_sq)
-## pvals <- lapply(chi_list, function(ll) ll$p.value)
-
-
-## output_folder <- "~/Desktop/46/"
-## PUMS_folder <- "~/Desktop/46/input/pums/2013/"
-## t <- proc.time()[3]
-## features_list <- test_features(output_folder, PUMS_folder,
-##                           household_vars = NULL, # c("NP", "HINCP"),
-##                           people_vars = NULL, #c("SEX", "AGEP"),
-##                           householder_vars = c("NP", "HINCP", "RAC1P", "AGEP", "SEX" ))
-## proc.time()[3] - t
-## my_df <- makeStatDF(features_list)
-
-## my_df$pval <- ifelse(is.nan(my_df$pval), 1, my_df$pval)
-## alpha <- .05/ (nrow(my_df))
-## alpha_df <- data.frame(alpha = alpha, lt = "alpha value")
-## ## ggplot
-## library(ggplot2)
-## ggplot() + geom_boxplot(data = my_df, aes(factor(vars), pval )) + geom_hline(data = alpha_df,
-##                                                                                   aes(yintercept = alpha, linetype =lt,
-##                                                                                       show.legend = TRUE), col = "red") +
-##     coord_flip() + ggtitle(expression(atop(paste("Pearson ", chi^2,  " ", p, "-values"), paste("Tracts in SD; ", alpha, " = .05, Adjusted for Multiple Comparisons") ))) +     labs(y = "log(p-value)", x = "Population Characteristic(s)", col = "# Agents")  +
-##     scale_linetype_manual(name = "",values = 1,guide = "legend",  lab = expression(alpha)) + theme_light() +
-##        theme(
-##              axis.text.x = element_text(size = 12, family = "Palatino"),
-##              axis.text.y= element_text(size = 12, family = "Palatino"),
-##              axis.title.x= element_text(size = 16, family = "Palatino"),
-##              axis.title.y= element_text(size = 16, family = "Palatino"),
-##              plot.title = element_text(size = 20, family = "Palatino"),
-##              legend.title = element_text(size = 16, family = "Palatino"),
-##              legend.text = element_text(family = "Palatino")
-##        )  
-## ggsave("~/Desktop/sd_pvals.pdf")
-
-## ## Splitting by tract
-## ## Taking a sample of 20
-## regions <- sample(unique(my_df$regionID), 10)
-## new_df <- my_df[as.character(my_df$regionID) %in% as.character(regions),]
-## ggplot() + geom_boxplot(data = new_df, aes(factor(regionID), pval, col = nObs)) + geom_hline(data = alpha_df,
-##                                                                                   aes(yintercept = alpha, linetype =lt,
-##                                                                                       show.legend = TRUE), col = "red")  + 
-##     coord_flip() + ggtitle(expression(atop(paste("Pearson ", chi^2,  " ", p, "-values"), paste("Tracts in SD; ", alpha, " = .05, Adjusted for Multiple Comparisons") )))+
-##     labs(y = "log(p-value)", x = "Tract ID", col = "# Agents") + 
-## scale_linetype_manual(name = "",values = 1,guide = "legend", lab = expression(alpha))  + theme_light() +
-##     theme(
-##         axis.text.x = element_text(size = 10, family = "Palatino"),
-##         axis.text.y= element_text(size = 10, family = "Palatino"),
-##         axis.title.x= element_text(size = 16, family = "Palatino"),
-##         axis.title.y= element_text(size = 16, family = "Palatino"),
-##         plot.title = element_text(size = 20, family = "Palatino"),
-##         legend.title = element_text(size = 16, family = "Palatino"),
-##         legend.text = element_text(family = "Palatino")
-##     )
-## ggsave("~/Desktop/sd_pvals_region.pdf")
-
-## ## Testing whether what we see is normal
-
-## PUMS_file <- "~/Desktop/46/input/pums/2013/ss13hsd.csv"
-## PUMS_f<- read.csv(PUMS_file)
-
-## puma_id <- sample(PUMS_f$PUMA, 1)
-## PUMS <- PUMS_f[PUMS_f$PUMA == puma_id,]
-## nObs <- sample(my_df$nObs, 1)
-## inds <- sample(1:nrow(PUMS), nObs, replace = T)
-## synth_pop <- PUMS[inds,]
-## test <- spew:::stat_test_us_pums(regionID = "synth", type = "h", level = "tract", output = synth_pop,
-##                                  PUMS = PUMS,
-##                                  variables = c("HINCP"))
-## test$chi_sq
-
-## ### OK something is screwy
-
-## ## Testing tract vs. FULL PUMS
-## count <- 0
-## pval <- vector(mode = "numeric", length = 100)
-## df <- my_df[, c("regionID", "puma_id")]
-## df <- unique(df)
-## sinds <- 1:nrow(df)
-## for (ii in 1:nrow(df)){
-##     print(ii)
-##     sind <- sinds[ii]
-##     regionID <- as.character(df$regionID[sind])
-##     puma_id <- as.character(df$puma_id[sind])
-##     type <- "h"
-##     variables <- c("NP")
-##     alpha <- .05
-##     type_char <- ifelse(type == "p", "people", "household")
-##     output <- read.csv( paste0("~/Desktop/46/output_", puma_id, "/eco/", type_char, "_", regionID, ".csv"))
-##     ##
-##     ##
-##     puma_id <- unique(output$puma_id)[1]
-##     PUMS_full <- read.csv(paste0("~/Desktop/46/input/pums/2013/ss13", type, "sd.csv"))
-##     PUMS <- PUMS_full[PUMS_full$PUMA== puma_id,]
-##     out <- stat_test_us_pums(regionID, type = "h", level = "tract", output, PUMS, variables = variables)
-##     par(mfrow = c(1, 2) )
-##     barplot(table(output[, variables]) / sum(table(output[, variables])),
-##                                            ylim = c(0, .5), main = paste(regionID, "SynEco"))
-##     barplot(table(PUMS[, variables]) / sum(table(PUMS[, variables])),
-##             ylim = c(0, .5), main = paste(regionID, "PUMS"))
-##     ##print(regionID)
-##     pval[ii] <- out$chi_sq$p.value
-##     if( out$chi_sq$p.value < alpha){
-##         count <- count + 1
-##     }
-## }
-## print(count)
-## print(pval)
-
-                         
-
-## Think about binning variables...
-## .bincode()
-
-
-## ## ## Took 3 and a half minutes to run SD
-
-## ## ## Cutting
-## ## age <- PUMS_full$AGEP
-
-## ## age_c <- cut(age, breaks=quantile(age, (1:10)/10, na.rm=TRUE) )
-
-
-
-
-## ## How to include person/household weights
-## ## TODO
-## ## library("questionr")
-## ## tab <- wtd.table(PUMS$RAC1P, weights = PUMS$PWGTP)
-## ## tab2 <-table(PUMS$RAC1P)
-## ## tab / sum(tab)
-## ## tab2 / sum(tab2)
+#' Read and subset synecos
+#'
+#' @param syneco_folder string
+#' @param type "people" or "household"
+#' @param syneco_vars vars to subset along with 'place_id'
+readSynecos <- function(syneco_folder, type = "people",
+                        syneco_vars = c("school_id", "workplace_id", "SCH",
+                                               "SCHG", "AGEP", "ESR")){
+    stopifnot(type %in% c("people", "household"))
+    files <- list.files(syneco_folder, recursive = TRUE)
+    files <- files[grepl(type, files)]
+    nums <- gsub("[^0-9]", "",  basename(files))
+    people_files <- files[ nchar(nums) >= 11]
+    full_paths <- file.path(syneco_folder, people_files)
+    ll <- vector(mode = "list", length(full_paths))
+    for (ii in 1:length(full_paths)){
+        if(ii %% 50 == 0) print(ii)
+        df <- read.csv(full_paths[ii])
+        df <- subset(df, select = c("place_id", syneco_vars))
+        ll[[ii]] <- df
+    }
+    df <- do.call('rbind', dfs_list)
+    return(df)
+}
