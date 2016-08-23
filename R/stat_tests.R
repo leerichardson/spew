@@ -281,11 +281,12 @@ readSynecos <- function(syneco_folder, type = "people",
     ll <- vector(mode = "list", length(full_paths))
     for (ii in 1:length(full_paths)){
         if(ii %% 50 == 0) print(ii)
-        df <- read.csv(full_paths[ii])
-        df <- subset(df, select = c("place_id", syneco_vars))
+        df <- read.csv(full_paths[ii], stringsAsFactors = FALSE)
+        df <- subset(df, select = c("place_id", "longitude", "latitude", syneco_vars))
         ll[[ii]] <- df
+       # print(colnames(df))
     }
-    df <- do.call('rbind', dfs_list)
+    df <- do.call('rbind', ll)
     return(df)
 }
 
@@ -313,13 +314,56 @@ assessSynecosUS <- function(syneco_list, type = "both"){
 
 #' Assess the schools of the us against the agents
 #'
-assessSchUS <- function(agents, schools_pub, schools_priv){
+assessSchUS <- function(agents, schools_pub, schools_priv, distFun = haversine){
     ## For agents$SCH
     ##  1 is none, 2 is public, 3 is private
+
+     ## assess schools
+    nSynSchools <- length(unique(agents$school_id[!is.na(agents$school_id)]))
+    nTotSchools <- length(unique(schools_pub$ID)) + length(unique(schools_priv$ID))
+    print(paste(nSynSchools, " schools have been used"))
+    print(paste(nSynSchools / nTotSchools * 100,
+                "% of schools have been used" ))
+    n <- 15
+    nTotSchools10 <- length(unique(schools_pub$ID[schools_pub$Students > n])) +
+        length(unique(schools_priv$ID[schools_priv$Students > n]))
+    print(paste(nSynSchools / nTotSchools10 * 100,
+                "% of schools have been used that have at least", n, "students in capacity" ))
+
+    ## private schools
+    nSynPriv <- length(sort(unique(agents$school_id[agents$SCH == 3 & !is.na(agents$school_id)])))
+    nPriv <- length(unique(schools_priv$ID))
+     print(paste("There are", nSynPriv, "private schools"))
+    print(paste(nSynPriv / nPriv * 100, "% of private schools have been used"))
+    ## all private schools are used
+
+    ## public schools
+    nSynPub <- length(sort(unique(agents$school_id[agents$SCH == 2  & !is.na(agents$school_id)])))
+    nPub <- length(unique(schools_pub$ID))
+    nSynPub / nPub
+    print(paste("There are", nSynPub, "public schools"))
+    print(paste(nSynPub / nPub *  100, "% of public schools have been used"))
+
+    ## dist to school
+    school_children <- agents[!is.na(agents$school_id),]
+    pub_children <- school_children[ school_children$SCH == 2,]
+    schools_pub$school_id<- schools_pub$ID
+    pub_j <- join(pub_children, schools_pub, by = "school_id")
+    my_dists <- apply(pub_j, 1, function(row){
+        x1 <- as.numeric(row['longitude'])
+        x2 <- as.numeric(row['Long'])
+        y1 <- as.numeric(row['latitude'])
+        y2 <- as.numeric(row['Lat'])
+        dist <- haversine(x1, y1, x2, y2)
+        return(dist)
+        })
+#    my_dists <- scale(my_dists)
+    print(summary(my_dists))
+    
 }
 
 #' Assess the schools of the us against the agents
 #'
 assessWplUS <- function(agents, wpl){
-
+   
 }
