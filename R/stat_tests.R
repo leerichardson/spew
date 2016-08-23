@@ -218,25 +218,57 @@ makeStatDF <- function(features_list){
 #' @param admin_level integer TBD
 #' @param syneco_vars variables to keep
 #' @param env_type "sch", "wpl", "both" currently
-#' @return list with two data frames.  One from the syneco, other with input data from schools, workplaces or other
+#' @return list of environmental data frames.  One from the syneco (people), others with input data from schools, workplaces or other
 makeEnvironmentsDFs <- function(syneco_folder, input_folder, admin_level = 0,
                                syneco_vars = c("school_id", "workplace_id", "SCH",
                                                "SCHG", "AGEP", "ESR"),
                                env_type = "both"){
     stopifnot(env_type %in% c("sch", "wpl", "both"))
+    
     ## Read in synecos
     syneco_df <- readSynecos(syneco_folder, type = "people", syneco_vars)
+    
     ## Read in input data
+    school_df <- NULL
+    wpl_df <- NULL
     if(env_type == "both"){
-
+        school_list <- readEnvUS(input_folder, type = "sch")
+        wpl_df <- readEnvUS(input_folder, type = "wpl")
+    } else if (env_type == "sch"){
+        school_df <- readEnvUS(input_folder, type = "sch")
+    } else if (env_type == "wpl"){
+        wpl_df <- readEnvUS(input_folder, type = "wpl")
     }
+    return(list(syneco_df = syneco_df, school_pub_df = school_list[[2]], school_priv_df = school_list[[1]], wpl_df = wpl_df))
 }
+
+
+#' Read input data for environments for US
+#'
+#' @param input_folder filepath
+#' @param type either "sch" or "wpl" currently
+#' @ return df of schools or workplaces
+readEnvUS <- function(input_folder, type = "sch"){
+    stopifnot(type %in% c("sch", "wpl"))
+    if (type == "sch"){
+        full_path <- file.path(input_folder, "schools", "2013")
+        files <- list.files(full_path)
+        env <- lapply(file.path(full_path, files), read.csv) # WARNING:  order should be private, public
+    } else if (type == "wpl"){
+        full_path <- file.path(input_folder, "workplaces")
+        files <- list.files(full_path)
+        env <- read.csv(file.path(full_path, files))
+    }
+    return(env)
+}
+
 
 #' Read and subset synecos
 #'
 #' @param syneco_folder string
 #' @param type "people" or "household"
 #' @param syneco_vars vars to subset along with 'place_id'
+#' @return list or data frame of input data
 readSynecos <- function(syneco_folder, type = "people",
                         syneco_vars = c("school_id", "workplace_id", "SCH",
                                                "SCHG", "AGEP", "ESR")){
@@ -255,4 +287,39 @@ readSynecos <- function(syneco_folder, type = "people",
     }
     df <- do.call('rbind', dfs_list)
     return(df)
+}
+
+#' Assess the environment use of our synthetic ecosystems
+#'
+#' @param syneco_list output from makeEnvironmentsDFs
+#' @param type "wpl" "sch" or "both" currently
+#' @return
+assessSynecosUS <- function(syneco_list, type = "both"){
+    stopifnot(env_type %in% c("sch", "wpl", "both"))
+    wpl_a <- NULL
+    sch_a <- NULL
+    if (type == "both"){
+        sch_a <- assessSchUS(agents = syneco_list$syneco_df, schools_pub = syneco_list$school_pub_df,
+                             schools_priv = syneco_list$school_priv_df)
+        wpl_a <- assessWplUS(agents = syneco_list$syneco_df, wpl = wpl_df)
+    } else if ( type == "sch"){
+        sch_a <- assessSchUS(agents = syneco_list$syneco_df, schools_pub = syneco_list$school_pub_df,
+                             schools_priv = syneco_list$school_priv_df)
+    } else if (type == "wpl"){
+        wpl_a <- assessWplUS(agents = syneco_list$syneco_df, wpl = wpl_df)
+    }
+    return(list(sch_a = sch_a, wpl_a = wpl_a))
+}
+
+#' Assess the schools of the us against the agents
+#'
+assessSchUS <- function(agents, schools_pub, schools_priv){
+    ## For agents$SCH
+    ##  1 is none, 2 is public, 3 is private
+}
+
+#' Assess the schools of the us against the agents
+#'
+assessWplUS <- function(agents, wpl){
+
 }
