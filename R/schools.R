@@ -34,7 +34,7 @@ assign_schools <- function(people, schools, weightSchools = weight_dists, distFu
   people <- people[people_ord, ]
   
   school_assignments <- plyr::ddply(people, .variables = c('SCH', 'SCHG', 'grade', 'age', 'co'), 
-                              .fun = assign_schools_inner, schools = schools, weightSchools = weight_dists, distFun = distFun)
+                              .fun = assign_schools_inner, schools = schools, weightSchools = weightSchools, distFun = distFun)
   school_ids <- school_assignments$ids[original_order]
   
   return(school_ids)
@@ -44,7 +44,7 @@ assign_schools <- function(people, schools, weightSchools = weight_dists, distFu
 #' @param df subset of people split so all age, grade, SCH, and county should be the same in the df
 #' @param schools list of schools, one data frame of private and one of public 
 #' @return column of school ID assignments
-assign_schools_inner <- function(df, schools, weightSchools = weight_dists, distFun = haversine) {
+assign_schools_inner <- function(df, schools, weightSchools, distFun) {
   # Check for the conditions of a school age child 
   if (df$SCH[1] < 2 | df$age[1] == 0 | df$grade[1] < 1 | df$grade[1] > 14 | 
         is.na(df$SCH[1]) | is.na(df$SCHG[1])| is.na(df$age[1]) | 
@@ -85,7 +85,79 @@ weight_dists <- function(dist_mat, schools){
   student_weight <- ceiling(students/100)
   student_weight <- ifelse(is.na(student_weight), 1, student_weight)
   
-  weights <- (1-dist_mat) * student_weight
+  weights <- t(t((1-dist_mat)) * 1000 * student_weight)
+  weights <- weights / rowSums(weights)
+  weights <- ifelse(is.na(weights), 0.0001, weights)
+  weights <- weights / rowSums(weights)
+  stopifnot(dim(weights) == c(m,n))
+  return(weights)
+}
+
+
+#' Weight school assignment probabilities  
+#'
+#' @param dist_mat a m x n matrix where m is the number of people and 
+#' n is the number of schools
+#' @param schools_sub data frame of schools
+#' @return m x n matrix of probabilities.  Each row should sum to 1
+weight_dists2 <- function(dist_mat, schools){
+  m <- nrow(dist_mat)
+  n <- ncol(dist_mat)
+  
+  students <- as.numeric(as.character(schools$Students))
+  stopifnot(length(students) == n)
+  
+  student_weight <- ceiling(students/10)
+  student_weight <- ifelse(is.na(student_weight), 1, student_weight)
+  weights <-  exp( 1 + 1 / (dist_mat ))
+  weights <- t(t(weights)  * student_weight)
+  weights <- weights / rowSums(weights)
+  weights <- ifelse(is.na(weights), 0.0001, weights)
+  weights <- weights / rowSums(weights)
+  stopifnot(dim(weights) == c(m,n))
+  return(weights)
+}
+
+
+
+#' Weight school assignment probabilities, distance only
+#'
+#' @param dist_mat a m x n matrix where m is the number of people and 
+#' n is the number of schools
+#' @param schools_sub data frame of schools
+#' @return m x n matrix of probabilities.  Each row should sum to 1
+weight_dists_D<- function(dist_mat, schools){
+  m <- nrow(dist_mat)
+  n <- ncol(dist_mat)
+  weights <-  exp( 1 + 1 / (dist_mat ))
+  weights <- weights / rowSums(weights)
+  weights <- ifelse(is.na(weights), 0.0001, weights)
+  weights <- weights / rowSums(weights)
+ # print( range(weights[1,]))
+  stopifnot(dim(weights) == c(m,n))
+  return(weights)
+}
+
+
+
+#' Weight school assignment probabilities by capacity only
+#'
+#' @param dist_mat a m x n matrix where m is the number of people and 
+#' n is the number of schools
+#' @param schools_sub data frame of schools
+#' @return m x n matrix of probabilities.  Each row should sum to 1
+weight_dists_C<- function(dist_mat, schools){
+  m <- nrow(dist_mat)
+  n <- ncol(dist_mat)
+  
+  students <- as.numeric(as.character(schools$Students))
+  stopifnot(length(students) == n)
+  
+  student_weight <- students
+  student_weight <- ifelse(is.na(student_weight), 1, student_weight)
+  student_weight <- exp(student_weight)
+  
+  weights <- matrix(students, nrow = m, ncol = n, byrow = TRUE)
   weights <- weights/rowSums(weights)
   weights <- ifelse(is.na(weights), 0.0001, weights)
   stopifnot(dim(weights) == c(m,n))
@@ -98,7 +170,7 @@ weight_dists <- function(dist_mat, schools){
 #' @param schools dataframe of subsetted schools
 #' @param dist "haversine"
 #' @return distance between two points on the globe
-get_dists <- function(df, schools, dist = haversine){
+get_dists <- function(df, schools, dist){
   m <- nrow(df) # number of people
   n <- nrow(schools) # number of schools
   
@@ -195,3 +267,5 @@ subset_schools <- function(df, schools){
     return(school_sub[grade_inds,])
   }
 }
+
+

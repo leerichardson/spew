@@ -317,8 +317,13 @@ assessSynecosUS <- function(syneco_list, type = "both"){
 assessSchUS <- function(agents, schools_pub, schools_priv, distFun = haversine){
     ## For agents$SCH
     ##  1 is none, 2 is public, 3 is private
+    nStudents <- length(agents$school_id[!is.na(agents$school_id)])
+    print(paste("There are", nStudents, "students"))
 
-     ## assess schools
+    ## assess schools
+    nbadA <- length(agents$school_id[!is.na(agents$school_id) & agents$SCH == 1])
+    print(paste(nbadA, "people have been assigned to schools when they should not be in school"))
+    
     nSynSchools <- length(unique(agents$school_id[!is.na(agents$school_id)]))
     nTotSchools <- length(unique(schools_pub$ID)) + length(unique(schools_priv$ID))
     print(paste(nSynSchools, " schools have been used"))
@@ -354,12 +359,12 @@ assessSchUS <- function(agents, schools_pub, schools_priv, distFun = haversine){
         x2 <- as.numeric(row['Long'])
         y1 <- as.numeric(row['latitude'])
         y2 <- as.numeric(row['Lat'])
-        dist <- haversine(x1, y1, x2, y2)
+        dist <- distFun(x1, y1, x2, y2)
         return(dist)
         })
-#    my_dists <- scale(my_dists)
     print(summary(my_dists))
-    
+    #hist(my_dists)
+    return(my_dists)
 }
 
 #' Assess the schools of the us against the agents
@@ -367,3 +372,33 @@ assessSchUS <- function(agents, schools_pub, schools_priv, distFun = haversine){
 assessWplUS <- function(agents, wpl){
    
 }
+
+
+## Distances
+
+#' Calculates the geodesic distance between two points
+#'
+#' @param long1 longitude (degrees)
+#' @param lat1 latitude (degrees)
+#' @param long2 longitude (degrees)
+#' @param lat2 latitude (degrees)
+#' @return returns distance in miles
+#' @details specified by radian latitude/longitude using the
+#' Spherical Law of Cosines (slc)
+spher_dists<- function(long1, lat1, long2, lat2) {
+    R <- 3959# Earth mean radius [mi]
+    long1 <- deg2rad(long1)
+    lat1 <- deg2rad(lat1)
+    long2 <- deg2rad(long2)
+    lat2 <- deg2rad(lat2)
+    d <- acos(sin(lat1)*sin(lat2) + cos(lat1)*cos(lat2) * cos(long2-long1)) * R
+    return(d) # Distance in miles
+}
+
+#' Converts degrees to radians
+#' 
+#' @param degree (lat/long coordinate)
+#' @return degree in radians
+deg2rad <- function(deg) return(deg*pi/180)
+
+
