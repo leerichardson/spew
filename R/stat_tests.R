@@ -122,6 +122,101 @@ stat_test_us_pums_outer <- function(regionID, type = "p", level = "tract", outpu
 }
 
 
+
+#' Turn variables into factors, matching level of PUMS
+#'
+#' @param in_df df
+#' @param my_levels what levels to use
+#' @param variables the variables to change
+#' @return out_df of factors
+makeFactorsMarg <- function(in_df, marginals, variables){
+ #  browser()
+   for(var in variables){
+        ## Cut according to marginals${var}$lookup
+        levels <- marginals[[var]]$lookup$marg_names
+        new_vals <- rep("k", nrow(in_df))
+        for (ii in 1:length(levels)){
+            lower <- marginals[[var]]$lookup$lower[ii]
+            upper <- marginals[[var]]$lookup$upper[ii]
+           # print(c(lower, upper))
+            nm <- marginals[[var]]$lookup$marg_names[ii]
+            new_vals<- ifelse( ( in_df[, var] >= lower) & ( in_df[,var] <= upper ), nm, new_vals)
+        }
+    }
+    new_fac <- factor(new_vals, levels = levels)
+    in_df[,var] <- new_fac
+    return(in_df)
+}
+
+
+#' Perform chi square test on tract for marginals totals
+#' 
+#' @param regionID 11 digit ID for tract, 5 for county, 2 for state.  The FIPS number
+#' @param type either "p" or "hh" for person or household output, respectively
+#' @param output  SPEW synthetic ecosystem (data frame)
+#' @param PUMS Public Use Micro Sample to compare joint distributions to
+#' @param variables variable(s) to test.  No more than pairs
+#' @return list of p value for region and original chi square value
+#' @details  to come
+stat_test_us_marg <- function(regionID, type = "p", level = "tract", output, marginals,  variables = c("RAC1P")){
+    #browser()
+    stopifnot(sum(variables %in% colnames(output)) == length(variables))
+    output_f <- makeFactorsMarg(output, marginals, variables)
+    stopifnot(nrow(output_f) == nrow(output))
+    synth_tab <- table(output_f[, variables])
+    synth_p <- synth_tab / sum(synth_tab)
+    ## Correct zero marginals
+    row_ind <- which( marginals[[variables]]$df$place_id == regionID)
+    stopifnot(length(row_ind) == 1)
+    marg_tab <- marginals[[variables]]$df[row_ind, -1]
+    stopifnot(identical(names(marg_tab), names(synth_tab)))
+    marg_tab <- ifelse(unlist(marg_tab) <= 0, .01, unlist(marg_tab))
+    p <- marg_tab / sum(marg_tab)
+    chi <- chisq.test(synth_tab, p = p)
+    nObs <- nrow(output)
+    puma_id <- output$puma_id[1]
+    print(regionID)
+    print(nrow(output))
+    out_list <- list(regionID = regionID, obs = synth_tab, p = p, type = type,
+                     chi_sq = chi, variables = variables, nObs = nObs, puma_id = puma_id)
+    return(out_list)
+}
+
+#' Test Marginal totals to synth pop using chi square
+#'
+#' @param regionID 11 digit string
+#' @param type "b"
+#' @param level "tract"
+#' @param output_folder path
+#' @param marginals output from readMarginals
+#' @param variables in c("RAC1P", "AGEP", "HINCP", "NP")
+stat_test_us_marg_outer <- function(regionID, type = "b", level = "tract", output_folder,
+                                    marginals, variables = c("RAC1P", "AGEP", "HINCP", "NP"), puma_id = puma_id){
+    ## Load in the output (synthetic agents)
+    stopifnot(type == "b")
+    if(type == "b"){
+        p <- read.csv(file.path(output_folder, paste0("people_", regionID, ".csv")))
+        hh <-  read.csv(file.path(output_folder, paste0( "household_", regionID, ".csv")))
+        output <- join(hh, p, by = "SERIALNO", match = "first")
+    }
+    ## Loop through single vars 
+    ll <- vector(mode = "list", length = length(variables))
+    kk <- 1
+    ## TODO:  make this more efficient
+    for(jj in 1:length(variables)){
+        var <- variables[jj]
+        test <- stat_test_us_marg(regionID = regionID, type = type, level = level,
+                                  output = output, marginals = marginals,
+                                  variables = var)
+        ll[[kk]] <- test
+        kk <- kk + 1
+    }
+    return(ll)
+}
+
+
+
+
 #' Loop over regions in a state folder to perform chi square tests
 #' 
 #' @param output_folder  output_folder (top level)
@@ -210,6 +305,76 @@ makeStatDF <- function(features_list){
     return(stat_df)
 }
 
+## Marginals
+
+#' Read in marginal objects from the ACS SF
+#'
+#' @param cur_co current county character (3 digits)
+#' @param marginal_folder path to marginals
+#' @param householder_vars currently in c("NP", "HINCP", "RAC1P", "AGEP")
+#' @return list with each entry as list with data frame for the householder_var along with lookup and type
+readMarginals <- function(cur_co, marginal_folder, householder_vars){
+    stopifnot(sum(householder_vars %in% c("NP", "HINCP", "RAC1P", "AGEP")) == length(householder_vars))
+    variables <- ifelse(householder_vars == "NP", "HHSize",
+                 ifelse(householder_vars == "HINCP", "HHInc",
+                 ifelse(householder_vars == "RAC1P", "HHHRace",
+                 ifelse(householder_vars == "AGEP", "HHHAge",
+                        NA ))))
+    st <- substr(list.files(marginal_folder)[1], 1, 2)
+    ## TODO
+    ## Make more general
+    marginals <- readRDS(file.path(marginal_folder, "SD_marginals.RDS"))
+}
+
+#' Loop over regions in a state folder to perform chi square tests
+#' 
+#' @param output_folder  output_folder (top level)
+#' @param marginal_folder folder to  marginal SF
+#' @param household_vars string of household variables to test
+#' @param people_vars string of people vars to test
+#' @param householder_vars string of head of householder vars to test
+#' @return list with region ID, variable comparisons, and chi square results
+#' @details  to come
+test_features_marg<- function(output_folder, marginal_folder, householder_vars = NULL){
+    ## Read marginal variables
+    marginals <- readMarginals(cur_co, marginal_folder, householder_vars)
+    ## Loop over the output folders
+    output_paths <- list.files(output_folder)
+    output_paths <- output_paths[grepl("output_", output_paths)]
+    ll <- vector(mode = "list")
+    for (output_path in output_paths){
+        new_path <- file.path(output_folder, output_path, "eco")
+        region_files <- list.files(new_path)
+        regions <- unique(gsub("[^0-9]", "", region_files))
+        puma_id <- gsub("[^0-9]", "", output_path)
+        ## Loop over the regions
+        for (rr in 1:length(regions)){
+            region <- regions[rr]
+            print(paste(puma_id, region))
+            ## Both
+            b_list <- NULL
+            if(length(householder_vars) >0 ){
+                b_list <- stat_test_us_marg_outer(regionID = region, type = "b",
+                                                  level = "tract", output_folder = new_path,
+                                                  marginals = marginals, variables = householder_vars,
+                                                  puma_id = puma_id)
+            }
+            ## Combining together into one long list
+            new_list <-  b_list
+            ll <- c(ll, new_list)
+        }
+       
+    }
+    print("Number of regions")
+    print(length(ll))
+    return(ll)
+}
+
+
+
+
+
+
 
 #' Test schools/workplaces
 #'
@@ -289,6 +454,37 @@ readSynecos <- function(syneco_folder, type = "people",
     df <- do.call('rbind', ll)
     return(df)
 }
+
+## Test the marginals
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#######################################################
+############################# Schools and workplaces
+####################################################
+###################################################
+
 
 #' Assess the environment use of our synthetic ecosystems
 #'
