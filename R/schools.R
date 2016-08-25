@@ -107,7 +107,7 @@ weight_dists2 <- function(dist_mat, schools){
   students <- as.numeric(as.character(schools$Students))
   stopifnot(length(students) == n)
   
-  student_weight <- ceiling(students/10)
+  student_weight <- ceiling(students / 50)
   student_weight <- ifelse(is.na(student_weight), 1, student_weight)
   weights <-  exp( 1 + 1 / (dist_mat ))
   weights <- t(t(weights)  * student_weight)
@@ -129,7 +129,7 @@ weight_dists2 <- function(dist_mat, schools){
 weight_dists_D<- function(dist_mat, schools){
   m <- nrow(dist_mat)
   n <- ncol(dist_mat)
-  weights <-  exp( 1 + 1 / (dist_mat ))
+  weights <-  exp( 1 + 1 / (dist_mat / 20 ))
   weights <- weights / rowSums(weights)
   weights <- ifelse(is.na(weights), 0.0001, weights)
   weights <- weights / rowSums(weights)
