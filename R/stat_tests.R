@@ -401,4 +401,22 @@ spher_dists<- function(long1, lat1, long2, lat2) {
 #' @return degree in radians
 deg2rad <- function(deg) return(deg*pi/180)
 
-
+#' Compare capacities of generated schools and actual schools
+#'
+#' @param agents synthetic people with school_id var
+#' @param list of public schools df and private schools df with Students variable with capacity
+#' @return percent filled school (possibly over 1)
+compareCapacities <- function(agents, schools){
+    ## synthetic children counts
+    school_children <- agents[!is.na(agents$school_id),]
+    synth_tab <- data.frame(table(school_children$school_id))
+    colnames(synth_tab) <- c("ID", "Capacity")
+    ## actual school capacities
+    pub <- schools[[1]][, c("ID", "Students")]
+    priv <- schools[[2]][, c("ID", "Students")]
+    school_df <- rbind(pub, priv)
+    df_j <- join(school_df, synth_tab, by = "ID")
+    df_j$Capacity <- ifelse(is.na(df_j$Capacity), 0, df_j$Capacity)
+    percents <- df_j$Capacity / df_j$Students * 100
+    return(percents)
+}
