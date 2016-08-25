@@ -56,6 +56,12 @@ read_data <- function(input_dir,
     workplaces <- NULL
   }
   
+  if (!is.null(folders$marginals)) {
+    marginals <- read_marginals(input_dir, folders, data_group)
+  } else {
+    marginals <- NULL
+  }
+  
   read_time <- difftime(Sys.time(), read_start_time, units = "secs")
   read_time <- round(read_time, digits = 2)  
   read_time_statement <- paste0("Read runs in: ", read_time)
@@ -66,7 +72,8 @@ read_data <- function(input_dir,
               lookup = lookup, 
               shapefiles = shapefiles, 
               schools = schools, 
-              workplaces = workplaces))
+              workplaces = workplaces, 
+              marginals = marginals))
 }
 
 #' Read in the population counts  
@@ -81,7 +88,6 @@ read_data <- function(input_dir,
 #' 
 #' @return data frame with counts 
 read_pop_table <- function(input_dir, folders, data_group) {
-  
   pop_table_files <- list.files(paste0(input_dir, "/", folders$pop_table, "/"))
   
   if (data_group == "US") {
@@ -160,8 +166,8 @@ standardize_pop_table <- function(pop_table, data_group){
 }
 
 #  Function for reading in pums data
-read_pums <- function(input_dir, folders, data_group, vars) {
-  
+read_pums <- function(input_dir, folders, data_group, vars = list(household = NA, person = NA)) {
+
   pums_files <- list.files(paste0(input_dir, "/", folders$pums))
   
   if (data_group == "US") {
@@ -269,7 +275,6 @@ standardize_lookup <- function(lookup, data_group){
 
 #  Function for reading in shapefiles data
 read_shapefiles <- function(input_dir, folders, data_group) {
-  
   # Get a list of the files in the shapefile folders directory 
   shapefiles_files <- list.files(paste0(input_dir, "/", folders$shapefiles))
 
@@ -284,7 +289,7 @@ read_shapefiles <- function(input_dir, folders, data_group) {
     full_path <- file.path(input_dir, folders$shapefiles, 
                            shapefiles_files[correct_folder], filename)
     shapefile <- maptools::readShapeSpatial(full_path)
-          
+      
     # If there is road data, read it in and return a list. Otherwise, 
     # return just the shapefile 
     if (any(grepl("roads", x = shapefiles_files))) {
@@ -318,7 +323,6 @@ read_shapefiles <- function(input_dir, folders, data_group) {
 
 #  Standardize the shapefiles 
 standardize_shapefiles <- function(shapefiles, data_group) {
-  
   if (data_group == "US") {
     if (class(shapefiles) == "SpatialPolygonsDataFrame") {
       names(shapefiles)[which(names(shapefiles) == "GEOID10")] <- "place_id"
@@ -377,13 +381,12 @@ read_schools <- function(input_dir, folders, data_group){
 
 #  Function for reading in workplaces data
 read_workplaces <- function(input_dir, folders, data_group) {
-  workplace_files<- list.files(paste0(input_dir, "/", folders$workplaces))
+  workplace_files <- list.files(paste0(input_dir, "/", folders$workplaces))
   
   if (data_group == "US") {
     if (length(workplace_files == 1)) {
       filename <- workplace_files
-      workplaces <- data.table::fread(paste0(input_dir, "/", folders$workplaces, "/", filename), 
-                             stringsAsFactors = FALSE, data.table = FALSE)
+      workplaces <- read.csv(paste0(input_dir, "/", folders$workplaces, "/", filename), stringsAsFactors = FALSE)
 
       # Make sure that the stcotr variable has 
       # 11 characters. If not, add a 0 in the beginning 
@@ -440,4 +443,34 @@ read_roads <- function(path_to_roads, road_id) {
         road_shp <- road_shp[-interstate_inds,]
     }
     return(road_shp)
+}
+
+#' Read in the marginals population characteristic totals 
+#' 
+#' @param input_dir character vector specifying the directory containing 
+#' all of the input data 
+#' @param folders list which contains the path of each sub-directory with the 
+#' specific data
+#' @param data_group character either "US", "ipums" or "none" which tells 
+#' read_data if the input data follows a particular format. Used mainly for 
+#' the pre-formatted data-types we have on our Olympus
+#' 
+#' @return data frame with counts 
+read_marginals <- function(input_dir, folders, data_group) {
+  # Get a character vector of files in marginal folder 
+  marginal_files <- list.files(file.path(... = input_dir, folders$marginals))
+  
+  if (data_group == "US") {
+    # Subset marginal file with "marginals" in name
+    marginal_ind <- grep(pattern = "marginals", x = marginal_files)
+    marginal_file <- marginal_files[marginal_ind]
+    marginals <- readRDS(file = file.path(input_dir, folders$marginals, marginal_file))
+    return(marginals)
+
+  } else if (data_group == "ipums") {
+    
+  } else {
+    
+  }
+  
 }

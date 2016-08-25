@@ -15,13 +15,13 @@ test_that("Location functions", {
   uniform_locations <- sample_locations(method = "uniform",
                                         place_id = pid,
                                         n_house = number_houses,
-                                        shapefile = sd_data$shapefiles, 
+                                        shapefile = sd_data$shapefiles$shapefile, 
                                         noise = .01)
   
   # Set up the roads shapefile
   spew_dir <- system.file("", package = "spew")
   roads_path <- paste0(spew_dir, "/data-raw/46/tiger/roads_46")
-  roads_shapefile <- list(regions = sd_data$shapefiles, roads = roads_path)
+  roads_shapefile <- list(regions = sd_data$shapefiles$shapefile, roads = roads_path)
   
   # Sample from the roads shapefile
   road_locs <- sample_locations(method = "roads",
@@ -35,7 +35,7 @@ test_that("Location functions", {
   uniform_locations_large <- sample_locations(method = "uniform",
                                               place_id = pid,
                                               n_house = large_num_houses,
-                                              shapefile = sd_data$shapefiles, 
+                                              shapefile = sd_data$shapefiles$shapefile, 
                                               noise = .001)
   
   # Verify the results are the correct class and equal length

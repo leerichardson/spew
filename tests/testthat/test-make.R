@@ -10,13 +10,13 @@ test_that("SPEW functions", {
   
   # Sample locations --------------
   multiple_polygons <- sample_locations(method = "uniform", place_id = 46027965700, n_house = 100, 
-                                        shapefile = sd_data$shapefiles)
+                                        shapefile = sd_data$shapefiles$shapefile)
   expect_equal(is.null(multiple_polygons), FALSE)
   
   num_samples <- floor(runif(1, min = 1, max = 200))
   rand_row <- floor(runif(1, min = 1, max = nrow(sd_data$pop_table)))  
   single_polygon <- sample_locations(method = "uniform", place_id = sd_data$pop_table[rand_row, "place_id"], 
-                                     n_house = num_samples, shapefile = sd_data$shapefiles)
+                                     n_house = num_samples, shapefile = sd_data$shapefiles$shapefile)
   expect_equal(length(single_polygon), num_samples)
   
   # Verify the ipums shapefiles work as well using uruguay data 
@@ -46,14 +46,14 @@ test_that("SPEW functions", {
   
   # Make sure the parallel runs faster than the regular ---------
   places <- 1:4
-  regular_md <- system.time(make_data(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles,
-                                      schools = sd_data$schools, workplaces = sd_data$workplaces,
+  regular_md <- system.time(make_data(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
+                                      schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL, 
                                       pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
                                       output_dir = "tmp/", parallel = FALSE, convert_count = FALSE, 
                                       sampling_method = "uniform", locations_method = "uniform"))
   
-  parallel_md <- system.time(make_data(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles,
-                                       schools = sd_data$schools, workplaces = sd_data$workplaces,
+  parallel_md <- system.time(make_data(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
+                                       schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
                                        pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
                                        output_dir = "tmp/", parallel = TRUE, convert_count = FALSE, 
                                        sampling_method = "uniform", locations_method = "uniform", 

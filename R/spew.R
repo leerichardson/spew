@@ -39,8 +39,9 @@ generate_spew <- function(input_dir, folders, data_group, output_dir, parallel =
   make_data(pop_table = formatted_data$pop_table, shapefile = formatted_data$shapefiles, 
             pums_h = formatted_data$pums$pums_h, pums_p = formatted_data$pums$pums_p, 
             schools = formatted_data$schools, workplaces = formatted_data$workplaces, 
-            parallel = parallel, output_dir = output_dir, sampling_method = sampling_method, 
-            locations_method = locations_method, convert_count = convert_count)
+            marginals = formatted_data$marginals, parallel = parallel, output_dir = output_dir, 
+            sampling_method = sampling_method, locations_method = locations_method, 
+            convert_count = convert_count)
 
   # Print out the overall run-time of SPEW!
   spew_time <- difftime(Sys.time(), spew_start_time, units = "secs")

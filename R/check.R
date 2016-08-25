@@ -19,10 +19,9 @@ check_pop_table <- function(pop_table) {
 #' @return Either a character"Shapefile is ready!" or an error message 
 #' detailing what went wrong
 check_shapefile <- function(shapefile) {
-  shape_names <- names(shapefile)
-  
-  stopifnot("place_id" %in% shape_names)
-  stopifnot(class(shapefile$place_id) == "character")
+
+  stopifnot("place_id" %in% names(shapefile) | "place_id" %in% names(shapefile$shapefile))
+  stopifnot(class(shapefile$place_id) == "character" | class(shapefile$shapefile$place_id) == "character")
   
   return("Shapefile is ready!")
 }
@@ -41,10 +40,6 @@ check_pums <- function(pums) {
   stopifnot("pums_p" %in% names(pums))
   
   stopifnot("puma_id" %in% names(pums$pums_h))
-  
-  if (!("PERSONS" %in% names(pums$pums_h))) {
-    warning("PERSONS not in pums_h for convert_count")
-  }
   
   stopifnot("SERIALNO" %in% names(pums$pums_h))
   stopifnot("SERIALNO" %in% names(pums$pums_p))

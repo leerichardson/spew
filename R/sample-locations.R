@@ -11,8 +11,7 @@
 #' we jitter the road locations in each direction (only if method is "roads")
 #' @return SpatialPoints object with coordinates for the n households
 sample_locations <- function(method, place_id, n_house, shapefile, noise = .001, shapefile_id = NULL) {
-  # Call the appropriate location sampling function based on
-  # the input sampling method  
+  # Call the appropriate location sampling function
   if (method == "uniform") {
     locs <- sample_locations_uniform(place_id, n_house, shapefile, noise, shapefile_id)
   } else if (method == "roads") {

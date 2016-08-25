@@ -10,6 +10,8 @@
 #' dataframe of schools corresponding to public or private, respectively
 #' @param workplaces dataframe of workplaces with a workplace_id column, 
 #' employees column, and stcotr column
+#' @param marginals list of marginal population totals. Each element of the 
+#' list contains the marginal totals of a separate variable 
 #' @param parallel logical indicating whether or not we will generate our 
 #' synthetic populations in parallel
 #' @param sampling_method character vector indicating the type of sampling 
@@ -21,7 +23,7 @@
 #' successfully 
 #' @examples
 #' make_data(sd_data$pop_table, sd_data$shapefiles, sd_data$pums$pums_h, sd_data$pums$pums_p)
-make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces, 
+make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces, marginals, 
                       convert_count, output_dir, parallel = FALSE, 
                       sampling_method = "uniform", locations_method = "uniform", 
                       outfile_loc = "") {
@@ -40,7 +42,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
       print(paste0("Region ", place, " out of ", num_places))
       region_list[[place]] <- make_place(index = place, pop_table = pop_table, shapefile = shapefile, 
                                          pums_h = pums_h, pums_p = pums_p, schools = schools, 
-                                         workplaces = workplaces, sampling_method = sampling_method, 
+                                         workplaces = workplaces, marginals = marginals, sampling_method = sampling_method, 
                                          locations_method = locations_method, output_dir = output_dir, 
                                          convert_count = convert_count) 
     }
@@ -63,15 +65,13 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
     region_list <- foreach(place = 1:num_places, 
                           .packages = c("plyr", "methods", "sp", "rgeos", "data.table", "bit64"), 
                           .export = export_objects, 
-                          .verbose = TRUE, 
                           .errorhandling = 'pass') %dopar% {
-                           
                            print(paste0("Region ", place, " out of ", num_places))
                            make_place(index = place, pop_table = pop_table, shapefile = shapefile, 
                                       pums_h = pums_h, pums_p = pums_p, schools = schools, 
-                                      workplaces = workplaces, sampling_method = sampling_method, 
-                                      locations_method = locations_method, output_dir = output_dir, 
-                                      convert_count = convert_count)    
+                                      workplaces = workplaces, marginals = marginals, 
+                                      sampling_method = sampling_method, locations_method = locations_method, 
+                                      output_dir = output_dir, convert_count = convert_count)    
                           }
     
     parallel::stopCluster(cluster)
@@ -79,7 +79,6 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
 
   # Print the diagnostics and summaries of the entire place 
   print_region_list(region_list)
-  
   location_time <- difftime(Sys.time(), location_start_time, units = "secs")
   location_time <- round(location_time, digits = 2)  
   location_time_statement <- paste0("Location runs in: ", location_time)
@@ -99,6 +98,8 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
 #' @param pums_p dataframe with microdata corresponding to people 
 #' @param schools dataframe with data corresponding to available schools 
 #' @param workplaces dataframe with data corresponding to available workplaces 
+#' @param marginals list with elements corresponding to marginal totals 
+#' of population variables 
 #' @param sampling_method character vector indicating the type of sampling 
 #' method to use, defaults to "uniform"
 #' @param locations_method character vector indicating the type of location 
@@ -107,7 +108,7 @@ make_data <- function(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
 #' @return synthetic population .csv file for both household and person 
 #' level data
 make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
-                       workplaces, output_dir, convert_count, sampling_method, 
+                       workplaces, marginals, output_dir, convert_count, sampling_method, 
                        locations_method) {
   # Start the clock on this specific place 
   place_start_time <- Sys.time()
@@ -141,10 +142,12 @@ make_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   
   # Households --------------- 
   sampled_households <- sample_households(method = sampling_method, 
-                                  n_house = n_house, 
-                                  pums_h = pums_h, 
-                                  puma_id = puma_id, 
-                                  place_id = place_id)
+                                          n_house = n_house, 
+                                          pums_h = pums_h, 
+                                          pums_p = pums_p, 
+                                          marginals = marginals,
+                                          puma_id = puma_id, 
+                                          place_id = place_id)
     
   # Locations ----------------
   locations <- sample_locations(method = locations_method, 

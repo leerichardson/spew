@@ -6,22 +6,17 @@
 #' @param puma_id vector indicating which specific puma in PUMS we are sampling 
 #' from, if any 
 #' @return numeric with the indicies of the household PUMS to sample 
-sample_households <- function(method, n_house, pums_h, puma_id = NULL, place_id = NULL) {
-  if (method == "uniform") {  
-    # Subset to a specific PUMA if we have data to do this 
-    if (!is.na(puma_id)) {
-      if (!(puma_id %in% unique(pums_h$puma_id))) {
-        sample_inds <- 1:nrow(pums_h)
-      }
-      else {
-        sample_inds <- which(pums_h$puma_id == puma_id)
-        stopifnot(length(sample_inds) <= nrow(pums_h))
-      }
-    } else {
-      sample_inds <- 1:nrow(pums_h)
-    }
-    
-    households <- sample(sample_inds, n_house, replace = TRUE)
+sample_households <- function(method, n_house, pums_h, pums_p = NULL,
+                              puma_id = NULL, place_id = NULL, 
+                              marginals = NULL) {
+  if (method == "uniform") {
+    households <- sample_uniform(n_house, pums_h, puma_id = puma_id, place_id = place_id)
+  } else if (method == "ipf") {
+    households <- sample_ipf(n_house = n_house, pums_h = pums_h, pums_p = pums_p, 
+                             puma_id = puma_id, place_id = place_id, 
+                             marginals = marginals)
+  } else {
+    stop("Sampling method must be ipf or uniform")
   }
   
   # Subset the sampled indices from the PUMS, and add 
@@ -56,3 +51,29 @@ sample_people <- function(method, household_pums, pums_p, puma_id = NULL, place_
   
   return(sampled_people)
 }
+
+#' Sample households uniformly 
+#' 
+#' @param n_house number of households to sample 
+#' @param pums_h the household pums 
+#' @param puma_id if specifying the subset of PUMS to sample s
+#' @param place_id id of the current region 
+#' @param marginals irrelecant
+sample_uniform <- function(n_house, pums_h, puma_id = NULL, place_id = NULL) {
+  # Subset to a specific PUMA if we have data to do this 
+  if (!is.null(puma_id)) {
+    if (!(puma_id %in% unique(pums_h$puma_id))) {
+      sample_inds <- 1:nrow(pums_h)
+    } else {
+      sample_inds <- which(pums_h$puma_id == puma_id)
+      stopifnot(length(sample_inds) <= nrow(pums_h))
+    }
+  } else {
+    sample_inds <- 1:nrow(pums_h)
+  }
+    
+  # Sample households uniformly with replacement 
+  households <- sample(sample_inds, n_house, replace = TRUE)
+  return(households)
+}
+

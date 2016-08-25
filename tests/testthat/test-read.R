@@ -117,6 +117,21 @@ test_that("United States functions", {
                                                shapefiles = "tiger", 
                                                workplaces = "workplaces"))
   expect_equal(class(sd_workplaces) == "data.frame", TRUE)
+  
+  
+  # Marginals ---------------------------
+  sd_marginals <- read_marginals(data_path, 
+                                 data_group = "US", 
+                                 folders = list(pop_table = "popTables", 
+                                                pums = "pums", 
+                                                schools = "schools", 
+                                                lookup = "tables", 
+                                                shapefiles = "tiger", 
+                                                workplaces = "workplaces",
+                                                marginals = "marginals"))
+  expect_true(class(sd_marginals) == "list")
+  expect_true(class(sd_marginals[[1]]) == "list")
+  expect_true(class(sd_marginals[[1]][[1]]) == "data.frame")
 })
 
 test_that("ipums functions", {

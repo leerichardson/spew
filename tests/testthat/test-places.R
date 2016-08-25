@@ -41,7 +41,7 @@ test_that("Place Assignment Functions", {
   locations <- spew:::sample_locations(method = "uniform", 
                                        place_id = place_id, 
                                        n_house = n_house, 
-                                       shapefile = sd_data$shapefile)
+                                       shapefile = sd_data$shapefile$shapefile)
   
   sampled_households$longitude <- locations@coords[, 1]
   sampled_households$latitude <- locations@coords[, 2]

@@ -1,7 +1,6 @@
 context("Check Functions")
 
 test_that("data has all the required pieces", {
-  
   # Pop table, shapefile, and PUMS have the 
   # necessary components. AND, the components match 
   # with one another --------------------
@@ -30,14 +29,9 @@ test_that("data has all the required pieces", {
   
   sd_count_ids <- sd_data$pop_table$place_id
   sd_count_pumas <- sd_data$pop_table$puma_id
-  sd_shape_ids <- sd_data$shapefiles$place_id
+  sd_shape_ids <- sd_data$shapefiles$shapefile$place_id
   sd_pums_pumas <- sd_data$pums$pums_h$puma_id  
   
   expect_equal(check_place_ids(id1 = sd_count_ids, id2 = sd_shape_ids), "Place ids match!")
   expect_equal(check_puma_ids(sd_count_pumas, sd_pums_pumas), "Puma ids match!")
-  
-})
-
-test_that("data source locations match with one another", {
-  
 })
