@@ -88,7 +88,7 @@ sd_data <- read_data("data-raw/46", data_group = "US", folders = list(pop_table 
 sd_data <- format_data(data_list = sd_data, data_group = "US")
 
 # Uncomment and run to update the sd_data path 
-# devtools::use_data(sd_data, overwrite = TRUE)
+devtools::use_data(sd_data, overwrite = TRUE)
 
 
 # Test make_data with the south dakota data ----------------------
@@ -99,13 +99,14 @@ library(doSNOW)
 library(sp)
 library(maptools)
 
-make_data(pop_table = sd_data$pop_table[1:5, ], 
+make_data(pop_table = sd_data$pop_table, 
           pums_h = sd_data$pums$pums_h, 
           pums_p = sd_data$pums$pums_p, 
           shapefile = sd_data$shapefiles, 
           schools = sd_data$schools, 
           workplaces = sd_data$workplaces, 
-          parallel = TRUE, 
+          marginals = sd_data$marginals, 
+          parallel = FALSE, 
           output_dir = "/home/lee/south_dakota/",
           sampling_method = "uniform", 
           locations_method = "uniform",  
