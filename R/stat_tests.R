@@ -85,8 +85,9 @@ stat_test_us_pums_outer <- function(regionID, type = "p", level = "tract", outpu
     type_char <- ifelse(type == "p", "people", "household")
     if(type == "b"){
         p <- read.csv(file.path(output_folder, paste0("people_", regionID, ".csv")))
+        p <- p[p$RELP == 0,]
         hh <-  read.csv(file.path(output_folder, paste0( "household_", regionID, ".csv")))
-        output <- join(hh, p, by = "SERIALNO", match = "first")
+        output <- join(hh, p, by = "SERIALNO", type = "left")
     } else{
         output <- read.csv(file.path(output_folder, paste0(type_char, "_", regionID, ".csv")))
     }
@@ -118,7 +119,7 @@ stat_test_us_pums_outer <- function(regionID, type = "p", level = "tract", outpu
             kk <- kk + 1
         }
     }
-    return(ll)
+return(ll)
 }
 
 
@@ -142,9 +143,9 @@ makeFactorsMarg <- function(in_df, marginals, variables){
             nm <- marginals[[var]]$lookup$marg_names[ii]
             new_vals<- ifelse( ( in_df[, var] >= lower) & ( in_df[,var] <= upper ), nm, new_vals)
         }
+       new_fac <- factor(new_vals, levels = levels)
+       in_df[,var] <- new_fac
     }
-    new_fac <- factor(new_vals, levels = levels)
-    in_df[,var] <- new_fac
     return(in_df)
 }
 
@@ -170,9 +171,9 @@ stat_test_us_marg <- function(regionID, type = "p", level = "tract", output, mar
     stopifnot(length(row_ind) == 1)
     marg_tab <- marginals[[variables]]$df[row_ind, -1]
     stopifnot(identical(names(marg_tab), names(synth_tab)))
-    marg_tab <- ifelse(unlist(marg_tab) <= 0, .01, unlist(marg_tab))
-    p <- marg_tab / sum(marg_tab)
-    chi <- chisq.test(synth_tab, p = p)
+   # marg_tab <- ifelse(unlist(marg_tab) <= 0, .01, unlist(marg_tab))
+    p <- unlist(marg_tab) / sum(unlist(marg_tab))
+    chi <- chisq.test(synth_tab, p = p, simulate.p.value = TRUE)
     nObs <- nrow(output)
     puma_id <- output$puma_id[1]
     print(regionID)
@@ -196,8 +197,9 @@ stat_test_us_marg_outer <- function(regionID, type = "b", level = "tract", outpu
     stopifnot(type == "b")
     if(type == "b"){
         p <- read.csv(file.path(output_folder, paste0("people_", regionID, ".csv")))
+        p <- p[p$RELP == 0,]
         hh <-  read.csv(file.path(output_folder, paste0( "household_", regionID, ".csv")))
-        output <- join(hh, p, by = "SERIALNO", match = "first")
+        output <- join(hh, p, by = "SERIALNO", type = "left")
     }
     ## Loop through single vars 
     ll <- vector(mode = "list", length = length(variables))
@@ -322,9 +324,110 @@ readMarginals <- function(cur_co, marginal_folder, householder_vars){
                         NA ))))
     st <- substr(list.files(marginal_folder)[1], 1, 2)
     ## TODO
+    ## WARNING: only works for SD
     ## Make more general
-    marginals <- readRDS(file.path(marginal_folder, "SD_marginals.RDS"))
+    marginals <- readRDS(file.path(marginal_folder, paste0(st, "_marginals.RDS")))
+    return(marginals)
 }
+
+
+
+## JOINT
+
+#' Read in joint objects from spew generation of IPF tables
+#'
+#' @param cur_co current county character (3 digits)
+#' @param joint_folder path to marginals
+#' @param householder_vars currently in c("NP", "HINCP", "RAC1P", "AGEP")
+#' @return list with each entry as list with data frame for the householder_var along with lookup and type
+readJoint <- function(regionID, joint_folder, householder_vars){
+    stopifnot(sum(householder_vars %in% c("NP", "HINCP", "RAC1P", "AGEP")) == length(householder_vars))
+    joint_table<- readRDS(file.path(joint_folder,  paste0(regionID, "_table.RDS")))
+    new_names <- gsub("_marg", "", names(dimnames(joint_table)))
+    names(dimnames(joint_table)) <- new_names
+    return(joint_table)
+}
+
+
+
+
+
+#' Perform chi square test on tract for joint totals
+#' 
+#' @param regionID 11 digit ID for tract, 5 for county, 2 for state.  The FIPS number
+#' @param type either "p" or "hh" for person or household output, respectively
+#' @param output  SPEW synthetic ecosystem (data frame)
+#' @param joint_folder folder to IPF tables saved from generation
+#' @param variables variable(s) to test.  No more than pairs
+#' @param marginals marginal folder to get factor names
+#' @return list of p value for region and original chi square value
+#' @details  to come
+stat_test_us_joint <- function(regionID, type = "p", level = "tract", output, joint_table,  variables = c("RAC1P"), marginals){
+                                        #browser()
+    ## Get the marginal table for the 2 dimensions in the right order
+    dim_ind1 <- which(names(dimnames(joint_table)) == variables[1])
+    dim_ind2 <- which(names(dimnames(joint_table)) == variables[2])
+    dim_inds <- c(dim_ind1, dim_ind2)
+    joint_tab <- margin.table(joint_table, dim_inds)
+    stopifnot(sum(variables %in% colnames(output)) == length(variables))
+    ## Put the output into the proper factors
+    output_f <- makeFactorsMarg(output, marginals, variables)
+    stopifnot(nrow(output_f) == nrow(output))
+    synth_tab <- table(output_f[, variables])
+    synth_p <- synth_tab / sum(synth_tab)
+    p <- joint_tab / sum(joint_tab)
+    ## Compare the output
+    chi <- chisq.test(synth_tab, p = p)#, simulate.p.value = TRUE)
+    nObs <- nrow(output)
+    puma_id <- output$puma_id[1]
+    print(regionID)
+    print(nrow(output))
+    out_list <- list(regionID = regionID, obs = synth_tab, p = p, type = type,
+                     chi_sq = chi, variables = variables, nObs = nObs, puma_id = puma_id)
+    return(out_list)
+}
+
+
+
+#' Test joint totals to synth pop using chi square
+#'
+#' @param regionID 11 digit string
+#' @param type "b"
+#' @param level "tract"
+#' @param output_folder path
+#' @param joint_folder joint folder to ipf table from syneco generation
+#' @param variables in c("RAC1P", "AGEP", "HINCP", "NP")
+stat_test_us_joint_outer <- function(regionID, type = "b", level = "tract", output_folder,
+                                   joint_folder, variables = c("RAC1P", "AGEP", "HINCP", "NP"), puma_id = puma_id, marginals){
+    ## Load in the output (synthetic agents)
+    stopifnot(type == "b")
+    if(type == "b"){
+        p <- read.csv(file.path(output_folder, paste0("people_", regionID, ".csv")))
+        p <- p[p$RELP == 0,]
+        hh <-  read.csv(file.path(output_folder, paste0( "household_", regionID, ".csv")))
+        output <- join(hh, p, by = "SERIALNO", type = "left")
+    }
+    ## Load in the joint table
+    joint_table <- readJoint(regionID, joint_folder, variables)
+    ## Loop through single vars 
+    ll <- vector(mode = "list", length = length(variables))
+    kk <- 1
+    cmbxns <- combn(variables, 2)
+    nTests <- ncol(cmbxns)
+
+    ## TODO:  make this more efficient
+    for(jj in 1:ncol(cmbxns)){
+        var <- cmbxns[ ,jj]
+        test <- stat_test_us_joint(regionID = regionID, type = type, level = level,
+                                  output = output, joint_table = joint_table,
+                                  variables = var, marginals = marginals)
+        ll[[kk]] <- test
+        kk <- kk + 1
+    }
+    return(ll)
+}
+
+
 
 #' Loop over regions in a state folder to perform chi square tests
 #' 
@@ -337,6 +440,7 @@ readMarginals <- function(cur_co, marginal_folder, householder_vars){
 #' @details  to come
 test_features_marg<- function(output_folder, marginal_folder, householder_vars = NULL){
     ## Read marginal variables
+    cur_co <- 4
     marginals <- readMarginals(cur_co, marginal_folder, householder_vars)
     ## Loop over the output folders
     output_paths <- list.files(output_folder)
@@ -372,6 +476,55 @@ test_features_marg<- function(output_folder, marginal_folder, householder_vars =
 
 
 
+######### JOINT
+
+#' Loop over regions in a state folder to perform chi square tests
+#' 
+#' @param output_folder  output_folder (top level)
+#' @param marginal_folder folder to joint SF
+#' @param household_vars string of household variables to test
+#' @param people_vars string of people vars to test
+#' @param householder_vars string of head of householder vars to test
+#' @return list with region ID, variable comparisons, and chi square results
+#' @details  to come
+test_features_joint<- function(output_folder, joint_folder, householder_vars = NULL, marginal_folder){
+    ## Read marginal variables
+    cur_co <- 4
+    marginals <- readMarginals(cur_co, marginal_folder, householder_vars)
+    ## Loop over the output folders
+    output_paths <- list.files(output_folder)
+    output_paths <- output_paths[grepl("output_", output_paths)]
+    ll <- vector(mode = "list")
+    for (output_path in output_paths){
+        new_path <- file.path(output_folder, output_path, "eco")
+        region_files <- list.files(new_path)
+        regions <- unique(gsub("[^0-9]", "", region_files))
+        puma_id <- gsub("[^0-9]", "", output_path)
+        ## Loop over the regions
+        for (rr in 1:length(regions)){
+            region <- regions[rr]
+            print(paste(puma_id, region))
+            ## Both
+            b_list <- NULL
+            if(length(householder_vars) >0 ){
+                b_list <- stat_test_us_joint_outer(regionID = region, type = "b",
+                                                  level = "tract", output_folder = new_path,
+                                                  joint_folder = joint_folder, variables = householder_vars,
+                                                  puma_id = puma_id, marginals)
+            }
+            ## Combining together into one long list
+            new_list <-  b_list
+            ll <- c(ll, new_list)
+        }
+       
+    }
+    print("Number of regions")
+    print(length(ll))
+    return(ll)
+}
+
+
+################################################
 
 
 
