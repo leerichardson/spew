@@ -413,7 +413,10 @@ summarize_us <-  function(output_dir, us_fs,
         fp <- sapply(reg_inds, function(ind) paste(paths_df[ind, ], collapse = "/"))
         
         # Read in the lowest level csvs
-        tab <- do.call('rbind', lapply(file.path(output_dir, fp), read.csv))
+        tab <- do.call('rbind', lapply(file.path(output_dir, fp), function(fp){
+            tab <- read.csv(fp)[, c(vars_hh$cont, vars_hh$cat, "longitude", "latitude")]
+            return(tab)
+            }))
 
         # Summarize the features, first categorical then cont.
         sum_features_cat <- sapply(vars_hh$cat, summarizeFeatures,
@@ -470,7 +473,11 @@ summarize_us <-  function(output_dir, us_fs,
 ##        paths_df <- data.frame(lapply(paths_df, as.character), stringsAsFactors=FALSE)
         # Get the Full file path(s)
         fp <- sapply(reg_inds, function(ind) paste(paths_df_p[ind, ], collapse = "/"))
-        tab <- do.call('rbind', lapply(file.path(output_dir, fp), read.csv))
+        tab <- do.call('rbind', lapply(file.path(output_dir, fp),  function(fp){
+            tab <- read.csv(fp)[, c(vars_p$cont, vars_p$cat)]
+            return(tab)
+            }
+            ))
         header_p<- colnames(tab)
         # Summarize the features
         sum_features_cat <- sapply(vars_p$cat, summarizeFeatures, tab, type = "cat")

@@ -88,6 +88,7 @@ stat_test_us_pums_outer <- function(regionID, type = "p", level = "tract", outpu
         p <- p[p$RELP == 0,]
         hh <-  read.csv(file.path(output_folder, paste0( "household_", regionID, ".csv")))
         output <- join(hh, p, by = "SERIALNO", type = "left")
+        output <- output[!duplicated(output$SYNTHETIC_HID),]
     } else{
         output <- read.csv(file.path(output_folder, paste0(type_char, "_", regionID, ".csv")))
     }
@@ -162,22 +163,24 @@ makeFactorsMarg <- function(in_df, marginals, variables){
 stat_test_us_marg <- function(regionID, type = "p", level = "tract", output, marginals,  variables = c("RAC1P")){
     #browser()
     stopifnot(sum(variables %in% colnames(output)) == length(variables))
-    output_f <- makeFactorsMarg(output, marginals, variables)
+    output_f <- align_pums(output, marginals)
     stopifnot(nrow(output_f) == nrow(output))
-    synth_tab <- table(output_f[, variables])
+    synth_tab <- table(output_f[, paste0(variables, "_marg")])
     synth_p <- synth_tab / sum(synth_tab)
     ## Correct zero marginals
     row_ind <- which( marginals[[variables]]$df$place_id == regionID)
+    stopifnot(output$place_id[1] == regionID)
     stopifnot(length(row_ind) == 1)
     marg_tab <- marginals[[variables]]$df[row_ind, -1]
     stopifnot(identical(names(marg_tab), names(synth_tab)))
-   # marg_tab <- ifelse(unlist(marg_tab) <= 0, .01, unlist(marg_tab))
     p <- unlist(marg_tab) / sum(unlist(marg_tab))
-    chi <- chisq.test(synth_tab, p = p, simulate.p.value = TRUE)
+    p_test <- p
+    synth_test <- synth_tab
+    chi <- chisq.test(synth_test, p = p_test)
     nObs <- nrow(output)
     puma_id <- output$puma_id[1]
     print(regionID)
-    print(nrow(output))
+    #print(nrow(output))
     out_list <- list(regionID = regionID, obs = synth_tab, p = p, type = type,
                      chi_sq = chi, variables = variables, nObs = nObs, puma_id = puma_id)
     return(out_list)
@@ -193,6 +196,7 @@ stat_test_us_marg <- function(regionID, type = "p", level = "tract", output, mar
 #' @param variables in c("RAC1P", "AGEP", "HINCP", "NP")
 stat_test_us_marg_outer <- function(regionID, type = "b", level = "tract", output_folder,
                                     marginals, variables = c("RAC1P", "AGEP", "HINCP", "NP"), puma_id = puma_id){
+##    browser()
     ## Load in the output (synthetic agents)
     stopifnot(type == "b")
     if(type == "b"){
@@ -200,6 +204,7 @@ stat_test_us_marg_outer <- function(regionID, type = "b", level = "tract", outpu
         p <- p[p$RELP == 0,]
         hh <-  read.csv(file.path(output_folder, paste0( "household_", regionID, ".csv")))
         output <- join(hh, p, by = "SERIALNO", type = "left")
+        output <- output[!duplicated(output$SYNTHETIC_HID),]
     }
     ## Loop through single vars 
     ll <- vector(mode = "list", length = length(variables))
@@ -317,15 +322,7 @@ makeStatDF <- function(features_list){
 #' @return list with each entry as list with data frame for the householder_var along with lookup and type
 readMarginals <- function(cur_co, marginal_folder, householder_vars){
     stopifnot(sum(householder_vars %in% c("NP", "HINCP", "RAC1P", "AGEP")) == length(householder_vars))
-    variables <- ifelse(householder_vars == "NP", "HHSize",
-                 ifelse(householder_vars == "HINCP", "HHInc",
-                 ifelse(householder_vars == "RAC1P", "HHHRace",
-                 ifelse(householder_vars == "AGEP", "HHHAge",
-                        NA ))))
     st <- substr(list.files(marginal_folder)[1], 1, 2)
-    ## TODO
-    ## WARNING: only works for SD
-    ## Make more general
     marginals <- readRDS(file.path(marginal_folder, paste0(st, "_marginals.RDS")))
     return(marginals)
 }
@@ -371,9 +368,9 @@ stat_test_us_joint <- function(regionID, type = "p", level = "tract", output, jo
     joint_tab <- margin.table(joint_table, dim_inds)
     stopifnot(sum(variables %in% colnames(output)) == length(variables))
     ## Put the output into the proper factors
-    output_f <- makeFactorsMarg(output, marginals, variables)
+    output_f <- align_pums(output, marginals)
     stopifnot(nrow(output_f) == nrow(output))
-    synth_tab <- table(output_f[, variables])
+    synth_tab <- table(output_f[, paste0(variables, "_marg")])
     synth_p <- synth_tab / sum(synth_tab)
     p <- joint_tab / sum(joint_tab)
     ## Compare the output
@@ -406,6 +403,7 @@ stat_test_us_joint_outer <- function(regionID, type = "b", level = "tract", outp
         p <- p[p$RELP == 0,]
         hh <-  read.csv(file.path(output_folder, paste0( "household_", regionID, ".csv")))
         output <- join(hh, p, by = "SERIALNO", type = "left")
+        output <- output[!duplicated(output$SYNTHETIC_HID),]
     }
     ## Load in the joint table
     joint_table <- readJoint(regionID, joint_folder, variables)
