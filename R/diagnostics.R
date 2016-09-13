@@ -474,7 +474,8 @@ summarize_us <-  function(output_dir, us_fs,
         # Get the Full file path(s)
         fp <- sapply(reg_inds, function(ind) paste(paths_df_p[ind, ], collapse = "/"))
         tab <- do.call('rbind', lapply(file.path(output_dir, fp),  function(fp){
-            tab <- read.csv(fp)[, c(vars_p$cont, vars_p$cat)]
+            tab <- read.csv(fp)
+            tab <- tab[, c(vars_p$cont, vars_p$cat, "puma_id", "place_id")]
             return(tab)
             }
             ))
