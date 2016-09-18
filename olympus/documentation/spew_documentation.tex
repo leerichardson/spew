@@ -1,0 +1,667 @@
+\documentclass{article}
+
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{verbatim}
+\usepackage{dirtree}
+\usepackage{algorithm2e}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{authblk}
+\usepackage{centernot}
+
+\usepackage[backend=biber]{biblatex}
+\addbibresource{spew_refs.bib}
+
+
+\title{\large{Synthetic Populations and Ecosystems of the World} \\
+		Version 1.2.0}
+\author{Bill Eddy}
+\author{Shannon Gallagher}
+\author{Lee Richardson}
+\author{Sam Ventura}
+\affil[1]{Department of Statistics, Carnegie Mellon University}
+\affil[2]{MIDAS Informatics Services Group}
+\date{\today}
+
+\begin{document}
+
+\maketitle	
+
+\newpage 
+
+\tableofcontents
+
+\newpage 
+\section{Introduction}
+	
+	This document provides specific details on how we generate our synthetic ecosystems. As the data and methodology are updated, this document will be updated to reflect the changes. The software used to generate our ecosystems is in the R package, \verb|spew|. The release of ecosystems will be synchoronized with versions of the software. Thus, our version 1.1.0 ecosystems were created with \verb|spew| version 1.1.0. One caveat is that lots of code is written to collect and transform the data for \verb|spew|. This is available online at: \\
+
+		\url{https://github.com/leerichardson/spew_olympus} \\
+
+	In future versions, we'll consolodate these two code bases into one location. 
+	\vspace{1mm}
+
+	In this document, the term SPEW, or \verb|spew|, will be used often. By SPEW, we mean the final synthetic ecosystems. By \verb|spew|, we mean the software used to generate the ecosystems. 
+
+	The current version of SPEW has 124 total synthetic ecosystems, which can be grouped into three categories. We have 52 \textbf{United States} ecosystems, one for each state. The major addition to the United States ecosystems is that locations are samlpled using road data. Second, we have 71 ecosystems using \textbf{IPUMS} data. This is more than previous versions of SPEW, as various speed, storage, and data issues have been resolved. Finally, we have one \textbf{custom} synthetic ecosystem from Canada, which is the same as in previous versions.
+
+	The R package \verb|spew| is designed to abstract the process of raw data sources to final ecosystem. For example, different data sources were used for the United States, Canada, and IPUMS ecosystems, but \verb|spew| created them all. This abstraction enhances our ecosystems in many ways. For one, \verb|spew| requires standardized data. Standardization specifies the exact format of input data to be usable by \verb|spew|. This expedites the process of moving from raw data to final ecosystem. In addition, \verb|spew| makes our ecosytems more reliable. Since \verb|spew| generates each ecosystem, fixing bugs in one place propogates to all other ecosystems. Finally, \verb|spew| is flexible and provides a straighforward way to add new elements to the ecosystem (eg: restaraunts, hospitals, etc...), as new data and methodology is discovered.  
+
+	For interested users, we provide the \verb|spew| source code. This allows users to track down the exact details in generation of their ecosystems. In the future, we hope \verb|spew| will be independent of us, and will be helpful to parties interested in their own synthetic ecosystems. Our software is publically accesible on Github at:  \\
+
+	\url{https://github.com/leerichardson/spew} \\
+
+\newpage 
+\section{Data Sources}
+
+	 	This section describes the data sources we used used to generate our ecosystems. Each ecosystem represents a \textbf{region}. Typically, each region is partitioned into \textbf{sub regions}, the union of which makes up a region. Generating an ecosystem for a region \verb|spew| requires three data sources:
+
+	 	\begin{enumerate}
+			\item \textbf{Population counts}: How many people are in the region. This tells us the number of either people or households is each sub-region. 
+			\item \textbf{Geographies}: Geographic boundaries of the regions, typically a shapefile. \footnote{From ArcGis: ``A shapefile is an Esri vector data storage format for storing the location, shape, and attributes of geographic features''}. Each polygon in the shapefile corresponds to a sub-region, and these must align with the population counts. 
+			\item \textbf{Microdata}: Individual records. This is typically a data-set in which each row is an individual, and each column is a characteristic of that individual. Some example columns are age, sex, and income.
+		\end{enumerate}
+
+		More data can be included (eg: schools and workplaces) when available. But all \verb|spew| ecosystems use these three data sources.
+
+		In the introduction, we mentioned that this version of SPEW has three different data groups: United States, IPUMS, and Canada. The following sections detail the data sources used to generate ecosystems for each group. 
+
+	\subsection{United States}
+		
+		The United States synthetic ecosystem is our most detailed. Data comes largely from the US census, with supplementary data on schools and workplaces. Because the US census data is so detailed, ecosystems are created at the tract level. This means sub-region ecosystems have population sizes ranging from $500-10,000$. Users can aggregate these tracts together to construct larger synthetic ecosystems. 
+
+		\subsubsection{Population Counts}
+		American Community Survey Summary Tables (2006-2010) 
+		\begin{itemize}
+			\item Available at: \url{https://www.census.gov/programs-surveys/acs/technical-documentation/summary-file-documentation.html}
+			\item Total number of households by Tract 
+		\end{itemize}
+
+		\subsubsection{Geographies}
+		US Census Topologically Integrated Geographic Encoding and Referencing (TIGER) Shapefiles (2010)
+		\begin{itemize}
+			\item Available at \url{https://www.census.gov/geo/maps-data/data/tiger.html}
+			\item Geographies at the Census tract level \footnote{See: \url{http://www2.census.gov/geo/pdfs/reference/geodiagram.pdf} for an image of the Census Geographic Hierarchy}
+			\item Roads at the County level
+		\end{itemize}
+
+		\subsubsection{Microdata}
+		1-Year American Community Survey (2013)
+		\begin{itemize}
+			\item Available at: \url{http://www2.census.gov/acs2013_1yr/pums/}
+			\item Corresponds to 2010 defined Census geography
+			\item Both household and people populations
+			\item See appendix for variables used 
+		\end{itemize}
+
+		\subsubsection{Schools}
+		National Center for Education Statistics School Data (2011-2013)
+		\begin{itemize}
+			\item Available at: \url{http://nces.ed.gov/ccd/elsi/tableGenerator.aspx}
+			\item Public Schools (2013) have latitude/longitude information. Private schools (2011) only have county level information. 
+			\item More information at: \url{http://data.olympus.psc.edu/syneco/west/north_america/united_states/schools/}
+		\end{itemize}
+
+		\subsubsection{Workplaces}		
+		ESRI Workplace Data (2009)
+		\begin{itemize}
+			\item Available with a license from ESRI
+			\item ID, employee counts, and county of different businesses in the US
+			\item More information at \url{http://data.olympus.psc.edu/syneco/west/north_america/united_states/workplaces/}
+		\end{itemize}
+
+	\subsection{IPUMS}
+
+		IPUMS synthetic ecosystems combine three global data sources. The most important of which is the Minnesota Population Center's International Public Microdata Sample (IPUMS). Not only does IPUMS provide microdata, but also corresponding shapefiles, which allow us to sample the sub-region synthetic ecosystems more accurately. Population counts come from another global source, Geohive. In this version, we omit data collected from the GADM project, although we hope to incorporate this greater geographic detail in future versions. 
+
+		\subsubsection{Population Counts}
+		Geohive 
+		\begin{itemize}
+			\item Available at: \url{http://www.geohive.com/}
+			\item Compiles population statistics from various statistical agencies throughout the world (The list can be seen here \url{http://www.geohive.com/earth/statorgz.aspx})
+			\item Population counts from over 150 countries at various administrative levels. 
+		\end{itemize}
+
+		\subsubsection{Geography}
+		IPUMS Shapefiles 
+		\begin{itemize}
+			\item Available at: \url{https://international.ipums.org/international/}
+			\item Shapefiles corresponding to IPUMS microdata. 
+			\item Available at administrative level 1 
+		\end{itemize}
+
+		\subsubsection{Microdata}	
+		International Public Use Microdata Sample (IPUMS)
+		\begin{itemize}			
+			\item Available at: \url{https://international.ipums.org/international/}
+			\item Microdata from 82 different countries 
+			\item See the appendix for the variables used 
+		\end{itemize}
+
+
+	\subsection{Canada}	
+
+		Our Canadian synthetic ecosystem is similar to the United States, since it's also at the tract level. However, detailed data coming from roads, schools, and workplaces is not included. Our Canadian inpur data comes from Statistics Canada.
+
+		\subsubsection{Population Counts}
+		Statistics Canada Census Profile (2011)
+		\begin{itemize}
+			\item Available at: \url{https://www12.statcan.gc.ca/census-recensement/2011/dp-pd/prof/details/download-telecharger/comprehensive/comp-csv-tab-dwnld-tlchrgr.cfm?Lang=E} specifying the Census Tracts option.
+			\item Total population for every tract 
+		\end{itemize}
+
+		\subsubsection{Geographies}
+		Statistics Canada Boundary File (2011)
+		\begin{itemize}
+			\item Available at: \url{https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/bound-limit-2011-eng.cfm} specifying the English, ArcGIS, and Census tract option.
+			\item Geographies at the Census Tract level 
+		\end{itemize}
+
+		\subsubsection{Microdata}
+		Public Use Microdata File (2011) 
+		\begin{itemize}
+			\item Obtained with special permissions from Statistics Canada
+			\item Variables defined in the appendix
+		\end{itemize}
+
+\newpage
+\section{Methods}		
+	This section describes the methodology used to generate SPEW ecosystems. The first step is always to standardize the data sources. Our standard for \verb|spew| input data is:
+
+	\begin{enumerate}
+		\item There must be population counts, geographies, and microdata. 
+		\item The \textbf{sub-regions} in each data source must have identical names. 
+	\end{enumerate}
+
+	For example, Canada uses three different sources: Population counts, geographies, and microdata. Each one of these sources has a geographic division of Canada. Before \verb|spew| can run, each source must have non contradicting geographic divisions. Our package \verb|spew| includes a series of checks to verify their data is standardized.  
+
+	At a high level, \verb|spew| splits a \textbf{region} into \textbf{sub-regions}, then generates an ecosystem for each sub-region, see Algorithm \ref{alg:spew} for an overview. After \verb|spew| recognizes the input data is valid, it splits the regions into sub regions (eg: Census Tracts, states, provinces), the union of which is the entire region. Then \verb|spew| generates a synthetic ecosystem for each sub-region. Finally, the sub-region synthetic ecosystems are put back together to form a region synthetic ecosystem.
+
+	\vspace{2mm}	
+	\begin{algorithm}[H]
+	\label{alg:spew}
+	\SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+	\SetAlgoLined
+	\Input{Population counts, geographies, microdata, other sources}
+
+	   1. Check for required data sources \\
+	   2. Check that data sources have aligned geographic divisions 
+
+	 \For{Every Sub region} {
+	 	1. Sample Households \\
+	 	2. Sample Locations \\
+	 	3. Sample People \\
+	 	4. Assign other data if available (schools, workplaces, etc...) 
+	  }
+	  \Output{Synthetic Ecosystem} \
+	 \caption{Pseudocode for spew synthetic ecosystems} 
+	\end{algorithm}
+	\vspace{2mm}
+
+	A piece of geographic information we often is the Public Use Microdata Area (\textbf{PUMA}). This is used when we have data-sources at different levels. A \textbf{PUMA} groups together various sub-regions. For example, the United States provides microdata at the PUMA level. Each PUMA is made up of 30-60 tracts, or around 100,000 people. To generate an ecosystem for a particular tract, we use microdata corresponding to whichever PUMA the tract is a part of. 
+
+	The next sections provide detials on each component of the \verb|spew| process. We'll explain what we've done, and what we're planning to include in future versions. 
+
+	\subsection{Sample Households}
+		From Algorithm \ref{alg:spew}, the step of \verb|spew| is to sample households. This is because microdata typically comes in two pieces: Household and Individual data. Households are sampled first so we can link individual people to their respective household, verify each household has the correct number of people. Sampling entire household units also avoids issues such as generating a household full of 6 year olds. 
+
+		This version of \verb|spew| uses a basic approach: Simple Random Sampling. In addition to SRS, we are hoping to include more sophisticated sampling methods in future versions. Some of these include:
+
+			\begin{itemize}
+				\item Moment Matching (MM)
+				\item Iterative Proportional Fitting (IPF)
+			\end{itemize}
+
+		\subsubsection{Simple Random Sampling}
+		The rationale for using SRS is that it was the easiest to implement, and allowed us to focus on other issues (eg: collecting and formatting the data) to put together populations. In a sense, we used SRS as a placeholder while putting together other components of SPEW, and always intented to revisit it later and think about a more sophisticated sampling approach. The idea behind SRS is as follows. Let's say we want to generate $x$ households and $y$ people for a given region. First, we uniformly sample $x$ records with replacement from the household microdata, which produces $x$ synthetic households. For the synthetic people, we use the ID variable linking the household and person level microdata, and the people whose households were sampled make up the synthetic people.
+
+		A few things to point out here. First, since we are sampling households with replacement, identical households can be seen inside the population. This also implies that people may be duplicated within the population. However, usually the records aren't exactly identical, since the sampling of locations also assigns a latitude and longitude to each household. Next, we point out that the data sometimes comes with the total number of households, and other times as the total number of people. If we know the total number of households to sample, we use this. If we only know the total number of people, we need to estimate the average household size, and usually divide the number of people by this to obtain $x$. Here we see the importance of the Household Size variable, which we will re-visit in more detail when describing MM.  
+
+
+		\subsubsection{Moment Matching}
+		The second approach we propose is denoted as Moment Matching (MM). We initially used this method as a way to match the household sizes of West African countries. For example, we may have had microdata for a given country, but the average household size in the microdata does not match the average household size known from other sources. This method assigns weights to household records such that sampling according to these weights gives a synthetic population with the appropriate moments.  
+
+
+		First, let's set the notation. Assume we have access to the first moment of region $R$'s household size, but the distribution of household size is unknown. Denote the first moment of the household size of region $R$  by $M_R$. Next, let's say that the microdata has $N$ distinct household sizes $\textbf{n}=(n_1, \dots, n_N)^T$, where each $n_i$ indicates that there is at least one household within the PUMS of size $n_i$. Denote weights by $\textbf{x}=(x_1, \dots, x_N)^T. $ Let $x_i \ge 0$ for $i= 1, \dots, N$, $\sum_{i=1}^N x_i =1$, and $\sum_{i=1}^N x_in_i=M_R$ denote the constraints.  This formulation alone has infinitely many solutions.  To settle on a particular value, we form a quadratic program and minimize  $$f(x) =\frac{1}{2} ||\textbf{x}||_2^2,$$ 
+
+		where $||\cdot||_2$ is the $L^2$ norm. We note that one reason for this proposed method is due to is simplicity and computational tractability. 
+
+		Our objective function $f$ and the constraints $h_i$ for $i=1, \dots N$, $\ell_1$ and $\ell_2$ are as follows,
+
+		\begin{align*}
+			f(\textbf{x}) &= \frac{1}{2}||\textbf{x}||^2  \\
+			h_i(\textbf{x}) &= - x_i \le 0 \text{ for } i=1, \dots, N \\
+			\ell_1(\textbf{x}) &= \sum_{i=1}^N x_i -1 = 0 \\
+			\ell_2(\textbf{x}) & = \sum_{i=1}^N n_i x_i - M_R =0 
+		\end{align*}
+
+		\begin{align}\label{l3}
+		\textbf{Ax} = \textbf{b}\text{, where}
+		\end{align}
+		\begin{align*}	
+		\textbf{A} = \left [ 
+		\begin{array}{ccc}
+		  1 & \dots & 1 \\
+		  n_1 & \dots & n_N 
+		\end{array}
+		 \right ]\text{, } \textbf{x}=
+		\left [
+		\begin{array}{c}
+		  x_1 \\
+		  \vdots \\
+		  x_n
+		\end{array}
+		\right ] \text{, } \textbf{b} =
+		\left [
+		\begin{array}{c}
+		  1 \\
+		  M_C
+		\end{array}
+		\right ] 
+		\end{align*}
+
+
+		\begin{align}
+			&\min_{\mathbf{x} \in \mathbb{R}^N} \frac{1}{2} \mathbf{x}^T\mathbf{x}, \text{ with } \mathbf{A}\mathbf{x}=\mathbf{b}, \mathbf{x} \ge 0,
+		\end{align}
+
+		which is in the form of a quadratic program. We use the R Package \texttt{quadprog} to solve. 
+
+		We hope to include MM in situations when matching a single variable is critical. 
+
+		\subsubsection{Iterative Proportional Fitting}
+		Iterative proportional fitting (IPF) \cite{deming1940least} \cite{fienberg1970iterative} estimates individual cell values of a contingency table with known marginal totals. Beckmam \cite{beckman1996creating} created a sampling scheme based on IPF to generate synthetic populations for transportation simulations. The IPF sampling scheme is widely adopted, for instance, RTI \cite{wheaton2009synthesized} used IPF to generate their United States synthetic population. The IPF sampling scheme is a two step method:
+
+		\begin{enumerate}
+			\item Generate contingency table of population demographics with IPF
+			\item Sample households using contingency table probabilities as weights
+		\end{enumerate}
+
+		Step 1 estimates an $m$-dimensional contingency table using marginal totals. For our purposes, each dimension represents a \textbf{demographic}. Each demographic is made up of \textbf{categories}. An example demographic is gender, which has two categories: male and female. Following \cite{beckman1996creating}, our notation is:
+
+		\begin{itemize}
+			\item $n: $ total number of observations in the table
+			\item $m: $ number of demographics (dimensions of the contingency table)
+			\item $n_j: $ number of categories for the $j^{th}$ demographic. $j = 1, 2, ..., m$
+			\item $i_j: $ value of the $j^{th}$ demographic. $i_j = 1, 2, ..., n_j$ 
+			\item $p_{i_1, i_2, ..., i_m} = \frac{n_{i_1, i_2, ..., i_m}}{n}: $ proportion of observations in an individual cell
+			\item $T_k^{(j)}: $ marginal totals for $k^{th}$ category of $j^{th}$ demographic. $k = 1, 2, ..., n_j$
+		\end{itemize}
+
+		So for all $j$, we have:
+
+		\begin{equation}
+			n = \sum_{k = 1}^{n_j} T_k^{(j)}
+		\end{equation}
+
+		IPF \textbf{updates} the contingency table until the marginal totals are within a \textbf{tolerance} of the known marginals. Each update is called an \textbf{iteration}. Let $p_{i_1, i_2, ..., i_m}^{(t)}$ denote the estimation of the cell $(i_1, i_2, ..., i_m)$ during iteration $t$.
+
+		The initial contingency table for IPF is:
+
+		\begin{equation}
+			p_{i_1, 1_2, ...i_m}^{(0)} = p_{i_1, i_2,...,	i_m}
+		\end{equation}
+
+		In practice, the raw counts from PUMS are used, without incorporating the marginals. For instance if the PUMS data has four males heading three person household aged 30-34, earning $\$$ 100,000 dollars a year, then:
+
+		\begin{align*}
+		 p_{i_{gender}, i_{hhsize}, i_{age}, i_{income}} &= 4
+		\end{align*}
+		Each iteration goes through each margin, and updates the estimated proportion $\hat{p}_{i_1, i_2, ..., i_m}$. Specifically, for each of the $j$ margins, we update the $k^{th}$ category by:
+
+		\begin{equation}
+			p_{i_1, i_2, ...,i_j = k, ...,i_m}^{(t)} = p_{i_1, i_2, ...,i_j = k, ...,i_m}^{(t - 1)} \frac{T_{k}^{(j)} / n}{\sum_{i = 1}^{n_1} \sum_{i = 1}^{n_2} ... \sum_{i = 1}^{n_m} p_{i_1, i_2, ...,i_j = k, ...,i_m}^{(t - 1)}}
+		\end{equation}
+
+		We continue iterations until the tolerance is reached. Beckman \cite{beckman1996creating} reports that the procedure typically converges in 10-20 iterations.
+
+		Step 2 samples households in proportion to the probabilities in the contingency table. The probabilties determine how many households of each demographic combination should be sampled. For each demographic combination, probabilities are assigned to each PUMS household, based on how ``close'' they are, in terms of demographics. The closeness of each household is determined by the distance function:
+
+		\begin{equation}
+			D(p, c) = w_p \prod_{i \in J} (1 - |\frac{d_i^p - d_i^c}{r_i}|^k) \times \prod_{i \centernot\in J} (1 - (\delta(d_i^p, d_i^c))
+		\end{equation}
+
+		With the following notation:
+
+		\begin{itemize}
+			\item $p: $ household from PUMS  
+			\item $c: $ cell from contintency table
+			\item $J: $ set of ordinal variables. $\centernot\in J$ is the set of categorical variables.
+			\item $d_i^p: $ value of $i^{th}$ demographic for household $p$
+			\item $d_i^c: $ value of $i^{th}$ demographic of cell type $c$
+			\item $r_i: $ range of demographic $i$ in the PUMS 
+			\item $w_p: $ weight from household $p$
+			\item $\delta(d_i^p, d_i^c) = \begin{cases} \alpha & d_i^p = d_i^c \\ 1 - \alpha & d_i^p \neq d_i^c \end{cases} $
+		\end{itemize}
+
+		Note that when $\alpha = 0$ and $k \to 0$, $D(p, c)$ is a 0-1 loss function, which means we're only sampling the subset of exact matching characteristics. 
+
+		Finally, each record is sampled according to the following weights:
+
+		\begin{equation}
+			\mathbb{P}(\texttt{Select Household p}) = \frac{D(p, c)}{\sum_j D(j, c)}
+		\end{equation}
+
+		\subsection{Sample Locations}
+		Once households are sampled, we need to assign them a location. This is why the geographies of a region are a required data source. In previous versions, we always assigned locations uniformly. Similar to household sampling, this was used as placeholder until more realistic method could be implemented. In this version, we've incorporated road based sampling for United States populations. The goal of all our approaches, of course, is to make our populations as realistic as possible. 
+
+		\subsubsection{Uniform Location Sampling}
+		Given the polygon of sub region, we'd assign a household to a random point in the polygon. Each point is given equal probability to contain the household. To implement uniform sampling, we use the \verb|spsample| from the \verb|sp| package.
+
+		One note here is that this function was particular slow for large regions, such as the regions of China and India, where we needed to assign tens of millions of locations. In some situations, we would only take 100,000 samples, resample tens of millions of these, and add noise to the results. This was strictly to increase the performance of \verb|spew|, not for accuracy purposes. 
+
+		\subsubsection{Road Location Sampling}
+		The United States road data came at the county level, whereas the polygons come at the tract level. To resolve this difference, we use the \verb|gIntersection| function from the \verb|rgeos| package. This function takes two shapes (in our case, the roads were lines, and the tracts were polygons) and returns only the geographies in one shape. In our case, this function gave us all the roads within a given tract. 
+
+		With the tract level roads, we once again used the \verb|spsample| function to assign locations. In this case, \verb|spsample| sampled from the lines, and added standard normal random noise, to ensure households weren't exactly in the streets 
+
+
+		While the \verb|spsample| has proved very useful, we've ran into consistency and speed issues. In future versions of \verb|spew|, we will implement our own sampling methods, in ways that will speed up the process and make it more reliable. 
+
+	\subsection{Sample People}
+
+		Now that we have households and locations assigned, the next step is to sample people for each household. Note that the household and people level microdata always contain an identifier which can be used to link them. Using this variable, to assign people to households we perform a left join \footnote{Left Join comes from SQL Joins, which combine records for two tables. Left Join's return all rows from the table 1 along with matching rows from table 2} operation using the sampled households and people microdata. This means that our synthetic people are simply the people corresponding to the households which were already sampled. We take this approach to ensure the consistency between our household and person ecosystems. Note that the location attached to each person will be identical to the location of their household. 
+
+		Like our other sampling methods, we believe there is much room to improve here. In particular, we see that that both persons and households are frequently duplicated. To get around this for people, we could estimate the conditional density of people corresponding to household sizes, and sample from this. We hope to include methods like this in future versions of the program. 
+
+	\subsection{School Assignments}
+
+		Note that for schools, we only have data corresponding to the United States. For that reason, we will explain our method for assigning schools in the US here. We have access to school data that includes:
+
+			\begin{itemize}
+				\item enrollment totals 
+				\item latitude and longitude for public schools 
+				\item county location for private schools.  
+			\end{itemize}
+
+		In addition, the synthetic people have features for school enrolment (\texttt{SCH}), grade level (\texttt{SCHG}), and age (\texttt{AGEP}).Using these three variables, we can find which people need to be assigned to a public school or private school. Note that our school dataset only contains elementary, middle, and high schools, so we are not assigning preschool, college, or professional schools. 
+
+		The algorithm is as follows.  For each person, determine whether the person should be sent to school. Use the county of the person to identify the  schools (Note that if there are no schools in this particular, county, we use the entire state). Then using \texttt{SCH}, determine whether we should use public or private schools. Using the \texttt{SCHG} variable, further subset the schools to find those with the proper grade.  For private schools, weight the subsetted schools by the enrollment total, assigning more weight to schools with more enrolled students.  For public schools, weight the subsetted schools by both the enrollment total and the haversine distance \footnote{Distance between two points on a sphere using longitude and latitude}between the person and the schools.  Schools with more people are given more weight as are schools that are physically closer to the person.  Finally, sample a school with the weights calculated above.  In the case where there are no schools in the county, subset the schools only by state.
+
+		In this way, students will not cross county borders when being assigned a school. The enrollment totals and distances are used to assign probabilities to various schools, as opposed to hard restrictions. The process is summarized in Algorithm \ref{alg::schools}. \\
+
+		\begin{algorithm}[H]
+                  \label{alg::schools}
+		  \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+			\SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+			\SetAlgoLined
+		 \Input{synthetic people, schools data}
+		        \For{Every person}{
+		           Determine whether child should be sent to school
+		          \eIf{no school}{school ID $\leftarrow$ NA} 
+		         {
+                            \eIf{coordinates of school exist}{
+                              weight schools based on distance from child and enrollment totals
+                            }{
+                              weight schools based on enrollment totals
+                            }
+                            sample school from county (use state if there are no schools in a county) based on weights
+                            school ID $\leftarrow$ sampled school ID
+                          }
+		        }
+		        \Output{School IDs} 
+                        \caption{Pseudo code for generating schools}
+		\end{algorithm}
+
+	\subsection{Workplace Assignments}
+
+        Workplaces are assigned im a similar way as schools.  The synthetic people have a feature: employment status recode (\texttt{ESR}), which tells us if the person is working.  The workplace data we have contains the number of employees as well as the state and county of the workplace.  We first subset the workplaces to match the state and county of the person in question.  Then we weight the workplaces by the number of employees, with more employees given more weight.  Finally, we sample a workplace for each person.  The pseudo code for this assignment is shown in Algorithm \ref{alg::workplaces}. \\
+
+		\begin{algorithm}[H]
+                  \label{alg::workplaces}
+                  \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+			\SetAlgoLined
+		 \Input{synthetic people, workplace data}
+		        \For{Every person}{
+		          Determine whether person is in workforce
+
+		          \eIf{no employment}{work ID $\leftarrow$ NA} 
+		         {
+                            weight workplaces in county based on number of employees\\
+                            sample a workplace based on weights \\
+                            workplace ID $\leftarrow$ sampled workplace ID
+                          }
+		        }
+		        \Output{Workplace IDs}
+                \caption{Pseudo code for generating workplaces}
+		\end{algorithm}
+
+\newpage
+\section{Data Organization}
+SPEW synthetic ecosystems are available online at: 
+
+	\vspace{2mm}
+	\url{http://data.olympus.psc.edu/syneco/}. 
+	\vspace{2mm}
+
+Synthetic ecosystems are stored in a geographic hierarchy, based on the hierarchy of the United Nations Statistics division. This hierarchy is available at: 
+	
+	\vspace{2mm}
+	\url{http://unstats.un.org/unsd/methods/m49/m49alpha.htm}). 
+	\vspace{2mm}
+
+The lowest level of our geographic hierarchy is a country. Each country has a corresponding ISO3 code, invaluable for matching data accross sources. Sometimes, we have data at lower levels than country. In this case, we extend the geographic hierarchy to include data at lower levels within the country. An example is the United States, where we have data at the state level, so we include a state level in the hierarchy, underneath the US country.
+
+The hierarchy is as follows:
+
+\begin{enumerate}
+	\item Region
+	\item Sub-region 
+	\item Country
+	\item Lower level data (if available)
+\end{enumerate}
+
+Below are example file-paths for China and Califoria, within the hierarchy:
+
+\begin{itemize}
+	\item \url{spew_1.2.0/asia/eastern_asia/chn}
+	\item \url{spew_1.2.0/americas/northern_america/usa/06}
+\end{itemize}
+
+\subsection{Directory Structure}
+Each synthetic ecosystem is contained within its own directory. In this directory, the input data goes in the \url{input/} folder, and the output data in the \url{output/} folder. The \url{input/} directory organizes input data by type (counts, shapefiles, etc), year, and geographic level. The geographic levels won't necesarily match accross different data types, as they come from entirely different sources. 
+
+The specific directory structure is as follows. In this case, the \textbf{region} is a country, and the \textbf{sub-region} at the bottom represents a state. 
+
+\newpage
+\dirtree{%
+.1 region.
+.2 input.
+.3 counts.
+.4 type. 
+.5 year.
+.6 level.
+.3 pums.
+.4 type. 
+.5 year.
+.6 level.
+.3 shapefiles.
+.4 type. 
+.5 year.
+.6 level.
+.3 other data sources.
+.4 type. 
+.5 year.
+.6 level.
+.2 output.
+.3 pums type.
+.4 count type. 
+.5 shapefile type. 
+.6 sub-region.
+.7 eco.
+.8 person csv's.
+.8 household csv's.
+.8 other csv's.
+.6 sub-region.
+.7 eco.
+.8 person csv's.
+.8 household csv's.
+.8 other csv's.
+.2 sub-region.
+.3 same file structure as region.
+.2 sub-region.
+.3 same file structure as region.
+}
+
+% \subsection{Appending}
+% A second driving force behind our file structure is the need to produce an automatic suite of diagnostics once the synthetic ecosystems are complete. Because we are interested in running these diagnostics at different geographic levels, the first step towards making this happen is to append the files of similar groups together into one main file. To append together all of the files in a given subdirectory, we use the following approach:
+
+% \begin{algorithm}[H]
+%        \label{alg::append}
+%        \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+% 	\SetAlgoLined
+% 	\Input{Directory Name}
+% 		1. Traverse the directory tree to obtain a list of sub directories \\
+%         \For{every subdirectory}{
+%         	1. Verify this isn't the eco folder in the base directory \\
+%         	\eIf{Subdirectory name is eco}{
+%         		1. Create new directory names eco one level up \\
+%         		2. Append all files in the current sub directory into a new file \\ 
+%         		3. Move the appended file the newly created directory \\
+%         		4. Add the new directory to the end of the sub directory list
+%         	}
+%         	{Move to next directory} 
+%         }
+%        \Output{Appended files at all geographic levels} 
+%        \caption{Pseudocode for appending files}
+% \end{algorithm}
+
+\subsection{Diagnostics}
+	We're currently building a suite of diagnostic checks, which run automatically for each ecosystems. These will be included in future versions.
+
+\newpage
+\nocite{*}
+\printbibliography
+
+\newpage 
+\appendix
+
+\section{Codebook}
+We've generated ecosystems using three different sources of microdata. The source of microdata establishes the columns used for our ecosystems. The following links provide the codebooks for each source of microdata:
+
+\subsection{United States: American Community Survey}
+	See \url{https://usa.ipums.org/usa/resources/codebooks/DataDict2013.pdf}
+
+\subsection{Canada: Public Use Microdata File}
+	See \url{http://data.olympus.psc.edu/syneco/west/north_america/canada/docs/pums/2011%20PUMF_FMGD/Hierarchical%20file/English/Documentation%20and%20user%20guide/2011%20NHS%20Hierarchical%20PUMF%20User%20Guide.pdf}
+
+\subsection{IPUMS: International Public Use Microdata Sample}
+	See \url{https://usa.ipums.org/usa/resources/codebooks/DataDict0610.pdf}
+
+
+\newpage 
+\section{SPEW Process Documentation}
+This section describes the steps to generate our ecosystems on the Olympus supercomputer. In paricular, we will walk through how to load \verb|spew| on Olympus, how we're running it, and how \verb|spew| read data and turns them into ecosystems. The goal is if we were all hit by busses, there would be enough details for others to smoothly generate new ecosystems. Hopefully, this makes it easier to integrate with other software, and will give enough detail so others can understand and help make the process more efficient. 
+
+\subsection{Installing SPEW on Olympus}
+To install \verb|spew| on Olympus, you must be using R version 3.2.1. \footnote{R/3.3.1 is probably fine, but this version of ecosystems was generated using R/3.2.1}. It may work with older versions, but to be safe we have been using 3.2.1. Load this version of R with: 
+
+\begin{verbatim} module load r/3.2.1 \end{verbatim}
+
+Next, we need the \verb|spew| R package. This is located on Github at: \\
+
+\url{https://github.com/leerichardson/spew} \\
+
+We're installing \verb|spew| in our personal R libraries on Olympus, opposed to being maintained by system administrators. The reason is that \verb|spew| is under development, and we want to be able to make changes and check them on Olympus quickly. Our process is to test new features locally, and when they're ready, update the package in our personal libraries on Olympus. The following commands load \verb|spew| in your personal library:
+
+\begin{verbatim}
+	library(devtools)
+	library(httr)
+	library(curl)
+	personal_ind <- grep("leerich", .libPaths())
+	personal_lib <- .libPaths()[personal_ind]
+	remove.packages(pkgs = "spew", lib = personal_lib)
+	withr::with_libpaths(new = personal_lib, install_github("leerichardson/spew"))
+	library(spew)
+\end{verbatim}	 
+
+This will install the most recent version of \verb|spew| in your personal library on Olympus. Note that if you're installing \verb|spew| for the first time, then you will only need to omit line 4, which removes an older version of \verb|spew| from your personal R libraries. 
+
+\subsection{Calling SPEW} 
+Once \verb|spew| is installed, you can use it on Olympus. This section explains how we run \verb|spew|. However, \
+we often run it interactively to test new features. The code to call spew is on Olympus at: \\
+
+\url{/mnt/beegfs1/data/shared_group_data/syneco/spew_olympus} \\
+
+The inputs for our \verb|spew| are located in a lookup table. The file that creates the lookup table is called \verb|spew_olympus/create_lookup.R|, and the output of this is a lookup table saved at \verb|input/spew_lookup.csv|. Our current process is that whenever we obtain new data, we update the \verb|spew_olympus/create_lookup.R| file so that lookup table has correct inputs. In the future, we hope to get away from the lookup table, and generate the inputs from the file structure. 
+
+We call spew with \verb|spew_olympus/run_spew.sh|. This shell script takes one argument, which is an R query in the form:
+
+\begin{verbatim} 
+	run_spew.sh which(lookup$[geo_level] == ``[geo_level_name]'')
+\end{verbatim}
+
+Where \verb| geo_level| is either \verb| hemisphere|, \verb| continent|, \verb| country|, or \verb| state_dirs|, and \verb|geo_level_name| is the corresponding name. For example, to run the uruguay, one would use:
+
+\begin{verbatim} 
+	run_spew.sh which(lookup$country == ``uruguay'')
+\end{verbatim}
+
+In Lee's home directory, there is a file \verb|/home/leerich/call_spew.sh|) which takes two inputs, \verb| geo_level| and \verb| geo_level_name|, and constructs the query for you. So you can run with \verb|call_spew.sh country uruguay|. 
+
+The purpose of the query argument is that we are using it to subset the lookup table and obtain the appropriate inputs for a given location. Specifically, \verb|spew_olympus/run_spew.sh| calls the file \verb|spew_olympus/subset_lookup.R|, which takes the query and subsets the lookup table to create a file \verb|input/tmp_subset_lookup.csv|. 
+
+Once the temporary lookup table is created, \verb|spew_olympus/run_spew.sh| loops through each row and submits a job, using the columns as the parameters. The submission script is \verb|spew_olympus/spew.sh|. 
+
+In addition, note that \verb|spew_olympus/run_spew.sh| does two more takss things before submission. First, it removes pre-existing outputs in the output directory. This means that every directory starting with either output or eco will be removed from the output folder. Next, it construct the path for the logfile to be written to corresponding directory, and creates a \verb|logfiles/| directory to store this inside.
+
+The final call of \verb|spew_olympus/run_spew.sh| is to \verb|spew_olympus/spew.sh|, seen here:
+
+\begin{verbatim}
+	qsub -o $output_log -e $output_log -v data_group=$data_group,
+	input_dir=$input_dir,output_dir=$output_dir,
+	convert_count=$convert_count,pop_table=$pop_table,
+	shapefile=$shapefile,pums_h=$pums_h,pums_p=$pums_p 
+	-N $state_dirs 
+	/mnt/beegfs1/data/shared_group_data/syneco/spew_olympus/spew.sh
+\end{verbatim}	
+
+Now we're running \verb|spew_olympus/spew.sh|. Since this is called using qsub, the first lines are PBS commands. After verifying that the pandoc, io, and r/3.2.1 modules are loaded on the compute node for this run of spew, spew.sh calls the final function, \verb|spew_olympus/run_spew.R|:
+
+\begin{verbatim}
+	Rscript /mnt/beegfs1/data/shared_group_data/syneco/spew_olympus/run_spew.R 
+	${data_group} ${input_dir} ${output_dir} ${convert_count} ${pop_table} 
+	${shapefile} ${pums_h} ${pums_p}
+\end{verbatim}	
+
+The \verb|spew_olympus/run_spew.R| script prepares the R session, then calls the \verb|spew| function \verb|generate_spew|. By preparing the session, we mean it loads in the packages, parses the inputs, and determines the variables to generate. This is part is inconsistent: some of the inputs parameters come from the table, while others are generated in this file. We're hoiping to synchronize this in the future. 
+
+The final line of \verb|spew_olympus/run_spew.R| calls the function \verb|generate_spew| using all of the inputs generated from both the lookup table and this file, and we are now running SPEW with these inputs to generate the synthetic ecosystems. 
+
+\subsection{How SPEW works}
+The previous section describes how to run \verb|spew| on olympus. Here, we explain how \verb|spew| converts input data into ecosystems. \verb|spew| is split into three main functions:
+
+\begin{enumerate}
+	\item \textbf{Read}: Loads input data
+	\item \textbf{Format}: Verifies data is in standard form 
+	\item \textbf{Make}: Converts input data into synthetic ecosystem. \footnote{We want to change the name of this function, but haven't gotten around to it yet}
+\end{enumerate}
+
+The \verb|generate_spew| function is  wrapper function which calls, \verb|read_data|, \verb|format_data|, and \verb|make_data| in sequence.
+
+\verb|read_data| function takes a base directory, an R list containing the folder names, and a data group. It then uses the data group variable to determine how to read in the data. Currently, we have functions to read in USA, IPUMS, and Custom data. The USA and IPUMS data groups rely on the input data having an identical file-structure, whereas the custom data group provides filepaths for each source. As output, \verb|read_data| provides a list with an element for each data-type. We require that the list contains shapefile, pop\_table, and pums elements. It can also include other optional inputs, such as schools, workplaces, etc...
+
+Next, \verb|format_data| function takes the data list and data group, and returns the data list in standard form. The key feature of properly formatted data is an element in the data list called \verb|data_list$pop_table|, which is a data frame with 3 columns:
+
+\begin{enumerate}
+	\item place\_id
+	\item puma\_id 
+	\item n\_house 
+\end{enumerate}
+
+The place\_id column corresponds to the unique id for all of the regions within a location. For example, the place ID could correspond to tracts within a state, districts within a country, etc...Note that the place\_id will be identical for both the shapefile and pop table, as well as any other data inputs being used. The puma\_id variable is used for subsetting the PUMS data in order to obtain more accurate samples, and each place ID is contained within a puma ID. 
+
+For the USA and Canada, the puma\_id variable is used to save the tract level synthetic ecosystems into groups corresponding to their puma\_id, whereas for IPUMS data the lowest level of geography we have is the puma\_id. For IPUMS microdata, the column corresponding to the puma\_id is \verb|GEOLEV1|, which is a numeric. The IPUMS shapefiles have an element for both the \verb|GEOLEV1| name (which is a character in R), and the \verb|GEOLEV1| ID, (a numeric in R). Since the population counts are obtained from Geohive as characters, we match the names these with the IPUMS \verb|GEOLEV1| name, and this becomes the place\_id. Similarly, the puma\_id is a numeric since the because this is what was available to match with the IPUMS shapefile. In principle, outputting the final formatted table should give the all of the correct lookup information in order to either display the information as an ID variable or the character name. This should be available as a standard SPEW output very soon. 
+
+Finally, the \verb|make_data| function takes in the properly formatted data-list and outputs a a synthetic ecosystem for each one of the place\_ids. By default, we create a directory for each puma\_id, and the place\_id synthetic ecosystem is stored in its corresponding puma\_id folder. For the USA and Canada, this means we have many tract\_ids stored within a puma directory, and for IPUMS, we store the synthetic ecosystem for each puma/place\_id within in it's own directory. 
+
+The \verb|make_data| function is the key function which implements the spew algorithm. The other two functions are primarily there for formatting purposes. In the future, we hope to make this distrinction more clear, so people only need to function to impement the \verb|spew| algorithm. 
+
+\newpage 
+\section{Acknowledgements}
+This work was supported by the Models of Infectious Disease Agency Study (MIDAS) from the National Institute of General Medical Sciences (NIGMS), Cooperative Agreement NIH 1 U24 GM110707-01. The content is solely the responsibility of the authors and does not necessarily represent the official views of the NIGMS or the National Institutes of Health (NIH).
+
+\end{document}
+

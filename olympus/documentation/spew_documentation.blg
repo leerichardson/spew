@@ -1,0 +1,14 @@
+[1] Config.pm:318> INFO - This is Biber 1.8
+[1] Config.pm:321> INFO - Logfile is 'spew_documentation.blg'
+[72] biber:275> INFO - === Sat Sep 17, 2016, 19:39:00
+[72] Biber.pm:333> INFO - Reading 'spew_documentation.bcf'
+[128] Biber.pm:607> INFO - Using all citekeys in bib section 0
+[240] Biber.pm:3053> INFO - Processing section 0
+[529] Biber.pm:3190> INFO - Looking for bibtex format file 'spew_refs.bib' for section 0
+[530] bibtex.pm:933> INFO - Decoding LaTeX character macros into UTF-8
+[531] bibtex.pm:808> INFO - Found BibTeX data source 'spew_refs.bib'
+[941] Biber.pm:2939> INFO - Overriding locale 'en_US.UTF-8' default tailoring 'variable = shifted' with 'variable = non-ignorable'
+[941] Biber.pm:2945> INFO - Sorting 'entry' list 'nty' keys
+[941] Biber.pm:2949> INFO - No sort tailoring available for locale 'en_US.UTF-8'
+[955] bbl.pm:482> INFO - Writing 'spew_documentation.bbl' with encoding 'UTF-8'
+[956] bbl.pm:555> INFO - Output to spew_documentation.bbl

@@ -102,7 +102,7 @@ for (var in uniq_vars) {
       # Create the Lookup Table 
       marg_names <- names(marginals$HINCP$df)[-1]
       lower <- c(-60000, 10000, 15000, 25000, 35000, 50000, 100000, 200000)
-      upper <- c(9999, 14999, 24999, 34999, 49999, 99999, 199999, 100000000)
+      upper <- c(9999, 14999, 24999, 34999, 49999, 99999, 19999, 100000000)
       lookup <- data.frame(marg_names, lower, upper, stringsAsFactors = FALSE)
       marginals$HINCP$lookup <- lookup
       

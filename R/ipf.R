@@ -8,7 +8,7 @@
 #' @param k number between 0 and 1, weight of orginal variables 
 #' @param puma_id id indicating the current puma 
 #' @param place_id id indicating the current region
-sample_ipf <- function(n_house, pums_h, pums_p, marginals, alpha = 0, k = .001, 
+sample_ipf <- function(n_house, pums_h, pums_p, marginals, alpha = 0, k = 1, 
                        puma_id = NULL, place_id = NULL) {
   # Step 1: Align PUMS with Marginals
   pums <- subset_pums(pums_h = pums_h, pums_p = pums_p, marginals = marginals, puma_id = puma_id)
@@ -16,7 +16,6 @@ sample_ipf <- function(n_house, pums_h, pums_p, marginals, alpha = 0, k = .001,
   
   # Step 2: Fill in the contingency table
   table <- fill_cont_table(pums = pums, marginals = marginals, place_id = place_id, n_house = n_house)
-  # Write out the contingency table HERE.
   
   # Step 3: Sample with contingency table weights 
   households <- sample_with_cont(pums = pums, table = table, alpha = alpha, 
@@ -121,32 +120,12 @@ fill_cont_table <- function(pums, marginals, place_id, n_house) {
   ipf_fit <- mipfp::Ipfp(seed = seed, target.list = target_list, target.data = target_data)
   ipf_tab <- ipf_fit$x.hat
   table <- as.data.frame(ipf_tab)
-  stopifnot(sum(table$Freq) - n_house < 1)
-
-  # Round frequencies to whole numbers, update so
-  # it matches the n_house total # of households 
+  stopifnot(sum(table$Freq) == n_house)
+  
+  # HOW TO VERIFY THIS 
   table$Freq <- round(table$Freq, digits = 0)
-  while (sum(table$Freq) != n_house) {
-    table$Freq <- update_freqs(table$Freq, n_house)    
-  }
 
   return(table)  
-}
-
-#' Update frequencies to match # of households 
-#' 
-#' @param frequencies 
-#' @param n_house number of households 
-update_freqs <- function(freqs, n_house) {
-  n <- sum(freqs)
-  update_ind <- sample(x = which(freqs > 0), size = 1, replace = TRUE)  
-  if (n < n_house) {
-    freqs[update_ind] <- freqs[update_ind] + 1
-  } else if (n > n_house) {
-    freqs[update_ind] <- freqs[update_ind] - 1
-  }
-  
-  return(freqs)
 }
 
 #' Obtain the target marginals for IPF 
@@ -181,7 +160,7 @@ get_targets <- function(marg_cols, marginals, place_id, n_house) {
     target_data[[dim]] <- marg_row_scaled
   }
   # Verify that all the marginal data add up to the population total 
-  stopifnot(all((unlist(lapply(target_data, sum)) - n_house) < 1))
+  stopifnot(all(unlist(lapply(target_data, sum)) == n_house))
 
   return(list(target_list = target_list, target_data = target_data))  
 }

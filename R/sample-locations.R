@@ -47,14 +47,6 @@ sample_locations_uniform <- function(place_id, n_house, shapefile, noise = .001,
     region <- which(shapefile$place_id == place_id)
   }
   
-  # If the shapefile also has roads, subset the 
-  # shapefile version instead 
-  if (class(shapefile) == "list") {
-    shapefile_ind <- which(names(shapefile) == "shapefile")
-    shapefile <- shapefile[[shapefile_ind]]
-    region <- which(shapefile$place_id == place_id)
-  }
-  
   # Subset the shapefile to the polygon 
   # specified by the place_id argument 
   slots <- methods::slot(shapefile, "polygons")  
