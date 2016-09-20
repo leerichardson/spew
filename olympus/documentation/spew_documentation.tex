@@ -575,7 +575,7 @@ We're installing \verb|spew| in our personal R libraries on Olympus, opposed to 
 	remove.packages(pkgs = "spew", lib = personal_lib)
 	withr::with_libpaths(new = personal_lib, install_github("leerichardson/spew"))
 	library(spew)
-\end{verbatim}	 
+\end{verbatim}
 
 This will install the most recent version of \verb|spew| in your personal library on Olympus. Note that if you're installing \verb|spew| for the first time, then you will only need to omit line 4, which removes an older version of \verb|spew| from your personal R libraries. 
 

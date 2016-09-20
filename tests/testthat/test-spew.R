@@ -30,14 +30,14 @@ test_that("SPEW wrapper runs as expected", {
                            workplaces = "workplaces/natstat/2009/county", 
                            marginals = "marginals/natstat/2014/tract")
 
-#   call_spew(base_dir = "data-raw/10", 
-#             folders = delaware_folders, 
-#             data_group = "US", 
-#             parallel = TRUE, 
-#             sampling_method = "ipf", 
-#             locations_method = "roads", 
-#             convert_count = FALSE, 
-#             vars = us_vars)
+  call_spew(base_dir = "data-raw/10", 
+            folders = delaware_folders, 
+            data_group = "US", 
+            parallel = TRUE, 
+            sampling_method = "ipf", 
+            locations_method = "roads", 
+            convert_count = FALSE, 
+            vars = us_vars)
 })
 
 test_that("SPEW algorithm runs as expected", {
