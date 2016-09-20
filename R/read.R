@@ -236,10 +236,10 @@ read_lookup <- function(input_dir, folders, data_group){
   if (data_group == "US") {
     filename <- "lookup10.csv"
   } else if (data_group == "ipums") {
-    #  No lookup-tables for ipums 
-  } else {
-    #  No lookup-tables for custom data yet
-  }
+    
+  } else if (data_group == "none") {
+    
+  }  
   
   lookup_file <- paste0(input_dir, "/", folders$lookup, "/", filename)
   lookup <- read.csv(lookup_file, stringsAsFactors = FALSE)
@@ -336,10 +336,10 @@ standardize_shapefiles <- function(shapefiles, data_group) {
 }
 
 #  Function for reading in schools data
-read_schools <- function(input_dir, folders, data_group){
+read_schools <- function(input_dir, folders, data_group) {
   if (data_group == "US") {
-    school_files <- list.files(schools_path)
     schools_path <- paste0(input_dir, "/", folders$schools, "/")
+    school_files <- list.files(schools_path)
     
     # Read in public and private school data-frames 
     public_file_index <- grep("public", school_files)
@@ -357,10 +357,11 @@ read_schools <- function(input_dir, folders, data_group){
     return(schools)
     
   } else if (data_group == "ipums") {
-    #  do stuff
-  } else {
-    #  do stuff
-  }
+    
+  } else if (data_group == "none") {
+  
+  }  
+  
 }
 
 #  Function for reading in workplaces data
@@ -385,9 +386,9 @@ read_workplaces <- function(input_dir, folders, data_group) {
     }
     
   } else if (data_group == "ipums") {
-    #  No IPUMS workplaces 
-  } else {
-    #  No other workplaces 
+    
+  } else if (data_group == "none") {
+  
   }
   
   return(workplaces)
@@ -451,7 +452,7 @@ read_marginals <- function(input_dir, folders, data_group) {
 
   } else if (data_group == "ipums") {
     
-  } else {
+  } else if (data_group == "none") {
     
   }
   
