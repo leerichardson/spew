@@ -1,137 +1,117 @@
 context("Read Functions")
 
 test_that("United States functions", {
-  library(data.table)
-  library(bit64)
-  
   # Make sure we are using the correct data-raw directory 
   # as opposed to the test/testthat one within the package 
   spew_dir <- system.file("", package = "spew")
-  data_path <- paste0(spew_dir, "/", "data-raw/46")
+  data_path <- paste0(spew_dir, "/", "data-raw/10/input")
   
-  # Pop Table -------------------------------- 0
-  sd_poptable <- read_pop_table(data_path, 
+  # Set the new delaware folders
+  delaware_folders <- list(pop_table = "counts/natstat/2010/tract", 
+                           pums = "pums/natstat/2013/puma", 
+                           shapefiles = "shapefiles/natstat/2010/tract", 
+                           roads = "roads/natstat/2010/county", 
+                           schools = "schools/natstat/2013/county", 
+                           lookup = "lookup/natstat/2010/tract", 
+                           workplaces = "workplaces/natstat/2009/county", 
+                           marginals = "marginals/natstat/2014/tract")
+  
+  # Pop Table --------------------------------
+  delaware_poptable <- read_pop_table(data_path, 
                                 data_group = "US", 
-                                folders = list(pop_table = "popTables", 
-                                               pums = "pums", 
-                                               schools = "schools", 
-                                               lookup = "tables", 
-                                               shapefiles = "tiger", 
-                                               workplaces = "workplaces"))
+                                folders = delaware_folders)
   
   # Data frame with the correct dimensions 
-  expect_equal(nrow(sd_poptable), 222)
-  expect_equal(ncol(sd_poptable), 4)
-  expect_equal(class(sd_poptable), "data.frame")
+  expect_equal(nrow(delaware_poptable), 218)
+  expect_equal(ncol(delaware_poptable), 4)
+  expect_equal(class(delaware_poptable), "data.frame")
   
   # Making sure stringAsFactors=FALSE 
-  expect_equal(any(lapply(sd_poptable, class) == "factor"), FALSE)
+  expect_equal(any(lapply(delaware_poptable, class) == "factor"), FALSE)
   
   # Check the Standardization Function
-  standard_poptable <- standardize_pop_table(pop_table = sd_poptable, data_group = "US")
+  standard_poptable <- standardize_pop_table(pop_table = delaware_poptable, data_group = "US")
   expect_equal("place_id" %in% names(standard_poptable), TRUE)
   
   # PUMS -------------------------------
-  sd_pums <- read_pums(data_path, 
+  delaware_pums <- read_pums(data_path, 
                        data_group = "US", 
-                       folders = list(pop_table = "popTables", 
-                                      pums = "pums", 
-                                      schools = "schools", 
-                                      lookup = "tables", 
-                                      shapefiles = "tiger", 
-                                      workplaces = "workplaces"), 
+                       folders = delaware_folders, 
                        vars = list(household = NA, person = NA))
   
-  # Text the rows of households are larger 
-  expect_equal(names(sd_pums)[1] == "pums_h", TRUE)
-  expect_equal(nrow(sd_pums$pums_p) > nrow(sd_pums$pums_h), TRUE)
-  expect_equal(nrow(sd_pums$pums_p) == 8231 & nrow(sd_pums$pums_h) == 3983, TRUE)
-  col_classes <- unlist(c(lapply(sd_pums$pums_h, class), lapply(sd_pums$pums_p, class)))
+  # Test the rows of households are larger 
+  expect_true(names(delaware_pums)[1] == "pums_h")
+  expect_true(nrow(delaware_pums$pums_p) > nrow(delaware_pums$pums_h))
+  expect_true(nrow(delaware_pums$pums_p) == 8767)
+  expect_true(nrow(delaware_pums$pums_h) == 4449)
+  
+  # Verify every column is either an integer or a character   
+  col_classes <- unlist(c(lapply(delaware_pums$pums_h, class), lapply(delaware_pums$pums_p, class)))
   expect_equal(any(!(col_classes %in% c("character", "integer"))), FALSE)
+
+  # Verify that the standardized PUMS has the appropriate columns   
+  standard_pums <- standardize_pums(delaware_pums, data_group = "US")  
+  expect_true("puma_id" %in% names(standard_pums$pums_h))
+  expect_true("puma_id" %in% names(standard_pums$pums_p))    
+  expect_true("SERIALNO" %in% names(standard_pums$pums_p)) 
   
-  standard_pums <- standardize_pums(sd_pums, data_group = "US")  
-  expect_equal("puma_id" %in% names(standard_pums$pums_h), TRUE)
-  expect_equal("puma_id" %in% names(standard_pums$pums_p), TRUE)    
-  expect_equal("SERIALNO" %in% names(standard_pums$pums_p), TRUE) 
-  
-  # Make sure that the subset variables function works
-  sd_pums <- read_pums(data_path, 
+  # Test that subsetting specific variables works 
+  delaware_pums <- read_pums(data_path, 
                        data_group = "US", 
-                       folders = list(pop_table = "popTables", 
-                                      pums = "pums", 
-                                      schools = "schools", 
-                                      lookup = "tables", 
-                                      shapefiles = "tiger", 
-                                      workplaces = "workplaces"), 
+                       folders = delaware_folders, 
                        vars = list(household = c("SERIALNO", "ST"), 
                                    person = c("SERIALNO", "ST")))
   
-  expect_equal(ncol(sd_pums$pums_h), 2)  
-  expect_equal(names(sd_pums$pums_h), c("SERIALNO", "ST"))
-  expect_equal(ncol(sd_pums$pums_h), 2)
+  expect_equal(ncol(delaware_pums$pums_h), 2)  
+  expect_equal(names(delaware_pums$pums_h), c("SERIALNO", "ST"))
+  expect_equal(ncol(delaware_pums$pums_h), 2)
   
   # Shapefile --------------------------
   library(maptools)
   library(rgeos)
-  sd_shape <- read_shapefiles(data_path, 
-                            data_group = "US", 
-                            folders = list(pop_table = "popTables", 
-                                       pums = "pums", 
-                                       schools = "schools", 
-                                       lookup = "tables", 
-                                       shapefiles = "tiger", 
-                                       workplaces = "workplaces"))
+  
+  delaware_shape <- read_shapefiles(data_path, 
+                              data_group = "US", 
+                              folders = delaware_folders)
   
   # Verify it's the correct class based on whether or 
   # not we have roads 
-  expect_equal(class(sd_shape$shapefile) == "SpatialPolygonsDataFrame", TRUE)
-  expect_equal(class(sd_shape$roads) == "character", TRUE)
+  expect_true(class(delaware_shape$shapefile) == "SpatialPolygonsDataFrame")
+  expect_true(class(delaware_shape$roads) == "character")
 
   # Test the standardization functions
-  standard_shape <- standardize_shapefiles(sd_shape, data_group = "US")
-  expect_equal(length(standard_shape$shapefile$place_id) == 222, TRUE)
-  expect_equal(class(standard_shape$shapefile$place_id) == "character", TRUE)
+  standard_shape <- standardize_shapefiles(delaware_shape, data_group = "US")
+  expect_true(length(standard_shape$shapefile$place_id) == 218)
+  expect_true(class(standard_shape$shapefile$place_id) == "character")
   
   # Schools ----------------------------
-  sd_schools <- read_schools(data_path, 
+  delaware_schools <- read_schools(data_path, 
                                 data_group = "US", 
-                                folders = list(pop_table = "popTables", 
-                                               pums = "pums/2013", 
-                                               schools = "schools/2013", 
-                                               lookup = "tables", 
-                                               shapefiles = "tiger", 
-                                               workplaces = "workplaces")) 
+                                folders = delaware_folders)
   
-  expect_equal(class(sd_schools) == "list", TRUE)
-  expect_equal(all(names(sd_schools) == c("public", "private")), TRUE)
-  expect_equal(class(sd_schools$public$StNo), "character")
-  expect_equal(class(sd_schools$public$CoNo), "character")
+  expect_true(class(delaware_schools) == "list")
+  expect_true(all(names(delaware_schools) == c("public", "private")))
+  expect_equal(class(delaware_schools$public$StNo), "character")
+  expect_equal(class(delaware_schools$public$CoNo), "character")
   
-  # Workplace --------------------------
-  sd_workplaces <- read_workplaces(data_path, 
+  # Workplaces --------------------------
+  delaware_workplaces <- read_workplaces(data_path, 
                                 data_group = "US", 
-                                folders = list(pop_table = "popTables", 
-                                               pums = "pums/2013", 
-                                               schools = "schools/2013", 
-                                               lookup = "tables", 
-                                               shapefiles = "tiger", 
-                                               workplaces = "workplaces"))
-  expect_equal(class(sd_workplaces) == "data.frame", TRUE)
-  
+                                folders = delaware_folders)
+  expect_true(class(delaware_workplaces) == "data.frame")
   
   # Marginals ---------------------------
-  sd_marginals <- read_marginals(data_path, 
+  delaware_marginals <- read_marginals(data_path, 
                                  data_group = "US", 
-                                 folders = list(pop_table = "popTables", 
-                                                pums = "pums", 
-                                                schools = "schools", 
-                                                lookup = "tables", 
-                                                shapefiles = "tiger", 
-                                                workplaces = "workplaces",
-                                                marginals = "marginals"))
-  expect_true(class(sd_marginals) == "list")
-  expect_true(class(sd_marginals[[1]]) == "list")
-  expect_true(class(sd_marginals[[1]][[1]]) == "data.frame")
+                                 folders = delaware_folders)
+  
+  expect_true(class(delaware_marginals) == "list")
+  expect_true(class(delaware_marginals[[1]]) == "list")
+  expect_true(class(delaware_marginals[[1]][[1]]) == "data.frame")
+  
+  # Overall --------------------------------
+  delaware <- read_data(input_dir = data_path, folders = delaware_folders, data_group = "US")
+  expect_true(all.equal(names(delaware), c("pop_table", "pums", "lookup", "shapefiles", "schools", "workplaces", "marginals")))  
 })
 
 test_that("ipums functions", {
@@ -221,11 +201,10 @@ test_that("no group functions", {
   # Shapefile -----------------------------
   shapefile <- read_shapefiles(input_dir = NULL, 
                                folders = list(pop_table = paste0(data_path, "uruguay/counts/uruguay_revised.csv"), 
-                                              pums = list(pums_h = paste0(data_path, "uruguay/PUMS/uruguay.csv"), 
-                                                          pums_p = paste0(data_path, "uruguay/PUMS/uruguay.csv")), 
-                                              shapefiles = paste0(data_path, "uruguay/shapefile_ipums/uruguay_revised.shp")), 
-                               data_group = "none")
-  
+                              pums = list(pums_h = paste0(data_path, "uruguay/PUMS/uruguay.csv"), 
+                              pums_p = paste0(data_path, "uruguay/PUMS/uruguay.csv")), 
+                              shapefiles = paste0(data_path, "uruguay/shapefile_ipums/uruguay_revised.shp")),
+                              data_group = "none")  
   expect_equal(as.character(class(shapefile)), "SpatialPolygonsDataFrame")
 
   # Pums ---------------------------------
@@ -240,4 +219,3 @@ test_that("no group functions", {
   expect_equal(class(pums$pums_h), "data.frame")
   expect_error(standardize_pums(pums, data_group = "none"))
 })
-

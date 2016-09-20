@@ -12,15 +12,15 @@
 #' @return list in which each element contains one of our standardized 
 #' data sources
 read_data <- function(input_dir, 
-                      folders = list(pop_table = "popTables", 
-                                           pums = "pums/2013", 
-                                           schools = "schools/2013", 
-                                           lookup = "tables", 
-                                           shapefiles = "tiger", 
-                                           workplaces = "workplaces"), 
+                      folders = list(pop_table = NULL, 
+                                     pums = NULL, 
+                                     shapefiles = NULL, 
+                                     roads = NULL, 
+                                     schools = NULL, 
+                                     lookup = NULL, 
+                                     workplaces = NULL), 
                       data_group = "US", 
                       vars = list(household = NA, person = NA)) {
-  
   read_start_time <- Sys.time()
   
   if (data_group != "US" & data_group != "ipums" & data_group != "none") {
@@ -81,17 +81,19 @@ read_data <- function(input_dir,
 #' @param input_dir character vector specifying the directory containing 
 #' all of the input data 
 #' @param folders list which contains the path of each sub-directory with the 
-#' specific data
+#' specific datadelaware_marginals
 #' @param data_group character either "US", "ipums" or "none" which tells 
 #' read_data if the input data follows a particular format. Used mainly for 
 #' the pre-formatted data-types we have on our Olympus
 #' 
 #' @return data frame with counts 
 read_pop_table <- function(input_dir, folders, data_group) {
-  pop_table_files <- list.files(paste0(input_dir, "/", folders$pop_table, "/"))
+  # Get a list of the files in the pop table directory
+  pop_table_dir <- paste0(input_dir, "/", folders$pop_table)
+  pop_table_files <- list.files(pop_table_dir)
   
   if (data_group == "US") {
-    #  For US, should always be households.csv
+    # For US, should always be households.csv
     pop_table_file <- "households.csv"
   } else if (data_group == "ipums") {
     # If the extended counts are available, use them 
@@ -138,26 +140,24 @@ standardize_pop_table <- function(pop_table, data_group){
     pop_table$place_id <- as.character(pop_table$place_id)
     pop_table$n_house <- as.numeric(pop_table$n_house)
   } else if (data_group == "ipums") {
-    
-    if (all(names(pop_table) == c("place_id", "n_house", "level"))) {
-      return(pop_table)
-    } else {
-      # Extract the rows with the most recent counts, 
-      # names of countries, and total numbers
-      final_row <- which(pop_table$level == "total")
-      cols <- ncol(pop_table)
-      
-      # Make sure we are getting the name instead of the code, 
-      # then re-name the columns to their formatted names 
-      name_col <- 1
-      if (names(pop_table)[1] == "code") {
-        name_col <- name_col + 1
+      if (all(names(pop_table) == c("place_id", "n_house", "level"))) {
+        return(pop_table)
+      } else {
+        # Extract the rows with the most recent counts, 
+        # names of countries, and total numbers
+        final_row <- which(pop_table$level == "total")
+        cols <- ncol(pop_table)
+        
+        # Make sure we are getting the name instead of the code, 
+        # then re-name the columns to their formatted names 
+        name_col <- 1
+        if (names(pop_table)[1] == "code") {
+          name_col <- name_col + 1
+        }
+        
+        pop_table <- pop_table[1:final_row, c(name_col, cols - 1, cols)]
+        names(pop_table) <- c("place_id", "n_house", "level")
       }
-      
-      pop_table <- pop_table[1:final_row, c(name_col, cols - 1, cols)]
-      names(pop_table) <- c("place_id", "n_house", "level")
-    }
-    
   } else if (data_group == "none") {
     check_pop_table(pop_table)
   }
@@ -165,37 +165,35 @@ standardize_pop_table <- function(pop_table, data_group){
   return(pop_table)
 }
 
-#  Function for reading in pums data
+# Read PUMS data --------------------
 read_pums <- function(input_dir, folders, data_group, vars = list(household = NA, person = NA)) {
-
-  pums_files <- list.files(paste0(input_dir, "/", folders$pums))
+  pums_dir <- paste0(input_dir, "/", folders$pums)
+  pums_files <- list.files(pums_dir)
   
   if (data_group == "US") {
-        
     #  Find the indices of the person and household level files
     hp <- substr(pums_files, 5, 5)
     index_h <- which(hp == "h")
     index_p <- which(hp == "p")
     
     #  Read in the person and household level files
-    pums_h <- data.table::fread(paste0(input_dir, "/", folders$pums, "/", pums_files[index_h]), 
-                       stringsAsFactors = FALSE, data.table = FALSE)
-    pums_p <- data.table::fread(paste0(input_dir, "/", folders$pums, "/", pums_files[index_p]), 
-                       stringsAsFactors = FALSE, data.table = FALSE)
+    household_file <- paste0(input_dir, "/", folders$pums, "/", pums_files[index_h])
+    pums_h <- read.csv(household_file, stringsAsFactors = FALSE)
+    people_file <- paste0(input_dir, "/", folders$pums, "/", pums_files[index_p])
+    pums_p <- read.csv(people_file, stringsAsFactors = FALSE)
     
   } else if (data_group == "ipums") {
-
     stopifnot(length(pums_files) == 1)
-    pums_p <- data.table::fread(paste0(input_dir, "/", folders$pums, "/", pums_files), 
-                     stringsAsFactors = FALSE, data.table = FALSE)
+    pums_p <- read.csv(paste0(input_dir, "/", folders$pums, "/", pums_files), 
+                     stringsAsFactors = FALSE)
     
     # Use the unique household ID's for household pums  
     unique_hh_indices <- !duplicated(pums_p$SERIAL)
     pums_h <- pums_p[unique_hh_indices, ]
   
   } else if (data_group == "none") {
-    pums_h <- data.table::fread(folders$pums$pums_h, stringsAsFactors = FALSE, data.table = FALSE)
-    pums_p <- data.table::fread(folders$pums$pums_p, stringsAsFactors = FALSE, data.table = FALSE)
+    pums_h <- read.csv(folders$pums$pums_h, stringsAsFactors = FALSE)
+    pums_p <- read.csv(folders$pums$pums_p, stringsAsFactors = FALSE)
   }
 
   # If specified, subset the household and person level PUMS 
@@ -212,7 +210,7 @@ read_pums <- function(input_dir, folders, data_group, vars = list(household = NA
 }
 
 #  Standardize the pums data 
-standardize_pums <- function(pums, data_group){
+standardize_pums <- function(pums, data_group) {
   if (data_group == "US") {
     names(pums$pums_h)[which(names(pums$pums_h) == "PUMA")] <- "puma_id"
     names(pums$pums_p)[which(names(pums$pums_p) == "PUMA")] <- "puma_id"
@@ -233,20 +231,18 @@ standardize_pums <- function(pums, data_group){
 
 #  Function for reading in lookup data
 read_lookup <- function(input_dir, folders, data_group){
-  
   lookup_files <- list.files(paste0(input_dir, "/", folders$lookup))
   
   if (data_group == "US") {
     filename <- "lookup10.csv"
   } else if (data_group == "ipums") {
-    #  do stuff
+    #  No lookup-tables for ipums 
   } else {
-    #  do stuff
+    #  No lookup-tables for custom data yet
   }
   
-  #  Read in lookup table
-  lookup <- data.table::fread(paste0(input_dir, "/", folders$lookup, "/", filename), 
-                     stringsAsFactors = FALSE, data.table = FALSE)
+  lookup_file <- paste0(input_dir, "/", folders$lookup, "/", filename)
+  lookup <- read.csv(lookup_file, stringsAsFactors = FALSE)
   return(lookup)
 }
 
@@ -262,7 +258,6 @@ standardize_lookup <- function(lookup, data_group){
     new_tract_ce <- lookup$TRACTCE + 1000000
     new_tract_ce <- substr(new_tract_ce, 2, 7)
     place_id <- paste0(new_state_fp, new_county_fp, new_tract_ce)
-    
     lookup <- data.frame(place_id = as.character(place_id),
                          puma_id = as.numeric(lookup$PUMA5CE))
     
@@ -275,32 +270,24 @@ standardize_lookup <- function(lookup, data_group){
 
 #  Function for reading in shapefiles data
 read_shapefiles <- function(input_dir, folders, data_group) {
-  # Get a list of the files in the shapefile folders directory 
-  shapefiles_files <- list.files(paste0(input_dir, "/", folders$shapefiles))
-
-  if (data_group == "US") {
-    correct_folder <- grep("2010", shapefiles_files)
-    path_to_shapefiles <- file.path(input_dir, folders$shapefiles, shapefiles_files[correct_folder])
-    regular_shapefiles <- list.files(path_to_shapefiles)
-    ind_shp <- which(grepl(pattern = "\\.shp", x = regular_shapefiles) 
-                     & !grepl(pattern = "\\.xml", x = regular_shapefiles)) 
-    filename <- regular_shapefiles[ind_shp]
+  shapefile_dir <- paste0(input_dir, "/", folders$shapefiles)
+  shapefiles_files <- list.files(shapefile_dir)
     
-    full_path <- file.path(input_dir, folders$shapefiles, 
-                           shapefiles_files[correct_folder], filename)
+  if (data_group == "US") {
+    ind_shp <- which(grepl(pattern = "\\.shp", x = shapefiles_files) & 
+                       !grepl(pattern = "\\.xml", x = shapefiles_files)) 
+    filename <- shapefiles_files[ind_shp]
+    full_path <- file.path(input_dir, folders$shapefiles, "/", filename)
     shapefile <- maptools::readShapeSpatial(full_path)
       
-    # If there is road data, read it in and return a list. Otherwise, 
-    # return just the shapefile 
-    if (any(grepl("roads", x = shapefiles_files))) {
-        road_ind <- grepl("roads", shapefiles_files)
-        road_name <- shapefiles_files[road_ind]
-        roads_path <- file.path(input_dir, folders$shapefiles, road_name)           
+    # If road_data, read in its file-path. Otherwise, return shapefile 
+    if (!is.null(folders$roads)) {
+        roads_path <- file.path(input_dir, folders$roads)           
         return(list(shapefile = shapefile, roads = roads_path))
     } else {
       return(shapefile)
     }
-    
+
   } else if (data_group == "ipums") {
     revised_indices <- grep("revised.shp", shapefiles_files)
     if (length(revised_indices) == 1) {
@@ -309,7 +296,6 @@ read_shapefiles <- function(input_dir, folders, data_group) {
       shp_indices <- grep(".shp", shapefiles_files)
       stopifnot(length(shp_indices) == 1)
       filename <- shapefiles_files[shp_indices]
-      
     }
     full_path <- file.path(input_dir, folders$shapefiles, filename)
     shapefile <- maptools::readShapeSpatial(full_path)
@@ -332,7 +318,7 @@ standardize_shapefiles <- function(shapefiles, data_group) {
       reg_shapefiles <- which(names(shapefiles) == "shapefile")
       names(shapefiles[[reg_shapefiles]])[which(names(shapefiles[[reg_shapefiles]]) == "GEOID10")] <- "place_id"
       shapefiles[[reg_shapefiles]]$place_id  <- as.character(shapefiles[[reg_shapefiles]]$place_id)
-      stopifnot(all(nchar(shapefiles[[reg_shapefiles]]$place_id) == 11))      
+      stopifnot(all(nchar(shapefiles[[reg_shapefiles]]$place_id) == 11))
     }
   
   } else if (data_group == "ipums") {
@@ -351,11 +337,9 @@ standardize_shapefiles <- function(shapefiles, data_group) {
 
 #  Function for reading in schools data
 read_schools <- function(input_dir, folders, data_group){
-  schools_path <- paste0(input_dir, "/", folders$schools, "/")
-  
   if (data_group == "US") {
-    
     school_files <- list.files(schools_path)
+    schools_path <- paste0(input_dir, "/", folders$schools, "/")
     
     # Read in public and private school data-frames 
     public_file_index <- grep("public", school_files)
@@ -423,8 +407,6 @@ read_roads <- function(path_to_roads, road_id) {
     
     # Only subset the road_id 
     road <- which(shape_names == road_id)
-    
-    
     
     # If road ID is null, then return a NULL, which
     # will propogate sampling uniformly  
