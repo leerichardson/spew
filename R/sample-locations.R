@@ -39,11 +39,19 @@ sample_locations <- function(method, place_id, n_house, shapefile, noise = .001,
 #' case the spsample function takes too long. Instead, we sample 100,000 points, 
 #' sample n_house from these 100,000, and then add random noise.
 #' @return SpatialPoints object with coordinates for the n households
-sample_locations_uniform <- function(place_id, n_house, shapefile, noise = .001, shapefile_id) {
+sample_locations_uniform <- function(place_id, n_house, shapefile, noise = .001, shapefile_id = NULL) {
   # Extract the index of the appropriate polygon 
   if (!is.null(shapefile_id)) {
     region <- which(shapefile$shapefile_id == shapefile_id)
   } else {
+    region <- which(shapefile$place_id == place_id)
+  }
+  
+  # If the shapefile also has roads, subset the 
+  # shapefile version instead 
+  if (class(shapefile) == "list") {
+    shapefile_ind <- which(names(shapefile) == "shapefile")
+    shapefile <- shapefile[[shapefile_ind]]
     region <- which(shapefile$place_id == place_id)
   }
   
@@ -113,7 +121,7 @@ sample_locations_roads <- function(place_id, n_house, shapefile, noise = .0001, 
   # If the new shape is NULL, sample uniform instead of roads  
   if (is.null(new_shp)) {
     warning("Can't sample from roads, sampling uniformly")
-    locs <- sample_locations_uniform(place_id, n_house, shapefile[[1]])
+    locs <- sample_locations_uniform(place_id, n_house, shapefile[[1]], shapefile_id)
     return(locs)
   }
   

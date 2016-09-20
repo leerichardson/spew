@@ -110,7 +110,8 @@ test_that("United States functions", {
   expect_true(class(delaware_marginals[[1]][[1]]) == "data.frame")
   
   # Overall --------------------------------
-  delaware <- read_data(input_dir = data_path, folders = delaware_folders, data_group = "US")
+  base_path <- file.path(spew_dir, "data-raw/10")
+  delaware <- read_data(base_dir = base_path, folders = delaware_folders, data_group = "US")
   expect_true(all.equal(names(delaware), c("pop_table", "pums", "lookup", "shapefiles", "schools", "workplaces", "marginals")))  
 })
 

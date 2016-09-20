@@ -40,6 +40,10 @@ sample_households <- function(method, n_house, pums_h, pums_p = NULL,
 sample_people <- function(method, household_pums, pums_p, puma_id = NULL, place_id = NULL) {
   if (method == "uniform") {
     sampled_people <- plyr::join(household_pums, pums_p, type = "left", by = "SERIALNO")
+  } else if (method == "ipf") {
+    sampled_people <- plyr::join(household_pums, pums_p, type = "left", by = "SERIALNO")
+  } else {
+    stop("Sampling method must be ipf or uniform")
   }
   
   # Add in ids to the synthetic people and return 

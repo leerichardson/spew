@@ -1,9 +1,9 @@
-#' Read in all necessary data 
+#' Read in the SPEW input data
 #' 
-#' @param input_dir character vector specifying the directory containing 
-#' all of the input data 
-#' @param folders list which contains the path of each sub-directory with the 
-#' specific data
+#' Based on the hierarchy on the Olympus Supercomputer
+#' 
+#' @param base_dir character vector specifying the ecosystem directory 
+#' @param folders list containing the path of each data sub directory 
 #' @param data_group character either "US", "ipums" or "none" which tells 
 #' read_data if the input data follows a particular format. Used mainly for 
 #' the pre-formatted data-types we have on our Olympus
@@ -11,7 +11,7 @@
 #' which variables to include in the corresponding PUMS data-set  
 #' @return list in which each element contains one of our standardized 
 #' data sources
-read_data <- function(input_dir, 
+read_data <- function(base_dir, 
                       folders = list(pop_table = NULL, 
                                      pums = NULL, 
                                      shapefiles = NULL, 
@@ -26,6 +26,13 @@ read_data <- function(input_dir,
   if (data_group != "US" & data_group != "ipums" & data_group != "none") {
     stop("spew only accepts data_group: 'US', 'ipums', or 'none'")
   } 
+  
+  # Point the input directory to the input/ portion of the base directory
+  if (data_group == "US") {
+    input_dir <- file.path(base_dir, "input")
+  } else {
+    input_dir <- base_dir
+  }
   
   # Read in each source one by one -------------------------
   pop_table <- read_pop_table(input_dir, folders, data_group)
