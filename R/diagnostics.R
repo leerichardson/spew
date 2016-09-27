@@ -36,7 +36,7 @@
      return(TRUE) 
  }
  
- -#' Reads in and concatenates a list of filenames and pastes on the header file
+ #' Reads in and concatenates a list of filenames and pastes on the header file
  #' @param filenames full paths to files to be concatenated
  #' @return dataframe of population
  read_concat_pop <- function(filenames){
