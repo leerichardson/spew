@@ -710,8 +710,9 @@ assessSchUS <- function(agents, schools_pub, schools_priv, distFun = haversine){
         return(dist)
         })
     print(summary(my_dists))
+    out <- data.frame(my_dists = my_dists, school_id = pub_children$school_id)
     #hist(my_dists)
-    return(my_dists)
+    return(out)
 }
 
 #' Assess the schools of the us against the agents
@@ -765,5 +766,6 @@ compareCapacities <- function(agents, schools){
     df_j <- join(school_df, synth_tab, by = "ID")
     df_j$Capacity <- ifelse(is.na(df_j$Capacity), 0, df_j$Capacity)
     percents <- df_j$Capacity / df_j$Students * 100
-    return(percents)
+    out <- data.frame(percents = percents, ID = df_j$ID)
+    return(out)
 }
