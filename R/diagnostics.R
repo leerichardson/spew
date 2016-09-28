@@ -521,9 +521,10 @@ summarize_us <-  function(output_dir, us_fs,
 #' @param varsToSummarize list with first entry as vector of household ipums vars and the second as person ipums vars.  The default value is 'base' which includes total number of records.  For households 'base' includes longitude and latitude and the names.  For people, this includes gender.  Otherwise we summarize the base variables and the the variable names which we should summarize.  For the summary output to be something other than a factor variable then see var_list.
 #' @param doPrint logical
 #' @param sampSize number of people to retain (default is 10000) per region for plotting
+#' @param readFun (how to read in file either read.csv or fread from data.table)
 summarize_ipums <-  function(output_dir, ipums_fs,
                              varsToSummarize = list(vars_hh = "base", vars_p = "base"),
-                             doPrint = FALSE, sampSize = 10^3){
+                             doPrint = FALSE, sampSize = 10^3, readFun = read.csv){
     stopifnot(ncol(ipums_fs$paths_df) == 3)
     paths_df <- ipums_fs$paths_df
     paths_df <- data.frame(lapply(paths_df, as.character), stringsAsFactors = FALSE)
@@ -534,7 +535,7 @@ summarize_ipums <-  function(output_dir, ipums_fs,
     header <- NULL  ## HOUSEHOLDS!!
     for (ind in 1:nrow(paths_df)){
         fp <- paste(paths_df[ind, ], collapse = "/")
-        tab <- read.csv(file.path(output_dir, fp))
+        tab <- readFun(file.path(output_dir, fp))
         sum_features_cat <- sapply(vars_hh$cat, summarizeFeatures, tab, type = "cat")
         sum_features_cont <- sapply(vars_hh$cont, summarizeFeatures, tab, type = "cont")
         sum_features <- list(cat = sum_features_cat,
@@ -570,7 +571,7 @@ summarize_ipums <-  function(output_dir, ipums_fs,
         paths_df_p <- paths_df
         paths_df_p[, ncol(paths_df)] <- gsub("household", "people", paths_df[, ncol(paths_df)])
         fp <- paste(paths_df_p[ind, ], collapse = "/")
-        tab <- read.csv(file.path(output_dir, fp))
+        tab <- readFun(file.path(output_dir, fp))
         sum_features_cat <- sapply(vars_p$cat, summarizeFeatures, tab, type = "cat")
         sum_features_cont <- sapply(vars_p$cont, summarizeFeatures, tab, type = "cont")
         sum_features <- list(cat = sum_features_cat,
@@ -670,21 +671,25 @@ plot_region_diags<- function(ipums_sum_list, ipums_fs, pretty = TRUE, borders = 
     }
     if (pretty){
         bbox <- make_bbox(plot_df$lon, plot_df$lat, f =.25)
-        map <- get_map(bbox, maptype = map_type)
-        #cols <- brewer.pal(nRegions, "Spectral")
-        #names(cols) <- levels(plot_df$reg)
-       # The palette with grey:
+        map <- tryCatch({get_map(bbox, maptype = map_type)},
+                        error = function(e) {
+                            out <- NULL
+                        })
+        if(is.null(map)){
+            print("The map is too large to print.")
+            return(out)
+        }
+
+       ## The palette with grey:
         cbbPalette <- c("#999999", "#E69F00", "#56B4E9",
                        "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
         cols <- rep(cbbPalette, length.out = nRegions)
-        #cols <- cbbPalette[1:nRegions]
         colScale <- scale_colour_manual(name = "reg", values = cols)
         g <- ggmap(map) + geom_point(data = plot_df,
                                 aes(x = longitude, y = latitude, colour = factor(reg)),
                                 cex = .4) +
             geom_text(data = centers_df, aes(x = avg_lon, y = avg_lat, label = reg), size = 3) + #ggtitle(region) + 
-              colScale +
-#            guides(colour = guide_legend(title = "Region", override.aes = list(size = 10))) +
+            colScale +
             theme(axis.line=element_blank(),
                   axis.text.x=element_blank(),
                   axis.text.y=element_blank(),
@@ -731,8 +736,8 @@ makePlotDF <- function(ipums_sum_list){
             inds <- sample(1:nrow(df), nInds)
             sub_df <- df[inds, ]
             sub_df$reg <- toupper(reg_name)
+            plot_df <- rbind(plot_df, sub_df)
         }
-        plot_df <- rbind(plot_df, sub_df)
     }
     return(plot_df)
 }
