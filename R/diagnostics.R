@@ -677,7 +677,7 @@ plot_region_diags<- function(ipums_sum_list, ipums_fs, pretty = TRUE, borders = 
                         })
         if(is.null(map)){
             print("The map is too large to print.")
-            return(out)
+            return(map)
         }
 
        ## The palette with grey:
