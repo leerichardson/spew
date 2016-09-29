@@ -354,6 +354,19 @@ extractStCoTr <- function(paths_df){
 }
 
 
+
+#' Extract header of a file
+#'
+#' @param path a path to the csv file
+#' @return vector of column names, the header
+extractHeader <- function(path){
+    header <- readLines(path, n=1)
+    nms <- unlist(strsplit(header, split = "[[:punct:]]"))
+    nms <- nms[nchar(nms) > 0]
+    return(nms)
+    }
+
+
 #' Summarize us populations
 #'
 #' @param output_dir path
@@ -425,10 +438,9 @@ summarize_us <-  function(output_dir, us_fs,
         sum_features <- list(cat = sum_features_cat,
                              cont = sum_features_cont)
         # Extract the header
-        header_hh<- colnames(tab)
-        # Sample a portion of them to plot
-       # sampSize <- ifelse(sampSize > nrow(tab),
-           #                nrow(tab), sampSize)
+        ## header_hh<- colnames(tab)
+        header_hh <- extractHeader(file.path(output_dir, fp)[1])
+        ## Extract portion to plot
         sub_inds <- sample(1:nrow(tab), sampSize, replace = T)
         sub_df <- subset(tab[sub_inds,], select = c("longitude", "latitude"))
         # Extract the useful details
@@ -479,7 +491,9 @@ summarize_us <-  function(output_dir, us_fs,
             return(tab)
             }
             ))
-        header_p<- colnames(tab)
+        ## Extract header of people
+        header_p <- extractHeader(file.path(output_dir, fp)[1])
+#        header_p<- colnames(tab)
         # Summarize the features
         sum_features_cat <- sapply(vars_p$cat, summarizeFeatures, tab, type = "cat")
         sum_features_cont <- sapply(vars_p$cont, summarizeFeatures, tab, type = "cont")
