@@ -1,0 +1,175 @@
+---
+title: "SPEW Output Summary"
+subtitle: "Synthetic Populations and Ecosystems of the World"
+output: pdf_document
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+#!/bin/env/Rscript
+args <- commandArgs(TRUE)
+input_dir <- args[1]
+input_dir <- paste0(input_dir, "/")
+#print(input_dir)
+library(spew)
+#TODO change this line
+#source("~/spew/R/diagnostics.R")
+#source("~/spew/R/plot.R")
+library(ggplot2)
+library(ggmap)
+library(data.table)
+
+# Data directory
+data_dir <- file.path(input_dir, "../eco")
+image_dir <- file.path(input_dir, "../diags")
+```
+
+# `r toupper(basename(input_dir))`
+
+## Maps
+```{r, echo=FALSE}
+if( grepl("OUTPUT_", toupper(basename(input_dir)))){
+	region_name <- toupper(gsub("output_", "",
+	basename(input_dir)))
+} else{
+	region_name <- toupper(basename(input_dir))
+}
+```
+
+This is `r region_name` with a subsample of the households displayed as points.
+
+```{r map, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
+
+# Plot the region
+
+# Get the correct reigon file from the data folder
+files <- list.files(data_dir)
+hh_files <- files[grepl("household", files)]
+region_file <- hh_files[grepl(region_name, toupper(hh_files))]
+stopifnot(length(region_file) == 1)
+region_path <- file.path(data_dir, region_file)
+
+# Plot the total region colored with different people
+spew:::plot_region(region_path, map_title = region_name, savePlot = TRUE, K = 10^5, zoom = 3)
+```
+
+
+```{r fig.width=3, fig.height=60, echo=FALSE, fig.align='center', warning = FALSE, message = FALSE}
+library(png)
+library(grid)
+image_path <- file.path(image_dir, paste0(region_name, ".png"))
+#print(image_path)
+img <- readPNG(image_path)
+ grid.raster(img)
+```
+
+
+
+## Household Population
+
+
+```{r, message=FALSE, warning=FALSE, results='hide', echo=FALSE}
+# Household Pop
+filenames <- list.files(file.path(input_dir, "eco"))
+full_paths <- file.path(input_dir, "eco", filenames)
+full_paths <- full_paths[grepl("household", full_paths)]
+big_list <- lapply(full_paths, function(path) spew:::summary_diags2(type="hh", path))
+#spew:::summary_diags2(type="hh", path))
+
+summary_df <- do.call("rbind", lapply(big_list, "[[", 1))
+
+```
+There are `r prettyNum(sum(summary_df$nRecords), big.mark=",")` households in `r toupper(basename(input_dir))`.
+
+```{r kable, echo=FALSE}
+library(knitr)
+kable(summary_df, col.names=c("Region Name", "Number of Households"))
+
+```
+
+
+```{r rose, echo=FALSE, warnings=FALSE, message=FALSE, fig.align='center'}
+library(ggplot2)
+colnames(summary_df) <- c("Region", "nRecords")
+rose <- ggplot(summary_df, aes(x=Region, y=nRecords, fill=Region)) + geom_bar(stat="identity") + ggtitle("Household Counts")
+rose <- rose + theme(axis.line=element_blank(),axis.text.x=element_blank(),
+          axis.text.y=element_blank(),
+          axis.title.x=element_blank(),
+          axis.title.y=element_blank(),panel.border=element_blank())
+print(rose)
+
+```
+
+Rose chart of households  The longer the radius, the more households in that region.
+
+There are `r length(big_list[[1]]$all_names)` attributes to the household population with the following names.  Please see the quickstart guide to find the meanings and codes for the attributes.
+
+```{r echo=FALSE, warnings=FALSE}
+print(big_list[[1]]$all_names)
+```
+
+
+
+## Person Population
+
+```{r, echo=FALSE, results='hide', warning=FALSE, message=FALSE}
+# Person Pop
+filenames <- list.files(file.path(input_dir, "eco"))
+full_paths <- file.path(input_dir, "eco", filenames)
+full_paths <- full_paths[grepl("people", full_paths)]
+big_list <- lapply(full_paths, 
+	function(path) spew:::summary_diags2(type="p", path)) #spew:::summary_diags(type="hh", path))
+
+
+summary_df <- do.call("rbind", lapply(big_list, "[[", 1))
+featuresList <- do.call(rbind, lapply(lapply(big_list, "[[", 2), '[[', 1))
+colnames(summary_df) <- c("Region", "nRecords")
+
+df <- cbind(summary_df, featuresList)
+colnames(df)[3:4] <- c("Males", "Females")
+
+
+```
+
+There are `r prettyNum(sum(summary_df$nRecords), big.mark=",")` people in `r toupper(basename(input_dir))`.
+
+```{r kable_people, echo=FALSE}
+library(knitr)
+kable(df, col.names=c("Region Name", "Number of Households", "Males", "Females"))
+
+```
+
+
+```{r bar, echo=FALSE, warnings=FALSE, message=FALSE, fig.align='center'}
+featuresList <- do.call(rbind, lapply(lapply(big_list, "[[", 2), '[[', 1))
+summary_df <- do.call("rbind", lapply(big_list, "[[", 1))
+colnames(summary_df) <- c("Region", "nRecords")
+
+
+library(reshape2)
+
+df <- cbind(summary_df, featuresList)
+colnames(df)[3:4] <- c("Males", "Females")
+mfratio <- df[,3]/df[,2]
+fmratio <- df[,4]/df[,2]
+df <- cbind(summary_df, mfratio, fmratio)[,-2]
+colnames(df)[2:3] <- c("Male", "Female")
+df.melt <- melt(df[, c(1,3,2)], id.vars="Region", varnames=c("Male", "Female"))
+colnames(df.melt)[2:3] <- c("Sex", "Percentage")
+p <- ggplot(data=df.melt, aes(x=Region, y=Percentage, fill=Sex)) + geom_bar(stat="identity") + coord_flip() + ggtitle("Ratio of Males to Females")
+print(p)
+
+
+```
+
+There are `r length(big_list[[1]]$all_names)` attributes to the person population with the following names.  Please see the quickstart guide to find the meanings and codes for the attributes.
+
+```{r echo=FALSE, warnings=FALSE}
+print(big_list[[1]]$all_names)
+```
+
+
+## Generation Information
+
+This report was generated on `r Sys.time()` by `spew`, an `R` package used to generate populations throughout the world.  Please see our [spew Github repo](https://github.com/leerichardson/spew) and our previously generated regions at [epimodels.org](http://www.epimodels.org/drupal/?q=node/32).  We are a part of the Infomatics Service Group MIDAS branch at Carnegie Mellon University and University of Pittsburgh and are supported by 1 U24 GM110707-01 NIH/NIGMS grant.  Please send your comments and suggestions to [bill@cmu.edu](bill@cmu.edu).
+
+

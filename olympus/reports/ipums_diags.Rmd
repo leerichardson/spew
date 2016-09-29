@@ -1,0 +1,164 @@
+---
+title: "SPEW Output Summary"
+subtitle: "Synthetic Populations and Ecosystems of the World"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+---
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+#!/bin/env/Rscript
+args <- commandArgs(TRUE)
+input_dir <- args[1]
+input_dir <- paste0(input_dir, "/")
+cur_dir <- input_dir
+library(spew)
+library(devtools)
+library(reshape2)
+```
+
+# `r toupper(basename(input_dir))` 
+
+
+
+
+
+```{r, include = FALSE,  echo = FALSE, message = FALSE, warning = FALSE}
+library(devtools)
+library(data.table)
+library(maptools)
+library(ggmap)
+library(ggplot2)
+library(RColorBrewer)
+setwd(input_dir)
+# Params 
+output_dir <- getwd()
+region <- basename(input_dir)
+varsToSummarize = list(vars_hh = "base", vars_p = "base")
+sampSize =  10^4
+vars_hh <- NULL
+doPrint <- FALSE
+ipums_fs <- spew:::summarizeFileStructure(output_dir, doPrint)
+ipums_list <- spew:::summarize_ipums(output_dir, ipums_fs, doPrint = doPrint, sampSize = sampSize, readFun = read.csv) #data.table::fread)
+ipums_sum_list <- ipums_list
+hh_list <- ipums_list$hh_sum_list
+```
+There is/are `r ipums_fs$nLevels` level(s) of nested ecosystems in `r toupper(region)`.
+
+There is/are `r nrow(ipums_fs$paths_df)` lowest level subregions.
+
+## Data
+
+The raw counts, microdata, and shapefiles are from IPUMS-I.
+
+
+## Maps 
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align = 'center'}
+data_path <- "."
+plot_name <- paste0("diags_", region, "-tn.png")
+map_type <- "toner-lite"
+savePlot <- FALSE
+g <- spew:::plot_region_diags(ipums_sum_list, ipums_fs,
+            data_path = data_path, map_type = map_type,
+            savePlot = savePlot, plot_name = plot_name)
+			
+```
+
+The above map shows a sub-sample of the different sub regions.  Each region has a sample of up to `r prettyNum(sampSize, big.mark = ",")` households.
+
+
+
+
+## Synthetic Households {.tabset}
+```{r, echo = FALSE,  message = FALSE, warning = FALSE}
+# Households summary
+hh_list <- ipums_list$hh_sum_list
+hh_sum_df <- do.call('rbind', lapply(hh_list, "[[", 1))
+hh_sum_df$Region <- toupper(hh_sum_df$region_id)
+df <- hh_sum_df[, c("Region", "nRecords")]
+tot <- sum(hh_sum_df$nRecords)
+```
+
+
+**Total Synthetic Households:** `r prettyNum(tot, big.mark = ",")`
+
+
+
+### Summaries
+Below is a bar chart of the number of households in each region.
+
+```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.width = 4, fig.align = 'center'}
+cbbPalette <- c("#999999", "#E69F00", "#56B4E9",
+	"#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+cols <- rep(cbbPalette, length.out = nrow(df))
+colScale <- scale_fill_manual(values = cols)
+g <- ggplot(df, aes(x = Region, y = nRecords, fill = Region)) +
+    geom_bar(stat = "identity") + ggtitle("Household Counts") +
+    labs(x = "Region", y = "Number of Households") + colScale +
+    theme_light() + 
+    theme(axis.text.x = element_text(angle = 90), legend.position = "none") 
+print(g)
+          
+        
+```
+
+### Column Names
+There are `r length(ipums_list$header_hh)` columns in the synthetic household ecosystem.  They are:
+
+```{r, echo = FALSE,  message = FALSE, warning = FALSE}
+print(ipums_list$header_hh)
+```
+
+## Synthetic Persons {.tabset}
+
+```{r, echo = FALSE,  message = FALSE, warning = FALSE}
+# People  summary
+p_list <- ipums_list$p_sum_list
+p_sum_df <- do.call('rbind', lapply(p_list, "[[", 1))
+p_sum_df$Region <- toupper(p_sum_df$region_id)
+df <- p_sum_df[, c("Region", "nRecords")]
+tot <- sum(p_sum_df$nRecords)
+```
+
+
+**Total Synthetic Persons:** `r prettyNum(tot, big.mark = ",")`
+
+
+
+### Summary
+```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.align = 'center', fig.height = 4}
+p_mf <- lapply(p_list, "[[", 2)
+regions <- df$Region
+df2<- do.call('cbind', lapply(p_mf, "[[", 1))
+df_sf <- data.frame(t(df2))
+df_sf <- df_sf / rowSums(df_sf)
+colnames(df_sf) <- c("Male", "Female")
+
+df_sf$Region <- regions
+cols <- c("darkblue", "lightpink")
+colScale <- scale_fill_manual(values = cols)
+df_melt <- melt(df_sf, id.vars = "Region", varnames = c("Male", "Female"))
+colnames(df_melt)[2:3] <- c("Sex", "Percentage")
+p <- ggplot(data=df_melt, aes(x=Region, y=Percentage, fill=Sex)) + geom_bar(stat="identity") + coord_flip() + ggtitle("Ratio of Males to Females") + colScale + theme_light()
+print(p)
+```
+
+### Column Names
+There are `r length(ipums_list$header_p)` columns in the synthetic household ecosystem.  They are:
+
+```{r, echo = FALSE,  message = FALSE, warning = FALSE}
+print(ipums_list$header_p)
+```
+
+
+
+
+## Generation Information
+
+This report was generated on `r Sys.time()` by `spew`, an `R` package used to generate populations throughout the world.  Please see our [spew Github repo](https://github.com/leerichardson/spew) and our previously generated regions at [epimodels.org](http://www.epimodels.org/drupal/?q=node/32).  We are a part of the Infomatics Services Group MIDAS branch at Carnegie Mellon University and University of Pittsburgh and are supported by 1 U24 GM110707-01 NIH/NIGMS grant.  Please send any comments to [sventura@stat.cmu.edu](sventura@stat.cmu.edu).
