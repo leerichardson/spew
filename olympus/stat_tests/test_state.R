@@ -1,4 +1,4 @@
-#!/usr/bin/Rscript
+#!/usr/bin/env Rscript
 
 ## SKG
 ## 9/30/2016
@@ -13,7 +13,7 @@ alpha <- args[3] # alpha value (between 0 and 1)
 library(devtools)
 library(plyr)
 ## library(spew)
-load_all("~/spew")
+## load_all("~/spew")
 
 
 ## Test tract population characteristics against marginal distributions

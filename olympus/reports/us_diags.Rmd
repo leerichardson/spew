@@ -16,9 +16,9 @@ output:
 args <- commandArgs(TRUE)
 input_dir <- args[1]
 input_dir <- paste0(input_dir, "/")
-#library(spew)
+library(spew)
 library(devtools)
-load_all("~/spew")
+#load_all("~/spew")
 cur_dir <- input_dir
 library(devtools)
 library(reshape2)
