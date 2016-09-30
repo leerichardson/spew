@@ -323,7 +323,7 @@ makeStatDF <- function(features_list){
 readMarginals <- function(cur_co, marginal_folder, householder_vars){
     stopifnot(sum(householder_vars %in% c("NP", "HINCP", "RAC1P", "AGEP")) == length(householder_vars))
     st <- substr(list.files(marginal_folder)[1], 1, 2)
-    marginals <- readRDS(file.path(marginal_folder, paste0(st, "_marginals.RDS")))
+    marginals <- readRDS(file.path(marginal_folder, paste0("marginals.RDS")))
     return(marginals)
 }
 
