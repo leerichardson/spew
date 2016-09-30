@@ -148,7 +148,7 @@ print(p)
 ```
 
 ### Household Income
- Below is a histogram of the yearly household income ($).
+ Below is a barchart of the yearly household income ($).
  ```{r, echo = FALSE, message = FALSE, warning = FALSE}
  hh_sf <- lapply(hh_list, "[[", 2)
 hh_inc <- lapply(hh_sf, "[[", 1)
@@ -188,29 +188,46 @@ print(ipums_list$header_hh)
 ```{r, echo = FALSE,  message = FALSE, warning = FALSE}
 # People  summary
 p_list <- ipums_list$p_sum_list
-p_sum_df <- do.call('rbind', lapply(p_list, "[[", 1))
+p_sum_df <- do.call('rbind', lapply(p_list, "[[", 1))	
 p_sum_df$Region <- toupper(p_sum_df$region_id)
 df <- p_sum_df[, c("Region", "nRecords")]
+df$Region <- sapply(df$Region, spew:::fipsToPlaceName, level = "county", df = us)
 tot <- sum(p_sum_df$nRecords)
+ regions <- df$Region
 ```
 
 
 **Total Synthetic Persons:** `r prettyNum(tot, big.mark = ",")`
 
+### Number of People
+Below is a barchart of the number of people per region.
+      
+```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.width = 6, fig.align = 'center'}
+cbbPalette <- c("#999999", "#E69F00", "#56B4E9",
+	"#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+cols <- rep(cbbPalette, length.out = nrow(df))
+colScale <- scale_fill_manual(values = cols)
+g <- ggplot(df, aes(x = Region, y = nRecords, fill = Region)) +
+    geom_bar(stat = "identity") + ggtitle("Person Counts") +
+    labs(x = "Region", y = "Number of People") + colScale +
+    theme_light() + 
+    theme(axis.text.x = element_text(angle = 90, size = 10), legend.position = "none") 
+print(g)
+```
+
 ### Male to Female Ratio
 
 
- Below is a bar chart of male to female ratio
+ Below is a barchart of male to female ratio
 ```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.align = 'center', fig.height = 6}
 p_sf <- lapply(p_list, "[[", 2)
 p_mf <- lapply(p_sf, "[[", 1)
-regions <- df$Region
 df2<- do.call('cbind', lapply(p_mf, "[[", 1))
 df_sf <- data.frame(t(df2))
 df_sf <- df_sf / rowSums(df_sf)
 colnames(df_sf) <- c("Male", "Female")
 
-regions <- sapply(regions, spew:::fipsToPlaceName, level = "county", df = us)
+
 
 df_sf$Region <- regions
 cols <- c("darkblue", "lightpink")
@@ -224,17 +241,17 @@ print(p)
 	
 ### Age
 
- Below is a bar chart of age ratios per region
+ Below is a barchart of age ratios per region
 ```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.align = 'center', fig.height = 6}
 p_sf <- lapply(p_list, "[[", 2)
 p_mf <- lapply(p_sf, "[[", 1)
-regions <- df$Region
+
 df2<- do.call('cbind', lapply(p_mf, "[[", 2))
 df_sf <- data.frame(t(df2))
 df_sf <- df_sf / rowSums(df_sf)
 
 
-regions <- sapply(regions, spew:::fipsToPlaceName, level = "county", df = us)
+
 
 df_sf$Region <- regions
 cols <- rep(cbbPalette, length.out = ncol(df_sf))
@@ -251,17 +268,17 @@ print(p)
 
 ### Race
 
- Below is a bar chart of race ratios per region
+ Below is a barchart of race ratios per region
 ```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.align = 'center', fig.height = 6}
 p_sf <- lapply(p_list, "[[", 2)
 p_mf <- lapply(p_sf, "[[", 1)
-regions <- df$Region
+
 df2<- do.call('cbind', lapply(p_mf, "[[", 3))
 df_sf <- data.frame(t(df2))
 df_sf <- df_sf / rowSums(df_sf)
 
 
-regions <- sapply(regions, spew:::fipsToPlaceName, level = "county", df = us)
+
 
 df_sf$Region <- regions
 cols <- rep(cbbPalette, length.out = ncol(df_sf))
