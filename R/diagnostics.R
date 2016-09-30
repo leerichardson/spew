@@ -376,6 +376,7 @@ extractHeader <- function(path){
 #' @param doPrint logical
 #' @param sampSize number of people to retain (default is 10000) per region for plotting
 #' @param sum_level 1 - state, 2- country or 3- tract - the subregions which we summarize and eventually plot
+#' @param threshold_list at list of thresholds and names to convert PUMS into factor variables for plotting or use in align_pums
 #' @return list
 summarize_us <-  function(output_dir, us_fs,
                              varsToSummarize = list(
@@ -384,7 +385,8 @@ summarize_us <-  function(output_dir, us_fs,
                              ),
                           doPrint = FALSE,
                           sampSize = 10^4,
-                          sum_level = 2
+                          sum_level = 2,
+                          threshold_list = NULL
                           ){
     # Get the data frame for use
     paths_df <- us_fs$paths_df
@@ -429,7 +431,8 @@ summarize_us <-  function(output_dir, us_fs,
         tab <- do.call('rbind', lapply(file.path(output_dir, fp), function(fp){
             tab <- read.csv(fp)[, c(vars_hh$cont, vars_hh$cat, "longitude", "latitude")]
             return(tab)
-            }))
+        }))
+        tab <- align_pums(tab, threshold_list[vars_hh$cat])
 
         # Summarize the features, first categorical then cont.
         sum_features_cat <- sapply(vars_hh$cat, summarizeFeatures,
@@ -491,6 +494,11 @@ summarize_us <-  function(output_dir, us_fs,
             return(tab)
             }
             ))
+        ## align PUMS
+        p_vars <- vars_p$cat
+        p_vars <- p_vars[-which(p_vars == "SEX")]
+        sub_list <- threshold_list[p_vars]
+        tab <- align_pums(tab, sub_list)
         ## Extract header of people
         header_p <- extractHeader(file.path(output_dir, fp)[1])
 #        header_p<- colnames(tab)
@@ -621,13 +629,13 @@ summarize_ipums <-  function(output_dir, ipums_fs,
 #' @return list of the categorical and continuous variables na mes
 getVars_ipums <- function(summary_vars, type){
      if ( type == "hh"){
-        if( summary_vars == "base"){
+        if( summary_vars[1] == "base"){
             var_names <- NULL
         } else{
             var_names <- summary_vars
         }
     } else {
-        if (summary_vars == "base"){
+        if (summary_vars[1] == "base"){
             var_names <- c("SEX")
         } else {
             var_names <- c("SEX", summary_vars)
@@ -645,8 +653,13 @@ getVars_ipums <- function(summary_vars, type){
 summarizeFeatures <- function(var, tab, type = "cat"){
     if (is.null(var)){
         return(0)
-    } else if ( type == "cat"){
+    } else if (var == "SEX"){
         sum_tab <- table(tab[, var])
+        names(sum_tab) <- paste0(var, "-", names(sum_tab))
+        return(sum_tab)
+    } else if ( type == "cat"){
+        marg_var <- paste0(var, "_marg")
+        sum_tab <- table(tab[, marg_var])
         names(sum_tab) <- paste0(var, "-", names(sum_tab))
         return(sum_tab)                                 
     } else {

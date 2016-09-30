@@ -16,7 +16,9 @@ output:
 args <- commandArgs(TRUE)
 input_dir <- args[1]
 input_dir <- paste0(input_dir, "/")
-library(spew)
+#library(spew)
+library(devtools)
+load_all("~/spew")
 cur_dir <- input_dir
 library(devtools)
 library(reshape2)
@@ -34,23 +36,24 @@ state_name <- spew:::fipsToPlaceName(fps, level = "state", df = us)
 
 
 ```{r, include = FALSE,  echo = FALSE, message = FALSE, warning = FALSE}
-library(devtools)
 library(data.table)
 library(maptools)
 library(ggmap)
 library(ggplot2)
 library(RColorBrewer)
 output_dir <- input_dir
-# Params 
+                                        # Params
+## Data
+data(us_pums_sf)
 
 region <- basename(input_dir)
-varsToSummarize = list(vars_hh = "base", vars_p = "base")
+varsToSummarize = list(vars_hh = c("NP", "HINCP"), vars_p =c ("AGEP", "RAC1P"))
 sampSize =  10^4
 vars_hh <- NULL
-doPrint <- FALSE
+doPrint <- TRUE
 ipums_fs <- spew:::summarizeFileStructure(output_dir, doPrint, type = "us")
 sum_level <- 2
-ipums_list <- spew:::summarize_us(output_dir, ipums_fs, doPrint = doPrint, sampSize = sampSize, sum_level = sum_level)
+ipums_list <- spew:::summarize_us(output_dir, ipums_fs, varsToSummarize = varsToSummarize, doPrint = doPrint, sampSize = sampSize, sum_level = sum_level, threshold_list = us_pums_sf)
 ipums_sum_list <- ipums_list
 hh_list <- ipums_list$hh_sum_list
 ```
@@ -94,9 +97,10 @@ tot <- sum(hh_sum_df$nRecords)
 ```
 
 
+
 **Total Synthetic Households:** `r prettyNum(tot, big.mark = ",")`
 
-### Summaries
+### Households Per Region
 Below is a bar chart of the number of households in each region.
 
 ```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.width = 6, fig.align = 'center'}
@@ -108,9 +112,67 @@ g <- ggplot(df, aes(x = Region, y = nRecords, fill = Region)) +
     geom_bar(stat = "identity") + ggtitle("Household Counts") +
     labs(x = "Region", y = "Number of Households") + colScale +
     theme_light() + 
-    theme(axis.text.x = element_text(angle = 90, size = 4), legend.position = "none") 
+    theme(axis.text.x = element_text(angle = 90, size = 10), legend.position = "none") 
 print(g)
 ```
+
+### Household Size
+Below is a bar chart of the household size per region.
+ ```{r, echo = FALSE, message = FALSE, warning = FALSE}
+      # People  summary
+p_list <- ipums_list$p_sum_list
+p_sum_df <- do.call('rbind', lapply(p_list, "[[", 1))
+p_sum_df$Region <- toupper(p_sum_df$region_id)
+df <- p_sum_df[, c("Region", "nRecords")]
+      tot <- sum(p_sum_df$nRecords)
+      
+ hh_sf <- lapply(hh_list, "[[", 2)
+ hh_np <- lapply(hh_sf, "[[", 1)
+regions <- df$Region
+df2<- do.call('cbind', lapply(hh_np, "[[", 1))
+df_sf <- data.frame(t(df2))
+df_sf <- df_sf / rowSums(df_sf)
+
+regions <- sapply(regions, spew:::fipsToPlaceName, level = "county", df = us)
+
+df_sf$Region <- regions
+cols <- rep(cbbPalette, length.out = ncol(df_sf))
+colScale <- scale_fill_manual(values = cols, name = "Household Size")
+df_melt <- melt(df_sf, id.vars = "Region")
+colnames(df_melt)[2:3] <- c("NP", "Percentage")
+df_melt$NP <- factor(df_melt$NP, levels = levels(df_melt$NP), labels = c(paste(1:6, "person"), "7+ person"))
+p <- ggplot(data=df_melt, aes(x=Region, y=Percentage, fill=NP)) + geom_bar(stat="identity") + coord_flip() + ggtitle("Ratio of Household Sizes") + colScale + theme_light() + 
+    theme(axis.text.y = element_text(size = 10)
+          )
+print(p)
+```
+
+### Household Income
+ Below is a histogram of the yearly household income ($).
+ ```{r, echo = FALSE, message = FALSE, warning = FALSE}
+ hh_sf <- lapply(hh_list, "[[", 2)
+hh_inc <- lapply(hh_sf, "[[", 1)
+regions <- df$Region
+df2<- do.call('cbind', lapply(hh_inc, "[[", 2))
+df_sf <- data.frame(t(df2))
+df_sf <- df_sf / rowSums(df_sf)
+ 
+regions <- sapply(regions, spew:::fipsToPlaceName, level = "county", df = us)
+
+df_sf$Region <- regions
+cols <- rep(cbbPalette, length.out = ncol(df_sf))
+colScale <- scale_fill_manual(values = cols, name = "Household Income ($)")
+df_melt <- melt(df_sf, id.vars = "Region")
+ colnames(df_melt)[2:3] <- c("HINCP", "Percentage")
+ labs <- c("0 - 10K", "10-15K", "15-25K", "25-35K", "35-50K", "50-100K", "100-200K", "200+K")
+df_melt$HINCP <- factor(df_melt$HINCP, levels = levels(df_melt$HINCP), labels = labs)
+p <- ggplot(data=df_melt, aes(x=Region, y=Percentage, fill=HINCP)) + geom_bar(stat="identity") + coord_flip() + ggtitle("Ratio of Household Incomes") + colScale + theme_light() + 
+    theme(axis.text.y = element_text(size = 10)
+          )
+print(p)
+```
+
+    
 
 ### Column Names
 
@@ -135,11 +197,13 @@ tot <- sum(p_sum_df$nRecords)
 
 **Total Synthetic Persons:** `r prettyNum(tot, big.mark = ",")`
 
-### Summaries
+### Male to Female Ratio
 
 
+ Below is a bar chart of male to female ratio
 ```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.align = 'center', fig.height = 6}
-p_mf <- lapply(p_list, "[[", 2)
+p_sf <- lapply(p_list, "[[", 2)
+p_mf <- lapply(p_sf, "[[", 1)
 regions <- df$Region
 df2<- do.call('cbind', lapply(p_mf, "[[", 1))
 df_sf <- data.frame(t(df2))
@@ -155,6 +219,60 @@ df_melt <- melt(df_sf, id.vars = "Region", varnames = c("Male", "Female"))
 colnames(df_melt)[2:3] <- c("Sex", "Percentage")
 p <- ggplot(data=df_melt, aes(x=Region, y=Percentage, fill=Sex)) + geom_bar(stat="identity") + coord_flip() + ggtitle("Ratio of Males to Females") + colScale + theme_light() + 
 	theme(axis.text.y = element_text(size = 4))
+print(p)
+```
+	
+### Age
+
+ Below is a bar chart of age ratios per region
+```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.align = 'center', fig.height = 6}
+p_sf <- lapply(p_list, "[[", 2)
+p_mf <- lapply(p_sf, "[[", 1)
+regions <- df$Region
+df2<- do.call('cbind', lapply(p_mf, "[[", 2))
+df_sf <- data.frame(t(df2))
+df_sf <- df_sf / rowSums(df_sf)
+
+
+regions <- sapply(regions, spew:::fipsToPlaceName, level = "county", df = us)
+
+df_sf$Region <- regions
+cols <- rep(cbbPalette, length.out = ncol(df_sf))
+colScale <- scale_fill_manual(values = cols, name = "Age (years)")
+df_melt <- melt(df_sf, id.vars = "Region")
+ colnames(df_melt)[2:3] <- c("AGEP", "Percentage")
+ labs <- c("15-24", "25-34", "35-44", "45-54", "55-59", "60-64", "65-74", "75-84", "85+")
+df_melt$AGEP <- factor(df_melt$AGEP, levels = levels(df_melt$AGEP), labels = labs)
+p <- ggplot(data=df_melt, aes(x=Region, y=Percentage, fill=AGEP)) + geom_bar(stat="identity") + coord_flip() + ggtitle("Ratio of Ages of Individuals over 14 years") + colScale + theme_light() + 
+    theme(axis.text.y = element_text(size = 10)
+          )
+print(p)
+```
+
+### Race
+
+ Below is a bar chart of race ratios per region
+```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.align = 'center', fig.height = 6}
+p_sf <- lapply(p_list, "[[", 2)
+p_mf <- lapply(p_sf, "[[", 1)
+regions <- df$Region
+df2<- do.call('cbind', lapply(p_mf, "[[", 3))
+df_sf <- data.frame(t(df2))
+df_sf <- df_sf / rowSums(df_sf)
+
+
+regions <- sapply(regions, spew:::fipsToPlaceName, level = "county", df = us)
+
+df_sf$Region <- regions
+cols <- rep(cbbPalette, length.out = ncol(df_sf))
+colScale <- scale_fill_manual(values = cols, name = "Race")
+df_melt <- melt(df_sf, id.vars = "Region")
+ colnames(df_melt)[2:3] <- c("AGEP", "Percentage")
+ labs <- c("White", "Black", "Indian", "Asian", "Pacific Islander", "Other", "Two+")
+df_melt$AGEP <- factor(df_melt$AGEP, levels = levels(df_melt$AGEP), labels = labs)
+p <- ggplot(data=df_melt, aes(x=Region, y=Percentage, fill=AGEP)) + geom_bar(stat="identity") + coord_flip() + ggtitle("Ratio of Races") + colScale + theme_light() + 
+    theme(axis.text.y = element_text(size = 10)
+          )
 print(p)
 ```
 
