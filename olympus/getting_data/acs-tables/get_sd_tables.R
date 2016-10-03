@@ -40,6 +40,10 @@ for (row in 1:nrow(fips.county)) {
         next
     }
 
+    if (as.numeric(state_id) < 36) {
+        next
+    }
+
     marginal_loc <- paste0(us_dir, state_id, "/input/marginals/natstat/2014/tract")
     dir.create(marginal_loc, recursive = TRUE)
     

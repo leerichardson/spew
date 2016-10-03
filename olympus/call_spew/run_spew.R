@@ -46,7 +46,7 @@ if (data_group == "US") {
 	sampling_method = "ipf"
 	locations_method = "roads"
 	parallel = TRUE
-	convert_count = TRUE
+	convert_count = FALSE
 
 	# No schools/workplaces for Puerto Rico
 	if (base_dir == "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/united_states/72") {
@@ -57,7 +57,7 @@ if (data_group == "US") {
 	                           lookup = "lookup/natstat/2010/tract", 
 	                           marginals = "marginals/natstat/2014/tract")
 	}	
-} 
+}
 
 # Print out the parameters of this call to SPEW for the log-file 
 print(paste0("Spew Version: ", packageVersion("spew")))
