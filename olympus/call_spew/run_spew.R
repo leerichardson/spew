@@ -43,20 +43,34 @@ if (data_group == "US") {
 		           lookup = "lookup/natstat/2010/tract", 
 		           workplaces = "workplaces/natstat/2009/county", 
 		           marginals = "marginals/natstat/2014/tract")
-	sampling_method = "ipf"
-	locations_method = "roads"
-	parallel = TRUE
-	convert_count = FALSE
+	sampling_method <- "ipf"
+	locations_method <- "roads"
+	parallel <- TRUE
+	convert_count <- FALSE
 
 	# No schools/workplaces for Puerto Rico
-	if (base_dir == "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/united_states/72") {
+	if (base_dir == "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/americas/northern_america/usa/72") {
 	  folders <- list(pop_table = "counts/natstat/2010/tract", 
-	                           pums = "pums/natstat/2013/puma", 
-	                           shapefiles = "shapefiles/natstat/2010/tract", 
-	                           roads = "roads/natstat/2010/county", 
-	                           lookup = "lookup/natstat/2010/tract", 
-	                           marginals = "marginals/natstat/2014/tract")
-	}	
+                       pums = "pums/natstat/2013/puma", 
+                       shapefiles = "shapefiles/natstat/2010/tract", 
+                       roads = "roads/natstat/2010/county", 
+                       lookup = "lookup/natstat/2010/tract", 
+                       marginals = "marginals/natstat/2014/tract")
+	}
+
+} else if (data_group == "ipums") {
+	folders <- list(pop_table = "counts", 
+	                  pums = "pums", 
+	                  shapefiles = "shapefiles")	
+	vars = list(household = c("COUNTRY","YEAR","SAMPLE","SERIAL","PERSONS","HHWT",
+								"FORMTYPE","REGIONW","GEOLEV1","GEOLEV2","HHTYPE",
+								"PERNUM","PERWT","RELATE","RELATED"), 
+				person = c("SERIAL","AGE","SEX","RACE","SCHOOL","INCTOT"))
+	sampling_method <- "uniform"
+	locations_method <- "uniform"
+	parallel <- TRUE
+	convert_count <- TRUE
+
 }
 
 # Print out the parameters of this call to SPEW for the log-file 

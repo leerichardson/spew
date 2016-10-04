@@ -5,7 +5,6 @@ us_base_dir = "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/americas/no
 base_dir_call = "spew_1.2.0/americas/northern_america/usa"
 call_spew = "/mnt/beegfs1/data/shared_group_data/syneco/olympus/call_spew/call_spew.sh"
 
-
 # Run call_spew.sh script, using the directory names 
 us_dirs  = os.listdir(us_base_dir)
 for us_dir in us_dirs:

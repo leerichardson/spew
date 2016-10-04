@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2016.2.2)  17 SEP 2016 19:39
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2016.2.2)  3 OCT 2016 19:53
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1029,7 +1029,7 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 666.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 666.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 666.
 Package rerunfilecheck Info: File `spew_documentation.out' has not changed.
-(rerunfilecheck)             Checksum: 1EC8D2F2834DDA1584C6579051676910;2651.
+(rerunfilecheck)             Checksum: CDBBACA7B1061A326C5E5D39EDAB48AD;2662.
 Package logreq Info: Writing requests to 'spew_documentation.run.xml'.
 \openout1 = `spew_documentation.run.xml'.
 
@@ -1062,7 +1062,7 @@ t/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/share/texlive/texmf-dist/font
 s/type1/public/amsfonts/cm/cmtt8.pfb></usr/share/texlive/texmf-dist/fonts/type1
 /public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/texmf-dist/fonts/type1/
 public/amsfonts/symbols/msbm7.pfb>
-Output written on spew_documentation.pdf (24 pages, 281233 bytes).
+Output written on spew_documentation.pdf (24 pages, 281654 bytes).
 PDF statistics:
  504 PDF objects out of 1000 (max. 8388607)
  453 compressed objects within 5 object streams
