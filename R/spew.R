@@ -328,6 +328,7 @@ write_data <- function(df, place_id, puma_id, type, output_dir) {
 #' @return logical TRUE if completed. As well as a written 
 #' pop_table to the given output directory 
 write_pop_table <- function(pop_table, output_dir) {
+  pop_table <- remove_commas(pop_table)
   filename <- file.path(output_dir, "final_pop_table.csv")
   write.csv(pop_table, filename)
   return(TRUE)
@@ -389,4 +390,14 @@ partition_pt <- function(total_size, partition_size) {
   stopifnot(partitions[length(partitions)] == total_size)
   
   return(partitions)
+}
+
+#' Remove comma's from a data-frame 
+#' 
+#' @param df data-frame 
+#' @return data-frame with no commas 
+remove_commas <- function(df) {  
+  list_nocommas <- lapply(df, function(x) gsub(",", "-", x))
+  df <- as.data.frame(list_nocommas)  
+  return(df)
 }
