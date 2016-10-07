@@ -41,14 +41,24 @@ with open(hierarchy, 'rb') as spew_csv:
 			continue
 
 		# Check if it's saint_lucia or the UK
-		if iso3 == "lca" or iso3 == "gbr" or iso3 == "usa" or iso3 == "can":
+		if iso3 == "lca" or iso3 == "gbr" or iso3 == "usa":
 			continue
 
+		# Print out the location we are running
 		total = total + 1
 		print "Running: " + country + " number: " + str(total)
 
-		# Call SPEW 
+		# Run the Canada synthetic ecosystem separately 
+		if iso3 == "can":
+			call_dir = "spew_1.2.0/" + region + "/" + sub_region + "/" + iso3
+			data_group = "none"
+			shell_call = "bash " + call_spew + " " + call_dir + " " + data_group
+			os.system(shell_call)
+			continue
+
+		# Call SPEW for IPUMS country
 		call_dir = "spew_1.2.0/" + region + "/" + sub_region + "/" + iso3
 		data_group = "ipums"
 		shell_call = "bash " + call_spew + " " + call_dir + " " + data_group
-		os.system(shell_call)
+		os.system(shell_call)	
+		

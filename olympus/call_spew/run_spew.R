@@ -26,7 +26,7 @@ library(plyr)
 # Parse the command line arguments into the inputs for spew 
 args <- commandArgs(trailingOnly = TRUE)
 args <- gsub("\"", "", args)
-print(args)
+print(paste0("Arg ", 1:length(args), " ", args))
 base_dir <- as.character(args[1])
 data_group <- as.character(args[2])
 
@@ -58,10 +58,11 @@ if (data_group == "US") {
                        marginals = "marginals/natstat/2014/tract")
 	}
 
-} else if (data_group == "ipums") {
+} else if (data_group == "ipums") {	
+	print("Ipums!")
 	folders <- list(pop_table = "counts", 
 	                  pums = "pums", 
-	                  shapefiles = "shapefiles")	
+	                  shapefiles = "shapefiles")
 	vars = list(household = c("COUNTRY","YEAR","SAMPLE","SERIAL","PERSONS","HHWT",
 								"FORMTYPE","REGIONW","GEOLEV1","GEOLEV2","HHTYPE",
 								"PERNUM","PERWT","RELATE","RELATED"), 
@@ -71,6 +72,23 @@ if (data_group == "US") {
 	parallel <- TRUE
 	convert_count <- TRUE
 
+} else if (data_group == "none") {
+	# Set the custom file-paths for Canada!
+	if (basename(base_dir) == "can") {
+		folders <- list(pop_table = file.path(base_dir, "input/counts/natstat/2011/4/pop_table.csv"), 
+                 pums = list(pums_h = file.path(base_dir, "input/pums/natstat/2011/4/pums_h.csv"),  
+                 			 pums_p = file.path(base_dir, "input/pums/natstat/2011/4/pums_p.csv")),
+                 shapefiles = file.path(base_dir, "input/shapefiles/natstat/2011/4/canada_shapefiles.shp"))
+
+		# Set the specific variables for Canada 
+		vars = list(household = c("SERIALNO", "puma_id"), 
+					person = c("SERIALNO", "AGEGRP","HRSWRK","IMMSTAT",
+						"INCTAX","MODE","OCC","POB","RELIGION","SEX"))
+			sampling_method <- "uniform"
+		locations_method <- "uniform"
+		parallel <- TRUE
+		convert_count <- TRUE
+	}
 }
 
 # Print out the parameters of this call to SPEW for the log-file 
