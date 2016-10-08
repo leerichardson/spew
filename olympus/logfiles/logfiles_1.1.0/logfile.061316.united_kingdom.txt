@@ -1,0 +1,72 @@
+
+The following have been reloaded with a version change:
+  1) r/3.1.2 => r/3.2.1
+
+SPEW
+Checking rgeos availability: TRUE
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Loading required package: foreach
+Loading required package: iterators
+Loading required package: snow
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+[1] "Arguments: 1ipums"                                                                      
+[2] "Arguments: 2/mnt/beegfs1/data/shared_group_data/syneco/input/east/europe/united_kingdom"
+[3] "Arguments: 3/mnt/beegfs1/data/shared_group_data/syneco/input/east/europe/united_kingdom"
+[4] "Arguments: 4TRUE"                                                                       
+[5] "Arguments: 5NA"                                                                         
+[6] "Arguments: 6NA"                                                                         
+[7] "Arguments: 7NA"                                                                         
+[8] "Arguments: 8NA"                                                                         
+[1] "Calling SPEW"
+Error in read_pop_table(input_dir, folders, data_group) : 
+  There is no revised, admin or extended counts!
+Calls: generate_spew -> read_data -> read_pop_table
+Execution halted

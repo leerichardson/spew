@@ -1,0 +1,1447 @@
+
+The following have been reloaded with a version change:
+  1) r/3.1.2 => r/3.2.1
+
+Running on node:  n016.olympus.psc.edu
+Checking rgeos availability: TRUE
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Loading required package: foreach
+Loading required package: iterators
+Loading required package: snow
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+[1] "Spew Version: 1.1.0"
+[1] "Input Data Location: /mnt/beegfs1/data/shared_group_data/syneco/input/east/africa/sudan"
+[1] "Output Data Location: /mnt/beegfs1/data/shared_group_data/syneco/input/east/africa/sudan"
+[1] "Data Group: ipums"
+[1] "Parallel: TRUE"
+[1] "Sampling People Method: uniform"
+[1] "Sampling Locations Method: uniform"
+[1] "Calling SPEW"
+Read 14.4% of 5066530 rowsRead 34.3% of 5066530 rowsRead 53.3% of 5066530 rowsRead 72.4% of 5066530 rowsRead 91.4% of 5066530 rowsRead 5066530 rows and 20 (of 20) columns from 0.342 GB file in 00:00:07
+[1] "Read runs in: 18.12"
+[1] "Format runs in: 0.01"
+starting worker for localhost:11561 
+starting worker for localhost:11561 
+starting worker for localhost:11561 
+starting worker for localhost:11561 
+starting worker for localhost:11561 
+starting worker for localhost:11561 
+starting worker for localhost:11561 
+starting worker for localhost:11561 
+starting worker for localhost:11561 
+starting worker for localhost:11561 
+starting worker for localhost:11561 
+starting worker for localhost:11561 
+starting worker for localhost:11561 
+starting worker for localhost:11561 
+starting worker for localhost:11561 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+automatically exporting the following variables from the local environment:
+  convert_count, locations_method, num_places, output_dir, pop_table, pums_h, pums_p, sampling_method, schools, shapefile, workplaces 
+explicitly exporting variables(s): make_place, people_to_households, sample_households, sample_locations, sample_people, write_data, assign_schools, assign_schools_inner, weight_dists, get_dists, haversine, subset_schools, assign_workplaces, assign_workplaces_inner, remove_holes, sample_locations_uniform, sample_locations_roads, subset_shapes_roads, samp_roads, print_region_list, read_roads
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Type: EXEC 
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Loading required package: spew
+loaded spew and set parent environment
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Loading required package: bit
+Type: EXEC 
+Loading required package: spew
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+loaded spew and set parent environment
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Loading required package: bit
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Loading required package: bit
+Type: EXEC 
+Loading required package: spew
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Loading required package: bit
+Type: EXEC 
+Loading required package: spew
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+loaded spew and set parent environment
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Loading required package: bit
+Type: EXEC 
+Loading required package: spew
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: spew
+Loading required package: bit
+loaded spew and set parent environment
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Loading required package: bit
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Type: EXEC 
+Loading required package: spew
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Loading required package: bit
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+Attaching package bit
+querying: print length any all min max range sum summary
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+bit access: length<- [ [<- [[ [[<-
+creators: bit bitwhich
+for more help type ?bit
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+numValues: 15, numResults: 0, stopped: TRUE
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+[1] "Region 7 out of 15"
+[1] "Region 5 out of 15"
+Type: EXEC 
+[1] "Region 10 out of 15"[1]
+ "Region 8 out of 15"
+Type: EXEC 
+Type: EXEC 
+[1] "Region 4 out of 15"
+[1] "Region 6 out of 15"
+[1] "Region 3 out of 15"
+[1] "Region 12 out of 15"
+Type: EXEC 
+[1] "Region 15 out of 15"
+[1] "Region 2 out of 15"
+[1] "Region 9 out of 15"
+[1] "Region 1 out of 15"
+Type: EXEC 
+[1] "Region 14 out of 15"
+Type: EXEC 
+[1] "Region 13 out of 15"
+Type: EXEC 
+[1] "Region 11 out of 15"
+got results for task 1
+numValues: 15, numResults: 1, stopped: TRUE
+returning status FALSE
+got results for task 2
+numValues: 15, numResults: 2, stopped: TRUE
+returning status FALSE
+got results for task 3
+numValues: 15, numResults: 3, stopped: TRUE
+returning status FALSE
+got results for task 4
+numValues: 15, numResults: 4, stopped: TRUE
+returning status FALSE
+got results for task 5
+numValues: 15, numResults: 5, stopped: TRUE
+returning status FALSE
+got results for task 6
+numValues: 15, numResults: 6, stopped: TRUE
+returning status FALSE
+got results for task 7
+numValues: 15, numResults: 7, stopped: TRUE
+returning status FALSE
+got results for task 8
+numValues: 15, numResults: 8, stopped: TRUE
+returning status FALSE
+got results for task 9
+numValues: 15, numResults: 9, stopped: TRUE
+returning status FALSE
+got results for task 10
+numValues: 15, numResults: 10, stopped: TRUE
+returning status FALSE
+got results for task 11
+numValues: 15, numResults: 11, stopped: TRUE
+returning status FALSE
+got results for task 12
+numValues: 15, numResults: 12, stopped: TRUE
+returning status FALSE
+got results for task 13
+numValues: 15, numResults: 13, stopped: TRUE
+returning status FALSE
+got results for task 14
+numValues: 15, numResults: 14, stopped: TRUE
+returning status FALSE
+got results for task 15
+numValues: 15, numResults: 15, stopped: TRUE
+calling combine function
+evaluating call object to combine results:
+  fun(accum, result.1, result.2, result.3, result.4, result.5, 
+    result.6, result.7, result.8, result.9, result.10, result.11, 
+    result.12, result.13, result.14, result.15)
+returning status TRUE
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+[1] "Place Name: algedarif"
+Type: DONE 
+Type: DONE 
+[1] "Place: 1"
+[1] "Total Places: 15"
+[1] "Households: 245593"
+[1] "People: 1340508"
+[1] "Time: 34.27"
+Type: DONE 
+[1] "Schools: 0"
+[1] "Workplaces: 0"
+[1]Type: DONE 
+ "Puma: 729023"
+[1] "Place Name: algezira"
+[1] "Place: 2"
+[1] "Total Places: 15"
+[1] "Households: 651200"
+[1] "People: 3855053"
+[1] "Time: 73.24"
+[1] "Schools: 0"
+[1] "Workplaces: 0"
+[1] "Puma: 729041"
+[1] "Place Name: bluenile"
+Type: DONE 
+[1] "Place: 3"
+[1] "Total Places: 15"
+[1] "Households: 151560"
+[1] "People: 932421"
+[1] "Time: 25.3"
+[1] "Schools: 0"
+[1] "Workplaces: 0"
+[1] "Puma: 729044"
+[1] "Place Name: kassala"
+[1] "Place: 4"
+[1] "Total Places: 15"
+[1] "Households: 325994"
+[1] "People: 1781191"
+[1] "Time: 48.43"
+[1] "Schools: 0"
+[1] "Workplaces: 0"
+[1] "Puma: 729022"
+[1] "Place Name: khartoum"
+[1] "Place: 5"
+[1] "Total Places: 15"
+[1] "Households: 960662"
+[1] "People: 5782572"
+[1] "Time: 97.55"
+[1] "Schools: 0"
+[1] "Workplaces: 0"
+[1] "Puma: 729031"
+[1] "Place Name: northdarfur"
+[1] "Place: 6"
+[1] "Total Places: 15"
+[1] "Households: 384975"
+[1] "People: 2067526"
+[1] "Time: 48.97"
+[1] "Schools: 0"
+[1] "Workplaces: 0"
+[1] "Puma: 729061"
+[1] "Place Name: northkordofan"
+[1] "Place: 7"
+[1] "Total Places: 15"
+[1] "Households: 532028"
+[1] "People: 2746971"
+[1] "Time: 58.74"
+[1] "Schools: 0"
+[1] "Workplaces: 0"
+Type: DONE 
+[1] "Puma: 729051"
+[1] "Place Name: northern"
+[1] "Place: 8"
+[1] "Total Places: 15"
+[1] "Households: 127327"
+[1] "People: 668402"
+[1] "Time: 17.39"
+[1] "Schools: 0"
+[1] "Workplaces: 0"
+[1] "Puma: 729011"
+[1] "Place Name: redsea"
+[1] "Place: 9"
+[1] "Total Places: 15"
+[1] "Households: 254286"
+[1] "People: 1379280"
+[1] "Time: 56.3"
+[1] "Schools: 0"
+[1] "Workplaces: 0"
+[1] "Puma: 729021"
+[1] "Place Name: nahrelnil"
+[1] "Place: 10"
+[1] "Total Places: 15"
+[1] "Households: 204076"
+[1] "People: 1107543"
+[1] "Time: 25.2"
+[1] "Schools: 0"
+[1] "Workplaces: 0"
+[1] "Puma: 729012"
+[1] "Place Name: sinnar"
+[1] "Place: 11"
+[1] "Total Places: 15"
+[1] "Households: 234060"
+[1] "People: 1292870"
+[1] "Time: 31.76"
+[1] "Schools: 0"
+[1] "Workplaces: 0"
+[1] "Puma: 729043"
+[1] "Place Name: southdarfur"
+[1] "Place: 12"
+[1] "Total Places: 15"
+[1] "Households: 745605"
+[1] "People: 4081534"
+[1] "Time: 95.47"
+[1] "Schools: 0"
+[1] "Workplaces: 0"
+[1] "Puma: 729063"
+[1] "Place Name: southkordofan"
+[1] "Place: 13"
+[1] "Total Places: 15"
+[1] "Households: 256161"
+[1] "People: 1488523"
+[1] "Time: 36.98"
+[1] "Schools: 0"
+[1] "Workplaces: 0"
+[1] "Puma: 729052"
+[1] "Place Name: westdarfur"
+[1] "Place: 14"
+[1] "Total Places: 15"
+[1] "Households: 238279"
+[1] "People: 1143241"
+[1] "Time: 43.85"
+[1] "Schools: 0"
+[1] "Workplaces: 0"
+[1] "Puma: 729062"
+[1] "Place Name: whitenile"
+[1] "Place: 15"
+[1] "Total Places: 15"
+[1] "Households: 315208"
+[1] "People: 1820049"
+[1] "Time: 42.3"
+[1] "Schools: 0"
+[1] "Workplaces: 0"
+[1] "Puma: 729042"
+[1] "Location runs in: 330.89"
+[1] "SPEW Runs in: 349.01"
+[1] TRUE
