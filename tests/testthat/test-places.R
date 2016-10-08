@@ -35,7 +35,12 @@ test_that("Place Assignment Functions", {
   place_id <- sd_data$pop_table[index, "place_id"]
   
   # Sample n indices from the household pums 
-  sampled_households <- sample_households(method = "uniform", n_house, sd_data$pums$pums_h, puma_id)
+  sampled_households <- sample_households(method = "uniform",
+                                          n_house = n_house, 
+                                          pums_h = sd_data$pums$pums_h, 
+                                          pums_p = sd_data$pums$pums_p, 
+                                          puma_id = puma_id, 
+                                          place_id = place_id)
   
   # Attach locations to the sample households 
   locations <- spew:::sample_locations(method = "uniform", 
@@ -58,7 +63,9 @@ test_that("Place Assignment Functions", {
   # sure to include both the place and puma id
   sampled_people <- sample_people(method = "uniform", 
                                   household_pums = sampled_households, 
-                                  pums_p = sd_data$pums$pums_p)
+                                  pums_p = sd_data$pums$pums_p, 
+                                  puma_id = puma_id, 
+                                  place_id = place_id)  
   sampled_people$place_id <- place_id
   sampled_people$puma_id <- puma_id
   
