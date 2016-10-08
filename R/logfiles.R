@@ -204,7 +204,7 @@ verify_column <- function(column, df_size) {
 check_logfile <- function(logfile) {
   # Verify the log-file made it to the
   # last line of SPEW
-  pops <- get_rows(logfile, "SPEW Runs in:" )
+  pops <- spew:::get_rows(logfile, "SPEW Runs in:" )
   if (length(pops) == 1) {
     pop_result <- TRUE
   } else {
@@ -249,4 +249,18 @@ get_total_time <- function(logfile) {
   total_numbers <- number_from_char(total_line)
   total_time <- paste0(total_numbers[2], ".", total_numbers[3])
   return(total_time)
+}
+
+
+#' Extract rows with a certain character
+#'
+#' @param dat character vector
+#' @param char character which specifies the
+#' sequence we are looking for
+#' @return output which is the subsetted rows
+#' of the initial character vector (logfile)
+get_rows <- function(dat, char) {
+  row_index <- grep(char, dat)
+  output <- dat[row_index]
+  return(output)
 }
