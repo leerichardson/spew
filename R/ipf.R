@@ -120,6 +120,11 @@ fill_cont_table <- function(pums, marginals, place_id, n_house) {
   # Fill contingency table with ipf 
   ipf_fit <- mipfp::Ipfp(seed = seed, target.list = target_list, target.data = target_data)
   ipf_tab <- ipf_fit$x.hat
+  
+# # Write out the IPF Tables for analysis 
+# tab_loc <- file.path("/home/lee/Dropbox/ipf_midas/synthpop_ipf_unif/tables", paste0("table_", place_id))
+# saveRDS(object = ipf_tab, file = tab_loc)
+  
   table <- as.data.frame(ipf_tab)
   stopifnot(sum(table$Freq) - n_house < 1)
 

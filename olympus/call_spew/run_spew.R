@@ -26,7 +26,7 @@ library(plyr)
 # Parse the command line arguments into the inputs for spew 
 args <- commandArgs(trailingOnly = TRUE)
 args <- gsub("\"", "", args)
-print(args)
+print(paste0("Arg ", 1:length(args), " ", args))
 base_dir <- as.character(args[1])
 data_group <- as.character(args[2])
 
@@ -43,21 +43,53 @@ if (data_group == "US") {
 		           lookup = "lookup/natstat/2010/tract", 
 		           workplaces = "workplaces/natstat/2009/county", 
 		           marginals = "marginals/natstat/2014/tract")
-	sampling_method = "ipf"
-	locations_method = "roads"
-	parallel = TRUE
-	convert_count = TRUE
+	sampling_method <- "ipf"
+	locations_method <- "roads"
+	parallel <- TRUE
+	convert_count <- FALSE
 
 	# No schools/workplaces for Puerto Rico
-	if (base_dir == "/mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/united_states/72") {
+	if (base_dir == "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/americas/northern_america/usa/72") {
 	  folders <- list(pop_table = "counts/natstat/2010/tract", 
-	                           pums = "pums/natstat/2013/puma", 
-	                           shapefiles = "shapefiles/natstat/2010/tract", 
-	                           roads = "roads/natstat/2010/county", 
-	                           lookup = "lookup/natstat/2010/tract", 
-	                           marginals = "marginals/natstat/2014/tract")
-	}	
-} 
+                       pums = "pums/natstat/2013/puma", 
+                       shapefiles = "shapefiles/natstat/2010/tract", 
+                       roads = "roads/natstat/2010/county", 
+                       lookup = "lookup/natstat/2010/tract", 
+                       marginals = "marginals/natstat/2014/tract")
+	}
+
+} else if (data_group == "ipums") {	
+	print("Ipums!")
+	folders <- list(pop_table = "counts", 
+	                  pums = "pums", 
+	                  shapefiles = "shapefiles")
+	vars = list(household = c("COUNTRY","YEAR","SAMPLE","SERIAL","PERSONS","HHWT",
+								"FORMTYPE","REGIONW","GEOLEV1","GEOLEV2","HHTYPE",
+								"PERNUM","PERWT","RELATE","RELATED"), 
+				person = c("SERIAL","AGE","SEX","RACE","SCHOOL","INCTOT"))
+	sampling_method <- "uniform"
+	locations_method <- "uniform"
+	parallel <- TRUE
+	convert_count <- TRUE
+
+} else if (data_group == "none") {
+	# Set the custom file-paths for Canada!
+	if (basename(base_dir) == "can") {
+		folders <- list(pop_table = file.path(base_dir, "input/counts/natstat/2011/4/pop_table.csv"), 
+                 pums = list(pums_h = file.path(base_dir, "input/pums/natstat/2011/4/pums_h.csv"),  
+                 			 pums_p = file.path(base_dir, "input/pums/natstat/2011/4/pums_p.csv")),
+                 shapefiles = file.path(base_dir, "input/shapefiles/natstat/2011/4/canada_shapefiles.shp"))
+
+		# Set the specific variables for Canada 
+		vars = list(household = c("SERIALNO", "puma_id"), 
+					person = c("SERIALNO", "AGEGRP","HRSWRK","IMMSTAT",
+						"INCTAX","MODE","OCC","POB","RELIGION","SEX"))
+			sampling_method <- "uniform"
+		locations_method <- "uniform"
+		parallel <- TRUE
+		convert_count <- TRUE
+	}
+}
 
 # Print out the parameters of this call to SPEW for the log-file 
 print(paste0("Spew Version: ", packageVersion("spew")))

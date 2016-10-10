@@ -54,7 +54,7 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {3.5}Workplace Assignments}{15}{subsection.3.5}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4}Output}{16}{section.4}
+\contentsline {section}{\numberline {4}Data Organization}{16}{section.4}
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {4.1}Directory Structure}{16}{subsection.4.1}
 \defcounter {refsection}{0}\relax 

@@ -169,7 +169,9 @@ stat_test_us_marg <- function(regionID, type = "p", level = "tract", output, mar
     synth_p <- synth_tab / sum(synth_tab)
     ## Correct zero marginals
     row_ind <- which( marginals[[variables]]$df$place_id == regionID)
-    stopifnot(output$place_id[1] == regionID)
+    stopifnot(as.numeric(output$place_id[1]) == as.numeric(regionID))
+    ## in case we have a leading zero, replace the proper character
+    output$place_id <- regionID
     stopifnot(length(row_ind) == 1)
     marg_tab <- marginals[[variables]]$df[row_ind, -1]
     stopifnot(identical(names(marg_tab), names(synth_tab)))

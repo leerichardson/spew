@@ -19,7 +19,6 @@ format_data <- function(data_list, data_group) {
   }
   
   if (data_group == "US") {
-
     # Make sure the place_id is the same type for merging 
     stopifnot(class(data_list$pop_table$place_id) == class(data_list$lookup$place_id))    
       
@@ -29,7 +28,6 @@ format_data <- function(data_list, data_group) {
     data_list$pop_table <- new_poptable
       
   } else if (data_group == "ipums") {
-    
     # Pull out the names coming from the shapefile and counts 
     shapefile_names <- data_list$shapefiles$place_id
     level <- get_level(shapefile_names, data_list$pop_table)
@@ -106,7 +104,6 @@ get_level <- function(shapefile_names, pop_table) {
 #' @return numeric vector indicating the appropriate indices for 
 #' shapefiles which correspond to the count_names 
 get_shapefile_indices <- function(shapefile_names, count_names) {
-  
   # Match the shapefile names against the count names. And make sure 
   # that both everything is matched and that 
   shapefile_indices <- amatch(count_names, shapefile_names, method = "jw", 
@@ -236,7 +233,6 @@ remove_count <- function(pop_table, place) {
 #' @param names character vector of names   
 #' @return names a character vector of updated names  
 remove_excess_words <- function(names) {
-  
   # Specific fix for a Peru province 
   if (any(names == "Provincia de Lima")) {
     index <- which(names == "Provincia de Lima")
@@ -262,13 +258,11 @@ remove_excess_words <- function(names) {
     index <- which(names == "Bío-Bío")
     names[index] <- "biobio"
   }
-
   
   if (any(names == "Region del Bio-Bio (VIII)")) {
     index <- which(names == "Region del Bio-Bio (VIII)")
     names[index] <- "biobio"
   }
-  
   
   # Removing titles before the various 
   # south american countries 

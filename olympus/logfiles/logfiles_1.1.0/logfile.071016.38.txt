@@ -1,0 +1,7922 @@
+
+The following have been reloaded with a version change:
+  1) r/3.1.2 => r/3.2.1
+
+Running on node:  n015.olympus.psc.edu
+Checking rgeos availability: TRUE
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Loading required package: foreach
+Loading required package: iterators
+Loading required package: snow
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+[1] "Spew Version: 1.1.0"
+[1] "Input Data Location: /mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/united_states/38"
+[1] "Output Data Location: /mnt/beegfs1/data/shared_group_data/syneco/input/west/north_america/united_states/38"
+[1] "Data Group: US"
+[1] "Parallel: TRUE"
+[1] "Sampling People Method: uniform"
+[1] "Sampling Locations Method: roads"
+[1] "Calling SPEW"
+[1] "Read runs in: 4.56"
+[1] "Format runs in: 0.47"
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+starting worker for localhost:11081 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+automatically exporting the following variables from the local environment:
+  convert_count, locations_method, num_places, output_dir, pop_table, pums_h, pums_p, sampling_method, schools, shapefile, workplaces 
+explicitly exporting variables(s): make_place, people_to_households, sample_households, sample_locations, sample_people, write_data, assign_schools, assign_schools_inner, weight_dists, get_dists, haversine, subset_schools, assign_workplaces, assign_workplaces_inner, remove_holes, sample_locations_uniform, sample_locations_roads, subset_shapes_roads, samp_roads, print_region_list, read_roads
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Loading required package: bit
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Type: EXEC 
+Loading required package: spew
+Loading required package: bit
+loaded spew and set parent environment
+Loading required package: bit
+Loading required package: bit
+Attaching package bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+for more help type ?bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+
+Attaching package: ‘bit’
+
+bit access: length<- [ [<- [[ [[<-
+
+Attaching package: ‘bit’
+
+for more help type ?bit
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+Attaching package bit64
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+Attaching package bit64
+logical operator: ! & | xor != == < <= >= >
+creators: integer64 seq :
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+arithmetic operator: + - * / %/% %% ^
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+creators: integer64 seq :
+math: sign abs sqrt log log2 log10
+logical operator: ! & | xor != == < <= >= >
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+math: floor ceiling trunc round
+arithmetic operator: + - * / %/% %% ^
+logical operator: ! & | xor != == < <= >= >
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+math: sign abs sqrt log log2 log10
+aggregation: any all min max range sum prod
+arithmetic operator: + - * / %/% %% ^
+math: floor ceiling trunc round
+cumulation: diff cummin cummax cumsum cumprod
+math: sign abs sqrt log log2 log10
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+access: length<- [ [<- [[ [[<-
+math: floor ceiling trunc round
+aggregation: any all min max range sum prod
+combine: c rep cbind rbind as.data.frame
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+cumulation: diff cummin cummax cumsum cumprod
+for more help type ?bit64
+aggregation: any all min max range sum prod
+access: length<- [ [<- [[ [[<-
+cumulation: diff cummin cummax cumsum cumprod
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: bit
+Loading required package: spew
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Loading required package: bit
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+The following object is masked from ‘package:base’:
+
+    xor
+
+Loading required package: spew
+Loading required package: bit
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Loading required package: bit
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+Type: EXEC 
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+Loading required package: spew
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+loaded spew and set parent environment
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+
+Attaching package: ‘bit’
+
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+Type: EXEC 
+Loading required package: spew
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+loaded spew and set parent environment
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Loading required package: bit
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+Attaching package bit
+creators: bit bitwhich
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+coercion: as.logical as.integer as.bit as.bitwhich which
+creators: bit bitwhich
+operator: ! & | xor != ==
+coercion: as.logical as.integer as.bit as.bitwhich which
+querying: print length any all min max range sum summary
+operator: ! & | xor != ==
+bit access: length<- [ [<- [[ [[<-
+querying: print length any all min max range sum summary
+for more help type ?bit
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+Type: EXEC 
+Loading required package: spew
+The following object is masked from ‘package:base’:
+
+    xor
+
+loaded spew and set parent environment
+Loading required package: bit
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+Loading required package: bit
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+
+Attaching package: ‘bit64’
+
+logical operator: ! & | xor != == < <= >= >
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Loading required package: bit
+Loading required package: bit
+Loading required package: bit
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+
+Attaching package: ‘bit’
+
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Loading required package: bit
+Loading required package: bit
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+Loading required package: bit
+
+Attaching package: ‘bit64’
+
+Attaching package bit64
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Loading required package: bit
+Type: EXEC 
+Loading required package: spew
+Loading required package: bit
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+loaded spew and set parent environment
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Loading required package: bit
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+Attaching package bit64
+math: sign abs sqrt log log2 log10
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+math: floor ceiling trunc round
+creators: integer64 seq :
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+aggregation: any all min max range sum prod
+logical operator: ! & | xor != == < <= >= >
+cumulation: diff cummin cummax cumsum cumprod
+arithmetic operator: + - * / %/% %% ^
+access: length<- [ [<- [[ [[<-
+math: sign abs sqrt log log2 log10
+combine: c rep cbind rbind as.data.frame
+math: floor ceiling trunc round
+for more help type ?bit64
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+Type: EXEC 
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+Loading required package: spew
+The following object is masked from ‘package:base’:
+
+    xor
+
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Type: EXEC 
+Loading required package: spew
+Loading required package: bit
+loaded spew and set parent environment
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Type: EXEC 
+Loading required package: spew
+Loading required package: bit
+loaded spew and set parent environment
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+Loading required package: bit
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Loading required package: bit
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+Type: EXEC 
+Loading required package: spew
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+loaded spew and set parent environment
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Loading required package: bit
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Type: EXEC 
+Loading required package: spew
+Loading required package: bit
+loaded spew and set parent environment
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Loading required package: bit
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Type: EXEC 
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+Loading required package: spew
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+loaded spew and set parent environment
+Loading required package: bit
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+loaded spew and set parent environment
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Type: EXEC 
+Loading required package: spew
+Loading required package: bit
+loaded spew and set parent environment
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: spew
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+loaded spew and set parent environment
+Loading required package: bit
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: bit
+Loading required package: spew
+loaded spew and set parent environment
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+Loading required package: bit
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+Type: EXEC 
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+Loading required package: spew
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+loaded spew and set parent environment
+Loading required package: bit
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: spew
+Attaching package bit
+loaded spew and set parent environment
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Loading required package: bit
+Loading required package: bit
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+Loading required package: bit
+Attaching package bit64
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+access: length<- [ [<- [[ [[<-
+for more help type ?bit64
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+loaded spew and set parent environment
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Loading required package: bit
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+loaded spew and set parent environment
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Loading required package: bit
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+Type: EXEC 
+The following object is masked from ‘package:base’:
+
+    xor
+
+Loading required package: bit
+Loading required package: bit
+Loading required package: spew
+loaded spew and set parent environment
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+Attaching package bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Type: EXEC 
+Loading required package: spew
+Loading required package: bit
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+Attaching package bit64
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+creators: integer64 seq :
+math: sign abs sqrt log log2 log10
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+math: floor ceiling trunc round
+logical operator: ! & | xor != == < <= >= >
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+arithmetic operator: + - * / %/% %% ^
+aggregation: any all min max range sum prod
+math: sign abs sqrt log log2 log10
+cumulation: diff cummin cummax cumsum cumprod
+math: floor ceiling trunc round
+access: length<- [ [<- [[ [[<-
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+combine: c rep cbind rbind as.data.frame
+aggregation: any all min max range sum prod
+for more help type ?bit64
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+loaded spew and set parent environment
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+Loading required package: spew
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+loaded spew and set parent environment
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: spew
+loaded spew and set parent environment
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Loading required package: bit
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Type: EXEC 
+Loading required package: spew
+Loading required package: bit
+loaded spew and set parent environment
+Type: EXEC 
+Loading required package: spew
+Loading required package: bit
+loaded spew and set parent environment
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+Loading required package: bit
+Loading required package: bit
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+The following object is masked from ‘package:base’:
+
+    xor
+
+Type: EXEC 
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+Loading required package: spew
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+Attaching package bit64
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+loaded spew and set parent environment
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Loading required package: bit
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+Attaching package bit64
+for more help type ?bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+
+Attaching package: ‘bit64’
+
+cumulation: diff cummin cummax cumsum cumprod
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Loading required package: bit
+Loading required package: bit
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+Attaching package bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+for more help type ?bit
+The following object is masked from ‘package:base’:
+
+    xor
+
+
+Attaching package: ‘bit’
+
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+rgeos version: 0.3-19, (SVN revision 524)
+ GEOS runtime version: 3.5.0-CAPI-1.9.0 r4084 
+ Linking to sp version: 1.2-3 
+ Polygon checking: TRUE 
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Attaching package bit64
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+Loading required package: bit
+Loading required package: bit
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+Attaching package bit
+package:bit (c) 2008-2012 Jens Oehlschlaegel (GPL-2)
+creators: bit bitwhich
+coercion: as.logical as.integer as.bit as.bitwhich which
+operator: ! & | xor != ==
+querying: print length any all min max range sum summary
+bit access: length<- [ [<- [[ [[<-
+for more help type ?bit
+
+Attaching package: ‘bit’
+
+The following object is masked from ‘package:data.table’:
+
+    setattr
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+The following object is masked from ‘package:base’:
+
+    xor
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+Attaching package bit64
+package:bit64 (c) 2011-2012 Jens Oehlschlaegel (GPL-2 with commercial restrictions)
+creators: integer64 seq :
+coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bin
+logical operator: ! & | xor != == < <= >= >
+arithmetic operator: + - * / %/% %% ^
+math: sign abs sqrt log log2 log10
+math: floor ceiling trunc round
+querying: is.integer64 is.vector [is.atomic} [length] is.na format print
+aggregation: any all min max range sum prod
+cumulation: diff cummin cummax cumsum cumprod
+access: length<- [ [<- [[ [[<-
+combine: c rep cbind rbind as.data.frame
+for more help type ?bit64
+
+Attaching package: ‘bit64’
+
+The following object is masked from ‘package:bit’:
+
+    still.identical
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+The following objects are masked from ‘package:base’:
+
+    :, %in%, is.double, match, order, rank
+
+numValues: 205, numResults: 0, stopped: TRUE
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+[1] "Region 1 out of 205"
+Type: EXEC 
+[1][1][1]Type: EXEC 
+ "Region 2 out of 205" "Region 4 out of 205"
+ "Region 3 out of 205"
+
+[1] "Region 5 out of 205"Type: EXEC 
+
+[1][1] "Region 7 out of 205"
+ "Region 8 out of 205"
+[1] "Region 6 out of 205"
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+[1] "Region 13 out of 205"
+[1] "Region 14 out of 205"
+[1] "Region 15 out of 205"
+Type: EXEC 
+[1] "Region 16 out of 205"
+[1] "Region 19 out of 205"
+Type: EXEC 
+Type: EXEC 
+[1][1] "Region 24 out of 205"
+ "Region 18 out of 205"
+Type: EXEC 
+Type: EXEC 
+[1] "Region 17 out of 205"
+[1] "Region 12 out of 205"
+Type: EXEC 
+[1] "Region 38 out of 205"
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+[1] "Region 9 out of 205"
+[1][1][1] "Region 21 out of 205" "Region 25 out of 205"
+
+ "Region 30 out of 205"
+Type: EXEC 
+[1] "Region 31 out of 205"
+Type: EXEC 
+Type: EXEC 
+[1] "Region 20 out of 205"
+Type: EXEC 
+[1] "Region 33 out of 205"
+Type: EXEC 
+[1] "Region 37 out of 205"
+[1] "Region 27 out of 205"
+Type: EXEC 
+[1] "Region 22 out of 205"
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+[1] "Region 32 out of 205"
+[1][1] "Region 26 out of 205"
+ "Region 34 out of 205"
+[1] "Region 11 out of 205"
+[1] "Region 39 out of 205"
+[1] "Region 29 out of 205"
+Type: EXEC 
+[1] "Region 10 out of 205"
+[1] "Region 36 out of 205"
+Type: EXEC 
+[1] "Region 28 out of 205"
+Type: EXEC 
+[1] "Region 23 out of 205"
+Type: EXEC 
+[1] "Region 35 out of 205"
+Type: EXEC 
+[1] "Region 40 out of 205"
+Type: EXEC 
+[1] "Region 41 out of 205"
+Type: EXEC 
+Type: EXEC 
+[1] "Region 45 out of 205"
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+[1] "Region 51 out of 205"
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+[1][1] "Region 53 out of 205" "Region 48 out of 205"
+
+Type: EXEC 
+[1] "Region 49 out of 205"
+Type: EXEC 
+[1]Type: EXEC 
+ "Region 43 out of 205"
+[1] "Region 46 out of 205"Type: EXEC 
+
+[1]Type: EXEC 
+ "Region 55 out of 205"
+Type: EXEC 
+Type: EXEC 
+[1] "Region 59 out of 205"
+[1] "Region 54 out of 205"
+Type: EXEC 
+[1] "Region 44 out of 205"
+Type: EXEC 
+[1][1] "Region 62 out of 205" "Region 57 out of 205"
+
+[1] "Region 58 out of 205"
+[1] "Region 61 out of 205"
+Type: EXEC 
+Type: EXEC 
+Type: EXEC 
+[1][1] "Region 47 out of 205" "Region 60 out of 205"
+
+[1] "Region 56 out of 205"
+[1] "Region 50 out of 205"
+Type: EXEC 
+[1] "Region 64 out of 205"
+Type: EXEC 
+[1] "Region 52 out of 205"
+[1] "Region 42 out of 205"
+Type: EXEC 
+[1] "Region 63 out of 205"
+Type: EXEC 
+[1] "Region 65 out of 205"
+Type: EXEC 
+[1] "Region 66 out of 205"
+Type: EXEC 
+[1] "Region 67 out of 205"
+Type: EXEC 
+[1] "Region 68 out of 205"
+Type: EXEC 
+[1] "Region 69 out of 205"
+Type: EXEC 
+[1] "Region 70 out of 205"
+Type: EXEC 
+[1] "Region 71 out of 205"
+Type: EXEC 
+[1] "Region 72 out of 205"
+Type: EXEC 
+[1] "Region 73 out of 205"
+Type: EXEC 
+[1] "Region 74 out of 205"
+Type: EXEC 
+[1] "Region 75 out of 205"
+Type: EXEC 
+[1] "Region 76 out of 205"
+Type: EXEC 
+[1] "Region 77 out of 205"
+Type: EXEC 
+[1] "Region 78 out of 205"
+Type: EXEC 
+[1] "Region 79 out of 205"
+Type: EXEC 
+[1] "Region 80 out of 205"
+Type: EXEC 
+[1] "Region 82 out of 205"
+Type: EXEC 
+[1] "Region 81 out of 205"
+Type: EXEC 
+[1] "Region 83 out of 205"
+Type: EXEC 
+[1] "Region 84 out of 205"
+Type: EXEC 
+[1] "Region 85 out of 205"
+Type: EXEC 
+[1] "Region 86 out of 205"
+Type: EXEC 
+[1] "Region 87 out of 205"
+Type: EXEC 
+[1] "Region 88 out of 205"
+Type: EXEC 
+[1] "Region 89 out of 205"
+Type: EXEC 
+[1] "Region 90 out of 205"
+Type: EXEC 
+[1] "Region 91 out of 205"
+Type: EXEC 
+[1] "Region 92 out of 205"
+Type: EXEC 
+[1] "Region 93 out of 205"
+Type: EXEC 
+[1] "Region 94 out of 205"
+Type: EXEC 
+[1] "Region 95 out of 205"
+Type: EXEC 
+[1] "Region 96 out of 205"
+Type: EXEC 
+[1] "Region 97 out of 205"
+Type: EXEC 
+[1] "Region 98 out of 205"
+Type: EXEC 
+[1] "Region 99 out of 205"
+Type: EXEC 
+[1] "Region 100 out of 205"
+Type: EXEC 
+[1] "Region 101 out of 205"
+Type: EXEC 
+[1] "Region 102 out of 205"
+Type: EXEC 
+[1] "Region 103 out of 205"
+Type: EXEC 
+[1] "Region 104 out of 205"
+Type: EXEC 
+[1] "Region 105 out of 205"
+Type: EXEC 
+[1] "Region 106 out of 205"
+Type: EXEC 
+[1] "Region 107 out of 205"
+Type: EXEC 
+[1] "Region 108 out of 205"
+Type: EXEC 
+[1] "Region 110 out of 205"
+Type: EXEC 
+[1] "Region 109 out of 205"
+Type: EXEC 
+[1] "Region 111 out of 205"
+Type: EXEC 
+[1] "Region 112 out of 205"
+Type: EXEC 
+[1] "Region 113 out of 205"
+Type: EXEC 
+[1] "Region 114 out of 205"
+Type: EXEC 
+[1] "Region 115 out of 205"
+Type: EXEC 
+[1] "Region 116 out of 205"
+Type: EXEC 
+[1] "Region 117 out of 205"
+Type: EXEC 
+[1] "Region 118 out of 205"
+Type: EXEC 
+[1] "Region 119 out of 205"
+Type: EXEC 
+[1] "Region 120 out of 205"
+Type: EXEC 
+[1] "Region 121 out of 205"
+Type: EXEC 
+[1] "Region 122 out of 205"
+Type: EXEC 
+[1] "Region 123 out of 205"
+Type: EXEC 
+[1] "Region 124 out of 205"
+Type: EXEC 
+[1] "Region 125 out of 205"
+Type: EXEC 
+[1] "Region 126 out of 205"
+Type: EXEC 
+[1] "Region 127 out of 205"
+Type: EXEC 
+[1] "Region 128 out of 205"
+Type: EXEC 
+[1] "Region 129 out of 205"
+Type: EXEC 
+[1] "Region 130 out of 205"
+Type: EXEC 
+[1] "Region 131 out of 205"
+Type: EXEC 
+[1] "Region 132 out of 205"
+Type: EXEC 
+[1] "Region 133 out of 205"
+Type: EXEC 
+[1] "Region 134 out of 205"
+Type: EXEC 
+[1] "Region 135 out of 205"
+Type: EXEC 
+[1] "Region 136 out of 205"
+Type: EXEC 
+[1] "Region 137 out of 205"
+Type: EXEC 
+[1] "Region 138 out of 205"
+Type: EXEC 
+[1] "Region 139 out of 205"
+Type: EXEC 
+[1] "Region 140 out of 205"
+Type: EXEC 
+[1] "Region 141 out of 205"
+Type: EXEC 
+[1] "Region 142 out of 205"
+Type: EXEC 
+[1] "Region 143 out of 205"
+Type: EXEC 
+[1] "Region 144 out of 205"
+Type: EXEC 
+[1] "Region 145 out of 205"
+Type: EXEC 
+[1] "Region 146 out of 205"
+Type: EXEC 
+[1] "Region 147 out of 205"
+Type: EXEC 
+[1] "Region 148 out of 205"
+Type: EXEC 
+[1] "Region 149 out of 205"
+Type: EXEC 
+[1] "Region 150 out of 205"
+Type: EXEC 
+[1] "Region 151 out of 205"
+Type: EXEC 
+[1] "Region 152 out of 205"
+Type: EXEC 
+[1] "Region 153 out of 205"
+Type: EXEC 
+[1] "Region 154 out of 205"
+Type: EXEC 
+[1] "Region 155 out of 205"
+Type: EXEC 
+[1] "Region 156 out of 205"
+Type: EXEC 
+[1] "Region 157 out of 205"
+Type: EXEC 
+[1] "Region 158 out of 205"
+Type: EXEC 
+[1] "Region 159 out of 205"
+Type: EXEC 
+[1] "Region 160 out of 205"
+Type: EXEC 
+[1] "Region 161 out of 205"
+Type: EXEC 
+[1] "Region 162 out of 205"
+Type: EXEC 
+[1] "Region 163 out of 205"
+Type: EXEC 
+[1] "Region 164 out of 205"
+Type: EXEC 
+[1] "Region 165 out of 205"
+Type: EXEC 
+[1] "Region 166 out of 205"
+Type: EXEC 
+[1] "Region 167 out of 205"
+Type: EXEC 
+[1] "Region 168 out of 205"
+Type: EXEC 
+[1] "Region 169 out of 205"
+Type: EXEC 
+[1] "Region 170 out of 205"
+Type: EXEC 
+[1] "Region 171 out of 205"
+Type: EXEC 
+[1] "Region 172 out of 205"
+Type: EXEC 
+[1] "Region 173 out of 205"
+Type: EXEC 
+[1] "Region 174 out of 205"
+Type: EXEC 
+[1] "Region 175 out of 205"
+Type: EXEC 
+[1] "Region 176 out of 205"
+Type: EXEC 
+[1] "Region 177 out of 205"
+Type: EXEC 
+[1] "Region 178 out of 205"
+Type: EXEC 
+[1] "Region 179 out of 205"
+Type: EXEC 
+[1] "Region 180 out of 205"
+Type: EXEC 
+[1] "Region 181 out of 205"
+Type: EXEC 
+[1] "Region 182 out of 205"
+Type: EXEC 
+[1] "Region 183 out of 205"
+Type: EXEC 
+[1] "Region 184 out of 205"
+Type: EXEC 
+[1] "Region 185 out of 205"
+Type: EXEC 
+[1] "Region 186 out of 205"
+Type: EXEC 
+[1] "Region 187 out of 205"
+Type: EXEC 
+[1] "Region 188 out of 205"
+Type: EXEC 
+[1] "Region 189 out of 205"
+Type: EXEC 
+[1] "Region 190 out of 205"
+Type: EXEC 
+[1] "Region 191 out of 205"
+Type: EXEC 
+[1] "Region 192 out of 205"
+Type: EXEC 
+[1] "Region 193 out of 205"
+Type: EXEC 
+[1] "Region 194 out of 205"
+Type: EXEC 
+[1] "Region 195 out of 205"
+Type: EXEC 
+[1] "Region 196 out of 205"
+Type: EXEC 
+[1] "Region 197 out of 205"
+Type: EXEC 
+[1] "Region 198 out of 205"
+Type: EXEC 
+[1] "Region 199 out of 205"
+Type: EXEC 
+[1] "Region 200 out of 205"
+Type: EXEC 
+[1] "Region 201 out of 205"
+Type: EXEC 
+[1] "Region 202 out of 205"
+Type: EXEC 
+[1] "Region 203 out of 205"
+Type: EXEC 
+[1] "Region 204 out of 205"
+Type: EXEC 
+[1] "Region 205 out of 205"
+got results for task 1
+numValues: 205, numResults: 1, stopped: TRUE
+returning status FALSE
+got results for task 2
+numValues: 205, numResults: 2, stopped: TRUE
+returning status FALSE
+got results for task 3
+numValues: 205, numResults: 3, stopped: TRUE
+returning status FALSE
+got results for task 4
+numValues: 205, numResults: 4, stopped: TRUE
+returning status FALSE
+got results for task 5
+numValues: 205, numResults: 5, stopped: TRUE
+returning status FALSE
+got results for task 6
+numValues: 205, numResults: 6, stopped: TRUE
+returning status FALSE
+got results for task 7
+numValues: 205, numResults: 7, stopped: TRUE
+returning status FALSE
+got results for task 8
+numValues: 205, numResults: 8, stopped: TRUE
+returning status FALSE
+got results for task 9
+numValues: 205, numResults: 9, stopped: TRUE
+returning status FALSE
+got results for task 10
+numValues: 205, numResults: 10, stopped: TRUE
+returning status FALSE
+got results for task 11
+numValues: 205, numResults: 11, stopped: TRUE
+returning status FALSE
+got results for task 12
+numValues: 205, numResults: 12, stopped: TRUE
+returning status FALSE
+got results for task 13
+numValues: 205, numResults: 13, stopped: TRUE
+returning status FALSE
+got results for task 14
+numValues: 205, numResults: 14, stopped: TRUE
+returning status FALSE
+got results for task 15
+numValues: 205, numResults: 15, stopped: TRUE
+returning status FALSE
+got results for task 16
+numValues: 205, numResults: 16, stopped: TRUE
+returning status FALSE
+got results for task 17
+numValues: 205, numResults: 17, stopped: TRUE
+returning status FALSE
+got results for task 18
+numValues: 205, numResults: 18, stopped: TRUE
+returning status FALSE
+got results for task 19
+numValues: 205, numResults: 19, stopped: TRUE
+returning status FALSE
+got results for task 20
+numValues: 205, numResults: 20, stopped: TRUE
+returning status FALSE
+got results for task 21
+numValues: 205, numResults: 21, stopped: TRUE
+returning status FALSE
+got results for task 22
+numValues: 205, numResults: 22, stopped: TRUE
+returning status FALSE
+got results for task 23
+numValues: 205, numResults: 23, stopped: TRUE
+returning status FALSE
+got results for task 24
+numValues: 205, numResults: 24, stopped: TRUE
+returning status FALSE
+got results for task 25
+numValues: 205, numResults: 25, stopped: TRUE
+returning status FALSE
+got results for task 26
+numValues: 205, numResults: 26, stopped: TRUE
+returning status FALSE
+got results for task 27
+numValues: 205, numResults: 27, stopped: TRUE
+returning status FALSE
+got results for task 28
+numValues: 205, numResults: 28, stopped: TRUE
+returning status FALSE
+got results for task 29
+numValues: 205, numResults: 29, stopped: TRUE
+returning status FALSE
+got results for task 30
+numValues: 205, numResults: 30, stopped: TRUE
+returning status FALSE
+got results for task 31
+numValues: 205, numResults: 31, stopped: TRUE
+returning status FALSE
+got results for task 32
+numValues: 205, numResults: 32, stopped: TRUE
+returning status FALSE
+got results for task 33
+numValues: 205, numResults: 33, stopped: TRUE
+returning status FALSE
+got results for task 34
+numValues: 205, numResults: 34, stopped: TRUE
+returning status FALSE
+got results for task 35
+numValues: 205, numResults: 35, stopped: TRUE
+returning status FALSE
+got results for task 36
+numValues: 205, numResults: 36, stopped: TRUE
+returning status FALSE
+got results for task 37
+numValues: 205, numResults: 37, stopped: TRUE
+returning status FALSE
+got results for task 38
+numValues: 205, numResults: 38, stopped: TRUE
+returning status FALSE
+got results for task 39
+numValues: 205, numResults: 39, stopped: TRUE
+returning status FALSE
+got results for task 40
+numValues: 205, numResults: 40, stopped: TRUE
+returning status FALSE
+got results for task 41
+numValues: 205, numResults: 41, stopped: TRUE
+returning status FALSE
+got results for task 42
+numValues: 205, numResults: 42, stopped: TRUE
+returning status FALSE
+got results for task 43
+numValues: 205, numResults: 43, stopped: TRUE
+returning status FALSE
+got results for task 44
+numValues: 205, numResults: 44, stopped: TRUE
+returning status FALSE
+got results for task 45
+numValues: 205, numResults: 45, stopped: TRUE
+returning status FALSE
+got results for task 46
+numValues: 205, numResults: 46, stopped: TRUE
+returning status FALSE
+got results for task 47
+numValues: 205, numResults: 47, stopped: TRUE
+returning status FALSE
+got results for task 48
+numValues: 205, numResults: 48, stopped: TRUE
+returning status FALSE
+got results for task 49
+numValues: 205, numResults: 49, stopped: TRUE
+returning status FALSE
+got results for task 50
+numValues: 205, numResults: 50, stopped: TRUE
+returning status FALSE
+got results for task 51
+numValues: 205, numResults: 51, stopped: TRUE
+returning status FALSE
+got results for task 52
+numValues: 205, numResults: 52, stopped: TRUE
+returning status FALSE
+got results for task 53
+numValues: 205, numResults: 53, stopped: TRUE
+returning status FALSE
+got results for task 54
+numValues: 205, numResults: 54, stopped: TRUE
+returning status FALSE
+got results for task 55
+numValues: 205, numResults: 55, stopped: TRUE
+returning status FALSE
+got results for task 56
+numValues: 205, numResults: 56, stopped: TRUE
+returning status FALSE
+got results for task 57
+numValues: 205, numResults: 57, stopped: TRUE
+returning status FALSE
+got results for task 58
+numValues: 205, numResults: 58, stopped: TRUE
+returning status FALSE
+got results for task 59
+numValues: 205, numResults: 59, stopped: TRUE
+returning status FALSE
+got results for task 60
+numValues: 205, numResults: 60, stopped: TRUE
+returning status FALSE
+got results for task 61
+numValues: 205, numResults: 61, stopped: TRUE
+returning status FALSE
+got results for task 62
+numValues: 205, numResults: 62, stopped: TRUE
+returning status FALSE
+got results for task 63
+numValues: 205, numResults: 63, stopped: TRUE
+returning status FALSE
+got results for task 64
+numValues: 205, numResults: 64, stopped: TRUE
+returning status FALSE
+got results for task 65
+numValues: 205, numResults: 65, stopped: TRUE
+returning status FALSE
+got results for task 66
+numValues: 205, numResults: 66, stopped: TRUE
+returning status FALSE
+got results for task 67
+numValues: 205, numResults: 67, stopped: TRUE
+returning status FALSE
+got results for task 68
+numValues: 205, numResults: 68, stopped: TRUE
+returning status FALSE
+got results for task 69
+numValues: 205, numResults: 69, stopped: TRUE
+returning status FALSE
+got results for task 70
+numValues: 205, numResults: 70, stopped: TRUE
+returning status FALSE
+got results for task 71
+numValues: 205, numResults: 71, stopped: TRUE
+returning status FALSE
+got results for task 72
+numValues: 205, numResults: 72, stopped: TRUE
+returning status FALSE
+got results for task 73
+numValues: 205, numResults: 73, stopped: TRUE
+returning status FALSE
+got results for task 74
+numValues: 205, numResults: 74, stopped: TRUE
+returning status FALSE
+got results for task 75
+numValues: 205, numResults: 75, stopped: TRUE
+returning status FALSE
+got results for task 76
+numValues: 205, numResults: 76, stopped: TRUE
+returning status FALSE
+got results for task 77
+numValues: 205, numResults: 77, stopped: TRUE
+returning status FALSE
+got results for task 78
+numValues: 205, numResults: 78, stopped: TRUE
+returning status FALSE
+got results for task 79
+numValues: 205, numResults: 79, stopped: TRUE
+returning status FALSE
+got results for task 80
+numValues: 205, numResults: 80, stopped: TRUE
+returning status FALSE
+got results for task 81
+numValues: 205, numResults: 81, stopped: TRUE
+returning status FALSE
+got results for task 82
+numValues: 205, numResults: 82, stopped: TRUE
+returning status FALSE
+got results for task 83
+numValues: 205, numResults: 83, stopped: TRUE
+returning status FALSE
+got results for task 84
+numValues: 205, numResults: 84, stopped: TRUE
+returning status FALSE
+got results for task 85
+numValues: 205, numResults: 85, stopped: TRUE
+returning status FALSE
+got results for task 86
+numValues: 205, numResults: 86, stopped: TRUE
+returning status FALSE
+got results for task 87
+numValues: 205, numResults: 87, stopped: TRUE
+returning status FALSE
+got results for task 88
+numValues: 205, numResults: 88, stopped: TRUE
+returning status FALSE
+got results for task 89
+numValues: 205, numResults: 89, stopped: TRUE
+returning status FALSE
+got results for task 90
+numValues: 205, numResults: 90, stopped: TRUE
+returning status FALSE
+got results for task 91
+numValues: 205, numResults: 91, stopped: TRUE
+returning status FALSE
+got results for task 92
+numValues: 205, numResults: 92, stopped: TRUE
+returning status FALSE
+got results for task 93
+numValues: 205, numResults: 93, stopped: TRUE
+returning status FALSE
+got results for task 94
+numValues: 205, numResults: 94, stopped: TRUE
+returning status FALSE
+got results for task 95
+numValues: 205, numResults: 95, stopped: TRUE
+returning status FALSE
+got results for task 96
+numValues: 205, numResults: 96, stopped: TRUE
+returning status FALSE
+got results for task 97
+numValues: 205, numResults: 97, stopped: TRUE
+returning status FALSE
+got results for task 98
+numValues: 205, numResults: 98, stopped: TRUE
+returning status FALSE
+got results for task 99
+numValues: 205, numResults: 99, stopped: TRUE
+calling combine function
+evaluating call object to combine results:
+  fun(accum, result.1, result.2, result.3, result.4, result.5, 
+    result.6, result.7, result.8, result.9, result.10, result.11, 
+    result.12, result.13, result.14, result.15, result.16, result.17, 
+    result.18, result.19, result.20, result.21, result.22, result.23, 
+    result.24, result.25, result.26, result.27, result.28, result.29, 
+    result.30, result.31, result.32, result.33, result.34, result.35, 
+    result.36, result.37, result.38, result.39, result.40, result.41, 
+    result.42, result.43, result.44, result.45, result.46, result.47, 
+    result.48, result.49, result.50, result.51, result.52, result.53, 
+    result.54, result.55, result.56, result.57, result.58, result.59, 
+    result.60, result.61, result.62, result.63, result.64, result.65, 
+    result.66, result.67, result.68, result.69, result.70, result.71, 
+    result.72, result.73, result.74, result.75, result.76, result.77, 
+    result.78, result.79, result.80, result.81, result.82, result.83, 
+    result.84, result.85, result.86, result.87, result.88, result.89, 
+    result.90, result.91, result.92, result.93, result.94, result.95, 
+    result.96, result.97, result.98, result.99)
+returning status FALSE
+got results for task 100
+numValues: 205, numResults: 100, stopped: TRUE
+returning status FALSE
+got results for task 101
+numValues: 205, numResults: 101, stopped: TRUE
+returning status FALSE
+got results for task 102
+numValues: 205, numResults: 102, stopped: TRUE
+returning status FALSE
+got results for task 103
+numValues: 205, numResults: 103, stopped: TRUE
+returning status FALSE
+got results for task 104
+numValues: 205, numResults: 104, stopped: TRUE
+returning status FALSE
+got results for task 105
+numValues: 205, numResults: 105, stopped: TRUE
+returning status FALSE
+got results for task 106
+numValues: 205, numResults: 106, stopped: TRUE
+returning status FALSE
+got results for task 107
+numValues: 205, numResults: 107, stopped: TRUE
+returning status FALSE
+got results for task 108
+numValues: 205, numResults: 108, stopped: TRUE
+returning status FALSE
+got results for task 109
+numValues: 205, numResults: 109, stopped: TRUE
+returning status FALSE
+got results for task 110
+numValues: 205, numResults: 110, stopped: TRUE
+returning status FALSE
+got results for task 111
+numValues: 205, numResults: 111, stopped: TRUE
+returning status FALSE
+got results for task 112
+numValues: 205, numResults: 112, stopped: TRUE
+returning status FALSE
+got results for task 113
+numValues: 205, numResults: 113, stopped: TRUE
+returning status FALSE
+got results for task 114
+numValues: 205, numResults: 114, stopped: TRUE
+returning status FALSE
+got results for task 115
+numValues: 205, numResults: 115, stopped: TRUE
+returning status FALSE
+got results for task 116
+numValues: 205, numResults: 116, stopped: TRUE
+returning status FALSE
+got results for task 117
+numValues: 205, numResults: 117, stopped: TRUE
+returning status FALSE
+got results for task 118
+numValues: 205, numResults: 118, stopped: TRUE
+returning status FALSE
+got results for task 119
+numValues: 205, numResults: 119, stopped: TRUE
+returning status FALSE
+got results for task 120
+numValues: 205, numResults: 120, stopped: TRUE
+returning status FALSE
+got results for task 121
+numValues: 205, numResults: 121, stopped: TRUE
+returning status FALSE
+got results for task 122
+numValues: 205, numResults: 122, stopped: TRUE
+returning status FALSE
+got results for task 123
+numValues: 205, numResults: 123, stopped: TRUE
+returning status FALSE
+got results for task 124
+numValues: 205, numResults: 124, stopped: TRUE
+returning status FALSE
+got results for task 125
+numValues: 205, numResults: 125, stopped: TRUE
+returning status FALSE
+got results for task 126
+numValues: 205, numResults: 126, stopped: TRUE
+returning status FALSE
+got results for task 127
+numValues: 205, numResults: 127, stopped: TRUE
+returning status FALSE
+got results for task 128
+numValues: 205, numResults: 128, stopped: TRUE
+returning status FALSE
+got results for task 129
+numValues: 205, numResults: 129, stopped: TRUE
+returning status FALSE
+got results for task 130
+numValues: 205, numResults: 130, stopped: TRUE
+returning status FALSE
+got results for task 131
+numValues: 205, numResults: 131, stopped: TRUE
+returning status FALSE
+got results for task 132
+numValues: 205, numResults: 132, stopped: TRUE
+returning status FALSE
+got results for task 133
+numValues: 205, numResults: 133, stopped: TRUE
+returning status FALSE
+got results for task 134
+numValues: 205, numResults: 134, stopped: TRUE
+returning status FALSE
+got results for task 135
+numValues: 205, numResults: 135, stopped: TRUE
+returning status FALSE
+got results for task 136
+numValues: 205, numResults: 136, stopped: TRUE
+returning status FALSE
+got results for task 137
+numValues: 205, numResults: 137, stopped: TRUE
+returning status FALSE
+got results for task 138
+numValues: 205, numResults: 138, stopped: TRUE
+returning status FALSE
+got results for task 139
+numValues: 205, numResults: 139, stopped: TRUE
+returning status FALSE
+got results for task 140
+numValues: 205, numResults: 140, stopped: TRUE
+returning status FALSE
+got results for task 141
+numValues: 205, numResults: 141, stopped: TRUE
+returning status FALSE
+got results for task 142
+numValues: 205, numResults: 142, stopped: TRUE
+returning status FALSE
+got results for task 143
+numValues: 205, numResults: 143, stopped: TRUE
+returning status FALSE
+got results for task 144
+numValues: 205, numResults: 144, stopped: TRUE
+returning status FALSE
+got results for task 145
+numValues: 205, numResults: 145, stopped: TRUE
+returning status FALSE
+got results for task 146
+numValues: 205, numResults: 146, stopped: TRUE
+returning status FALSE
+got results for task 147
+numValues: 205, numResults: 147, stopped: TRUE
+returning status FALSE
+got results for task 148
+numValues: 205, numResults: 148, stopped: TRUE
+returning status FALSE
+got results for task 149
+numValues: 205, numResults: 149, stopped: TRUE
+returning status FALSE
+got results for task 150
+numValues: 205, numResults: 150, stopped: TRUE
+returning status FALSE
+got results for task 151
+numValues: 205, numResults: 151, stopped: TRUE
+returning status FALSE
+got results for task 152
+numValues: 205, numResults: 152, stopped: TRUE
+returning status FALSE
+got results for task 153
+numValues: 205, numResults: 153, stopped: TRUE
+returning status FALSE
+got results for task 154
+numValues: 205, numResults: 154, stopped: TRUE
+returning status FALSE
+got results for task 155
+numValues: 205, numResults: 155, stopped: TRUE
+returning status FALSE
+got results for task 156
+numValues: 205, numResults: 156, stopped: TRUE
+returning status FALSE
+got results for task 157
+numValues: 205, numResults: 157, stopped: TRUE
+returning status FALSE
+got results for task 158
+numValues: 205, numResults: 158, stopped: TRUE
+returning status FALSE
+got results for task 159
+numValues: 205, numResults: 159, stopped: TRUE
+returning status FALSE
+got results for task 160
+numValues: 205, numResults: 160, stopped: TRUE
+returning status FALSE
+got results for task 161
+numValues: 205, numResults: 161, stopped: TRUE
+returning status FALSE
+got results for task 162
+numValues: 205, numResults: 162, stopped: TRUE
+returning status FALSE
+got results for task 163
+numValues: 205, numResults: 163, stopped: TRUE
+returning status FALSE
+got results for task 164
+numValues: 205, numResults: 164, stopped: TRUE
+returning status FALSE
+got results for task 165
+numValues: 205, numResults: 165, stopped: TRUE
+returning status FALSE
+got results for task 166
+numValues: 205, numResults: 166, stopped: TRUE
+returning status FALSE
+got results for task 167
+numValues: 205, numResults: 167, stopped: TRUE
+returning status FALSE
+got results for task 168
+numValues: 205, numResults: 168, stopped: TRUE
+returning status FALSE
+got results for task 169
+numValues: 205, numResults: 169, stopped: TRUE
+returning status FALSE
+got results for task 170
+numValues: 205, numResults: 170, stopped: TRUE
+returning status FALSE
+got results for task 171
+numValues: 205, numResults: 171, stopped: TRUE
+returning status FALSE
+got results for task 172
+numValues: 205, numResults: 172, stopped: TRUE
+returning status FALSE
+got results for task 173
+numValues: 205, numResults: 173, stopped: TRUE
+returning status FALSE
+got results for task 174
+numValues: 205, numResults: 174, stopped: TRUE
+returning status FALSE
+got results for task 175
+numValues: 205, numResults: 175, stopped: TRUE
+returning status FALSE
+got results for task 176
+numValues: 205, numResults: 176, stopped: TRUE
+returning status FALSE
+got results for task 177
+numValues: 205, numResults: 177, stopped: TRUE
+returning status FALSE
+got results for task 178
+numValues: 205, numResults: 178, stopped: TRUE
+returning status FALSE
+got results for task 179
+numValues: 205, numResults: 179, stopped: TRUE
+returning status FALSE
+got results for task 180
+numValues: 205, numResults: 180, stopped: TRUE
+returning status FALSE
+got results for task 181
+numValues: 205, numResults: 181, stopped: TRUE
+returning status FALSE
+got results for task 182
+numValues: 205, numResults: 182, stopped: TRUE
+returning status FALSE
+got results for task 183
+numValues: 205, numResults: 183, stopped: TRUE
+returning status FALSE
+got results for task 184
+numValues: 205, numResults: 184, stopped: TRUE
+returning status FALSE
+got results for task 185
+numValues: 205, numResults: 185, stopped: TRUE
+returning status FALSE
+got results for task 186
+numValues: 205, numResults: 186, stopped: TRUE
+returning status FALSE
+got results for task 187
+numValues: 205, numResults: 187, stopped: TRUE
+returning status FALSE
+got results for task 188
+numValues: 205, numResults: 188, stopped: TRUE
+returning status FALSE
+got results for task 189
+numValues: 205, numResults: 189, stopped: TRUE
+returning status FALSE
+got results for task 190
+numValues: 205, numResults: 190, stopped: TRUE
+returning status FALSE
+got results for task 191
+numValues: 205, numResults: 191, stopped: TRUE
+returning status FALSE
+got results for task 192
+numValues: 205, numResults: 192, stopped: TRUE
+returning status FALSE
+got results for task 193
+numValues: 205, numResults: 193, stopped: TRUE
+returning status FALSE
+got results for task 194
+numValues: 205, numResults: 194, stopped: TRUE
+returning status FALSE
+got results for task 195
+numValues: 205, numResults: 195, stopped: TRUE
+returning status FALSE
+got results for task 196
+numValues: 205, numResults: 196, stopped: TRUE
+returning status FALSE
+got results for task 197
+numValues: 205, numResults: 197, stopped: TRUE
+returning status FALSE
+got results for task 198
+numValues: 205, numResults: 198, stopped: TRUE
+calling combine function
+evaluating call object to combine results:
+  fun(accum, result.100, result.101, result.102, result.103, result.104, 
+    result.105, result.106, result.107, result.108, result.109, 
+    result.110, result.111, result.112, result.113, result.114, 
+    result.115, result.116, result.117, result.118, result.119, 
+    result.120, result.121, result.122, result.123, result.124, 
+    result.125, result.126, result.127, result.128, result.129, 
+    result.130, result.131, result.132, result.133, result.134, 
+    result.135, result.136, result.137, result.138, result.139, 
+    result.140, result.141, result.142, result.143, result.144, 
+    result.145, result.146, result.147, result.148, result.149, 
+    result.150, result.151, result.152, result.153, result.154, 
+    result.155, result.156, result.157, result.158, result.159, 
+    result.160, result.161, result.162, result.163, result.164, 
+    result.165, result.166, result.167, result.168, result.169, 
+    result.170, result.171, result.172, result.173, result.174, 
+    result.175, result.176, result.177, result.178, result.179, 
+    result.180, result.181, result.182, result.183, result.184, 
+    result.185, result.186, result.187, result.188, result.189, 
+    result.190, result.191, result.192, result.193, result.194, 
+    result.195, result.196, result.197, result.198)
+returning status FALSE
+got results for task 199
+numValues: 205, numResults: 199, stopped: TRUE
+returning status FALSE
+got results for task 200
+numValues: 205, numResults: 200, stopped: TRUE
+returning status FALSE
+got results for task 201
+numValues: 205, numResults: 201, stopped: TRUE
+returning status FALSE
+got results for task 202
+numValues: 205, numResults: 202, stopped: TRUE
+returning status FALSE
+got results for task 203
+numValues: 205, numResults: 203, stopped: TRUE
+returning status FALSE
+got results for task 204
+numValues: 205, numResults: 204, stopped: TRUE
+returning status FALSE
+got results for task 205
+numValues: 205, numResults: 205, stopped: TRUE
+calling combine function
+evaluating call object to combine results:
+  fun(accum, result.199, result.200, result.201, result.202, result.203, 
+    result.204, result.205)
+returning status TRUE
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+Type: DONE 
+[1] "Place Name: 38017000802"
+[1] "Place: 1"
+Type: DONE 
+[1] "Total Places: 205"
+[1]Type: DONE 
+ "Households: 2484"
+[1] "People: 5328"
+[1] "Time: 20.96"
+Type: DONE 
+[1] "Schools: 0.51"
+[1] "Workplaces: 0.51"
+[1] "Puma: 500"
+[1] "Place Name: 38017000901"
+[1] "Place: 2"
+[1] "Total Places: 205"
+[1]Type: DONE 
+ "Households: 2201"
+[1] "People: 4649"
+[1] "Time: 17.81"
+[1] "Schools: 0.45"
+[1] "Workplaces: 0.45"
+[1] "Puma: 500"
+[1] "Place Name: 38017000903"
+[1] "Place: 3"
+[1] "Total Places: 205"
+[1] "Households: 2120"
+[1] "People: 4594"
+[1] "Time: 22.51"
+[1] "Schools: 0.44"
+[1] "Workplaces: 0.44"
+[1] "Puma: 500"
+[1]Type: DONE 
+ "Place Name: 38017000904"
+[1] "Place: 4"
+[1]Type: DONE 
+ "Total Places: 205"Type: DONE 
+
+[1] "Households: 1919"
+[1] "People: 4183"
+[1] "Time: 17.1"
+[1] "Schools: 0.48"
+[1] "Workplaces: 0.48"
+[1] "Puma: 500"
+[1] "Place Name: 38001965600"
+[1] "Place: 5"
+[1] "Total Places: 205"
+[1] "Households: 1353"
+[1] "People: 2808"
+[1] "Time: 27.53"
+[1] "Schools: 0.21"
+[1] "Workplaces: 0.21"
+[1] "Puma: 100"
+[1] "Place Name: 38003967900"
+[1] "Place: 6"
+[1] "Total Places: 205"
+[1] "Households: 962"
+[1] "People: 1949"
+[1] "Time: 24.06"
+[1] "Schools: 0.2"
+[1]Type: DONE 
+ "Workplaces: 0.2"
+[1] "Puma: 200"
+[1] "Place Name: 38003968000"
+[1] "Place: 7"
+[1] "Total Places: 205"
+[1] "Households: 1434"
+Type: DONE 
+[1] "People: 2975"
+[1] "Time: 29.09"
+[1] "Schools: 0.43"
+Type: DONE 
+[1]Type: DONE 
+ "Workplaces: 0.43"
+[1] "Puma: 200"
+[1] "Place Name: 38003968200"
+[1] "Place: 8"
+[1] "Total Places: 205"
+[1] "Households: 1538"
+[1] "People: 3086"
+[1] "Time: 11.5"
+[1] "Schools: 0.24"Type: DONE 
+
+[1] "Workplaces: 0.24"
+[1] "Puma: 200"
+[1] "Place Name: 38003968300"
+[1] "Place: 9"
+[1] "Total Places: 205"
+[1] "Households: 1760"
+[1] "People: 3569"
+[1] "Time: 11.07"
+[1] "Schools: 0.46"
+[1] "Workplaces: 0.46"
+[1] "Puma: 200"
+[1] "Place Name: 38005940100"
+[1] "Place: 10"
+Type: DONE 
+Type: DONE 
+[1] "Total Places: 205"
+[1] "Households: 830"
+[1] "People: 1600"
+[1] "Time: 13.33"
+[1] "Schools: 0.18"
+[1] "Workplaces: 0.18"
+[1]Type: DONE 
+ "Puma: 200"Type: DONE 
+
+[1] "Place Name: 38005940200"
+[1] "Place: 11"
+[1] "Total Places: 205"
+[1] "Households: 681"
+[1] "People: 1414"
+[1] "Time: 15.52"
+[1] "Schools: 0.17"
+[1] "Workplaces: 0.17"
+[1] "Puma: 200"
+Type: DONE 
+[1] "Place Name: 38005956500"
+[1] "Place: 12"
+[1] "Total Places: 205"
+[1]Type: DONE 
+ "Households: 714"
+[1] "People: 1443"
+[1] "Time: 25.04"
+[1] "Schools: 0.13"
+[1] "Workplaces: 0.13"
+[1] "Puma: 200"
+[1] "Place Name: 38005956600"
+[1] "Place: 13"
+Type: DONE 
+[1] "Total Places: 205"
+[1]Type: DONE 
+ "Households: 738"
+[1] "People: 1444"
+[1] "Time: 17.15"
+[1] "Schools: 0.17"
+[1] "Workplaces: 0.17"
+[1] "Puma: 200"
+[1] "Place Name: 38007963100"
+Type: DONE 
+[1] "Place: 14"
+[1] "Total Places: 205"
+[1] "Households: 488"
+Type: DONE 
+[1] "People: 960"
+[1] "Time: 22.79"
+[1] "Schools: 0.13"
+[1] "Workplaces: 0.13"
+[1] "Puma: 100"
+[1] "Place Name: 38009952300"
+[1] "Place: 15"
+[1] "Total Places: 205"
+[1] "Households: 1198"
+[1] "People: 2413"
+[1] "Time: 14.03"
+[1] "Schools: 0.22"
+[1] "Workplaces: 0.22"
+Type: DONE 
+[1] "Puma: 200"
+[1]Type: DONE 
+ "Place Name: 38009952400"
+[1] "Place: 16"
+[1] "Total Places: 205"
+[1] "Households: 2077"
+[1] "People: 4206"
+[1] "Time: 40.17"
+[1] "Schools: 0.29"
+[1] "Workplaces: 0.29"
+[1]Type: DONE 
+Type: DONE 
+ "Puma: 200"
+Type: DONE 
+[1]Type: DONE 
+ "Place Name: 38009952500"
+[1] "Place: 17"
+[1] "Total Places: 205"
+[1] "Households: 1087"
+[1] "People: 2256"
+[1] "Time: 37.49"
+[1] "Schools: 0.3"
+[1] "Workplaces: 0.3"
+[1] "Puma: 200"
+[1] "Place Name: 38011965200"
+[1] "Place: 18"
+[1] "Total Places: 205"
+[1] "Households: 921"
+[1] "People: 1965"
+[1] "Time: 12.66"
+[1] "Schools: 0.21"
+Type: DONE 
+[1] "Workplaces: 0.21"
+[1] "Puma: 100"
+[1] "Place Name: 38011965300"
+[1] "Place: 19"
+[1] "Total Places: 205"
+[1] "Households: 715"
+[1] "People: 1453"
+[1] "Time: 31.36"
+[1] "Schools: 0.16"
+[1] "Workplaces: 0.16"
+[1] "Puma: 100"
+[1] "Place Name: 38013953300"
+[1] "Place: 20"
+[1] "Total Places: 205"
+[1] "Households: 1251"
+[1] "People: 2541"
+[1] "Time: 50.87"
+[1] "Schools: 0.31"
+[1] "Workplaces: 0.31"
+[1] "Puma: 100"
+[1] "Place Name: 38015010100"
+[1] "Place: 21"
+[1] "Total Places: 205"
+[1] "Households: 2085"
+[1] "People: 4337"
+[1] "Time: 16.48"
+[1] "Schools: 0.43"
+[1] "Workplaces: 0.43"
+[1] "Puma: 300"
+[1] "Place Name: 38015010200"
+[1] "Place: 22"
+[1] "Total Places: 205"
+[1] "Households: 2432"
+[1] "People: 4983"
+[1] "Time: 19.44"
+[1] "Schools: 0.29"
+[1] "Workplaces: 0.29"
+[1] "Puma: 300"
+[1] "Place Name: 38015010300"
+[1] "Place: 23"
+[1] "Total Places: 205"
+[1] "Households: 2884"
+[1] "People: 5979"
+[1] "Time: 18.03"
+[1] "Schools: 0.35"
+[1] "Workplaces: 0.35"
+[1] "Puma: 300"
+[1] "Place Name: 38015010400"
+[1] "Place: 24"
+[1] "Total Places: 205"
+[1] "Households: 1875"
+[1] "People: 3807"
+[1] "Time: 20.23"
+[1] "Schools: 0.32"
+[1] "Workplaces: 0.32"
+[1] "Puma: 300"
+[1] "Place Name: 38015010500"
+[1] "Place: 25"
+[1] "Total Places: 205"
+[1] "Households: 2251"
+[1] "People: 4684"
+[1] "Time: 17.45"
+[1] "Schools: 0.3"
+[1] "Workplaces: 0.3"
+[1] "Puma: 300"
+[1] "Place Name: 38015010600"
+[1] "Place: 26"
+[1] "Total Places: 205"
+[1] "Households: 2216"
+[1] "People: 4680"
+[1] "Time: 20.76"
+[1] "Schools: 0.3"
+[1] "Workplaces: 0.3"
+[1] "Puma: 300"
+[1] "Place Name: 38015010700"
+[1] "Place: 27"
+[1] "Total Places: 205"
+[1] "Households: 1875"
+[1] "People: 3813"
+[1] "Time: 15.93"
+[1] "Schools: 0.3"
+[1] "Workplaces: 0.3"
+[1] "Puma: 300"
+[1] "Place Name: 38015010800"
+[1] "Place: 28"
+[1] "Total Places: 205"
+[1] "Households: 1894"
+[1] "People: 3994"
+[1] "Time: 19.69"
+[1] "Schools: 0.25"
+[1] "Workplaces: 0.25"
+[1] "Puma: 300"
+[1] "Place Name: 38015010900"
+[1] "Place: 29"
+[1] "Total Places: 205"
+[1] "Households: 1778"
+[1] "People: 3628"
+[1] "Time: 16.89"
+[1] "Schools: 0.25"
+[1] "Workplaces: 0.25"
+[1] "Puma: 300"
+[1] "Place Name: 38015011001"
+[1] "Place: 30"
+[1] "Total Places: 205"
+[1] "Households: 1863"
+[1] "People: 3849"
+[1] "Time: 18.31"
+[1] "Schools: 0.28"
+[1] "Workplaces: 0.28"
+[1] "Puma: 300"
+[1] "Place Name: 38015011002"
+[1] "Place: 31"
+[1] "Total Places: 205"
+[1] "Households: 1870"
+[1] "People: 3876"
+[1] "Time: 22.64"
+[1] "Schools: 0.26"
+[1] "Workplaces: 0.26"
+[1] "Puma: 300"
+[1] "Place Name: 38015011101"
+[1] "Place: 32"
+[1] "Total Places: 205"
+[1] "Households: 2449"
+[1] "People: 5064"
+[1] "Time: 21.46"
+[1] "Schools: 0.36"
+[1] "Workplaces: 0.36"
+[1] "Puma: 300"
+[1] "Place Name: 38015011103"
+[1] "Place: 33"
+[1] "Total Places: 205"
+[1] "Households: 1498"
+[1] "People: 3158"
+[1] "Time: 20.97"
+[1] "Schools: 0.28"
+[1] "Workplaces: 0.28"
+[1] "Puma: 300"
+[1] "Place Name: 38015011104"
+[1] "Place: 34"
+[1] "Total Places: 205"
+Type: DONE 
+[1] "Households: 1111"
+[1] "People: 2380"
+[1] "Time: 17.92"
+[1] "Schools: 0.23"
+[1] "Workplaces: 0.23"
+[1] "Puma: 300"
+[1] "Place Name: 38015011105"
+[1] "Place: 35"
+[1] "Total Places: 205"
+[1] "Households: 1049"
+[1] "People: 2190"
+[1] "Time: 22.47"
+[1] "Schools: 0.19"
+[1] "Workplaces: 0.19"
+[1] "Puma: 300"
+[1] "Place Name: 38015011200"
+[1] "Place: 36"
+[1] "Total Places: 205"
+[1] "Households: 1958"
+[1] "People: 4027"
+[1] "Time: 22.76"
+[1] "Schools: 0.26"
+[1] "Workplaces: 0.26"
+[1] "Puma: 300"
+[1] "Place Name: 38015011300"
+[1] "Place: 37"
+[1] "Total Places: 205"
+[1] "Households: 1748"
+[1] "People: 3580"
+[1] "Time: 23.65"
+[1] "Schools: 0.25"
+[1] "Workplaces: 0.25"
+[1] "Puma: 300"
+[1] "Place Name: 38015011400"
+[1] "Place: 38"
+[1] "Total Places: 205"
+[1] "Households: 984"
+[1] "People: 1946"
+[1] "Time: 29.85"
+[1] "Schools: 0.15"
+[1] "Workplaces: 0.15"
+[1] "Puma: 300"
+[1] "Place Name: 38015011500"
+[1] "Place: 39"
+[1] "Total Places: 205"
+[1] "Households: 737"
+[1] "People: 1545"
+[1] "Time: 35.46"
+[1] "Schools: 0.14"
+[1] "Workplaces: 0.14"
+[1] "Puma: 300"
+[1] "Place Name: 38017000100"
+[1] "Place: 40"
+[1] "Total Places: 205"
+[1] "Households: 1923"
+[1] "People: 4137"
+[1] "Time: 22.06"
+[1] "Schools: 0.46"
+[1] "Workplaces: 0.46"
+[1] "Puma: 500"
+[1] "Place Name: 38017000201"
+[1] "Place: 41"
+[1] "Total Places: 205"
+[1] "Households: 2113"
+[1] "People: 4538"
+[1] "Time: 21.64"
+[1] "Schools: 0.41"
+[1] "Workplaces: 0.41"
+[1] "Puma: 500"
+[1] "Place Name: 38017000202"
+[1] "Place: 42"
+[1] "Total Places: 205"
+[1] "Households: 1541"
+[1] "People: 3388"
+[1] "Time: 22.3"
+[1] "Schools: 0.29"
+[1] "Workplaces: 0.29"
+[1] "Puma: 500"
+[1] "Place Name: 38017000300"
+[1] "Place: 43"
+[1] "Total Places: 205"
+[1] "Households: 933"
+[1] "People: 1997"
+[1] "Time: 21.55"
+[1] "Schools: 0.17"
+[1] "Workplaces: 0.17"
+[1] "Puma: 500"
+[1] "Place Name: 38017000400"
+[1] "Place: 44"
+[1] "Total Places: 205"
+[1] "Households: 1765"
+[1] "People: 3811"
+[1] "Time: 21.68"
+[1] "Schools: 0.28"
+[1] "Workplaces: 0.28"
+[1] "Puma: 500"
+[1] "Place Name: 38017000501"
+[1] "Place: 45"
+[1] "Total Places: 205"
+[1] "Households: 2085"
+[1] "People: 4524"
+[1] "Time: 22.7"
+[1] "Schools: 0.4"
+[1] "Workplaces: 0.4"
+[1] "Puma: 500"
+[1] "Place Name: 38017000502"
+[1] "Place: 46"
+[1] "Total Places: 205"
+[1] "Households: 1524"
+[1] "People: 3265"
+[1] "Time: 19.9"
+[1] "Schools: 0.24"
+[1] "Workplaces: 0.24"
+[1] "Puma: 500"
+[1] "Place Name: 38017000600"
+[1] "Place: 47"
+[1] "Total Places: 205"
+[1] "Households: 2335"
+[1] "People: 5052"
+[1] "Time: 23.85"
+[1] "Schools: 0.51"
+[1] "Workplaces: 0.51"
+[1] "Puma: 500"
+[1] "Place Name: 38017000700"
+[1] "Place: 48"
+[1] "Total Places: 205"
+[1] "Households: 1470"
+[1] "People: 3156"
+[1] "Time: 19.01"
+[1] "Schools: 0.24"
+[1] "Workplaces: 0.24"
+[1] "Puma: 500"
+[1] "Place Name: 38017000801"
+[1] "Place: 49"
+[1] "Total Places: 205"
+[1] "Households: 1840"
+[1] "People: 3960"
+[1] "Time: 22.23"
+[1] "Schools: 0.29"
+[1] "Workplaces: 0.29"
+[1] "Puma: 500"
+[1] "Place Name: 38017001001"
+[1] "Place: 50"
+[1] "Total Places: 205"
+[1] "Households: 2706"
+[1] "People: 5797"
+[1] "Time: 17.09"
+[1] "Schools: 0.35"
+[1] "Workplaces: 0.35"
+[1] "Puma: 500"
+[1] "Place Name: 38017001002"
+[1] "Place: 51"
+[1] "Total Places: 205"
+[1] "Households: 1400"
+[1] "People: 2937"
+[1] "Time: 20.65"
+[1] "Schools: 0.23"
+[1] "Workplaces: 0.23"
+[1] "Puma: 500"
+[1] "Place Name: 38017010106"
+[1] "Place: 52"
+[1] "Total Places: 205"
+[1] "Households: 2578"
+[1] "People: 5383"
+[1] "Time: 24.43"
+[1] "Schools: 0.41"
+[1] "Workplaces: 0.41"
+[1] "Puma: 500"
+[1] "Place Name: 38017010107"
+[1] "Place: 53"
+[1] "Total Places: 205"
+[1] "Households: 1630"
+[1] "People: 3601"
+[1] "Time: 23.98"
+[1] "Schools: 0.29"
+[1] "Workplaces: 0.29"
+[1] "Puma: 500"
+[1] "Place Name: 38017010108"
+[1] "Place: 54"
+[1] "Total Places: 205"
+[1] "Households: 2523"
+[1] "People: 5329"
+[1] "Time: 23.67"
+[1] "Schools: 0.53"
+[1] "Workplaces: 0.53"
+[1] "Puma: 500"
+[1] "Place Name: 38017010109"
+[1] "Place: 55"
+[1] "Total Places: 205"
+[1] "Households: 1558"
+[1] "People: 3426"
+[1] "Time: 21.52"
+[1] "Schools: 0.28"
+[1] "Workplaces: 0.28"
+[1] "Puma: 500"
+[1] "Place Name: 38017010201"
+[1] "Place: 56"
+[1] "Total Places: 205"
+[1] "Households: 2202"
+[1] "People: 4639"
+[1] "Time: 21.87"
+[1] "Schools: 0.44"
+[1] "Workplaces: 0.44"
+[1] "Puma: 500"
+[1] "Place Name: 38017010203"
+[1] "Place: 57"
+[1] "Total Places: 205"
+[1] "Households: 1426"
+[1] "People: 3097"
+[1] "Time: 21.1"
+[1] "Schools: 0.22"
+[1] "Workplaces: 0.22"
+[1] "Puma: 500"
+[1] "Place Name: 38017010204"
+[1] "Place: 58"
+[1] "Total Places: 205"
+[1] "Households: 2266"
+[1] "People: 4863"
+[1] "Time: 22.77"
+[1] "Schools: 0.41"
+[1] "Workplaces: 0.41"
+[1] "Puma: 500"
+[1] "Place Name: 38017010303"
+[1] "Place: 59"
+[1] "Total Places: 205"
+[1] "Households: 2666"
+[1] "People: 5735"
+[1] "Time: 23.12"
+[1] "Schools: 0.47"
+[1] "Workplaces: 0.47"
+[1] "Puma: 500"
+[1] "Place Name: 38017010305"
+[1] "Place: 60"
+[1] "Total Places: 205"
+[1] "Households: 2447"
+[1] "People: 5250"
+[1] "Time: 18.29"
+[1] "Schools: 0.56"
+[1] "Workplaces: 0.56"
+[1] "Puma: 500"
+[1] "Place Name: 38017010306"
+[1] "Place: 61"
+[1] "Total Places: 205"
+[1] "Households: 1852"
+[1] "People: 3961"
+[1] "Time: 22.89"
+[1] "Schools: 0.33"
+[1] "Workplaces: 0.33"
+[1] "Puma: 500"
+[1] "Place Name: 38017010307"
+[1] "Place: 62"
+[1] "Total Places: 205"
+[1] "Households: 781"
+[1] "People: 1671"
+[1] "Time: 20.38"
+[1] "Schools: 0.19"
+[1] "Workplaces: 0.19"
+[1] "Puma: 500"
+[1] "Place Name: 38017040100"
+[1] "Place: 63"
+[1] "Total Places: 205"
+[1] "Households: 917"
+[1] "People: 1899"
+[1] "Time: 28.4"
+[1] "Schools: 0.19"
+[1] "Workplaces: 0.19"
+[1] "Puma: 500"
+[1] "Place Name: 38017040200"
+[1] "Place: 64"
+[1] "Total Places: 205"
+[1] "Households: 946"
+[1] "People: 2086"
+[1] "Time: 33.28"
+[1] "Schools: 0.22"
+[1] "Workplaces: 0.22"
+[1] "Puma: 500"
+[1] "Place Name: 38017040300"
+[1] "Place: 65"
+[1] "Total Places: 205"
+[1] "Households: 1273"
+[1] "People: 2793"
+[1] "Time: 21.76"
+[1] "Schools: 0.22"
+[1] "Workplaces: 0.22"
+[1] "Puma: 500"
+[1] "Place Name: 38017040400"
+[1] "Place: 66"
+[1] "Total Places: 205"
+[1] "Households: 1267"
+[1] "People: 2770"
+[1] "Time: 18.47"
+[1] "Schools: 0.28"
+[1] "Workplaces: 0.28"
+[1] "Puma: 500"
+[1] "Place Name: 38017040500"
+[1] "Place: 67"
+[1] "Total Places: 205"
+[1] "Households: 8130"
+[1] "People: 17654"
+[1] "Time: 35.78"
+[1] "Schools: 0.95"
+[1] "Workplaces: 0.95"
+[1] "Puma: 500"
+[1] "Place Name: 38017040600"
+[1] "Place: 68"
+[1] "Total Places: 205"
+[1] "Households: 1165"
+[1] "People: 2523"
+[1] "Time: 20.08"
+[1] "Schools: 0.21"
+[1] "Workplaces: 0.21"
+[1] "Puma: 500"
+[1] "Place Name: 38019950900"
+[1] "Place: 69"
+[1] "Total Places: 205"
+[1] "Households: 934"
+[1] "People: 1847"
+[1] "Time: 8.18"
+[1] "Schools: 0.29"
+[1] "Workplaces: 0.29"
+[1] "Puma: 400"
+[1] "Place Name: 38019951100"
+[1] "Place: 70"
+[1] "Total Places: 205"
+[1] "Households: 1458"
+[1] "People: 2847"
+[1] "Time: 52.04"
+[1] "Schools: 0.17"
+[1] "Workplaces: 0.17"
+[1] "Puma: 400"
+[1] "Place Name: 38021973200"
+[1] "Place: 71"
+[1] "Total Places: 205"
+[1] "Households: 1160"
+[1] "People: 2292"
+[1] "Time: 7.98"
+[1] "Schools: 0.19"
+[1] "Workplaces: 0.19"
+[1] "Puma: 200"
+[1] "Place Name: 38021973300"
+[1] "Place: 72"
+[1] "Total Places: 205"
+[1] "Households: 756"
+[1] "People: 1511"
+[1] "Time: 24.78"
+[1] "Schools: 0.15"
+[1] "Workplaces: 0.15"
+[1] "Puma: 200"
+[1] "Place Name: 38021973400"
+[1] "Place: 73"
+[1] "Total Places: 205"
+[1] "Households: 734"
+[1] "People: 1523"
+[1] "Time: 4.95"
+[1] "Schools: 0.16"
+[1] "Workplaces: 0.16"
+[1] "Puma: 200"
+[1] "Place Name: 38023954500"
+[1] "Place: 74"
+[1] "Total Places: 205"
+[1] "Households: 1408"
+[1] "People: 3003"
+[1] "Time: 59.38"
+[1] "Schools: 0.13"
+[1] "Workplaces: 0.13"
+[1] "Puma: 100"
+[1] "Place Name: 38025962200"
+[1] "Place: 75"
+[1] "Total Places: 205"
+[1] "Households: 2117"
+[1] "People: 4205"
+[1] "Time: 51.96"
+[1] "Schools: 0.21"
+[1] "Workplaces: 0.21"
+[1] "Puma: 100"
+[1] "Place Name: 38027959200"
+[1] "Place: 76"
+[1] "Total Places: 205"
+[1] "Households: 1300"
+[1] "People: 2669"
+[1] "Time: 19.47"
+[1] "Schools: 0.24"
+[1] "Workplaces: 0.24"
+[1] "Puma: 200"
+[1] "Place Name: 38029966500"
+[1] "Place: 77"
+[1] "Total Places: 205"
+[1] "Households: 2099"
+[1] "People: 4338"
+[1] "Time: 51.28"
+[1] "Schools: 0.28"
+[1] "Workplaces: 0.28"
+[1] "Puma: 300"
+[1] "Place Name: 38031959600"
+[1] "Place: 78"
+[1] "Total Places: 205"
+[1] "Households: 1837"
+[1] "People: 3787"
+[1] "Time: 27.29"
+[1] "Schools: 0.45"
+[1] "Workplaces: 0.45"
+[1] "Puma: 200"
+[1] "Place Name: 38033962900"
+[1] "Place: 79"
+[1] "Total Places: 205"
+[1] "Households: 956"
+[1] "People: 1982"
+[1] "Time: 20.96"
+[1] "Schools: 0.16"
+[1] "Workplaces: 0.16"
+[1] "Puma: 100"
+[1] "Place Name: 38035010100"
+[1] "Place: 80"
+[1] "Total Places: 205"
+[1] "Households: 1658"
+[1] "People: 3299"
+[1] "Time: 8.15"
+[1] "Schools: 0.24"
+[1] "Workplaces: 0.24"
+[1] "Puma: 400"
+[1] "Place Name: 38035010200"
+[1] "Place: 81"
+[1] "Total Places: 205"
+[1] "Households: 1946"
+[1] "People: 3816"
+[1] "Time: 8.36"
+[1] "Schools: 0.46"
+[1] "Workplaces: 0.46"
+[1] "Puma: 400"
+[1] "Place Name: 38035010300"
+[1] "Place: 82"
+[1] "Total Places: 205"
+[1] "Households: 956"
+[1] "People: 1852"
+[1] "Time: 7.55"
+[1] "Schools: 0.16"
+[1] "Workplaces: 0.16"
+[1] "Puma: 400"
+[1] "Place Name: 38035010400"
+[1] "Place: 83"
+[1] "Total Places: 205"
+[1] "Households: 2623"
+[1] "People: 5143"
+[1] "Time: 8.22"
+[1] "Schools: 0.36"
+[1] "Workplaces: 0.36"
+[1] "Puma: 400"
+[1] "Place Name: 38035010600"
+[1] "Place: 84"
+[1] "Total Places: 205"
+[1] "Households: 1010"
+[1] "People: 1988"
+[1] "Time: 7.5"
+[1] "Schools: 0.28"
+[1] "Workplaces: 0.28"
+[1] "Puma: 400"
+[1] "Place Name: 38035010700"
+[1] "Place: 85"
+[1] "Total Places: 205"
+[1] "Households: 898"
+[1] "People: 1787"
+[1] "Time: 6.92"
+[1] "Schools: 0.15"
+[1] "Workplaces: 0.15"
+[1] "Puma: 400"
+[1] "Place Name: 38035010801"
+[1] "Place: 86"
+[1] "Total Places: 205"
+[1] "Households: 1922"
+[1] "People: 3792"
+[1] "Time: 8.08"
+[1] "Schools: 0.25"
+[1] "Workplaces: 0.25"
+[1] "Puma: 400"
+[1] "Place Name: 38035010803"
+[1] "Place: 87"
+[1] "Total Places: 205"
+[1] "Households: 3146"
+[1] "People: 6123"
+[1] "Time: 8.36"
+[1] "Schools: 0.36"
+[1] "Workplaces: 0.36"
+[1] "Puma: 400"
+[1] "Place Name: 38035010804"
+[1] "Place: 88"
+[1] "Total Places: 205"
+[1] "Households: 2293"
+[1] "People: 4500"
+[1] "Time: 8.59"
+[1] "Schools: 0.29"
+[1] "Workplaces: 0.29"
+[1] "Puma: 400"
+[1] "Place Name: 38035010900"
+[1] "Place: 89"
+[1] "Total Places: 205"
+[1] "Households: 695"
+[1] "People: 1357"
+[1] "Time: 7.41"
+[1] "Schools: 0.14"
+[1] "Workplaces: 0.14"
+[1] "Puma: 400"
+[1] "Place Name: 38035011000"
+[1] "Place: 90"
+[1] "Total Places: 205"
+[1] "Households: 1055"
+[1] "People: 2045"
+[1] "Time: 7.7"
+[1] "Schools: 0.19"
+[1] "Workplaces: 0.19"
+[1] "Puma: 400"
+[1] "Place Name: 38035011100"
+[1] "Place: 91"
+[1] "Total Places: 205"
+[1] "Households: 1753"
+[1] "People: 3411"
+[1] "Time: 8.33"
+[1] "Schools: 0.23"
+[1] "Workplaces: 0.23"
+[1] "Puma: 400"
+[1] "Place Name: 38035011200"
+[1] "Place: 92"
+[1] "Total Places: 205"
+[1] "Households: 2949"
+[1] "People: 5742"
+[1] "Time: 9.73"
+[1] "Schools: 0.34"
+[1] "Workplaces: 0.34"
+[1] "Puma: 400"
+[1] "Place Name: 38035011400"
+[1] "Place: 93"
+[1] "Total Places: 205"
+[1] "Households: 996"
+[1] "People: 1954"
+[1] "Time: 22.04"
+[1] "Schools: 0.17"
+[1] "Workplaces: 0.17"
+[1] "Puma: 400"
+[1] "Place Name: 38035011700"
+[1] "Place: 94"
+[1] "Total Places: 205"
+[1] "Households: 2159"
+[1] "People: 4230"
+[1] "Time: 31.95"
+[1] "Schools: 0.31"
+[1] "Workplaces: 0.31"
+[1] "Puma: 400"
+[1] "Place Name: 38035011800"
+[1] "Place: 95"
+[1] "Total Places: 205"
+[1] "Households: 714"
+[1] "People: 1401"
+[1] "Time: 13.66"
+[1] "Schools: 0.14"
+[1] "Workplaces: 0.14"
+[1] "Puma: 400"
+[1] "Place Name: 38035011900"
+[1] "Place: 96"
+[1] "Total Places: 205"
+[1] "Households: 1013"
+[1] "People: 1893"
+[1] "Time: 9.28"
+[1] "Schools: 0.15"
+[1] "Workplaces: 0.15"
+[1] "Puma: 400"
+[1] "Place Name: 38035012000"
+[1] "Place: 97"
+[1] "Total Places: 205"
+[1] "Households: 1262"
+[1] "People: 2523"
+[1] "Time: 19.98"
+[1] "Schools: 0.28"
+[1] "Workplaces: 0.28"
+[1] "Puma: 400"
+[1] "Place Name: 38037965900"
+[1] "Place: 98"
+[1] "Total Places: 205"
+[1] "Households: 1721"
+[1] "People: 3554"
+[1] "Time: 51.67"
+[1] "Schools: 0.16"
+[1] "Workplaces: 0.16"
+[1] "Puma: 100"
+[1] "Place Name: 38039968600"
+[1] "Place: 99"
+[1] "Total Places: 205"
+[1] "Households: 1463"
+[1] "People: 2852"
+[1] "Time: 20.56"
+[1] "Schools: 0.17"
+[1] "Workplaces: 0.17"
+[1] "Puma: 400"
+[1] "Place Name: 38041964700"
+[1] "Place: 100"
+[1] "Total Places: 205"
+[1] "Households: 710"
+[1] "People: 1465"
+[1] "Time: 12.77"
+[1] "Schools: 0.14"
+[1] "Workplaces: 0.14"
+[1] "Puma: 100"
+[1] "Place Name: 38041964800"
+[1] "Place: 101"
+[1] "Total Places: 205"
+[1] "Households: 750"
+[1] "People: 1524"
+[1] "Time: 17.32"
+[1] "Schools: 0.16"
+[1] "Workplaces: 0.16"
+[1] "Puma: 100"
+[1] "Place Name: 38043966800"
+[1] "Place: 102"
+[1] "Total Places: 205"
+[1] "Households: 1678"
+[1] "People: 3570"
+[1] "Time: 37.22"
+[1] "Schools: 0.23"
+[1] "Workplaces: 0.23"
+[1] "Puma: 300"
+[1] "Place Name: 38045972100"
+[1] "Place: 103"
+[1] "Total Places: 205"
+[1] "Households: 820"
+[1] "People: 1688"
+[1] "Time: 11.21"
+[1] "Schools: 0.17"
+[1] "Workplaces: 0.17"
+[1] "Puma: 200"
+[1] "Place Name: 38045972200"
+[1] "Place: 104"
+[1] "Total Places: 205"
+[1] "Households: 1432"
+[1] "People: 2936"
+[1] "Time: 30.77"
+[1] "Schools: 0.24"
+[1] "Workplaces: 0.24"
+[1] "Puma: 200"
+[1] "Place Name: 38047972500"
+[1] "Place: 105"
+[1] "Total Places: 205"
+[1] "Households: 1075"
+[1] "People: 2149"
+[1] "Time: 19.25"
+[1] "Schools: 0.18"
+[1] "Workplaces: 0.18"
+[1] "Puma: 300"
+[1] "Place Name: 38049955600"
+[1] "Place: 106"
+[1] "Total Places: 205"
+[1] "Households: 1388"
+[1] "People: 2896"
+[1] "Time: 37.17"
+[1] "Schools: 0.21"
+[1] "Workplaces: 0.21"
+[1] "Puma: 100"
+[1] "Place Name: 38049955900"
+[1] "Place: 107"
+[1] "Total Places: 205"
+[1] "Households: 1575"
+[1] "People: 3201"
+[1] "Time: 40.69"
+[1] "Schools: 0.2"
+[1] "Workplaces: 0.2"
+[1] "Puma: 100"
+[1] "Place Name: 38051972900"
+[1] "Place: 108"
+[1] "Total Places: 205"
+[1] "Households: 1931"
+[1] "People: 4017"
+[1] "Time: 28.43"
+[1] "Schools: 0.33"
+[1] "Workplaces: 0.33"
+[1] "Puma: 300"
+[1] "Place Name: 38053940100"
+[1] "Place: 109"
+[1] "Total Places: 205"
+[1] "Households: 431"
+[1] "People: 886"
+[1] "Time: 17.11"
+[1] "Schools: 0.15"
+[1] "Workplaces: 0.15"
+[1] "Puma: 100"
+[1] "Place Name: 38053962300"
+[1] "Place: 110"
+[1] "Total Places: 205"
+[1] "Households: 895"
+[1] "People: 1886"
+[1] "Time: 56.66"
+[1] "Schools: 0.13"
+[1] "Workplaces: 0.13"
+[1] "Puma: 100"
+[1] "Place Name: 38053962400"
+[1] "Place: 111"
+[1] "Total Places: 205"
+[1] "Households: 992"
+[1] "People: 2015"
+[1] "Time: 18.48"
+[1] "Schools: 0.16"
+[1] "Workplaces: 0.16"
+[1] "Puma: 100"
+[1] "Place Name: 38053962500"
+[1] "Place: 112"
+[1] "Total Places: 205"
+[1] "Households: 701"
+[1] "People: 1453"
+[1] "Time: 47.61"
+[1] "Schools: 0.1"
+[1] "Workplaces: 0.1"
+[1] "Puma: 100"
+[1] "Place Name: 38055960800"
+[1] "Place: 113"
+[1] "Total Places: 205"
+[1] "Households: 2088"
+[1] "People: 4337"
+[1] "Time: 48.44"
+[1] "Schools: 0.2"
+[1] "Workplaces: 0.2"
+[1] "Puma: 100"
+[1] "Place Name: 38055961000"
+[1] "Place: 114"
+[1] "Total Places: 205"
+[1] "Households: 3440"
+[1] "People: 7137"
+[1] "Time: 109.81"
+[1] "Schools: 0.34"
+[1] "Workplaces: 0.34"
+[1] "Puma: 100"
+[1] "Place Name: 38057961600"
+[1] "Place: 115"
+[1] "Total Places: 205"
+[1] "Households: 1119"
+[1] "People: 2283"
+[1] "Time: 10.96"
+[1] "Schools: 0.18"
+[1] "Workplaces: 0.18"
+[1] "Puma: 100"
+[1] "Place Name: 38057961700"
+[1] "Place: 116"
+[1] "Total Places: 205"
+[1] "Households: 1701"
+[1] "People: 3538"
+[1] "Time: 11.48"
+[1] "Schools: 0.28"
+[1] "Workplaces: 0.28"
+[1] "Puma: 100"
+[1] "Place Name: 38057961800"
+[1] "Place: 117"
+[1] "Total Places: 205"
+[1] "Households: 1615"
+[1] "People: 3278"
+[1] "Time: 40.68"
+[1] "Schools: 0.19"
+[1] "Workplaces: 0.19"
+[1] "Puma: 100"
+[1] "Place Name: 38059020100"
+[1] "Place: 118"
+[1] "Total Places: 205"
+[1] "Households: 2474"
+[1] "People: 5156"
+[1] "Time: 14.55"
+[1] "Schools: 0.43"
+[1] "Workplaces: 0.43"
+[1] "Puma: 300"
+[1] "Place Name: 38059020200"
+[1] "Place: 119"
+[1] "Total Places: 205"
+[1] "Households: 3007"
+[1] "People: 6111"
+[1] "Time: 18.81"
+[1] "Schools: 0.28"
+[1] "Workplaces: 0.28"
+[1] "Puma: 300"
+[1] "Place Name: 38059020300"
+[1] "Place: 120"
+[1] "Total Places: 205"
+[1] "Households: 3272"
+[1] "People: 6699"
+[1] "Time: 19.17"
+[1] "Schools: 0.37"
+[1] "Workplaces: 0.37"
+[1] "Puma: 300"
+[1] "Place Name: 38059020400"
+[1] "Place: 121"
+[1] "Total Places: 205"
+[1] "Households: 1261"
+[1] "People: 2703"
+[1] "Time: 55.73"
+[1] "Schools: 0.29"
+[1] "Workplaces: 0.29"
+[1] "Puma: 300"
+[1] "Place Name: 38059020500"
+[1] "Place: 122"
+[1] "Total Places: 205"
+[1] "Households: 1815"
+[1] "People: 3706"
+[1] "Time: 50.78"
+[1] "Schools: 0.19"
+[1] "Workplaces: 0.19"
+[1] "Puma: 300"
+[1] "Place Name: 38061940300"
+[1] "Place: 123"
+[1] "Total Places: 205"
+[1] "Households: 747"
+[1] "People: 1566"
+[1] "Time: 15.61"
+[1] "Schools: 0.2"
+[1] "Workplaces: 0.2"
+[1] "Puma: 100"
+[1] "Place Name: 38061940400"
+[1] "Place: 124"
+[1] "Total Places: 205"
+[1] "Households: 1230"
+[1] "People: 2663"
+[1] "Time: 14.62"
+[1] "Schools: 0.2"
+[1] "Workplaces: 0.2"
+[1] "Puma: 100"
+[1] "Place Name: 38061955200"
+[1] "Place: 125"
+[1] "Total Places: 205"
+[1] "Households: 1972"
+[1] "People: 4104"
+[1] "Time: 54.36"
+[1] "Schools: 0.26"
+[1] "Workplaces: 0.26"
+[1] "Puma: 100"
+[1] "Place Name: 38063959000"
+[1] "Place: 126"
+[1] "Total Places: 205"
+[1] "Households: 1952"
+[1] "People: 3917"
+[1] "Time: 40.84"
+[1] "Schools: 0.22"
+[1] "Workplaces: 0.22"
+[1] "Puma: 200"
+[1] "Place Name: 38065961200"
+[1] "Place: 127"
+[1] "Total Places: 205"
+[1] "Households: 887"
+[1] "People: 1866"
+[1] "Time: 25.97"
+[1] "Schools: 0.16"
+[1] "Workplaces: 0.16"
+[1] "Puma: 100"
+[1] "Place Name: 38067950100"
+[1] "Place: 128"
+[1] "Total Places: 205"
+[1] "Households: 666"
+[1] "People: 1320"
+[1] "Time: 7.26"
+[1] "Schools: 0.14"
+[1] "Workplaces: 0.14"
+[1] "Puma: 400"
+[1] "Place Name: 38067950200"
+[1] "Place: 129"
+[1] "Total Places: 205"
+[1] "Households: 813"
+[1] "People: 1619"
+[1] "Time: 8.21"
+[1] "Schools: 0.14"
+[1] "Workplaces: 0.14"
+[1] "Puma: 400"
+[1] "Place Name: 38067950300"
+[1] "Place: 130"
+[1] "Total Places: 205"
+[1] "Households: 740"
+[1] "People: 1499"
+[1] "Time: 3.95"
+[1] "Schools: 0.15"
+[1] "Workplaces: 0.15"
+[1] "Puma: 400"
+[1] "Place Name: 38067950400"
+[1] "Place: 131"
+[1] "Total Places: 205"
+[1] "Households: 800"
+[1] "People: 1616"
+[1] "Time: 9.6"
+[1] "Schools: 0.15"
+[1] "Workplaces: 0.15"
+[1] "Puma: 400"
+[1] "Place Name: 38067950500"
+[1] "Place: 132"
+[1] "Total Places: 205"
+[1] "Households: 877"
+[1] "People: 1653"
+[1] "Time: 7.75"
+[1] "Schools: 0.16"
+[1] "Workplaces: 0.16"
+[1] "Puma: 400"
+[1] "Place Name: 38069956100"
+[1] "Place: 133"
+[1] "Total Places: 205"
+[1] "Households: 830"
+[1] "People: 1717"
+[1] "Time: 11.55"
+[1] "Schools: 0.19"
+[1] "Workplaces: 0.19"
+[1] "Puma: 200"
+[1] "Place Name: 38069956200"
+[1] "Place: 134"
+[1] "Total Places: 205"
+[1] "Households: 1347"
+[1] "People: 2689"
+[1] "Time: 14.6"
+[1] "Schools: 0.19"
+[1] "Workplaces: 0.19"
+[1] "Puma: 200"
+[1] "Place Name: 38071957600"
+[1] "Place: 135"
+[1] "Total Places: 205"
+[1] "Households: 2222"
+[1] "People: 4482"
+[1] "Time: 9.44"
+[1] "Schools: 0.29"
+[1] "Workplaces: 0.29"
+[1] "Puma: 200"
+[1] "Place Name: 38071957700"
+[1] "Place: 136"
+[1] "Total Places: 205"
+[1] "Households: 1486"
+[1] "People: 2984"
+[1] "Time: 34.56"
+[1] "Schools: 0.21"
+[1] "Workplaces: 0.21"
+[1] "Puma: 200"
+[1] "Place Name: 38071957800"
+[1] "Place: 137"
+[1] "Total Places: 205"
+[1] "Households: 1933"
+[1] "People: 4003"
+[1] "Time: 10"
+[1] "Schools: 0.44"
+[1] "Workplaces: 0.44"
+[1] "Puma: 200"
+[1] "Place Name: 38073968900"
+[1] "Place: 138"
+[1] "Total Places: 205"
+[1] "Households: 795"
+[1] "People: 1508"
+[1] "Time: 8.78"
+[1] "Schools: 0.2"
+[1] "Workplaces: 0.2"
+[1] "Puma: 200"
+[1] "Place Name: 38073969000"
+[1] "Place: 139"
+[1] "Total Places: 205"
+[1] "Households: 770"
+[1] "People: 1503"
+[1] "Time: 17.8"
+[1] "Schools: 0.14"
+[1] "Workplaces: 0.14"
+[1] "Puma: 200"
+[1] "Place Name: 38073969100"
+[1] "Place: 140"
+[1] "Total Places: 205"
+[1] "Households: 1111"
+[1] "People: 2275"
+[1] "Time: 6.33"
+[1] "Schools: 0.31"
+[1] "Workplaces: 0.31"
+[1] "Puma: 200"
+[1] "Place Name: 38075952900"
+[1] "Place: 141"
+[1] "Total Places: 205"
+[1] "Households: 1439"
+[1] "People: 2966"
+[1] "Time: 35.59"
+[1] "Schools: 0.18"
+[1] "Workplaces: 0.18"
+[1] "Puma: 100"
+[1] "Place Name: 38077970700"
+[1] "Place: 142"
+[1] "Total Places: 205"
+[1] "Households: 853"
+[1] "People: 1713"
+[1] "Time: 21"
+[1] "Schools: 0.16"
+[1] "Workplaces: 0.16"
+[1] "Puma: 200"
+[1] "Place Name: 38077970800"
+[1] "Place: 143"
+[1] "Total Places: 205"
+[1] "Households: 954"
+[1] "People: 1952"
+[1] "Time: 20.46"
+[1] "Schools: 0.22"
+[1] "Workplaces: 0.22"
+[1] "Puma: 200"
+[1] "Place Name: 38077970900"
+[1] "Place: 144"
+[1] "Total Places: 205"
+[1] "Households: 1631"
+[1] "People: 3255"
+[1] "Time: 8.7"
+[1] "Schools: 0.23"
+[1] "Workplaces: 0.23"
+[1] "Puma: 200"
+[1] "Place Name: 38077971000"
+[1] "Place: 145"
+[1] "Total Places: 205"
+[1] "Households: 1903"
+[1] "People: 3828"
+[1] "Time: 8.46"
+[1] "Schools: 0.26"
+[1] "Workplaces: 0.26"
+[1] "Puma: 200"
+[1] "Place Name: 38077971100"
+[1] "Place: 146"
+[1] "Total Places: 205"
+[1] "Households: 627"
+[1] "People: 1283"
+[1] "Time: 15.75"
+[1] "Schools: 0.14"
+[1] "Workplaces: 0.14"
+[1] "Puma: 200"
+[1] "Place Name: 38077971400"
+[1] "Place: 147"
+[1] "Total Places: 205"
+[1] "Households: 1557"
+[1] "People: 3069"
+[1] "Time: 23.95"
+[1] "Schools: 0.18"
+[1] "Workplaces: 0.18"
+[1] "Puma: 200"
+[1] "Place Name: 38079941800"
+[1] "Place: 148"
+[1] "Total Places: 205"
+[1] "Households: 2102"
+[1] "People: 4339"
+[1] "Time: 18.41"
+[1] "Schools: 0.3"
+[1] "Workplaces: 0.3"
+[1] "Puma: 200"
+[1] "Place Name: 38079951600"
+[1] "Place: 149"
+[1] "Total Places: 205"
+[1] "Households: 679"
+[1] "People: 1378"
+[1] "Time: 9.95"
+[1] "Schools: 0.15"
+[1] "Workplaces: 0.15"
+[1] "Puma: 200"
+[1] "Place Name: 38079951700"
+[1] "Place: 150"
+[1] "Total Places: 205"
+[1] "Households: 1795"
+[1] "People: 3710"
+[1] "Time: 31.31"
+[1] "Schools: 0.21"
+[1] "Workplaces: 0.21"
+[1] "Puma: 200"
+[1] "Place Name: 38079951900"
+[1] "Place: 151"
+[1] "Total Places: 205"
+[1] "Households: 725"
+[1] "People: 1509"
+[1] "Time: 20.56"
+[1] "Schools: 0.17"
+[1] "Workplaces: 0.17"
+[1] "Puma: 200"
+[1] "Place Name: 38081974000"
+[1] "Place: 152"
+[1] "Total Places: 205"
+[1] "Households: 719"
+[1] "People: 1430"
+[1] "Time: 10.09"
+[1] "Schools: 0.12"
+[1] "Workplaces: 0.12"
+[1] "Puma: 200"
+[1] "Place Name: 38081974200"
+[1] "Place: 153"
+[1] "Total Places: 205"
+[1] "Households: 1298"
+[1] "People: 2656"
+[1] "Time: 25.31"
+[1] "Schools: 0.16"
+[1] "Workplaces: 0.16"
+[1] "Puma: 200"
+[1] "Place Name: 38083960200"
+[1] "Place: 154"
+[1] "Total Places: 205"
+[1] "Households: 919"
+[1] "People: 1841"
+[1] "Time: 24.56"
+[1] "Schools: 0.18"
+[1] "Workplaces: 0.18"
+[1] "Puma: 200"
+[1] "Place Name: 38085940800"
+[1] "Place: 155"
+[1] "Total Places: 205"
+[1] "Households: 565"
+[1] "People: 1163"
+[1] "Time: 15.31"
+[1] "Schools: 0.13"
+[1] "Workplaces: 0.13"
+[1] "Puma: 100"
+[1] "Place Name: 38085940900"
+[1] "Place: 156"
+[1] "Total Places: 205"
+[1] "Households: 742"
+[1] "People: 1531"
+[1] "Time: 8.31"
+[1] "Schools: 0.13"
+[1] "Workplaces: 0.13"
+[1] "Puma: 100"
+[1] "Place Name: 38087965000"
+[1] "Place: 157"
+[1] "Total Places: 205"
+[1] "Households: 470"
+[1] "People: 939"
+[1] "Time: 31.3"
+[1] "Schools: 0.1"
+[1] "Workplaces: 0.1"
+[1] "Puma: 100"
+[1] "Place Name: 38089963300"
+[1] "Place: 158"
+[1] "Total Places: 205"
+[1] "Households: 609"
+[1] "People: 1309"
+[1] "Time: 22.78"
+[1] "Schools: 0.13"
+[1] "Workplaces: 0.13"
+[1] "Puma: 100"
+[1] "Place Name: 38089963400"
+[1] "Place: 159"
+[1] "Total Places: 205"
+[1] "Households: 1216"
+[1] "People: 2448"
+[1] "Time: 13.93"
+[1] "Schools: 0.22"
+[1] "Workplaces: 0.22"
+[1] "Puma: 100"
+[1] "Place Name: 38089963500"
+[1] "Place: 160"
+[1] "Total Places: 205"
+[1] "Households: 2179"
+[1] "People: 4633"
+[1] "Time: 12.61"
+[1] "Schools: 0.37"
+[1] "Workplaces: 0.37"
+[1] "Puma: 100"
+[1] "Place Name: 38089963600"
+[1] "Place: 161"
+[1] "Total Places: 205"
+[1] "Households: 905"
+[1] "People: 1849"
+[1] "Time: 9.48"
+[1] "Schools: 0.18"
+[1] "Workplaces: 0.18"
+[1] "Puma: 100"
+[1] "Place Name: 38089963700"
+[1] "Place: 162"
+[1] "Total Places: 205"
+[1] "Households: 2018"
+[1] "People: 4267"
+[1] "Time: 10.3"
+[1] "Schools: 0.3"
+[1] "Workplaces: 0.3"
+[1] "Puma: 100"
+[1] "Place Name: 38089963800"
+[1] "Place: 163"
+[1] "Total Places: 205"
+[1] "Households: 1817"
+[1] "People: 3686"
+[1] "Time: 11.52"
+[1] "Schools: 0.25"
+[1] "Workplaces: 0.25"
+[1] "Puma: 100"
+[1] "Place Name: 38089963900"
+[1] "Place: 164"
+[1] "Total Places: 205"
+[1] "Households: 1046"
+[1] "People: 2149"
+[1] "Time: 34.13"
+[1] "Schools: 0.12"
+[1] "Workplaces: 0.12"
+[1] "Puma: 100"
+[1] "Place Name: 38089964000"
+[1] "Place: 165"
+[1] "Total Places: 205"
+[1] "Households: 738"
+[1] "People: 1505"
+[1] "Time: 18.68"
+[1] "Schools: 0.17"
+[1] "Workplaces: 0.17"
+[1] "Puma: 100"
+[1] "Place Name: 38091968700"
+[1] "Place: 166"
+[1] "Total Places: 205"
+[1] "Households: 1196"
+[1] "People: 2422"
+[1] "Time: 16.38"
+[1] "Schools: 0.2"
+[1] "Workplaces: 0.2"
+[1] "Puma: 400"
+[1] "Place Name: 38093967000"
+[1] "Place: 167"
+[1] "Total Places: 205"
+[1] "Households: 1244"
+[1] "People: 2462"
+[1] "Time: 45.89"
+[1] "Schools: 0.13"
+[1] "Workplaces: 0.13"
+[1] "Puma: 200"
+[1] "Place Name: 38093967200"
+[1] "Place: 168"
+[1] "Total Places: 205"
+[1] "Households: 1366"
+[1] "People: 2822"
+[1] "Time: 45.38"
+[1] "Schools: 0.18"
+[1] "Workplaces: 0.18"
+[1] "Puma: 200"
+[1] "Place Name: 38093967300"
+[1] "Place: 169"
+[1] "Total Places: 205"
+[1] "Households: 761"
+[1] "People: 1570"
+[1] "Time: 13.67"
+[1] "Schools: 0.18"
+[1] "Workplaces: 0.18"
+[1] "Puma: 200"
+[1] "Place Name: 38093967400"
+[1] "Place: 170"
+[1] "Total Places: 205"
+[1] "Households: 2672"
+[1] "People: 5322"
+[1] "Time: 14.91"
+[1] "Schools: 0.29"
+[1] "Workplaces: 0.29"
+[1] "Puma: 200"
+[1] "Place Name: 38093967500"
+[1] "Place: 171"
+[1] "Total Places: 205"
+[1] "Households: 1599"
+[1] "People: 3148"
+[1] "Time: 14.33"
+[1] "Schools: 0.37"
+[1] "Workplaces: 0.37"
+[1] "Puma: 200"
+[1] "Place Name: 38093967800"
+[1] "Place: 172"
+[1] "Total Places: 205"
+[1] "Households: 2185"
+[1] "People: 4549"
+[1] "Time: 14.76"
+[1] "Schools: 0.42"
+[1] "Workplaces: 0.42"
+[1] "Puma: 200"
+[1] "Place Name: 38095951500"
+[1] "Place: 173"
+[1] "Total Places: 205"
+[1] "Households: 1461"
+[1] "People: 2812"
+[1] "Time: 19.01"
+[1] "Schools: 0.18"
+[1] "Workplaces: 0.18"
+[1] "Puma: 400"
+[1] "Place Name: 38097970100"
+[1] "Place: 174"
+[1] "Total Places: 205"
+[1] "Households: 1131"
+[1] "People: 2248"
+[1] "Time: 13.83"
+[1] "Schools: 0.18"
+[1] "Workplaces: 0.18"
+[1] "Puma: 400"
+[1] "Place Name: 38097970200"
+[1] "Place: 175"
+[1] "Total Places: 205"
+[1] "Households: 1191"
+[1] "People: 2340"
+[1] "Time: 6.9"
+[1] "Schools: 0.16"
+[1] "Workplaces: 0.16"
+[1] "Puma: 400"
+[1] "Place Name: 38097970300"
+[1] "Place: 176"
+[1] "Total Places: 205"
+[1] "Households: 642"
+[1] "People: 1229"
+[1] "Time: 18"
+[1] "Schools: 0.13"
+[1] "Workplaces: 0.13"
+[1] "Puma: 400"
+[1] "Place Name: 38097970400"
+[1] "Place: 177"
+[1] "Total Places: 205"
+[1] "Households: 795"
+[1] "People: 1587"
+[1] "Time: 5.83"
+[1] "Schools: 0.13"
+[1] "Workplaces: 0.13"
+[1] "Puma: 400"
+[1] "Place Name: 38099957800"
+[1] "Place: 178"
+[1] "Total Places: 205"
+[1] "Households: 751"
+[1] "People: 1441"
+[1] "Time: 13.77"
+[1] "Schools: 0.14"
+[1] "Workplaces: 0.14"
+[1] "Puma: 400"
+[1] "Place Name: 38099957900"
+[1] "Place: 179"
+[1] "Total Places: 205"
+[1] "Households: 779"
+[1] "People: 1493"
+[1] "Time: 7.49"
+[1] "Schools: 0.15"
+[1] "Workplaces: 0.15"
+[1] "Puma: 400"
+[1] "Place Name: 38099958000"
+[1] "Place: 180"
+[1] "Total Places: 205"
+[1] "Households: 1194"
+[1] "People: 2305"
+[1] "Time: 8.05"
+[1] "Schools: 0.19"
+[1] "Workplaces: 0.19"
+[1] "Puma: 400"
+[1] "Place Name: 38099958100"
+[1] "Place: 181"
+[1] "Total Places: 205"
+[1] "Households: 1161"
+[1] "People: 2267"
+[1] "Time: 18.61"
+[1] "Schools: 0.14"
+[1] "Workplaces: 0.14"
+[1] "Puma: 400"
+[1] "Place Name: 38099958200"
+[1] "Place: 182"
+[1] "Total Places: 205"
+[1] "Households: 846"
+[1] "People: 1606"
+[1] "Time: 7.52"
+[1] "Schools: 0.11"
+[1] "Workplaces: 0.11"
+[1] "Puma: 400"
+[1] "Place Name: 38099958300"
+[1] "Place: 183"
+[1] "Total Places: 205"
+[1] "Households: 809"
+[1] "People: 1531"
+[1] "Time: 20.61"
+[1] "Schools: 0.14"
+[1] "Workplaces: 0.14"
+[1] "Puma: 400"
+[1] "Place Name: 38101010100"
+[1] "Place: 184"
+[1] "Total Places: 205"
+[1] "Households: 1689"
+[1] "People: 3492"
+[1] "Time: 15.28"
+[1] "Schools: 0.28"
+[1] "Workplaces: 0.28"
+[1] "Puma: 100"
+[1] "Place Name: 38101010200"
+[1] "Place: 185"
+[1] "Total Places: 205"
+[1] "Households: 1916"
+[1] "People: 3970"
+[1] "Time: 17.33"
+[1] "Schools: 0.41"
+[1] "Workplaces: 0.41"
+[1] "Puma: 100"
+[1] "Place Name: 38101010301"
+[1] "Place: 186"
+[1] "Total Places: 205"
+[1] "Households: 1691"
+[1] "People: 3455"
+[1] "Time: 15.64"
+[1] "Schools: 0.23"
+[1] "Workplaces: 0.23"
+[1] "Puma: 100"
+[1] "Place Name: 38101010302"
+[1] "Place: 187"
+[1] "Total Places: 205"
+[1] "Households: 2295"
+[1] "People: 4796"
+[1] "Time: 16.55"
+[1] "Schools: 0.25"
+[1] "Workplaces: 0.25"
+[1] "Puma: 100"
+[1] "Place Name: 38101010400"
+[1] "Place: 188"
+[1] "Total Places: 205"
+[1] "Households: 2597"
+[1] "People: 5390"
+[1] "Time: 15.71"
+[1] "Schools: 0.32"
+[1] "Workplaces: 0.32"
+[1] "Puma: 100"
+[1] "Place Name: 38101010500"
+[1] "Place: 189"
+[1] "Total Places: 205"
+[1] "Households: 2399"
+[1] "People: 4975"
+[1] "Time: 16.61"
+[1] "Schools: 0.25"
+[1] "Workplaces: 0.25"
+[1] "Puma: 100"
+[1] "Place Name: 38101010600"
+[1] "Place: 190"
+[1] "Total Places: 205"
+[1] "Households: 2823"
+[1] "People: 5856"
+[1] "Time: 18.06"
+[1] "Schools: 0.27"
+[1] "Workplaces: 0.27"
+[1] "Puma: 100"
+[1] "Place Name: 38101010700"
+[1] "Place: 191"
+[1] "Total Places: 205"
+[1] "Households: 3204"
+[1] "People: 6704"
+[1] "Time: 17.38"
+[1] "Schools: 0.41"
+[1] "Workplaces: 0.41"
+[1] "Puma: 100"
+[1] "Place Name: 38101010800"
+[1] "Place: 192"
+[1] "Total Places: 205"
+[1] "Households: 1352"
+[1] "People: 2837"
+[1] "Time: 22.26"
+[1] "Schools: 0.26"
+[1] "Workplaces: 0.26"
+[1] "Puma: 100"
+[1] "Place Name: 38101010900"
+[1] "Place: 193"
+[1] "Total Places: 205"
+[1] "Households: 1834"
+[1] "People: 3833"
+[1] "Time: 15.6"
+[1] "Schools: 0.36"
+[1] "Workplaces: 0.36"
+[1] "Puma: 100"
+[1] "Place Name: 38101011000"
+[1] "Place: 194"
+[1] "Total Places: 205"
+[1] "Households: 1074"
+[1] "People: 2252"
+[1] "Time: 25.19"
+[1] "Schools: 0.16"
+[1] "Workplaces: 0.16"
+[1] "Puma: 100"
+[1] "Place Name: 38101011200"
+[1] "Place: 195"
+[1] "Total Places: 205"
+[1] "Households: 1367"
+[1] "People: 2852"
+[1] "Time: 29.35"
+[1] "Schools: 0.29"
+[1] "Workplaces: 0.29"
+[1] "Puma: 100"
+[1] "Place Name: 38101011300"
+[1] "Place: 196"
+[1] "Total Places: 205"
+[1] "Households: 2053"
+[1] "People: 4320"
+[1] "Time: 43.76"
+[1] "Schools: 0.18"
+[1] "Workplaces: 0.18"
+[1] "Puma: 100"
+[1] "Place Name: 38103959800"
+[1] "Place: 197"
+[1] "Total Places: 205"
+[1] "Households: 975"
+[1] "People: 2023"
+[1] "Time: 6.6"
+[1] "Schools: 0.17"
+[1] "Workplaces: 0.17"
+[1] "Puma: 200"
+[1] "Place Name: 38103960000"
+[1] "Place: 198"
+[1] "Total Places: 205"
+[1] "Households: 1490"
+[1] "People: 2973"
+[1] "Time: 27"
+[1] "Schools: 0.15"
+[1] "Workplaces: 0.15"
+[1] "Puma: 200"
+[1] "Place Name: 38105953400"
+[1] "Place: 199"
+[1] "Total Places: 205"
+[1] "Households: 1011"
+[1] "People: 2059"
+[1] "Time: 32.54"
+[1] "Schools: 0.13"
+[1] "Workplaces: 0.13"
+[1] "Puma: 100"
+[1] "Place Name: 38105953500"
+[1] "Place: 200"
+[1] "Total Places: 205"
+[1] "Households: 875"
+[1] "People: 1801"
+[1] "Time: 27.62"
+[1] "Schools: 0.1"
+[1] "Workplaces: 0.1"
+[1] "Puma: 100"
+[1] "Place Name: 38105953600"
+[1] "Place: 201"
+[1] "Total Places: 205"
+[1] "Households: 1150"
+[1] "People: 2330"
+[1] "Time: 38.16"
+[1] "Schools: 0.13"
+[1] "Workplaces: 0.13"
+[1] "Puma: 100"
+[1] "Place Name: 38105953700"
+[1] "Place: 202"
+[1] "Total Places: 205"
+[1] "Households: 2306"
+[1] "People: 4839"
+[1] "Time: 17.47"
+[1] "Schools: 0.23"
+[1] "Workplaces: 0.23"
+[1] "Puma: 100"
+[1] "Place Name: 38105953800"
+[1] "Place: 203"
+[1] "Total Places: 205"
+[1] "Households: 1138"
+[1] "People: 2312"
+[1] "Time: 13.51"
+[1] "Schools: 0.18"
+[1] "Workplaces: 0.18"
+[1] "Puma: 100"
+[1] "Place Name: 38105953900"
+[1] "Place: 204"
+[1] "Total Places: 205"
+[1] "Households: 1534"
+[1] "People: 3237"
+[1] "Time: 12.71"
+[1] "Schools: 0.17"
+[1] "Workplaces: 0.17"
+[1] "Puma: 100"
+[1] "Place Name: 38105954100"
+[1] "Place: 205"
+[1] "Total Places: 205"
+[1] "Households: 2170"
+[1] "People: 4537"
+[1] "Time: 16.12"
+[1] "Schools: 0.33"
+[1] "Workplaces: 0.33"
+[1] "Puma: 100"
+[1] "Location runs in: 260.45"
+[1] "SPEW Runs in: 265.49"
+[1] TRUE
+Warning message:
+In data.table::fread(paste0(input_dir, "/", folders$pums, "/", pums_files[index_p]),  :
+  Bumped column 126 to type character on data row 6, field contains '4990XX'. Coercing previously read values in this column from logical, integer or numeric back to character which may not be lossless; e.g., if '00' and '000' occurred before they will now be just '0', and there may be inconsistencies with treatment of ',,' and ',NA,' too (if they occurred in this column before the bump). If this matters please rerun and set 'colClasses' to 'character' for this column. Please note that column type detection uses the first 5 rows, the middle 5 rows and the last 5 rows, so hopefully this message should be very rare. If reporting to datatable-help, please rerun and include the output from verbose=TRUE.

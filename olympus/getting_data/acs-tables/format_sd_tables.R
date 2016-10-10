@@ -158,7 +158,7 @@ for (state in ids) {
       state <- paste0("0", state)
     }
 
-    if (state != "10") {
+    if (state > 19) {
       next
     }
 

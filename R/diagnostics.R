@@ -547,7 +547,7 @@ summarize_us <-  function(output_dir, us_fs,
 summarize_ipums <-  function(output_dir, ipums_fs,
                              varsToSummarize = list(vars_hh = "base", vars_p = "base"),
                              doPrint = FALSE, sampSize = 10^3, readFun = read.csv){
-    stopifnot(ncol(ipums_fs$paths_df) == 3)
+    stopifnot(ncol(ipums_fs$paths_df) == 4)
     paths_df <- ipums_fs$paths_df
     paths_df <- data.frame(lapply(paths_df, as.character), stringsAsFactors = FALSE)
     vars_hh <- getVars_ipums(varsToSummarize$vars_hh, type = "hh")
@@ -567,7 +567,7 @@ summarize_ipums <-  function(output_dir, ipums_fs,
         sub_inds <- sample(1:nrow(tab), sampSize, replace = TRUE)
         sub_df <- subset(tab[sub_inds,], select = c("longitude", "latitude"))
        # print(dim(sub_df))
-        region_id <- gsub("household_", "",  paths_df[ind, 3])
+        region_id <- gsub("household_", "",  paths_df[ind, 4])  #ooh magic number
         region_id <- gsub(".csv", "", region_id)
         region_no <- gsub("output_", "", paths_df[ind, 1])
         pretty_print(doPrint, region_id)
@@ -600,7 +600,7 @@ summarize_ipums <-  function(output_dir, ipums_fs,
                              cont = sum_features_cont)
         header_p<- colnames(tab)
         sub_inds <- sample(1:nrow(tab), sampSize, replace = T)
-        region_id <- gsub("household_", "",  paths_df[ind, 3])
+        region_id <- gsub("household_", "",  paths_df[ind, 4])
         region_id <- gsub(".csv", "", region_id)
         region_no <- gsub("output_", "", paths_df[ind, 1])
         place_id <- region_id

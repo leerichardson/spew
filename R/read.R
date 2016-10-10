@@ -28,12 +28,8 @@ read_data <- function(base_dir,
   } 
   
   # Point the input directory to the input/ portion of the base directory
-  if (data_group == "US") {
-    input_dir <- file.path(base_dir, "input")
-  } else {
-    input_dir <- base_dir
-  }
-  
+  input_dir <- file.path(base_dir, "input")
+
   # Read in each source one by one -------------------------
   pop_table <- read_pop_table(input_dir, folders, data_group)
   pop_table <- standardize_pop_table(pop_table, data_group)
@@ -95,16 +91,20 @@ read_data <- function(base_dir,
 #' 
 #' @return data frame with counts 
 read_pop_table <- function(input_dir, folders, data_group) {
-  # Get a list of the files in the pop table directory
-  pop_table_dir <- paste0(input_dir, "/", folders$pop_table)
+  pop_table_dir <- file.path(input_dir, folders$pop_table)
   pop_table_files <- list.files(pop_table_dir)
   
   if (data_group == "US") {
     # For US, should always be households.csv
-    pop_table_file <- "households.csv"
+    pop_table_file <- file.path(pop_table_dir, "households.csv")
   } else if (data_group == "ipums") {
     # If the extended counts are available, use them 
     # If not, use the available admin counts 
+    pop_table_files <- list.files(pop_table_dir, 
+                                  all.files = TRUE, 
+                                  recursive = TRUE, 
+                                  full.names = TRUE)
+    
     revised_counts <- grep("revised", pop_table_files)
     extended_counts <- grep("extended", pop_table_files)
     admin_counts <- grep("admin", pop_table_files)
@@ -125,8 +125,7 @@ read_pop_table <- function(input_dir, folders, data_group) {
     return(pop_table)
   }
   
-  pop_table <- read.csv(paste0(input_dir, "/", folders$pop_table, "/", pop_table_file), 
-                        stringsAsFactors = FALSE)
+  pop_table <- read.csv(pop_table_file, stringsAsFactors = FALSE)
   return(pop_table)
 }
 
@@ -174,7 +173,7 @@ standardize_pop_table <- function(pop_table, data_group){
 
 # Read PUMS data --------------------
 read_pums <- function(input_dir, folders, data_group, vars = list(household = NA, person = NA)) {
-  pums_dir <- paste0(input_dir, "/", folders$pums)
+  pums_dir <- file.path(input_dir, folders$pums)
   pums_files <- list.files(pums_dir)
   
   if (data_group == "US") {
@@ -190,11 +189,14 @@ read_pums <- function(input_dir, folders, data_group, vars = list(household = NA
     pums_p <- read.csv(people_file, stringsAsFactors = FALSE)
     
   } else if (data_group == "ipums") {
+    pums_files <- list.files(pums_dir, 
+                                  all.files = TRUE, 
+                                  recursive = TRUE, 
+                                  full.names = TRUE)
     stopifnot(length(pums_files) == 1)
-    pums_p <- read.csv(paste0(input_dir, "/", folders$pums, "/", pums_files), 
-                     stringsAsFactors = FALSE)
     
     # Use the unique household ID's for household pums  
+    pums_p <- read.csv(pums_files, stringsAsFactors = FALSE)
     unique_hh_indices <- !duplicated(pums_p$SERIAL)
     pums_h <- pums_p[unique_hh_indices, ]
   
@@ -203,11 +205,10 @@ read_pums <- function(input_dir, folders, data_group, vars = list(household = NA
     pums_p <- read.csv(folders$pums$pums_p, stringsAsFactors = FALSE)
   }
 
-  # If specified, subset the household and person level PUMS 
-  # for the desired choice of variables 
+  # Subset the Household and Person Variables 
   if (!is.na(vars$household)[1]) {
     pums_h <- pums_h[, vars$household]  
-  }  
+  }
 
   if (!is.na(vars$person)[1]) {
     pums_p <- pums_p[, vars$person]  
@@ -225,7 +226,6 @@ standardize_pums <- function(pums, data_group) {
   } else if (data_group == "ipums") {
     # Set the puma_id and serial ID's 
     names(pums$pums_h)[which(names(pums$pums_h) == "GEOLEV1")] <- "puma_id"  
-    
     names(pums$pums_h)[which(names(pums$pums_h) == "SERIAL")] <- "SERIALNO"
     names(pums$pums_p)[which(names(pums$pums_p) == "SERIAL")] <- "SERIALNO"
   
@@ -277,9 +277,9 @@ standardize_lookup <- function(lookup, data_group){
 
 #  Function for reading in shapefiles data
 read_shapefiles <- function(input_dir, folders, data_group) {
-  shapefile_dir <- paste0(input_dir, "/", folders$shapefiles)
+  shapefile_dir <- file.path(input_dir, folders$shapefiles)
   shapefiles_files <- list.files(shapefile_dir)
-    
+   
   if (data_group == "US") {
     ind_shp <- which(grepl(pattern = "\\.shp", x = shapefiles_files) & 
                        !grepl(pattern = "\\.xml", x = shapefiles_files)) 
@@ -296,16 +296,20 @@ read_shapefiles <- function(input_dir, folders, data_group) {
     }
 
   } else if (data_group == "ipums") {
-    revised_indices <- grep("revised.shp", shapefiles_files)
+    shapefiles <- list.files(shapefile_dir, 
+                              all.files = TRUE, 
+                              recursive = TRUE, 
+                              full.names = TRUE)
+    revised_indices <- grep("revised.shp", shapefiles)
+    
     if (length(revised_indices) == 1) {
-      filename <- shapefiles_files[revised_indices]
+      filename <- shapefiles[revised_indices]
     } else {
       shp_indices <- grep(".shp", shapefiles_files)
       stopifnot(length(shp_indices) == 1)
-      filename <- shapefiles_files[shp_indices]
+      filename <- shapefiles[shp_indices]
     }
-    full_path <- file.path(input_dir, folders$shapefiles, filename)
-    shapefile <- maptools::readShapeSpatial(full_path)
+    shapefile <- maptools::readShapeSpatial(filename)
     return(shapefile)
     
   } else if (data_group == "none") {
@@ -331,7 +335,6 @@ standardize_shapefiles <- function(shapefiles, data_group) {
   } else if (data_group == "ipums") {
     names(shapefiles)[which(names(shapefiles) == "ADMIN_NAME")] <- "place_id"
     shapefiles$place_id  <- as.character(shapefiles$place_id)
-    
     names(shapefiles)[which(names(shapefiles) == "GEOLEVEL1")] <- "puma_id"
 
   } else if (data_group == "none") {

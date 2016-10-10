@@ -211,31 +211,35 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   }
   
   # Households --------------- 
-  sampled_households <- sample_households(method = sampling_method, 
+  sampled_households <- tryCatch({sample_households(method = sampling_method, 
                                           n_house = n_house, 
                                           pums_h = pums_h, 
                                           pums_p = pums_p, 
                                           marginals = marginals,
                                           puma_id = puma_id, 
                                           place_id = place_id)
+                                  }, error = function(e) return(paste0("Error: ",  e)))
   
   # Locations ----------------
-  locations <- sample_locations(method = locations_method, 
+  locations <- tryCatch({sample_locations(method = locations_method, 
                                 place_id = place_id,
                                 n_house = n_house, 
                                 shapefile = shapefile, 
                                 noise = .0002, 
                                 shapefile_id)
+                         }, error = function(e) return(paste0("Error: ",  e)))
   
   sampled_households$longitude <- locations@coords[, 1]
   sampled_households$latitude <- locations@coords[, 2]
+  rm(locations); gc()
   
   # People ----------------
-  sampled_people <- sample_people(method = sampling_method, 
+  sampled_people <- tryCatch({sample_people(method = sampling_method, 
                                   household_pums = sampled_households, 
                                   pums_p = pums_p, 
                                   puma_id = puma_id, 
                                   place_id = place_id)
+                              }, error = function(e) return(paste0("Error: ",  e)))
   
   # Schools --------------
   school_time <- 0
@@ -264,12 +268,16 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   }
   
   # Write the synthetic populations as CSV's
-  write_data(df = sampled_households, place_id = place_id, 
+  
+  tryCatch({write_data(df = sampled_households, place_id = place_id, 
              puma_id = puma_id, type = "household", 
              output_dir = output_dir)
-  write_data(df = sampled_people, place_id = place_id, 
+  }, error = function(e) return(paste0("Error: ",  e))) 
+  
+  tryCatch({write_data(df = sampled_people, place_id = place_id, 
              puma_id = puma_id, type = "people", 
              output_dir = output_dir)
+  }, error = function(e) return(paste0("Error: ",  e)))
   
   # Collect diagnostic and summary information on this particular 
   # job and return this to the make_data function for analysis 
@@ -278,13 +286,16 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   place_time_statement <- paste0("Time: ", place_time)
   
   hh_statement <- paste0("Households: ", nrow(sampled_households))
-  people_statement <- paste0("People: ", nrow(sampled_people))
+  people_statement <- paste0("People: ", nrow(sampled_people))  
   school_statement <- paste0("Schools: ", school_time)
   workplace_statement <- paste0("Workplaces: ", workplace_time)  
   place_statement <- paste0("Place: ", index) 
   total_place_statement <- paste0("Total Places: ", nrow(pop_table))
   place_name_statement <- paste0("Place Name: ", place_id)
   puma_statement <- paste0("Puma: ", puma_id)
+  
+  # Remove largest objects, then to Garbage collection
+  rm(sampled_people); rm(sampled_households); gc()
   
   return(list(place_name = place_name_statement,
               place_num = place_statement, 
@@ -328,6 +339,7 @@ write_data <- function(df, place_id, puma_id, type, output_dir) {
 #' @return logical TRUE if completed. As well as a written 
 #' pop_table to the given output directory 
 write_pop_table <- function(pop_table, output_dir) {
+  pop_table <- remove_commas(pop_table)
   filename <- file.path(output_dir, "final_pop_table.csv")
   write.csv(pop_table, filename)
   return(TRUE)
@@ -389,4 +401,14 @@ partition_pt <- function(total_size, partition_size) {
   stopifnot(partitions[length(partitions)] == total_size)
   
   return(partitions)
+}
+
+#' Remove comma's from a data-frame 
+#' 
+#' @param df data-frame 
+#' @return data-frame with no commas 
+remove_commas <- function(df) {  
+  list_nocommas <- lapply(df, function(x) gsub(",", "-", x))
+  df <- as.data.frame(list_nocommas)  
+  return(df)
 }

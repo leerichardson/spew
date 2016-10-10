@@ -116,21 +116,18 @@ test_that("United States functions", {
 })
 
 test_that("ipums functions", {
-  sink("read_output.txt")
-  
-  library(data.table)
   # Make sure we are using the correct data-raw directory 
   # as opposed to the test/testthat one within the package 
   spew_dir <- system.file("", package = "spew")
-  data_path <- paste0(spew_dir, "/", "data-raw/uruguay")  
-
+  data_path <- file.path(spew_dir, "data-raw/ury/input")  
+  uruguay_folders <- list(pop_table = "counts", 
+                          pums = "pums", 
+                          shapefiles = "shapefiles")
+  
   # Pop Table --------------------------------
   uruguay_counts <- read_pop_table(data_path, 
                                 data_group = "ipums", 
-                                folders = list(pop_table = "counts", 
-                                               pums = "PUMS", 
-                                               shapefiles = "shapefile_ipums"))
-  
+                                folders = uruguay_folders)
   expect_equal(class(uruguay_counts), "data.frame")
   
   standard_counts <- standardize_pop_table(uruguay_counts, data_group = "ipums")
@@ -139,11 +136,8 @@ test_that("ipums functions", {
   # PUMS -------------------------------------
   uruguay_pums <- read_pums(data_path, 
                             data_group = "ipums", 
-                            folders = list(pop_table = "counts", 
-                                           pums = "PUMS", 
-                                           shapefiles = "shapefile_ipums"), 
+                            folders = uruguay_folders, 
                             vars = list(household = NA, person = NA))
-  
   expect_equal(class(uruguay_pums), "list")
   expect_equal(names(uruguay_pums), c("pums_h", "pums_p"))
   
@@ -154,10 +148,7 @@ test_that("ipums functions", {
   library(maptools)
   uruguay_shape <- read_shapefiles(data_path, 
                                    data_group = "ipums", 
-                                   folders = list(pop_table = "counts", 
-                                                  pums = "PUMS", 
-                                                  shapefiles = "shapefile_ipums"))
-  
+                                   folders = uruguay_folders)
   expect_equal(class(uruguay_shape) == "SpatialPolygonsDataFrame", TRUE)
   expect_equal("place_id" %in% names(uruguay_shape), TRUE)
   
@@ -165,23 +156,17 @@ test_that("ipums functions", {
   expect_equal("puma_id" %in% names(standard_shape), TRUE)  
 
   # Overall ----------------------------------
-  uruguay_data <- read_data(data_path, 
+  base_dir <- file.path(spew_dir, "data-raw/ury")
+  uruguay_data <- read_data(base_dir = base_dir, 
                             data_group = "ipums", 
-                            folders = list(pop_table = "counts", 
-                                           pums = "PUMS", 
-                                           shapefiles = "shapefile_ipums"))
+                            folders = uruguay_folders)
   
   expect_equal("SERIALNO" %in% names(uruguay_data$pums$pums_p), TRUE)
   expect_equal("puma_id" %in% names(uruguay_data$pums$pums_h), TRUE)
   expect_equal(class(uruguay_data) == "list", TRUE)
-  
-  sink()
-  unlink("read_output.txt")
 })
 
 test_that("no group functions", {
-  library(data.table)
-  
   # Make sure we are using the correct data-raw directory 
   # as opposed to the test/testthat one within the package 
   spew_dir <- system.file("", package = "spew")
@@ -194,8 +179,6 @@ test_that("no group functions", {
                                                       pums_p = paste0(data_path, "uruguay/PUMS/uruguay.csv")), 
                                           shapefiles = paste0(data_path, "uruguay/shapefile_ipums/uruguay_revised.shp")), 
                            data_group = "none")
-  
-  
   expect_equal(class(counts), "data.frame")
   expect_error(standardize_pop_table(counts, data_group = "none"), "%in% pt_names is not TRUE", fixed = TRUE)
   
@@ -215,7 +198,6 @@ test_that("no group functions", {
                                                pums_p = paste0(data_path, "uruguay/PUMS/uruguay.csv")), 
                                    shapefiles = paste0(data_path, "uruguay/shapefile_ipums/uruguay_revised.shp")), 
                     data_group = "none", vars = list(household = NA, person = NA))
-  
   expect_equal(class(pums), "list")
   expect_equal(class(pums$pums_h), "data.frame")
   expect_error(standardize_pums(pums, data_group = "none"))

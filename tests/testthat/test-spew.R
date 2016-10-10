@@ -2,42 +2,42 @@ context("SPEW")
 
 test_that("SPEW wrapper runs as expected", {
   # Load in the data and Libraries 
-  library(foreach)
-  library(doSNOW)
-  library(sp)
-  library(maptools)
-  library(stringdist)
-  library(mipfp)
-  
-  data(sd_data)
-  data(uruguay_format)
-  data(delaware)
-  
-  # Lee: If you run these, remember to change the output directory!
-  # They take too long to put in the automated tests, but they're 
-  # a good sanity check to make sure that everything still links up 
-
-  # Test spew wrapper function on delaware----------------
-  us_vars <- list(household = c("RT", "TYPE", "SERIALNO", "PUMA", "REGION", "ST", "HINCP", "NP"), 
-                  person = c("RT", "SERIALNO", "PUMA", "ST", "SEX", "AGEP",  "SCH", "SCHG", "RELP", 
-                             "HISP", "ESR", "PINCP", "NATIVITY", "OCCP", "POBP", "RAC1P"))
-  delaware_folders <- list(pop_table = "counts/natstat/2010/tract", 
-                           pums = "pums/natstat/2013/puma", 
-                           shapefiles = "shapefiles/natstat/2010/tract", 
-                           roads = "roads/natstat/2010/county", 
-                           schools = "schools/natstat/2013/county", 
-                           lookup = "lookup/natstat/2010/tract", 
-                           workplaces = "workplaces/natstat/2009/county", 
-                           marginals = "marginals/natstat/2014/tract")
-
-  call_spew(base_dir = "data-raw/10", 
-            folders = delaware_folders, 
-            data_group = "US", 
-            parallel = TRUE, 
-            sampling_method = "ipf", 
-            locations_method = "roads", 
-            convert_count = FALSE, 
-            vars = us_vars)
+#   library(foreach)
+#   library(doSNOW)
+#   library(sp)
+#   library(maptools)
+#   library(stringdist)
+#   library(mipfp)
+#   
+#   data(sd_data)
+#   data(uruguay_format)
+#   data(delaware)
+#   
+#   # Lee: If you run these, remember to change the output directory!
+#   # They take too long to put in the automated tests, but they're 
+#   # a good sanity check to make sure that everything still links up 
+# 
+#   # Test spew wrapper function on delaware----------------
+#   us_vars <- list(household = c("RT", "TYPE", "SERIALNO", "PUMA", "REGION", "ST", "HINCP", "NP"), 
+#                   person = c("RT", "SERIALNO", "PUMA", "ST", "SEX", "AGEP",  "SCH", "SCHG", "RELP", 
+#                              "HISP", "ESR", "PINCP", "NATIVITY", "OCCP", "POBP", "RAC1P"))
+#   delaware_folders <- list(pop_table = "counts/natstat/2010/tract", 
+#                            pums = "pums/natstat/2013/puma", 
+#                            shapefiles = "shapefiles/natstat/2010/tract", 
+#                            roads = "roads/natstat/2010/county", 
+#                            schools = "schools/natstat/2013/county", 
+#                            lookup = "lookup/natstat/2010/tract", 
+#                            workplaces = "workplaces/natstat/2009/county", 
+#                            marginals = "marginals/natstat/2014/tract")
+# 
+#   call_spew(base_dir = "data-raw/10", 
+#             folders = delaware_folders, 
+#             data_group = "US", 
+#             parallel = TRUE, 
+#             sampling_method = "ipf", 
+#             locations_method = "roads", 
+#             convert_count = FALSE, 
+#             vars = us_vars)
 })
 
 test_that("SPEW algorithm runs as expected", {
@@ -125,12 +125,10 @@ test_that("SPEW algorithm runs as expected", {
   expect_equal(nrow(synth_pums_h) == original_nhouse, FALSE)
   expect_equal(abs( (nrow(synth_pums_p) / original_nhouse) - 1) < .2, TRUE)
   
-  # Testing that the schools an workplace functions 
-  # are integrated into make properly -------------
-  
-  
-  # Test that the new sampling methods are integrated 
-  # correctly ---------------------------------------
+  # Remove all of the temporary outputs we used for testing 
+  sink()
+  unlink("test_output.txt")
+  unlink("tmp/", recursive = TRUE)
   
   # Test that we can partition large population tables 
   # that cause the parallel runs to fails
@@ -138,8 +136,6 @@ test_that("SPEW algorithm runs as expected", {
   expect_equal(partition_pt(222, 200), c(1, 201, 222))
   expect_equal(partition_pt(1000, 100), c(1, 101, 201, 301, 401, 501, 601, 701, 801, 901, 1000))
   
-  # Remove all of the temporary outputs we used for testing 
-  sink()
-  unlink("test_output.txt")
-  unlink("tmp/", recursive = TRUE)
+  # Test that we remove comma's before writing the final .csv's 
+#   write_pop_table(pop_table = sd_data$pop_table, output_dir = "/home/lee")
 })
