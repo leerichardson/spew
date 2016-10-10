@@ -1,8 +1,0 @@
-
-The following have been reloaded with a version change:
-  1) r/3.1.2 => r/3.2.1
-
-Error in check_dep_version(pkg, version, compare) : 
-  Dependency package roxygen2 not available.
-Calls: load_all -> check_suggested -> check_dep_version
-Execution halted

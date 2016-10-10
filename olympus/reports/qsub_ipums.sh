@@ -12,7 +12,7 @@
 ml r/3.2.1
 ml pandoc                                
 
-echo "Generating diagnostics report for Uruguay"
-~/spew/olympus/reports/make_ipums_report.sh /mnt/beegfs1/data/shared_group_data/syneco/input/$COUNTRYPATH
+echo "Generating diagnostics report for $COUNTRYPATH"
+~/spew/olympus/reports/make_ipums_report.sh $COUNTRYPATH
 
 

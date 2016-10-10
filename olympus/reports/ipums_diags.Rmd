@@ -35,16 +35,17 @@ library(maptools)
 library(ggmap)
 library(ggplot2)
 library(RColorBrewer)
-setwd(input_dir)
+#setwd(input_dir)
 # Params 
-output_dir <- getwd()
+output_dir <- input_dir
 region <- basename(input_dir)
 varsToSummarize = list(vars_hh = "base", vars_p = "base")
 sampSize =  10^4
 vars_hh <- NULL
 doPrint <- FALSE
 ipums_fs <- spew:::summarizeFileStructure(output_dir, doPrint)
-ipums_list <- spew:::summarize_ipums(output_dir, ipums_fs, doPrint = doPrint, sampSize = sampSize, readFun = read.csv) #data.table::fread)
+ipums_list <- spew:::summarize_ipums(output_dir, ipums_fs, doPrint = doPrint,
+	    sampSize = sampSize, readFun = data.table::fread)
 ipums_sum_list <- ipums_list
 hh_list <- ipums_list$hh_sum_list
 ```
@@ -60,7 +61,7 @@ The raw counts, microdata, and shapefiles are from IPUMS-I.
 ## Maps 
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align = 'center'}
-data_path <- "."
+data_path <- input_dir
 plot_name <- paste0("diags_", region, "-tn.png")
 map_type <- "toner-lite"
 savePlot <- FALSE
@@ -145,7 +146,8 @@ cols <- c("darkblue", "lightpink")
 colScale <- scale_fill_manual(values = cols)
 df_melt <- melt(df_sf, id.vars = "Region", varnames = c("Male", "Female"))
 colnames(df_melt)[2:3] <- c("Sex", "Percentage")
-p <- ggplot(data=df_melt, aes(x=Region, y=Percentage, fill=Sex)) + geom_bar(stat="identity") + coord_flip() + ggtitle("Ratio of Males to Females") + colScale + theme_light()
+p <- ggplot(data=df_melt, aes(x=Region, y=Percentage, fill=Sex)) +
+   geom_bar(stat="identity") + coord_flip() + ggtitle("Ratio of Males to Females") + colScale + theme_light()
 print(p)
 ```
 

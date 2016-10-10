@@ -1,11 +1,10 @@
 #!/bin/bash
 
 folder="$1"
-country=${folder##*/}
-country=${country%.*}
+country=$(basename "$folder")
 
 curdir=`pwd`
 
-echo "$curdir"
+echo $country
 
-Rscript -e "library(rmarkdown); rmarkdown::render('~/spew/olympus/reports/ipums_diags.Rmd', output_file = 'reports/ipums_diags_$country.html')" "$folder"
+Rscript -e "library(rmarkdown); rmarkdown::render('~/spew/olympus/reports/ipums_diags.Rmd', output_file = '~/ipums_reports/ipums_diags_$country.html')" "$folder"
