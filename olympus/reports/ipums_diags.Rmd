@@ -9,6 +9,8 @@ output:
     highlight: tango
 ---
 
+##	input_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/americas/south_america/pry"
+
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}

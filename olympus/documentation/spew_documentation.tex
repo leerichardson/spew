@@ -428,7 +428,35 @@
                 \caption{Pseudo code for generating workplaces}
 		\end{algorithm}
 
-\newpage
+                \newpage 
+
+                \section{Diagnostics}
+                It is important to verify the accuracy of our synthetic ecosystems.  We want them to reflect the input data as much as we possible.  To do this, we provide diagnostics in both the form of user-friendly reports in addition to large-scale statistical tests.  So as to truly test the output of SPEW, these diagnostics are completely orthogonal to the generation of our synthetic ecosystems.
+                \subsection{User-Friendly Reports}
+                We design user-friendly reports that are accessible to the reader.  Each country and state in the US  in Version 1.2.0 comes with a summary of that region.  This report in cludes:
+                \begin{itemize}
+                  \item General Info
+                    \begin{itemize}
+                    \item The country (state) name 
+                    \item The number of administrative levels available in the country (state)
+                    \item The number of sub-regions
+                    \item A map of population density with real household assignments
+                    \end{itemize}
+                  \item Synthetic Households and Synthetic People
+                    \begin{itemize}
+                  \item Total number in country (state)
+                  \item Graphs of population characteristics per region
+                  \item The population characteristics included in the synthetic ecosystem
+                    \end{itemize}
+                  \item Generation information
+                \end{itemize}
+                \noindent These summaries and graphs allow the user to see whether the synthetic ecosystems pass the ``eye test.''  The primary functions used are \verb|summarize_{type}| where \texttt{type} at the moment is either \texttt{us} or \texttt{ipums}.  These functions loop over the output files, read them in, summarize each region individually, and aggregate them all together. 
+
+                
+                
+
+
+                \newpage
 \section{Data Organization}
 SPEW synthetic ecosystems are available online at: 
 
