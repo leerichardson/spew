@@ -165,4 +165,4 @@ print(ipums_list$header_p)
 
 ## Generation Information
 
-This report was generated on `r Sys.time()` by `spew`, an `R` package used to generate populations throughout the world.  Please see our [spew Github repo](https://github.com/leerichardson/spew) and our previously generated regions at [epimodels.org](http://www.epimodels.org/drupal/?q=node/32).  We are a part of the Infomatics Services Group MIDAS branch at Carnegie Mellon University and University of Pittsburgh and are supported by 1 U24 GM110707-01 NIH/NIGMS grant.  Please send any comments to [sventura@stat.cmu.edu](sventura@stat.cmu.edu).
+This report was generated on `r Sys.time()` by `spew`, an `R` package used to generate populations throughout the world.  Please see our [spew Github repo](https://github.com/leerichardson/spew) and our previously generated regions at [epimodels.org](http://www.epimodels.org/drupal/?q=node/32).  We are a part of the Informatics Services Group MIDAS branch at Carnegie Mellon University and University of Pittsburgh and are supported by 1 U24 GM110707-01 NIH/NIGMS grant.  Please send any comments to [sventura@stat.cmu.edu](sventura@stat.cmu.edu).
