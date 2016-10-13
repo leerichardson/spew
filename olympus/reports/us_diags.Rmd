@@ -29,7 +29,7 @@ fps <- basename(input_dir)
 state_name <- spew:::fipsToPlaceName(fps, level = "state", df = us)
 ```
 
-# `r toupper(state_name)`
+# `r toupper(state_name)` 
 
 
 
@@ -43,7 +43,7 @@ library(ggplot2)
 library(RColorBrewer)
 output_dir <- input_dir
                                         # Params
-## Data
+## Data 
 data(us_pums_sf)
 
 region <- basename(input_dir)
@@ -61,12 +61,12 @@ There is/are `r ipums_fs$nLevels` level(s) of nested ecosystems in `r state_name
 
 There is/are `r nrow(ipums_fs$paths_df)` lowest level subregions.
 
-## Data
+## Data 
 
 The raw counts, microdata, and shapefiles are from the US Census.
 
 
-## Maps
+## Maps 
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align = 'center'}
 data_path <- "."
@@ -304,4 +304,4 @@ print(ipums_list$header_p)
 
 ## Generation Information
 
-This report was generated on `r Sys.time()` by `spew`, an `R` package used to generate populations throughout the world.  Please see our [spew Github repo](https://github.com/leerichardson/spew) and our previously generated regions at [epimodels.org](http://www.epimodels.org/drupal/?q=node/32).  We are a part of the Infomatics Services Group MIDAS branch at Carnegie Mellon University and University of Pittsburgh and are supported by 1 U24 GM110707-01 NIH/NIGMS grant.  Please send your comments and suggestions to [sventura@stat.cmu.edu](sventura@stat.cmu.edu).
+This report was generated on `r Sys.time()` by `spew`, an `R` package used to generate populations throughout the world.  Please see our [spew Github repo](https://github.com/leerichardson/spew) and our previously generated regions at [epimodels.org](http://www.epimodels.org/drupal/?q=node/32).  We are a part of the Informatics Services Group MIDAS branch at Carnegie Mellon University and University of Pittsburgh and are supported by 1 U24 GM110707-01 NIH/NIGMS grant.  Please send your comments and suggestions to [sventura@stat.cmu.edu](sventura@stat.cmu.edu).
