@@ -20,6 +20,9 @@ module load pandoc
 module load r/3.2.1
 module load geos 
 
+# Remove the old outputs
+rm -r $base_dir/output
+
 # Run SPEW to generate synthetic ecosystems 
 echo "Running on node: " $HOSTNAME
 Rscript /mnt/beegfs1/data/shared_group_data/syneco/olympus/call_spew/run_spew.R ${base_dir} ${data_group}
