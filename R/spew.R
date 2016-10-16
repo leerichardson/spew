@@ -325,6 +325,8 @@ write_data <- function(df, place_id, puma_id, type, output_dir) {
   }
   
   filename <- file.path(directory, paste0(type, "_", as.character(place_id), ".csv"))
+  filename <- remove_excess(filename)
+  
   data.table::fwrite(df, filename, sep = ",", qmethod = "double")
   
   return(TRUE)

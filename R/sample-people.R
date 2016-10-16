@@ -54,8 +54,8 @@ sample_people <- function(method, household_pums, pums_p, puma_id = NULL, place_
   # Remove names which comp
   place_id <- remove_excess(place_id)
   puma_id <- remove_excess(puma_id)
-  sampled_households$place_id <- place_id
-  sampled_households$puma_id <- puma_id  
+  sampled_people$place_id <- place_id
+  sampled_people$puma_id <- puma_id  
   
   # Add in a person synthetic ID 
   sampled_people$SYNTHETIC_PID <- paste0(sampled_people$SYNTHETIC_HID, "-", 1:nrow(sampled_people))
