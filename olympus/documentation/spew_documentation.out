@@ -25,15 +25,17 @@
 \BOOKMARK [2][-]{subsection.3.3}{Sample People}{section.3}% 25
 \BOOKMARK [2][-]{subsection.3.4}{School Assignments}{section.3}% 26
 \BOOKMARK [2][-]{subsection.3.5}{Workplace Assignments}{section.3}% 27
-\BOOKMARK [1][-]{section.4}{Data Organization}{}% 28
-\BOOKMARK [2][-]{subsection.4.1}{Directory Structure}{section.4}% 29
-\BOOKMARK [2][-]{subsection.4.2}{Diagnostics}{section.4}% 30
-\BOOKMARK [1][-]{appendix.A}{Codebook}{}% 31
-\BOOKMARK [2][-]{subsection.A.1}{United States: American Community Survey}{appendix.A}% 32
-\BOOKMARK [2][-]{subsection.A.2}{Canada: Public Use Microdata File}{appendix.A}% 33
-\BOOKMARK [2][-]{subsection.A.3}{IPUMS: International Public Use Microdata Sample}{appendix.A}% 34
-\BOOKMARK [1][-]{appendix.B}{SPEW Process Documentation}{}% 35
-\BOOKMARK [2][-]{subsection.B.1}{Installing SPEW on Olympus}{appendix.B}% 36
-\BOOKMARK [2][-]{subsection.B.2}{Calling SPEW}{appendix.B}% 37
-\BOOKMARK [2][-]{subsection.B.3}{How SPEW works}{appendix.B}% 38
-\BOOKMARK [1][-]{appendix.C}{Acknowledgements}{}% 39
+\BOOKMARK [1][-]{section.4}{Diagnostics}{}% 28
+\BOOKMARK [2][-]{subsection.4.1}{User-Friendly Reports}{section.4}% 29
+\BOOKMARK [1][-]{section.5}{Data Organization}{}% 30
+\BOOKMARK [2][-]{subsection.5.1}{Directory Structure}{section.5}% 31
+\BOOKMARK [2][-]{subsection.5.2}{Diagnostics}{section.5}% 32
+\BOOKMARK [1][-]{appendix.A}{Codebook}{}% 33
+\BOOKMARK [2][-]{subsection.A.1}{United States: American Community Survey}{appendix.A}% 34
+\BOOKMARK [2][-]{subsection.A.2}{Canada: Public Use Microdata File}{appendix.A}% 35
+\BOOKMARK [2][-]{subsection.A.3}{IPUMS: International Public Use Microdata Sample}{appendix.A}% 36
+\BOOKMARK [1][-]{appendix.B}{SPEW Process Documentation}{}% 37
+\BOOKMARK [2][-]{subsection.B.1}{Installing SPEW on Olympus}{appendix.B}% 38
+\BOOKMARK [2][-]{subsection.B.2}{Calling SPEW}{appendix.B}% 39
+\BOOKMARK [2][-]{subsection.B.3}{How SPEW works}{appendix.B}% 40
+\BOOKMARK [1][-]{appendix.C}{Acknowledgements}{}% 41

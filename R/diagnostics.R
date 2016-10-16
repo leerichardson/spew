@@ -260,6 +260,37 @@ run_diags <- function(input_dir="./", output_dir=input_dir, save_plots=TRUE, pre
 
 }
 
+#' Build the FS for a lowest level region
+#'
+#' #' Sumarize the files within the output dir
+#'
+#' @param tract_id 11 digits for US (character)
+#' @param output_dir path to output of SPEW's lowest level (e.g. this folder as csvs from SPEW)
+#' @param doPrint logical
+#' @param type either "ipums" or "us"
+#' @return list (same format as summarizeFileStructure)
+summarizeLowestFS <- function(tract_id, output_dir, doPrint = FALSE, type = "us"){
+    stopifnot(type %in% c("ipums", "us"))
+    # Region Name
+    base_region <- tract_id
+    pretty_print(doPrint, paste("The region is", toupper(base_region)))
+    paths <- list.files(output_dir)
+    output_paths <- grep(tract_id, paths, value = TRUE)
+    if (length(output_paths) < 1){
+        hh_paths <- paths[grepl("household", paths)]
+    } else {
+        hh_paths <- output_paths[grepl("household", output_paths)]
+    }
+    paths_df <- pathsToDF(hh_paths)
+    # Number of levels in file hierarchy
+    nLevels <- getLevels(paths_df)
+    pretty_print(doPrint, paste("There are", nLevels,
+                                "level(s) of nested ecosystems in this region."))
+    nRegions <- nrow(paths_df)
+    pretty_print(doPrint, paste("There are", nRegions, "lowest level subregions in", toupper(base_region)))
+    return(list(base_region = base_region, paths_df = paths_df, nLevels = nLevels))
+}
+
 
 #' Sumarize the files within the output dir
 #'

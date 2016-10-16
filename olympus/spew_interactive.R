@@ -3,9 +3,9 @@ options(error = recover)
 # ---------- Set the data-group and filepath ------------------------------
 data_group <- "ipums"
 spew_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0"
-region <- "asia"
-subregion <- "eastern_asia"
-iso3 <- "chn"
+region <- "americas"
+subregion <- "caribbean"
+iso3 <- "jam"
 base_dir <- file.path(spew_dir, region, subregion, iso3)
 # -------------------------------------------------------------------------
 

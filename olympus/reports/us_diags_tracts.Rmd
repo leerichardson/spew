@@ -12,10 +12,14 @@ output:
 <img src="images/spew-too.png" style="width:20%;height:7%;position:absolute;top:0px;right:0px;" />
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
 #!/bin/env/Rscript
 args <- commandArgs(TRUE)
 input_dir <- args[1]
+tract_id <- args[2]	
 input_dir <- paste0(input_dir, "/")
+ ## input_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/americas/northern_america/usa/10/output/output_101/eco"
+ ## tract_id <- "10003000200"
 library(spew)
 library(devtools)
 #load_all("~/spew")
@@ -25,11 +29,15 @@ library(reshape2)
 data(us)
 
 # STATEFPS to name
-fps <- basename(input_dir)
+fps <- substr(tract_id, 1, 2)
 state_name <- spew:::fipsToPlaceName(fps, level = "state", df = us)
+co <- substr(tract_id, 1, 5)
+co_name <- spew:::fipsToPlaceName(co, level="county", df = us)
+## Data 
+data(us_pums_sf)
 ```
 
-# `r toupper(state_name)` 
+# `r toupper(state_name)`; `r toupper(co_name)`; Tract `r substr(tract_id, 6, 11)`
 
 
 
@@ -43,23 +51,19 @@ library(ggplot2)
 library(RColorBrewer)
 output_dir <- input_dir
                                         # Params
-## Data 
-data(us_pums_sf)
 
-region <- basename(input_dir)
+
+region <- substr(tract_id, 6, 11)
 varsToSummarize = list(vars_hh = c("NP", "HINCP"), vars_p =c ("AGEP", "RAC1P"))
-sampSize =  10^4
-vars_hh <- NULL
 doPrint <- TRUE
-ipums_fs <- spew:::summarizeFileStructure(output_dir, doPrint, type = "us")
-sum_level <- 2
-ipums_list <- spew:::summarize_us(output_dir, ipums_fs, varsToSummarize = varsToSummarize, doPrint = doPrint, sampSize = sampSize, sum_level = sum_level, threshold_list = us_pums_sf)
+ipums_fs <- summarizeLowestFS(tract_id, output_dir)
+sum_level <- 1
+sampSize <- 10000
+ipums_list <- summarize_us(output_dir, ipums_fs, varsToSummarize = varsToSummarize, doPrint = doPrint, sampSize = sampSize, sum_level = sum_level, threshold_list = us_pums_sf)
 ipums_sum_list <- ipums_list
 hh_list <- ipums_list$hh_sum_list
-```
-There is/are `r ipums_fs$nLevels` level(s) of nested ecosystems in `r state_name`.
 
-There is/are `r nrow(ipums_fs$paths_df)` lowest level subregions.
+```
 
 ## Data 
 
@@ -76,11 +80,11 @@ savePlot <- FALSE
 g <- spew:::plot_region_diags(ipums_sum_list, ipums_fs,
             data_path = data_path, map_type = map_type,
             savePlot = savePlot, plot_name = plot_name,
-			type = "us")
+			type = "ipums")
 			
 ```
 
-The above map shows a sub-sample of the different sub regions.  Each region has a sample of up to `r prettyNum(sampSize, big.mark = ",")`  households.
+The above map shows a sub-sample of the different sub-regions.  Each region has a sample of up to `r prettyNum(sampSize, big.mark = ",")`  households.
 
 
 
@@ -92,7 +96,7 @@ hh_list <- ipums_list$hh_sum_list
 hh_sum_df <- do.call('rbind', lapply(hh_list, "[[", 1))
 hh_sum_df$Region <- toupper(hh_sum_df$region_id)
 df <- hh_sum_df[, c("Region", "nRecords")]
-df$Region <- sapply(df$Region, spew:::fipsToPlaceName, level = "county", df = us)
+df$Region <- tract_id
 tot <- sum(hh_sum_df$nRecords)
 ```
 
@@ -105,7 +109,7 @@ Below is a bar chart of the number of households in each region.
 
 ```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.width = 6, fig.align = 'center'}
 cbbPalette <- c("#999999", "#E69F00", "#56B4E9",
-	"#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+	"#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")[-1]
 cols <- rep(cbbPalette, length.out = nrow(df))
 colScale <- scale_fill_manual(values = cols)
 g <- ggplot(df, aes(x = Region, y = nRecords, fill = Region)) +
@@ -133,9 +137,7 @@ df2<- do.call('cbind', lapply(hh_np, "[[", 1))
 df_sf <- data.frame(t(df2))
 df_sf <- df_sf / rowSums(df_sf)
 
-regions <- sapply(regions, spew:::fipsToPlaceName, level = "county", df = us)
-
-df_sf$Region <- regions
+df_sf$Region <- tract_id
 cols <- rep(cbbPalette, length.out = ncol(df_sf))
 colScale <- scale_fill_manual(values = cols, name = "Household Size")
 df_melt <- melt(df_sf, id.vars = "Region")
@@ -157,9 +159,7 @@ df2<- do.call('cbind', lapply(hh_inc, "[[", 2))
 df_sf <- data.frame(t(df2))
 df_sf <- df_sf / rowSums(df_sf)
  
-regions <- sapply(regions, spew:::fipsToPlaceName, level = "county", df = us)
-
-df_sf$Region <- regions
+df_sf$Region <- tract_id
 cols <- rep(cbbPalette, length.out = ncol(df_sf))
 colScale <- scale_fill_manual(values = cols, name = "Household Income ($)")
 df_melt <- melt(df_sf, id.vars = "Region")
@@ -191,7 +191,7 @@ p_list <- ipums_list$p_sum_list
 p_sum_df <- do.call('rbind', lapply(p_list, "[[", 1))	
 p_sum_df$Region <- toupper(p_sum_df$region_id)
 df <- p_sum_df[, c("Region", "nRecords")]
-df$Region <- sapply(df$Region, spew:::fipsToPlaceName, level = "county", df = us)
+df$Region <- tract_id
 tot <- sum(p_sum_df$nRecords)
  regions <- df$Region
 ```
@@ -229,7 +229,7 @@ colnames(df_sf) <- c("Male", "Female")
 
 
 
-df_sf$Region <- regions
+df_sf$Region <- tract_id
 cols <- c("darkblue", "lightpink")
 colScale <- scale_fill_manual(values = cols)
 df_melt <- melt(df_sf, id.vars = "Region", varnames = c("Male", "Female"))
@@ -253,7 +253,7 @@ df_sf <- df_sf / rowSums(df_sf)
 
 
 
-df_sf$Region <- regions
+df_sf$Region <- tract_id
 cols <- rep(cbbPalette, length.out = ncol(df_sf))
 colScale <- scale_fill_manual(values = cols, name = "Age (years)")
 df_melt <- melt(df_sf, id.vars = "Region")
@@ -280,7 +280,7 @@ df_sf <- df_sf / rowSums(df_sf)
 
 
 
-df_sf$Region <- regions
+df_sf$Region <- tract_id
 cols <- rep(cbbPalette, length.out = ncol(df_sf))
 colScale <- scale_fill_manual(values = cols, name = "Race")
 df_melt <- melt(df_sf, id.vars = "Region")
