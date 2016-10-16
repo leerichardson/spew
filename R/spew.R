@@ -343,6 +343,7 @@ write_data <- function(df, place_id, puma_id, type, output_dir) {
 write_pop_table <- function(pop_table, output_dir) {
   pop_table <- remove_commas(pop_table)
   filename <- file.path(output_dir, "final_pop_table.csv")
+  filename <- remove_excess(filename)
   write.csv(pop_table, filename)
   return(TRUE)
 }
