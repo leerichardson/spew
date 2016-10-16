@@ -2,14 +2,14 @@
 % Please edit documentation in R/sample-locations.R
 \name{samp_roads}
 \alias{samp_roads}
-\title{Sample the locations from the liens of a SpatialLines object}
+\title{Sample the locations from a SpatialLines object}
 \usage{
 samp_roads(n_house, new_shp, noise)
 }
 \arguments{
 \item{n_house}{number of households}
 
-\item{new_shp}{SpatialLines object}
+\item{new_shp}{SpatialLines or Spatial Points object}
 
 \item{noise}{std deviation of Gaussian noise added to coordinates, default is .001}
 }
@@ -17,6 +17,13 @@ samp_roads(n_house, new_shp, noise)
 SpatialPoints object with coordinates for the n_house households
 }
 \description{
-Sample the locations from the liens of a SpatialLines object
+Sample the locations from a SpatialLines object
+}
+\note{
+When the class is Spatial Points, the following sampling 
+method takes place: "When x is of a class deriving from Spatial-class for which 
+no spsample-methods exists, sampling is done in the bounding box 
+of the object, using spsample.Spatial"
+s This was added because the Puerto Rico intersection gave SpatialPoints
 }
 

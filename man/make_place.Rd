@@ -5,7 +5,7 @@
 \title{Create microdata for individual places}
 \usage{
 make_place(index, pop_table, shapefile, pums_h, pums_p, schools, workplaces,
-  output_dir, convert_count, sampling_method, locations_method)
+  marginals, output_dir, convert_count, sampling_method, locations_method)
 }
 \arguments{
 \item{index}{numeric with the pop_table row to generate}
@@ -23,6 +23,9 @@ particular locations}
 \item{schools}{dataframe with data corresponding to available schools}
 
 \item{workplaces}{dataframe with data corresponding to available workplaces}
+
+\item{marginals}{list with elements corresponding to marginal totals 
+of population variables}
 
 \item{sampling_method}{character vector indicating the type of sampling 
 method to use, defaults to "uniform"}

@@ -4,7 +4,7 @@
 \alias{read_roads}
 \title{Read in road lines shapefiles}
 \usage{
-read_roads(path_to_roads)
+read_roads(path_to_roads, road_id)
 }
 \arguments{
 \item{path_to_roads}{full path to the directory of where 

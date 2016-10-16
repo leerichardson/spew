@@ -4,7 +4,8 @@
 \alias{sample_people}
 \title{Sample from the individual person PUMS data frame}
 \usage{
-sample_people(method, household_pums, pums_p)
+sample_people(method, household_pums, pums_p, puma_id = NULL,
+  place_id = NULL)
 }
 \arguments{
 \item{method}{character indicating the method for sampling}
