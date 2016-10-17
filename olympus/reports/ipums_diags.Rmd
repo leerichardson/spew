@@ -8,8 +8,7 @@ output:
     theme: flatly
     highlight: tango
 ---
-
-
+<img src="images/spew-too.png" style="width:20%;height:7%;position:absolute;top:0px;right:0px;" />
 
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -18,12 +17,12 @@ args <- commandArgs(TRUE)
 input_dir <- args[1]
 input_dir <- paste0(input_dir, "/")
 ## input_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/americas/south_america/pry"
-data(iso3)
-country_name <- iso3$country_name[iso3$iso3 == tolower(basename(input_dir))]
 cur_dir <- input_dir
 library(spew)
 library(devtools)
 library(reshape2)
+data(iso3)
+country_name <- iso3$country_name[iso3$iso3 == tolower(basename(input_dir))]
 ```
 
 # `r toupper(country_name)` 
