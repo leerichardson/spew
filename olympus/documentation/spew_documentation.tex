@@ -533,31 +533,10 @@ The specific directory structure is as follows. In this case, the \textbf{region
 .3 same file structure as region.
 }
 
-% \subsection{Appending}
-% A second driving force behind our file structure is the need to produce an automatic suite of diagnostics once the synthetic ecosystems are complete. Because we are interested in running these diagnostics at different geographic levels, the first step towards making this happen is to append the files of similar groups together into one main file. To append together all of the files in a given subdirectory, we use the following approach:
-
-% \begin{algorithm}[H]
-%        \label{alg::append}
-%        \SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
-% 	\SetAlgoLined
-% 	\Input{Directory Name}
-% 		1. Traverse the directory tree to obtain a list of sub directories \\
-%         \For{every subdirectory}{
-%         	1. Verify this isn't the eco folder in the base directory \\
-%         	\eIf{Subdirectory name is eco}{
-%         		1. Create new directory names eco one level up \\
-%         		2. Append all files in the current sub directory into a new file \\ 
-%         		3. Move the appended file the newly created directory \\
-%         		4. Add the new directory to the end of the sub directory list
-%         	}
-%         	{Move to next directory} 
-%         }
-%        \Output{Appended files at all geographic levels} 
-%        \caption{Pseudocode for appending files}
-% \end{algorithm}
+In addition, since Canada required lots of manual preparation, we have included a \url{prep/} folder, with the custom scripts to prepare the data. 
 
 \subsection{Diagnostics}
-	We're currently building a suite of diagnostic checks, which run automatically for each ecosystems. These will be included in future versions.
+We're currently building a suite of diagnostic checks, which run automatically for each ecosystems. These will be included in future versions.
 
 \newpage
 \nocite{*}

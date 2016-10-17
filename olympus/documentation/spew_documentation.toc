@@ -64,20 +64,20 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {5.2}Diagnostics}{19}{subsection.5.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {A}Codebook}{20}{appendix.A}
+\contentsline {section}{\numberline {A}Codebook}{21}{appendix.A}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {A.1}United States: American Community Survey}{20}{subsection.A.1}
+\contentsline {subsection}{\numberline {A.1}United States: American Community Survey}{21}{subsection.A.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {A.2}Canada: Public Use Microdata File}{20}{subsection.A.2}
+\contentsline {subsection}{\numberline {A.2}Canada: Public Use Microdata File}{21}{subsection.A.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {A.3}IPUMS: International Public Use Microdata Sample}{20}{subsection.A.3}
+\contentsline {subsection}{\numberline {A.3}IPUMS: International Public Use Microdata Sample}{21}{subsection.A.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {B}SPEW Process Documentation}{21}{appendix.B}
+\contentsline {section}{\numberline {B}SPEW Process Documentation}{22}{appendix.B}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {B.1}Installing SPEW on Olympus}{21}{subsection.B.1}
+\contentsline {subsection}{\numberline {B.1}Installing SPEW on Olympus}{22}{subsection.B.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {B.2}Calling SPEW}{21}{subsection.B.2}
+\contentsline {subsection}{\numberline {B.2}Calling SPEW}{22}{subsection.B.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {B.3}How SPEW works}{23}{subsection.B.3}
+\contentsline {subsection}{\numberline {B.3}How SPEW works}{24}{subsection.B.3}
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {C}Acknowledgements}{25}{appendix.C}
+\contentsline {section}{\numberline {C}Acknowledgements}{26}{appendix.C}

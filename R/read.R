@@ -29,7 +29,7 @@ read_data <- function(base_dir,
   
   # Point the input directory to the input/ portion of the base directory
   input_dir <- file.path(base_dir, "input")
-
+  
   # Read in each source one by one -------------------------
   pop_table <- read_pop_table(input_dir, folders, data_group)
   pop_table <- standardize_pop_table(pop_table, data_group)
@@ -203,6 +203,7 @@ read_pums <- function(input_dir, folders, data_group, vars = list(household = NA
   } else if (data_group == "none") {
     pums_h <- read.csv(folders$pums$pums_h, stringsAsFactors = FALSE)
     pums_p <- read.csv(folders$pums$pums_p, stringsAsFactors = FALSE)
+    
   }
 
   # Subset the Household and Person Variables 
@@ -305,7 +306,9 @@ read_shapefiles <- function(input_dir, folders, data_group) {
     if (length(revised_indices) == 1) {
       filename <- shapefiles[revised_indices]
     } else {
-      shp_indices <- grep(".shp", shapefiles_files)
+      other_shapes <- grep(".shp", shapefiles)
+      ipums_shapes <- grep("ipums", shapefiles)
+      shp_indices <- intersect(other_shapes, ipums_shapes)
       stopifnot(length(shp_indices) == 1)
       filename <- shapefiles[shp_indices]
     }
@@ -465,5 +468,4 @@ read_marginals <- function(input_dir, folders, data_group) {
   } else if (data_group == "none") {
     
   }
-  
 }

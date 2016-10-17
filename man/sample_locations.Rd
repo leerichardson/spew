@@ -4,7 +4,8 @@
 \alias{sample_locations}
 \title{Generic sampling locations function}
 \usage{
-sample_locations(method, place_id, n_house, shapefile, noise = 1e-04)
+sample_locations(method, place_id, n_house, shapefile, noise = 0.001,
+  shapefile_id = NULL)
 }
 \arguments{
 \item{method}{character vector either "uniform" or "roads" determining 

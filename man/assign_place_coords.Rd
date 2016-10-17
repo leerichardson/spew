@@ -5,7 +5,7 @@
 \title{Assign a place with long/lat coords to a synthetic population}
 \usage{
 assign_place_coords(pop, places, place_name = "place", method = "uniform",
-  dist_fxn = haversine_dist)
+  dist_fxn = euclidean_dist)
 }
 \arguments{
 \item{pop}{data frame with "longitude" and "latitude" columns}

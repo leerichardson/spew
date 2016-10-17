@@ -4,7 +4,7 @@
 \alias{assign_schools_inner}
 \title{Function which assigns schools}
 \usage{
-assign_schools_inner(df, schools)
+assign_schools_inner(df, schools, weightSchools, distFun)
 }
 \arguments{
 \item{df}{subset of people split so all age, grade, SCH, and county should be the same in the df}

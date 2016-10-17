@@ -4,7 +4,8 @@
 \alias{assign_schools}
 \title{Assign schools to a synthetic population.}
 \usage{
-assign_schools(people, schools)
+assign_schools(people, schools, weightSchools = weight_dists,
+  distFun = haversine)
 }
 \arguments{
 \item{people}{data frame of synthetic people}
