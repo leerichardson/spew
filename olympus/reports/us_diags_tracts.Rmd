@@ -56,10 +56,10 @@ output_dir <- input_dir
 region <- substr(tract_id, 6, 11)
 varsToSummarize = list(vars_hh = c("NP", "HINCP"), vars_p =c ("AGEP", "RAC1P"))
 doPrint <- TRUE
-ipums_fs <- summarizeLowestFS(tract_id, output_dir)
+ipums_fs <- spew:::summarizeLowestFS(tract_id, output_dir)
 sum_level <- 1
 sampSize <- 10000
-ipums_list <- summarize_us(output_dir, ipums_fs, varsToSummarize = varsToSummarize, doPrint = doPrint, sampSize = sampSize, sum_level = sum_level, threshold_list = us_pums_sf)
+ipums_list <- spew:::summarize_us(output_dir, ipums_fs, varsToSummarize = varsToSummarize, doPrint = doPrint, sampSize = sampSize, sum_level = sum_level, threshold_list = us_pums_sf)
 ipums_sum_list <- ipums_list
 hh_list <- ipums_list$hh_sum_list
 
