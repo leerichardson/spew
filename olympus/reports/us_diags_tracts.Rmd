@@ -56,10 +56,10 @@ output_dir <- input_dir
 region <- substr(tract_id, 6, 11)
 varsToSummarize = list(vars_hh = c("NP", "HINCP"), vars_p =c ("AGEP", "RAC1P"))
 doPrint <- TRUE
-ipums_fs <- summarizeLowestFS(tract_id, output_dir)
+ipums_fs <- spew:::summarizeLowestFS(tract_id, output_dir)
 sum_level <- 1
 sampSize <- 10000
-ipums_list <- summarize_us(output_dir, ipums_fs, varsToSummarize = varsToSummarize, doPrint = doPrint, sampSize = sampSize, sum_level = sum_level, threshold_list = us_pums_sf)
+ipums_list <- spew:::summarize_us(output_dir, ipums_fs, varsToSummarize = varsToSummarize, doPrint = doPrint, sampSize = sampSize, sum_level = sum_level, threshold_list = us_pums_sf)
 ipums_sum_list <- ipums_list
 hh_list <- ipums_list$hh_sum_list
 
@@ -73,14 +73,15 @@ The raw counts, microdata, and shapefiles are from the US Census.
 ## Maps 
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align = 'center'}
-data_path <- "."
-plot_name <- paste0("diags_", region, "-tn.png")
-map_type <- "toner-lite"
-savePlot <- FALSE
-g <- spew:::plot_region_diags(ipums_sum_list, ipums_fs,
-            data_path = data_path, map_type = map_type,
-            savePlot = savePlot, plot_name = plot_name,
-			type = "ipums")
+print("No map available")
+# data_path <- "."
+# plot_name <- paste0("diags_", region, "-tn.png")
+# map_type <- "toner-lite"
+# savePlot <- FALSE
+# g <- spew:::plot_region_diags(ipums_sum_list, ipums_fs,
+#             data_path = data_path, map_type = map_type,
+#             savePlot = savePlot, plot_name = plot_name,
+# 			type = "ipums")
 			
 ```
 
