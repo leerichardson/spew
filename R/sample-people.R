@@ -24,15 +24,15 @@ sample_households <- function(method, n_house, pums_h, pums_p = NULL,
   sampled_households <- pums_h[households, ]
   
   # Remove the comma's from ourput
-  place_id <- gsub(",", "-", place_id)
-  puma_id <- gsub(",", "-", puma_id)
-    
-  # Create the Synthetif HID and add this as well as place/puma to the population. 
-  sampled_households$SYNTHETIC_HID <- paste0(place_id, "-", 1:nrow(sampled_households))
-  stopifnot(!any(duplicated(sampled_households$SYNTHETIC_HID)))  
+  place_id <- remove_excess(place_id)
+  puma_id <- remove_excess(puma_id)
   sampled_households$place_id <- place_id
   sampled_households$puma_id <- puma_id
   
+  # Create the Synthetif HID and add this as well as place/puma to the population. 
+  sampled_households$SYNTHETIC_HID <- paste0(place_id, "-", 1:nrow(sampled_households))
+  stopifnot(!any(duplicated(sampled_households$SYNTHETIC_HID)))  
+    
   return(sampled_households)
 }
 
@@ -51,15 +51,15 @@ sample_people <- function(method, household_pums, pums_p, puma_id = NULL, place_
     stop("Sampling method must be ipf or uniform")
   }
   
+  # Remove names which comp
+  place_id <- remove_excess(place_id)
+  puma_id <- remove_excess(puma_id)
+  sampled_people$place_id <- place_id
+  sampled_people$puma_id <- puma_id  
+  
   # Add in a person synthetic ID 
   sampled_people$SYNTHETIC_PID <- paste0(sampled_people$SYNTHETIC_HID, "-", 1:nrow(sampled_people))
   stopifnot(!any(duplicated(sampled_people$SYNTHETIC_PID)))
-
-  # Remove the comma's from ID names and add to the synthetic population 
-  place_id <- gsub(",", "-", place_id)
-  puma_id <- gsub(",", "-", puma_id)
-  sampled_people$place_id <- place_id
-  sampled_people$puma_id <- puma_id
   
   return(sampled_people)
 }
@@ -87,4 +87,15 @@ sample_uniform <- function(n_house, pums_h, puma_id = NULL, place_id = NULL) {
   # Sample households uniformly with replacement 
   households <- sample(sample_inds, n_house, replace = TRUE)
   return(households)
+}
+
+#' Remove comma's, accents, etc. from name 
+#' 
+#' @param name character 
+#' @return name with all of the excess baggage removed 
+remove_excess <- function(name) {
+  name <- gsub(",", "-", name)
+  name <- gsub("\r", "", name)
+  name <- gsub("\n", "", name)  
+  return(name)
 }

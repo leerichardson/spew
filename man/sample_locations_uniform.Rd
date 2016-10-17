@@ -4,15 +4,21 @@
 \alias{sample_locations_uniform}
 \title{Sample from a particular polygon shapefile}
 \usage{
-sample_locations_uniform(place_id, n_house, shapefile)
+sample_locations_uniform(place_id, n_house, shapefile, noise = 0.001,
+  shapefile_id = NULL)
 }
 \arguments{
-\item{place_id}{numeric specifiying the ID of the region we are 
+\item{place_id}{numeric specifiying the ID of the region we are
 subsampling}
 
 \item{n_house}{numeric indicating the number of households}
 
 \item{shapefile}{sp class with all of the locations for each place id}
+
+\item{noise}{numeric indicating how must noise to add to sampled points
+This is only used if the number of points to sample exceeds 100,000, in which 
+case the spsample function takes too long. Instead, we sample 100,000 points, 
+sample n_house from these 100,000, and then add random noise.}
 }
 \value{
 SpatialPoints object with coordinates for the n households

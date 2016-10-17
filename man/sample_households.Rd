@@ -4,7 +4,8 @@
 \alias{sample_households}
 \title{Sample appropriate indices from household PUMS}
 \usage{
-sample_households(method, n_house, pums_h, puma_id = NULL)
+sample_households(method, n_house, pums_h, pums_p = NULL, puma_id = NULL,
+  place_id = NULL, marginals = NULL)
 }
 \arguments{
 \item{method}{character indicating the method for sampling}

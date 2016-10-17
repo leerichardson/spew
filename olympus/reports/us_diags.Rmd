@@ -29,7 +29,7 @@ fps <- basename(input_dir)
 state_name <- spew:::fipsToPlaceName(fps, level = "state", df = us)
 ```
 
-# `r toupper(state_name)` 
+# `r toupper(state_name)`
 
 
 

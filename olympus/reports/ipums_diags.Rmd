@@ -9,7 +9,6 @@ output:
     highlight: tango
 ---
 
-##	input_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/americas/south_america/pry"
 
 
 
@@ -18,13 +17,16 @@ output:
 args <- commandArgs(TRUE)
 input_dir <- args[1]
 input_dir <- paste0(input_dir, "/")
+## input_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/americas/south_america/pry"
+data(iso3)
+country_name <- iso3$country_name[iso3$iso3 == tolower(basename(input_dir))]
 cur_dir <- input_dir
 library(spew)
 library(devtools)
 library(reshape2)
 ```
 
-# `r toupper(basename(input_dir))` 
+# `r toupper(country_name)` 
 
 
 
@@ -51,7 +53,7 @@ ipums_list <- spew:::summarize_ipums(output_dir, ipums_fs, doPrint = doPrint,
 ipums_sum_list <- ipums_list
 hh_list <- ipums_list$hh_sum_list
 ```
-There is/are `r ipums_fs$nLevels` level(s) of nested ecosystems in `r toupper(region)`.
+There is/are `r ipums_fs$nLevels` level(s) of nested ecosystems in `r toupper(country_name)`.
 
 There is/are `r nrow(ipums_fs$paths_df)` lowest level subregions.
 

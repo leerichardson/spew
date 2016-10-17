@@ -15,7 +15,7 @@ In addition, we must have road shapefiles so shapefile is a list with both the
 tracts and the roads, tracts is the first object and roads the second.}
 }
 \value{
-newShp - roads within the tract, a SpatialLines object
+new_shp - roads within the tract, a SpatialLines object
 }
 \description{
 Subset the shapefile and road lines to proper roads within specified tract

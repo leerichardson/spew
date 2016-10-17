@@ -4,9 +4,9 @@
 \alias{make_data}
 \title{Create synthetic microdata}
 \usage{
-make_data(pop_table, shapefile, pums_h, pums_p, schools, workplaces,
+make_data(pop_table, shapefile, pums_h, pums_p, schools, workplaces, marginals,
   convert_count, output_dir, parallel = FALSE, sampling_method = "uniform",
-  locations_method = "uniform")
+  locations_method = "uniform", outfile_loc = "")
 }
 \arguments{
 \item{pop_table}{dataframe with columns corresponding to 
@@ -24,6 +24,9 @@ dataframe of schools corresponding to public or private, respectively}
 
 \item{workplaces}{dataframe of workplaces with a workplace_id column, 
 employees column, and stcotr column}
+
+\item{marginals}{list of marginal population totals. Each element of the 
+list contains the marginal totals of a separate variable}
 
 \item{output_dir}{character vector specifying where to write the synthetic microdata}
 

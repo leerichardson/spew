@@ -73,14 +73,15 @@ The raw counts, microdata, and shapefiles are from the US Census.
 ## Maps 
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align = 'center'}
-data_path <- "."
-plot_name <- paste0("diags_", region, "-tn.png")
-map_type <- "toner-lite"
-savePlot <- FALSE
-g <- spew:::plot_region_diags(ipums_sum_list, ipums_fs,
-            data_path = data_path, map_type = map_type,
-            savePlot = savePlot, plot_name = plot_name,
-			type = "ipums")
+print("No map available")
+# data_path <- "."
+# plot_name <- paste0("diags_", region, "-tn.png")
+# map_type <- "toner-lite"
+# savePlot <- FALSE
+# g <- spew:::plot_region_diags(ipums_sum_list, ipums_fs,
+#             data_path = data_path, map_type = map_type,
+#             savePlot = savePlot, plot_name = plot_name,
+# 			type = "ipums")
 			
 ```
 
