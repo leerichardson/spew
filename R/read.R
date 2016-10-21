@@ -196,7 +196,7 @@ read_pums <- function(input_dir, folders, data_group, vars = list(household = NA
     stopifnot(length(pums_files) == 1)
     
     # Use the unique household ID's for household pums  
-    pums_p <- read.csv(pums_files, stringsAsFactors = FALSE)
+    pums_p <- fread(pums_files, stringsAsFactors = FALSE)
     unique_hh_indices <- !duplicated(pums_p$SERIAL)
     pums_h <- pums_p[unique_hh_indices, ]
   
