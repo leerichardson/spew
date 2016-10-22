@@ -9,6 +9,7 @@ test_that("SPEW algorithm runs as expected", {
   library(data.table)
   
   library(Rmpi)
+  library(doParallel)
   library(doSNOW)
   library(doMC)
   library(foreach)
@@ -51,43 +52,45 @@ test_that("SPEW algorithm runs as expected", {
   sock <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
                schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
                pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
-               base_dir = "tmp/", parallel = TRUE, convert_count = FALSE, 
+               base_dir = "tmp/", convert_count = FALSE,  parallel_type = "SOCK",
                sampling_method = "uniform", locations_method = "uniform", 
-               parallel_type = "SOCK", outfile_loc = "/dev/null")
-  
+               outfile_loc = "/dev/null")  
   mpi <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
               schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
               pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
-              base_dir = "tmp/", parallel = TRUE, convert_count = FALSE, 
+              base_dir = "tmp/", parallel_type = "MPI", convert_count = FALSE, 
               sampling_method = "uniform", locations_method = "uniform", 
-              parallel_type = "MPI", outfile_loc = "/dev/null")  
-  
+               outfile_loc = "/dev/null")  
 #   mc <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
 #              schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
 #              pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
-#              base_dir = "tmp/", parallel = TRUE, convert_count = FALSE, 
+#              base_dir = "tmp/", parallel_type = "MC", convert_count = FALSE, 
 #              sampling_method = "uniform", locations_method = "uniform", 
-#              parallel_type = "MC", outfile_loc = "/dev/null")  
-#   expect_true(sock[[1]]$total_households == mc[[1]]$total_households) 
+#              outfile_loc = "/dev/null")
 
+#   expect_true(sock[[1]]$total_households == mc[[1]]$total_households) 
   expect_true(sock[[1]]$total_households == mpi[[1]]$total_households)
   
   # Make sure the parallel runs faster than the regular ---------
   places <- 1:4
   regular_md <- system.time(spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
                                  schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL, 
-                                 pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
-                                 base_dir = "tmp/", parallel = FALSE, convert_count = FALSE, 
-                                 sampling_method = "uniform", locations_method = "uniform"))
-  
+                                 pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p, parallel_type = "SEQ",
+                                 base_dir = "tmp/",  convert_count = FALSE, sampling_method = "uniform", 
+                                 locations_method = "uniform"))
+
+  # Verify the environments are there and the correct written CSV's 
+  expect_true(dir.exists("tmp/output/environments"))
+  expect_true(file.exists("tmp/output/environments//private_schools.csv"))
+
   parallel_md <- system.time(spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
                                   schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
                                   pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
-                                  base_dir = "tmp/", parallel = TRUE, convert_count = FALSE, 
-                                  sampling_method = "uniform", locations_method = "uniform", parallel_type = "SOCK", 
-                                  outfile_loc = "/dev/null"))  
+                                  base_dir = "tmp/", parallel_type = "SOCK", convert_count = FALSE, 
+                                  sampling_method = "uniform", locations_method = "uniform",  
+                                  outfile_loc = "/dev/null"))    
   expect_true(as.logical(parallel_md[1] < regular_md[1]))
-  
+
   # Test the Serial Synth and convert count functions ---------------
   uruguay_region <- spew_place(index = 1, pop_table = uruguay_format$pop_table, 
                                shapefile = uruguay_format$shapefiles, pums_h = uruguay_format$pums$pums_h, 
@@ -112,7 +115,7 @@ test_that("SPEW algorithm runs as expected", {
   expect_equal(nrow(synth_pums_h) == original_nhouse, FALSE)
   expect_equal(abs( (nrow(synth_pums_p) / original_nhouse) - 1) < .2, TRUE)
   
-  # Create a large region iteratively 
+  # Create a large region iteratively. Test written Primarily for China/India  
   #   uruguay_format$pop_table[3, "n_house"] <- 4000000  
   #   uruguay_large <- spew_place(index = 3, pop_table = uruguay_format$pop_table, 
   #                                shapefile = uruguay_format$shapefiles, pums_h = uruguay_format$pums$pums_h, 
@@ -133,8 +136,7 @@ test_that("SPEW algorithm runs as expected", {
   # that cause the parallel runs to fails
   expect_equal(partition_pt(222, 100), c(1, 101, 201, 222))
   expect_equal(partition_pt(222, 200), c(1, 201, 222))
-  expect_equal(partition_pt(1000, 100), c(1, 101, 201, 301, 401, 501, 601, 701, 801, 901, 1000))
-    
+  expect_equal(partition_pt(1000, 100), c(1, 101, 201, 301, 401, 501, 601, 701, 801, 901, 1000))    
 })
 
 test_that("SPEW wrapper runs as expected", {
@@ -176,4 +178,3 @@ test_that("SPEW wrapper runs as expected", {
 #             convert_count = FALSE, 
 #             vars = us_vars)
 })
-

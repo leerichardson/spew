@@ -2,8 +2,8 @@
 
 # PBS Directives ------------------------------
 
-# Request 1 node, 56 cores, and 100 GB of memory 
-#PBS -l nodes=1:amd256:ppn=64 -l mem=100gb 
+# Request 1 node, 64 cores, and 200 GB of memory 
+#PBS -l nodes=1:amd256:ppn=64 -l mem=200gb 
 
 # Request a maximum of 3 days for the job 
 #PBS -l walltime=72:00:00
@@ -19,6 +19,7 @@ module load io
 module load pandoc
 module load r/3.2.1
 module load geos 
+module load openmpi/1.8.1
 
 # Remove the old outputs
 rm -r $base_dir/output
