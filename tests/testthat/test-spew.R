@@ -41,10 +41,36 @@ test_that("SPEW algorithm runs as expected", {
                            output_dir = "~/Desktop/46", convert_count = FALSE), 
                 "Place has 0 Households!")
   
-  # Test that the Parallel version is quicker ----------------
+  
   # Open a file to store the outputs of this test-run 
   dir.create("tmp")
   sink("test_output.txt")
+  
+  # Check that the three parallel types work -------------------
+  places <- 1:2  
+  sock <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
+               schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
+               pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
+               base_dir = "tmp/", parallel = TRUE, convert_count = FALSE, 
+               sampling_method = "uniform", locations_method = "uniform", 
+               parallel_type = "SOCK", outfile_loc = "/dev/null")
+  
+  mpi <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
+              schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
+              pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
+              base_dir = "tmp/", parallel = TRUE, convert_count = FALSE, 
+              sampling_method = "uniform", locations_method = "uniform", 
+              parallel_type = "MPI", outfile_loc = "/dev/null")  
+  
+#   mc <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
+#              schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
+#              pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
+#              base_dir = "tmp/", parallel = TRUE, convert_count = FALSE, 
+#              sampling_method = "uniform", locations_method = "uniform", 
+#              parallel_type = "MC", outfile_loc = "/dev/null")  
+#   expect_true(sock[[1]]$total_households == mc[[1]]$total_households) 
+
+  expect_true(sock[[1]]$total_households == mpi[[1]]$total_households)
   
   # Make sure the parallel runs faster than the regular ---------
   places <- 1:4
@@ -85,42 +111,30 @@ test_that("SPEW algorithm runs as expected", {
   original_nhouse <- uruguay_format$pop_table[1, "n_house"]
   expect_equal(nrow(synth_pums_h) == original_nhouse, FALSE)
   expect_equal(abs( (nrow(synth_pums_p) / original_nhouse) - 1) < .2, TRUE)
-    
-  # Test that we can partition large population tables 
-  # that cause the parallel runs to fails
-  expect_equal(partition_pt(222, 100), c(1, 101, 201, 222))
-  expect_equal(partition_pt(222, 200), c(1, 201, 222))
-  expect_equal(partition_pt(1000, 100), c(1, 101, 201, 301, 401, 501, 601, 701, 801, 901, 1000))
-
   
-  # Check that the three parallel types work 
-  places <- 1:2  
-  sock <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
-                      schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
-                      pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
-                      base_dir = "tmp/", parallel = TRUE, convert_count = FALSE, 
-                      sampling_method = "uniform", locations_method = "uniform", 
-                      parallel_type = "SOCK", outfile_loc = "/dev/null")
-  mpi <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
-              schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
-              pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
-              base_dir = "tmp/", parallel = TRUE, convert_count = FALSE, 
-              sampling_method = "uniform", locations_method = "uniform", 
-              parallel_type = "MPI", outfile_loc = "/dev/null")  
-  mc <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
-             schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
-             pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
-             base_dir = "tmp/", parallel = TRUE, convert_count = FALSE, 
-             sampling_method = "uniform", locations_method = "uniform", 
-             parallel_type = "MC", outfile_loc = "/dev/null")
-  
-  expect_true(sock[[1]]$total_households == mpi[[1]]$total_households)
-  expect_true(sock[[1]]$total_households == mc[[1]]$total_households)  
+  # Create a large region iteratively 
+  #   uruguay_format$pop_table[3, "n_house"] <- 4000000  
+  #   uruguay_large <- spew_place(index = 3, pop_table = uruguay_format$pop_table, 
+  #                                shapefile = uruguay_format$shapefiles, pums_h = uruguay_format$pums$pums_h, 
+  #                                schools = uruguay_format$schools, workplaces = uruguay_format$workplaces,
+  #                                pums_p = uruguay_format$pums$pums_p, sampling_method = "uniform", 
+  #                                locations_method = "uniform", output_dir = "tmp/", convert_count = TRUE)
+  #   
+  #   large_tst <- fread("tmp/output_858004/eco/people_cerrolargo.csv")
+  #   dif <- abs(nrow(large_tst) - 4000000)
+  #   expect_true(dif < 500000)
   
   # Remove all of the temporary outputs we used for testing 
   sink()
   unlink("test_output.txt")
   unlink("tmp/", recursive = TRUE)  
+
+  # Test that we can partition large population tables 
+  # that cause the parallel runs to fails
+  expect_equal(partition_pt(222, 100), c(1, 101, 201, 222))
+  expect_equal(partition_pt(222, 200), c(1, 201, 222))
+  expect_equal(partition_pt(1000, 100), c(1, 101, 201, 301, 401, 501, 601, 701, 801, 901, 1000))
+    
 })
 
 test_that("SPEW wrapper runs as expected", {
