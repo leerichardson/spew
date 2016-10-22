@@ -131,7 +131,7 @@ spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools,
                           "get_cat_dists", "remove_excess")
       parallel::clusterExport(cl = cluster, varlist = export_objects, envir = environment())  
     } else if (parallel_type == "MC") {
-      doMC::registerDoMC(num_workers - 1)
+      doMC::registerDoMC(num_workers)
       export_objects <- NULL
     } else if (parallel_type == "SOCK") {
       cluster <- makeCluster(num_workers - 1, type = "SOCK")
