@@ -56,12 +56,13 @@ test_that("SPEW algorithm runs as expected", {
                sampling_method = "uniform", locations_method = "uniform", 
                outfile_loc = "/dev/null")  
   
-#   mpi <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
-#               schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
-#               pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
-#               base_dir = "tmp/", parallel_type = "MPI", convert_count = FALSE, 
-#               sampling_method = "uniform", locations_method = "uniform", 
-#               outfile_loc = "")  
+  mpi <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
+              schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
+              pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
+              base_dir = "tmp/", parallel_type = "MPI", convert_count = FALSE, 
+              sampling_method = "uniform", locations_method = "uniform", 
+              outfile_loc = "/dev/null")  
+
 #   mc <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
 #              schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
 #              pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,

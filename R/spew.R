@@ -117,8 +117,6 @@ spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools,
     region_list <- spew_mpi(num_places, pop_table, shapefile, pums_h, pums_p, 
                             schools, workplaces, marginals, sampling_method, 
                             locations_method, convert_count, output_dir)
-    print("Finished MPI!")
-
     
   } else if (parallel_type == "SOCK") {
     region_list <- spew_sock(num_places, pop_table, shapefile, pums_h, pums_p, 
@@ -230,7 +228,7 @@ spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p,
   
   # Close the connections and MPI
   mpi.close.Rslaves()
-  mpi.quit()
+  mpi.exit()
   
   return(region_list)
 }
