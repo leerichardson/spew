@@ -87,14 +87,10 @@ spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools,
     dir.create(output_dir, recursive = TRUE)          
   }
   
-  # Call the make_place function for each place in our pop_table. Either 
-  # run this in parallel of not (usually I don't for debugging purposes)
-  num_places <- nrow(pop_table) 
-  
-  # Write out the final, formatted population table  
+  # Write out the Popualation Table 
   write_pop_table(pop_table, output_dir)
   
-  # Write out the environments 
+  # Write out the Environments  
   env_dir <- file.path(output_dir, "environments")
   if (!dir.exists(env_dir)) {
     dir.create(env_dir, recursive = TRUE)          
@@ -103,7 +99,7 @@ spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools,
   if (!is.null(schools)) {    
     print("Writing Schools!")
     write_schools(schools, env_dir)
-  } 
+  }
   
   if (!is.null(workplaces)) {
     print("Writing Workplaces!")
@@ -111,6 +107,7 @@ spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools,
   }
   
   # Call either the sequential, or parallel version of the SPEW algorithm 
+  num_places <- nrow(pop_table)
   if (parallel_type == "SEQ") {
     region_list <- spew_seq(num_places, pop_table, shapefile, pums_h, pums_p, 
                             schools, workplaces, marginals, sampling_method, 
@@ -119,8 +116,9 @@ spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools,
   } else if (parallel_type == "MPI") {
     region_list <- spew_mpi(num_places, pop_table, shapefile, pums_h, pums_p, 
                             schools, workplaces, marginals, sampling_method, 
-                            locations_method, convert_count, output_dir, 
-                            outfile_loc)
+                            locations_method, convert_count, output_dir)
+    print("Finished MPI!")
+
     
   } else if (parallel_type == "SOCK") {
     region_list <- spew_sock(num_places, pop_table, shapefile, pums_h, pums_p, 
@@ -177,50 +175,62 @@ spew_seq <- function(num_places, pop_table, shapefile, pums_h, pums_p,
 #' Run SPEW in Parallel with an MPI backend 
 spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p, 
                      schools, workplaces, marginals, sampling_method, 
-                     locations_method, convert_count, output_dir, outfile_loc) {
-  num_workers <- min(num_places, parallel::detectCores(),64)  
+                     locations_method, convert_count, output_dir) {
+  # Set up the MPI workers
+  num_workers <- mpi.universe.size()
+  mpi.spawn.Rslaves(nslaves = num_workers)
+
+  # Print out the processor information
+  rk <- mpi.comm.rank(0)
+  sz <- mpi.comm.size(0)
+  name <- mpi.get.processor.name()
+  cat("Hello, rank " , rk , " out of " , sz , " on " , name, "\n")
+
+  # Send the relevant data objects/packes to workers 
+  mpi.bcast.cmd(library(plyr))
+  mpi.bcast.cmd(library(methods))
+  mpi.bcast.cmd(library(sp))
+  mpi.bcast.cmd(library(rgeos))
+  mpi.bcast.cmd(library(data.table))
+  mpi.bcast.cmd(library(bit64))
+  mpi.bcast.cmd(library(mipfp))
   
-  cluster <- makeCluster(num_workers - 1, type = "MPI", outfile = outfile_loc)
-  doSNOW::registerDoSNOW(cluster)
-  export_objects <- c("spew_place", "people_to_households",
-                      "sample_households", "sample_locations", "sample_people",
-                      "write_data", "people_to_households", "assign_schools",
-                      "assign_schools_inner", "weight_dists", "get_dists",
-                      "haversine", "subset_schools", "assign_workplaces",
-                      "assign_workplaces_inner", "remove_holes", "sample_locations_uniform",
-                      "sample_locations_roads", "subset_shapes_roads",
-                      "samp_roads", "print_region_list", "read_roads",
-                      "sample_uniform", "sample_ipf", "subset_pums",
-                      "align_pums", "fill_cont_table", "update_freqs",
-                      "get_targets", "sample_with_cont", "samp_ipf_inds",
-                      "assign_weights", "calc_dists", "get_ord_dists",
+  # Export functions to all of the workers ------
+  export_objects <- c("spew_place", "people_to_households", "sample_households", 
+                      "sample_locations", "sample_people", "write_data", 
+                      "people_to_households", "assign_schools", "assign_schools_inner", 
+                      "weight_dists", "get_dists", "haversine", "subset_schools", 
+                      "assign_workplaces", "assign_workplaces_inner", "remove_holes", 
+                      "sample_locations_uniform", "sample_locations_roads", 
+                      "subset_shapes_roads", "samp_roads", "print_region_list", "read_roads", 
+                      "sample_uniform", "sample_ipf", "subset_pums", "align_pums", 
+                      "fill_cont_table", "update_freqs", "get_targets", "sample_with_cont", 
+                      "samp_ipf_inds", "assign_weights", "calc_dists", "get_ord_dists", 
                       "get_cat_dists", "remove_excess")
-  parallel::clusterExport(cl = cluster, varlist = export_objects, envir = environment())
   
-  # Run for-each to generate each place on a separate core 
-  region_list <- foreach(place = 1:num_places, 
-                         .packages = c("plyr", "methods", "sp", "rgeos", 
-                                       "data.table", "bit64", "mipfp"),
-                         .errorhandling = 'pass', 
-                         .export = export_objects) %dopar% {
-                           print(paste0("Region ", place, " out of ", num_places))
-                           times <- spew_place(index = place, 
-                                               pop_table = pop_table, 
-                                               shapefile = shapefile, 
-                                               pums_h = pums_h, 
-                                               pums_p = pums_p, 
-                                               schools = schools, 
-                                               workplaces = workplaces, 
-                                               marginals = marginals, 
-                                               sampling_method = sampling_method, 
-                                               locations_method = locations_method, 
-                                               convert_count = convert_count, 
-                                               output_dir = output_dir)
-                           print(paste0("Finished ", pop_table[place, "place_id"]))
-                           times
-                         }
-  stopCluster(cluster)
-  mpi.exit()  
+  for (obj in export_objects) {
+    cat("Sending To Workers: ", obj, fill = TRUE)
+    do.call("mpi.bcast.Robj2slave" , list (obj = as.name(obj)))
+  }
+  
+  # Call SPEW for each one of the places 
+  region_list <- mpi.applyLB(X = 1:num_places, 
+                            FUN = spew_place, 
+                            pop_table = pop_table, 
+                            shapefile = shapefile, 
+                            pums_h = pums_h, 
+                            pums_p = pums_p, 
+                            schools = schools, 
+                            workplaces = workplaces, 
+                            marginals = marginals, 
+                            sampling_method = sampling_method, 
+                            locations_method = locations_method, 
+                            convert_count = convert_count, 
+                            output_dir = output_dir)
+  
+  # Close the connections and MPI
+  mpi.close.Rslaves()
+  mpi.quit()
   
   return(region_list)
 }

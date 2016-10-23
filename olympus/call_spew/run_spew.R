@@ -14,8 +14,9 @@ library(rgeos)
 
 # Parallel Packages 
 library(doMC)
-library(Rmpi)
+library(doParallel)
 library(doSNOW)
+library(Rmpi)
 library(foreach)
 
 # Speed packages 
@@ -35,6 +36,7 @@ args <- gsub("\"", "", args)
 print(paste0("Arg ", 1:length(args), " ", args))
 base_dir <- as.character(args[1])
 data_group <- as.character(args[2])
+parallel_type <- as.character(args[3])
 
 # Set the folders and other specific inputs ---------------
 if (data_group == "US") {
@@ -51,9 +53,7 @@ if (data_group == "US") {
 		           marginals = "marginals/natstat/2014/tract")
 	sampling_method <- "ipf"
 	locations_method <- "roads"
-	parallel <- TRUE
 	convert_count <- FALSE
-	parallel_type = "SOCK"
 
 	# No schools/workplaces for Puerto Rico
 	if (base_dir == "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/americas/northern_america/usa/72") {
@@ -75,9 +75,7 @@ if (data_group == "US") {
 				person = c("SERIAL","AGE","SEX","RACE","SCHOOL","INCTOT"))
 	sampling_method <- "uniform"
 	locations_method <- "uniform"
-	parallel <- TRUE
 	convert_count <- TRUE
-	parallel_type = "SOCK"
 
 } else if (data_group == "none") {
 	# Set the custom file-paths for Canada!
@@ -93,8 +91,8 @@ if (data_group == "US") {
 						"INCTAX","MODE","OCC","POB","RELIGION","SEX"))
 			sampling_method <- "uniform"
 		locations_method <- "uniform"
-		parallel_type <- "SOCK"
 		convert_count <- TRUE
+	
 	}
 }
 
@@ -115,5 +113,4 @@ call_spew(base_dir = base_dir,
 	        locations_method = locations_method, 
 	        convert_count = convert_count, 
 	        vars = vars)
-	        )
 

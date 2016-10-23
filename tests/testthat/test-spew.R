@@ -55,21 +55,21 @@ test_that("SPEW algorithm runs as expected", {
                base_dir = "tmp/", convert_count = FALSE,  parallel_type = "SOCK",
                sampling_method = "uniform", locations_method = "uniform", 
                outfile_loc = "/dev/null")  
-  mpi <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
-              schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
-              pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
-              base_dir = "tmp/", parallel_type = "MPI", convert_count = FALSE, 
-              sampling_method = "uniform", locations_method = "uniform", 
-               outfile_loc = "/dev/null")  
+  
+#   mpi <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
+#               schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
+#               pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
+#               base_dir = "tmp/", parallel_type = "MPI", convert_count = FALSE, 
+#               sampling_method = "uniform", locations_method = "uniform", 
+#               outfile_loc = "")  
 #   mc <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
 #              schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
 #              pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
 #              base_dir = "tmp/", parallel_type = "MC", convert_count = FALSE, 
 #              sampling_method = "uniform", locations_method = "uniform", 
 #              outfile_loc = "/dev/null")
-
 #   expect_true(sock[[1]]$total_households == mc[[1]]$total_households) 
-  expect_true(sock[[1]]$total_households == mpi[[1]]$total_households)
+#   expect_true(sock[[1]]$total_households == mpi[[1]]$total_households)
   
   # Make sure the parallel runs faster than the regular ---------
   places <- 1:4
