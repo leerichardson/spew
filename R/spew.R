@@ -184,6 +184,15 @@ spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p,
   name <- mpi.get.processor.name()
   cat("Hello, rank " , rk , " out of " , sz , " on " , name, "\n")
 
+  # If we are on Olympus, make sure to switch to personal libraries
+  # because the core olympus directories don't have our updated functions. 
+  hostname <- system("hostname", intern = TRUE)
+  if (grep("olympus", hostname) == 1) {
+    username <- system("whoami", intern = TRUE)
+    mpi.bcast.cmd(personal_lib <- grep(username, .libPaths()))
+    mpi.bcast.cmd(.libPaths(new = c(.libPaths()[personal_lib])))
+  }
+
   # Send the relevant data objects/packes to workers 
   mpi.bcast.cmd(library(plyr))
   mpi.bcast.cmd(library(methods))
