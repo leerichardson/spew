@@ -187,10 +187,19 @@ spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p,
   # If we are on Olympus, make sure to switch to personal libraries
   # because the core olympus directories don't have our updated functions. 
   hostname <- system("hostname", intern = TRUE)
+  print(paste0("Hostname: ", hostname))
   if (grep("olympus", hostname) == 1) {
+    print("On Olympus, switching lib-paths")
     username <- system("whoami", intern = TRUE)
+    print(paste0("Username: ", username))
+    print(.libPaths())
+    mpi.bcast.cmd(username <- system("whoami", intern = TRUE))    
     mpi.bcast.cmd(personal_lib <- grep(username, .libPaths()))
+    mpi.bcast.cmd(print(.libPaths()[personal_lib]))
+    mpi.bcast.cmd(print(personal_lib))
     mpi.bcast.cmd(.libPaths(new = c(.libPaths()[personal_lib])))
+    mpi.bcast.cmd(print("New Lib-Paths"))
+    mpi.bcast.cmd(print(.libPaths()))
   }
 
   # Send the relevant data objects/packes to workers 
