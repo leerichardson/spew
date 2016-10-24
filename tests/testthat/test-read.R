@@ -31,7 +31,8 @@ test_that("United States functions", {
   
   # Check the Standardization Function
   standard_poptable <- standardize_pop_table(pop_table = delaware_poptable, data_group = "US")
-  expect_equal("place_id" %in% names(standard_poptable), TRUE)
+  expect_equal("place_id" %in% names(standard_poptable), TRUE
+               )
   
   # PUMS -------------------------------
   delaware_pums <- read_pums(data_path, 
