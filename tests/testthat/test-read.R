@@ -119,6 +119,7 @@ test_that("United States functions", {
 test_that("ipums functions", {
   # Make sure we are using the correct data-raw directory 
   # as opposed to the test/testthat one within the package 
+  library(data.table)
   spew_dir <- system.file("", package = "spew")
   data_path <- file.path(spew_dir, "data-raw/ury/input")  
   uruguay_folders <- list(pop_table = "counts", 

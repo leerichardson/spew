@@ -12,11 +12,18 @@ library(sp)
 library(maptools)
 library(rgeos)
 
-# Speed packages 
+# Parallel Packages 
+library(doMC)
 library(doParallel)
+library(doSNOW)
+library(Rmpi)
 library(foreach)
+
+# Speed packages 
 library(data.table)
 library(bit64)
+
+# IPF
 library(mipfp)
 
 # Data manipulation packages 
@@ -29,10 +36,11 @@ args <- gsub("\"", "", args)
 print(paste0("Arg ", 1:length(args), " ", args))
 base_dir <- as.character(args[1])
 data_group <- as.character(args[2])
+parallel_type <- as.character(args[3])
 
 # Set the folders and other specific inputs ---------------
 if (data_group == "US") {
-  vars <- list(household = c("RT", "TYPE", "SERIALNO", "PUMA", "REGION", "ST", "HINCP", "NP"), 
+  vars <- list(household = c("RT", "TYPE", "SERIALNO", "PUMA", "HINCP", "NP"), 
                   person = c("RT", "SERIALNO", "PUMA", "ST", "SEX", "AGEP",  "SCH", "SCHG", "RELP", 
                              "HISP", "ESR", "PINCP", "NATIVITY", "OCCP", "POBP", "RAC1P"))
   folders <- list(pop_table = "counts/natstat/2010/tract", 
@@ -45,7 +53,6 @@ if (data_group == "US") {
 		           marginals = "marginals/natstat/2014/tract")
 	sampling_method <- "ipf"
 	locations_method <- "roads"
-	parallel <- TRUE
 	convert_count <- FALSE
 
 	# No schools/workplaces for Puerto Rico
@@ -63,13 +70,11 @@ if (data_group == "US") {
 	folders <- list(pop_table = "counts", 
 	                  pums = "pums", 
 	                  shapefiles = "shapefiles")
-	vars = list(household = c("COUNTRY","YEAR","SAMPLE","SERIAL","PERSONS","HHWT",
-								"FORMTYPE","REGIONW","GEOLEV1","GEOLEV2","HHTYPE",
-								"PERNUM","PERWT","RELATE","RELATED"), 
+	vars = list(household = c("COUNTRY","YEAR","SERIAL","PERSONS","GEOLEV1",
+								"HHTYPE","PERNUM"), 
 				person = c("SERIAL","AGE","SEX","RACE","SCHOOL","INCTOT"))
 	sampling_method <- "uniform"
 	locations_method <- "uniform"
-	parallel <- TRUE
 	convert_count <- TRUE
 
 } else if (data_group == "none") {
@@ -86,8 +91,8 @@ if (data_group == "US") {
 						"INCTAX","MODE","OCC","POB","RELIGION","SEX"))
 			sampling_method <- "uniform"
 		locations_method <- "uniform"
-		parallel <- TRUE
 		convert_count <- TRUE
+	
 	}
 }
 
@@ -95,7 +100,7 @@ if (data_group == "US") {
 print(paste0("Spew Version: ", packageVersion("spew")))
 print(paste0("Directory: ", base_dir))
 print(paste0("Data Group: ", data_group))
-print(paste0("Parallel: ", parallel))
+print(paste0("Parallel Backend: ", parallel_type))
 print(paste0("Sampling People Method: ", sampling_method))
 print(paste0("Sampling Locations Method: ", locations_method))
 
@@ -103,8 +108,9 @@ print(paste0("Sampling Locations Method: ", locations_method))
 call_spew(base_dir = base_dir, 
 	        folders = folders, 
 	        data_group = data_group, 
-	        parallel = parallel, 
+	        parallel_type = parallel_type, 
 	        sampling_method = sampling_method, 
 	        locations_method = locations_method, 
 	        convert_count = convert_count, 
 	        vars = vars)
+
