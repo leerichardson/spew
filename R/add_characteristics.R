@@ -50,7 +50,8 @@ add_char_demo <- function(synth_pop_fn, output_path, pop_type, args){
     char_pums <- args$char_pums
     stopifnot(!is.null(char_pums))
     ## Subset the synth pop and the char pums and add them to the demographics
-    synth_pop_sp <- dlply(aligned_pop, .variables = paste0(var_names, "_marg"), .fun = identity)
+    synth_pop_sp <- dlply(aligned_pop, .variables = paste0(var_names, "_marg"),
+                          .fun = identity)
     new_df <- ldply(synth_pop_sp, .fun = demo_sample, char_pums, var_names, args)
     stopifnot(nrow(synth_pop) == nrow(new_df))
     ## write out the new pop
@@ -93,7 +94,7 @@ demo_sample <- function(pop_df, char_pums, var_names, args = NULL){
 #' @param var_name name of the variable matching the PUMS
 #' @param type "ord" for ordinal or  "cat" for categorical, the type of variable to be converted to
 #' @param bounds data frame of upper and lower bounds (inclusive) for variables (numeric)
-#' @param category_names short name of the category, will be visible to person
+#' @param category_names short name of the category, will be visible to person.  Either length one and the bounds will be pasted to it or length of the number of rows of the bounds with names of your choice.
 #' @param output_file if not NULL then we save the file as a rds object to output_file
 make_cat_var_obj<- function(var_name, type="ord", bounds, category_name, output_file = NULL){
     stopifnot(all(is.numeric(c(bounds[, 1], bounds[, 2]))))
@@ -101,7 +102,12 @@ make_cat_var_obj<- function(var_name, type="ord", bounds, category_name, output_
     stopifnot(all(bounds[,1] <= bounds[,2]))
     stopifnot(all(bounds[1:(nrow(bounds) -1), 1] < bounds[2:nrow(bounds), 1]))
     stopifnot(type %in% c("ord", "cat"))
-    marg_names <-  apply(bounds, 1, function(row) paste(category_name, row[1], row[2], sep = "-"))
+    marg_names <- category_name
+    if(length(category_name) != nrow(bounds)){
+        stopifnot(length(category_name) == 1)
+        marg_names <-  apply(bounds, 1,
+                             function(row) paste(category_name, row[1], row[2], sep = "-"))
+        }
     ll <- list(type=type,
                lookup=data.frame(marg_names = marg_names, bounds, stringsAsFactors = FALSE))
     if (!is.null(output_file)) saveRDS(assign(var_name, ll), output_file)

@@ -65,9 +65,9 @@ subset_pums <- function(pums_h, pums_p, marginals, puma_id) {
 #' 
 #' @param pums dataframe subsetted to only the marginal vars
 #' @param marginals list containing all of the marginal totals 
-#' 
+#' @param suffix what we add to the variable name to create the new variable name.  Default is "_marg"
 #' @return pums dataframe with the marginal columns binded on
-align_pums <- function(pums, marginals) {
+align_pums <- function(pums, marginals, suffix="_marg") {
   var_names <- names(marginals)
   # Loop through each marginal variable, extract the lookup 
   # table, create a new column with the marginal totals 
@@ -90,7 +90,7 @@ align_pums <- function(pums, marginals) {
 
     # Append new column to the pums 
     pums <- data.frame(pums, new_col)
-    names(pums)[ncol(pums)] <- paste0(var, "_marg")
+    names(pums)[ncol(pums)] <- paste0(var, suffix)
   }
   
   return(pums)
