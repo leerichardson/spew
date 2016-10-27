@@ -25,4 +25,3 @@ ml pandoc
 echo "Generating diagnostics report for US FIPS Code $FIPS"
 ~/spew/olympus/reports/make_us_report.sh /mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/americas/northern_america/usa/$FIPS
 
-
