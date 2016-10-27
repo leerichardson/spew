@@ -16,3 +16,4 @@ echo "Generating diagnostics report for $COUNTRYPATH"
 ~/spew/olympus/reports/make_ipums_report.sh $COUNTRYPATH
 
 
+## qsub ./spew/olympus/reports/qsub_ipums_large.sh -v COUNTRYPATH=/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/asia/southern_asia/ind -N india

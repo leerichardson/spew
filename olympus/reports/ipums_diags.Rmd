@@ -17,6 +17,7 @@ args <- commandArgs(TRUE)
 input_dir <- args[1]
 input_dir <- paste0(input_dir, "/")
 ## input_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/americas/south_america/pry"
+## input_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/asia/southern_asia/ind"
 cur_dir <- input_dir
 library(spew)
 library(devtools)
@@ -136,22 +137,26 @@ tot <- sum(p_sum_df$nRecords)
 
 
 ### Summary
-```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.align = 'center', fig.height = 4}
-p_mf <- lapply(p_list, "[[", 2)
-regions <- df$Region
-df2<- do.call('cbind', lapply(p_mf, "[[", 1))
-df_sf <- data.frame(t(df2))
-df_sf <- df_sf / rowSums(df_sf)
-colnames(df_sf) <- c("Male", "Female")
+    ```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.align = 'center', fig.height = 4}
+    if( as.character(country_name) %in% c("china", "india"){
+        print("This population currently does not have summary statistics.")
+    } else{
+        p_mf <- lapply(p_list, "[[", 2)
+        regions <- df$Region
+        df2<- do.call('cbind', lapply(p_mf, "[[", 1))
+        df_sf <- data.frame(t(df2))
+        df_sf <- df_sf / rowSums(df_sf)
+        colnames(df_sf) <- c("Male", "Female")
 
-df_sf$Region <- regions
-cols <- c("darkblue", "lightpink")
-colScale <- scale_fill_manual(values = cols)
-df_melt <- melt(df_sf, id.vars = "Region", varnames = c("Male", "Female"))
-colnames(df_melt)[2:3] <- c("Sex", "Percentage")
-p <- ggplot(data=df_melt, aes(x=Region, y=Percentage, fill=Sex)) +
-   geom_bar(stat="identity") + coord_flip() + ggtitle("Ratio of Males to Females") + colScale + theme_light()
-print(p)
+        df_sf$Region <- regions
+        cols <- c("darkblue", "lightpink")
+        colScale <- scale_fill_manual(values = cols)
+        df_melt <- melt(df_sf, id.vars = "Region", varnames = c("Male", "Female"))
+        colnames(df_melt)[2:3] <- c("Sex", "Percentage")
+        p <- ggplot(data=df_melt, aes(x=Region, y=Percentage, fill=Sex)) +
+            geom_bar(stat="identity") + coord_flip() + ggtitle("Ratio of Males to Females") + colScale + theme_light()
+        print(p)
+    }
 ```
 
 ### Column Names
