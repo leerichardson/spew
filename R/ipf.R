@@ -175,6 +175,13 @@ get_targets <- function(marg_cols, marginals, place_id, n_house) {
     marg_df <- marginals[[var]]$df
     place_row <- which(marg_df$place_id == place_id)
     marg_row <- marg_df[place_row, -1]
+
+    # If all the marginals are 0, set the marginal row 
+    # to the average for the state 
+    if (all(marg_row == 0)) {
+      marg_avg <- unlist(lapply(marg_df, mean)[-1])
+      marg_row[1, ] <- marg_avg
+    }
     
     # Scale the marginals by the n_house 
     marg_row_props <- as.numeric(marg_row) / sum(as.numeric(marg_row))
