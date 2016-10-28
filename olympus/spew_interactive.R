@@ -5,7 +5,7 @@ data_group <- "US"
 spew_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0"
 region <- "americas"
 subregion <- "northern_america"
-iso3 <- "usa/06"
+iso3 <- "usa/10"
 base_dir <- file.path(spew_dir, region, subregion, iso3)
 # -------------------------------------------------------------------------
 
@@ -17,6 +17,7 @@ personal_lib <- grep("leerich", .libPaths())
 # Load SPEW and methods package
 library(spew)
 library(methods) 
+library(Rcpp)
 
 # Spatial packages 
 library(sp)
@@ -25,7 +26,6 @@ library(rgeos)
 
 # Parallel Packages 
 library(doMC)
-library(doMPI)
 library(Rmpi)
 library(doSNOW)
 library(foreach)
@@ -56,9 +56,8 @@ if (data_group == "US") {
 		           marginals = "marginals/natstat/2014/tract")
 	sampling_method <- "ipf"
 	locations_method <- "roads"
-	parallel <- TRUE
 	convert_count <- FALSE
-	parallel_type = "SOCK"
+	parallel_type = "MPI"
 
 	# No schools/workplaces for Puerto Rico
 	if (base_dir == "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/americas/northern_america/usa/72") {
@@ -108,7 +107,6 @@ if (data_group == "US") {
 print(paste0("Spew Version: ", packageVersion("spew")))
 print(paste0("Directory: ", base_dir))
 print(paste0("Data Group: ", data_group))
-print(paste0("Parallel: ", parallel))
 print(paste0("Parallel Backend: ", parallel_type))
 print(paste0("Sampling People Method: ", sampling_method))
 print(paste0("Sampling Locations Method: ", locations_method))

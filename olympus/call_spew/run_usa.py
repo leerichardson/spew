@@ -15,5 +15,5 @@ for us_dir in us_dirs:
 	# Construct the shell command, and call_spew for this US directory 
 	base_dir = base_dir_call + "/" + us_dir
 	data_group = "US"
-	shell_call = "bash " + call_spew + " " + base_dir + " " + data_group
+	shell_call = "bash " + call_spew + " " + base_dir + " " + data_group + " MPI"
 	os.system(shell_call)

@@ -6,20 +6,20 @@
 #PBS -l nodes=2:amd256:ppn=64 -l mem=200gb 
 
 # Request a maximum of 3 days for the job 
-#PBS -l walltime=72:00:00
+#PBS -l walltime=24:00:00
 
 # Combine stdout and stderr into the same directory 
 #PBS -j oe
 	
 # Spew commands -------------------------------
+echo "Calling SPEW"
 
-# Make sure we are using the most recent version of R
-# and the input output module to access the $WORK directory
-module load io
-module load pandoc
+# Load modules on both the host node AND the other nodes!
+module load io 
+module load geos/3.5.0
 module load r/3.2.1
-module load geos 
-module load openmpi/1.8.1
+module load openmpi/1.8.1 
+module list 
 
 # Remove the old outputs
 rm -r $base_dir/output
