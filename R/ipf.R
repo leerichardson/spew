@@ -131,6 +131,23 @@ fill_cont_table <- function(pums, marginals, place_id, n_house) {
   # Round frequencies to whole numbers, update so
   # it matches the n_house total # of households 
   table$Freq <- round(table$Freq, digits = 0)
+  
+  # In the rare case where none of the frequncies round up 
+  # to one, randomly select n_house of the highest 90th percent
+  # quantile...
+  if (all(table$Freq == 0)) {
+    table <- as.data.frame(ipf_tab)
+    high_freq_val <- quantile(table$Freq, probs = .9)
+    remaining_inds <- which(table$Freq > high_freq_val)
+    inds <- sample(x = remaining_inds, 
+                   size = n_house, 
+                   replace = TRUE,
+                   prob = table$Freq[remaining_inds])
+    ind_tab <- table(inds)
+    table$Freq[as.numeric(names(ind_tab))] <- as.numeric(ind_tab)
+    table$Freq <- round(table$Freq, digits = 0)
+  }
+
   while (sum(table$Freq) != n_house) {
     table$Freq <- update_freqs(table$Freq, n_house)
   }
