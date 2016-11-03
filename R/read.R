@@ -197,6 +197,11 @@ read_pums <- function(input_dir, folders, data_group, vars = list(household = NA
     
     # Use the unique household ID's for household pums  
     pums_p <- fread(pums_files, stringsAsFactors = FALSE)
+    
+    # Verify none of the classes are integer64
+#     int64_inds <- which(unlist(lapply(pums_p, class)) == "integer64")
+#     pums_p[, int64_inds] <- as.character(pums_p[, int64_inds])    
+    
     unique_hh_indices <- !duplicated(pums_p$SERIAL)
     pums_h <- pums_p[unique_hh_indices, ]
   
@@ -213,7 +218,7 @@ read_pums <- function(input_dir, folders, data_group, vars = list(household = NA
 
   if (!is.na(vars$person)[1]) {
     pums_p <- pums_p[, vars$person]  
-  }  
+  } 
   
   return(list(pums_h = pums_h, pums_p = pums_p))
 }

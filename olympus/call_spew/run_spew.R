@@ -13,15 +13,13 @@ library(maptools)
 library(rgeos)
 
 # Parallel Packages 
-library(doMC)
-library(doParallel)
-library(doSNOW)
 library(Rmpi)
 library(foreach)
+library(doParallel)
+library(parallel)
 
 # Speed packages 
 library(data.table)
-library(bit64)
 
 # IPF
 library(mipfp)
@@ -54,6 +52,7 @@ if (data_group == "US") {
 	sampling_method <- "ipf"
 	locations_method <- "roads"
 	convert_count <- FALSE
+	parallel_type = "MPI"
 
 	# No schools/workplaces for Puerto Rico
 	if (base_dir == "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/americas/northern_america/usa/72") {
@@ -76,6 +75,7 @@ if (data_group == "US") {
 	sampling_method <- "uniform"
 	locations_method <- "uniform"
 	convert_count <- TRUE
+	parallel_type = "MC"
 
 } else if (data_group == "none") {
 	# Set the custom file-paths for Canada!
@@ -92,8 +92,9 @@ if (data_group == "US") {
 			sampling_method <- "uniform"
 		locations_method <- "uniform"
 		convert_count <- TRUE
-	
 	}
+	parallel_type = "SOCK"
+
 }
 
 # Print out the parameters of this call to SPEW for the log-file 

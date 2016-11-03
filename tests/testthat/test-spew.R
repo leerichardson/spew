@@ -4,16 +4,15 @@ test_that("SPEW algorithm runs as expected", {
   data(sd_data)
   data(uruguay_format)
   
-  library(stringdist)
   library(sp)
+  library(rgeos)
   library(data.table)
-  
+    
+  library(parallel)
   library(Rmpi)
-  library(doParallel)
-  library(doSNOW)
-  library(doMC)
   library(foreach)
-  
+  library(doParallel)
+
   # Sample locations --------------
   multiple_polygons <- sample_locations(method = "uniform", place_id = 46027965700, n_house = 100, 
                                         shapefile = sd_data$shapefiles$shapefile)
@@ -63,14 +62,15 @@ test_that("SPEW algorithm runs as expected", {
               sampling_method = "uniform", locations_method = "uniform", 
               outfile_loc = "/dev/null")  
 
-#   mc <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
-#              schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
-#              pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
-#              base_dir = "tmp/", parallel_type = "MC", convert_count = FALSE, 
-#              sampling_method = "uniform", locations_method = "uniform", 
-#              outfile_loc = "/dev/null")
-#   expect_true(sock[[1]]$total_households == mc[[1]]$total_households) 
-#   expect_true(sock[[1]]$total_households == mpi[[1]]$total_households)
+  mc <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
+             schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
+             pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
+             base_dir = "tmp/", parallel_type = "MC", convert_count = FALSE, 
+             sampling_method = "uniform", locations_method = "uniform", 
+             outfile_loc = "/dev/null")
+  
+  expect_true(sock[[1]]$total_households == mc[[1]]$total_households) 
+  expect_true(sock[[1]]$total_households == mpi[[1]]$total_households)
   
   # Make sure the parallel runs faster than the regular ---------
   places <- 1:4
