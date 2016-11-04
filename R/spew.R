@@ -97,12 +97,10 @@ spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools,
   }
   
   if (!is.null(schools)) {    
-    print("Writing Schools!")
     write_schools(schools, env_dir)
   }
   
   if (!is.null(workplaces)) {
-    print("Writing Workplaces!")
     write_workplaces(workplaces, env_dir)
   }
   
@@ -349,7 +347,7 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   # To avoid data-frames larger than 5 Million, generate large 
   # places incrementally, appending rows onto each-other 
   append <- FALSE
-  max_size <- 3000000
+  max_size <- 5000000
   iter <- 0
   number_iters <- floor(n_house / max_size)
   if (number_iters == 0) {

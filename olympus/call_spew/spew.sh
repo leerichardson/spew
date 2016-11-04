@@ -3,10 +3,10 @@
 # PBS Directives ------------------------------
 
 # Request 1 node, 64 cores, and 200 GB of memory 
-#PBS -l nodes=1:amd256:ppn=64 -l mem=200gb 
+#PBS -l nodes=1:ppn=56 -l mem=200gb 
 
 # Request a maximum of 3 days for the job 
-#PBS -l walltime=72:00:00
+#PBS -l walltime=24:00:00
 
 # Combine stdout and stderr into the same directory 
 #PBS -j oe
