@@ -349,6 +349,8 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   append <- FALSE
   max_size <- 5000000
   iter <- 0
+  total_hh <- 0
+  total_people <- 0
   number_iters <- floor(n_house / max_size)
   if (number_iters == 0) {
     iter_vec <- n_house
@@ -395,6 +397,7 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
                                             marginals = marginals,
                                             puma_id = puma_id, 
                                             place_id = place_id)
+    total_hh <- total_hh + nrow(sampled_households)
     
     # Locations ----------------
     locations <- sample_locations(method = locations_method, 
@@ -413,6 +416,8 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
                                     pums_p = pums_p, 
                                     puma_id = puma_id, 
                                     place_id = place_id)
+    total_people <- total_people + nrow(sampled_people)
+    
     # Schools --------------
     school_time <- 0
     if (!is.null(schools)) {
@@ -454,8 +459,8 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   place_time <- as.numeric(round(place_time, digits = 2))
   place_time_statement <- paste0("Time: ", place_time)
   
-  hh_statement <- paste0("Households: ", n_house)
-  people_statement <- paste0("People: ", nrow(sampled_people))  
+  hh_statement <- paste0("Households: ", total_hh)
+  people_statement <- paste0("People: ", total_people)  
   school_statement <- paste0("Schools: ", school_time)
   workplace_statement <- paste0("Workplaces: ", workplace_time)  
   place_statement <- paste0("Place: ", index) 
