@@ -2,8 +2,8 @@
 
 # PBS Directives ------------------------------
 
-# Request 1 node, 64 cores, and 200 GB of memory 
-#PBS -l nodes=2:amd256:ppn=64 -l mem=200gb 
+# Request 2 nodes, 63 cores, and 200 GB of memory 
+#PBS -l nodes=2:ppn=63 -l mem=200gb 
 
 # Request a maximum of 3 days for the job 
 #PBS -l walltime=24:00:00
