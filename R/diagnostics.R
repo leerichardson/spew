@@ -845,7 +845,6 @@ fipsToPlaceName <- function(fips, level, df = us){
     } else {
         stopifnot(nchar(fips) == 5)
         ind <- which(as.character(df$COUNTYFP) == fips)
-        stopifnot(length(ind) > 0)
         pn <- df$County[ind][1]
         pn <- gsub(" County", "", pn)
         return(pn)

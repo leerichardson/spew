@@ -57,7 +57,13 @@ sample_locations_uniform <- function(place_id, n_house, shapefile, noise = .001,
   
   # Subset the shapefile to the polygon 
   # specified by the place_id argument 
-  slots <- methods::slot(shapefile, "polygons")  
+    slots <- methods::slot(shapefile, "polygons")
+    if(length(region) <= 0){
+        print(shapefile_id)
+        print(place_id)
+        print(head(shapefile$place_id))
+        stop()
+    }
   poly <- slots[[region]]
   
   # Remove holes from polygon if any are found 

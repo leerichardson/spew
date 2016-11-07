@@ -397,6 +397,7 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
                                             marginals = marginals,
                                             puma_id = puma_id, 
                                             place_id = place_id)
+     
     
     # Locations ----------------
     locations <- sample_locations(method = locations_method, 
