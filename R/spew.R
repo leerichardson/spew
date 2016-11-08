@@ -15,11 +15,14 @@
 #' the population is the total number of households 
 #' @param vars list with two elements: household and person. This specifies 
 #' which variables to include in the corresponding household and person PUMS data-set
+#' @param doSubsetPUMS logical.  When we do not need to subset the pums for IPf
 #' @export
 #' @return logical indicating whether or not this run of spew ended successfully 
 call_spew <- function(base_dir, folders = NULL, data_group = "US", parallel_type = "SEQ",
                           sampling_method = "uniform", locations_method = "uniform", 
-                          convert_count = FALSE, vars = list(household = NA, person = NA)) {  
+                      convert_count = FALSE, vars = list(household = NA, person = NA),
+                      doSubsetPUMS = TRUE
+                      ) {  
   spew_start_time <- Sys.time()
   
   # Given directory, folders, vars, and data-group, read input data into a list 
@@ -34,7 +37,7 @@ call_spew <- function(base_dir, folders = NULL, data_group = "US", parallel_type
        pums_p = formatted_data$pums$pums_p, schools = formatted_data$schools, 
        workplaces = formatted_data$workplaces, marginals = formatted_data$marginals, 
        parallel_type = parallel_type,  sampling_method = sampling_method, 
-       locations_method = locations_method, convert_count = convert_count)
+       locations_method = locations_method, convert_count = convert_count, doSubsetPUMS = doSubsetPUMS)
 
   # Print out the overall run-time of SPEW!
   spew_time <- difftime(Sys.time(), spew_start_time, units = "secs")
@@ -78,7 +81,7 @@ call_spew <- function(base_dir, folders = NULL, data_group = "US", parallel_type
 spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools, 
                  workplaces, marginals, convert_count, parallel_type = "SEQ", 
                  sampling_method = "uniform", locations_method = "uniform", 
-                 outfile_loc = "") {
+                 outfile_loc = "", doSubsetPUMS = TRUE) {
   location_start_time <- Sys.time()
   
   # Update, create output directory based on the base directory 
@@ -122,7 +125,8 @@ spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools,
   if (parallel_type == "SEQ") {
     region_list <- spew_seq(num_places, pop_table, shapefile, pums_h, pums_p, 
                             schools, workplaces, marginals, sampling_method, 
-                            locations_method, convert_count, output_dir)
+                            locations_method, convert_count, output_dir,
+                            doSubsetPUMS =  doSubsetPUMS)
     
   } else if (parallel_type == "MPI") {
     region_list <- spew_mpi(num_places, pop_table, shapefile, pums_h, pums_p, 
@@ -158,7 +162,7 @@ spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools,
 #' Run SPEW Sequentially 
 spew_seq <- function(num_places, pop_table, shapefile, pums_h, pums_p, 
                      schools, workplaces, marginals, sampling_method, 
-                     locations_method, convert_count, output_dir) {  
+                     locations_method, convert_count, output_dir, doSubsetPUMS = TRUE) {  
   region_list <- vector(mode = "list", length = num_places)
   
   for (place in 1:num_places) {
@@ -174,7 +178,8 @@ spew_seq <- function(num_places, pop_table, shapefile, pums_h, pums_p,
                                        sampling_method = sampling_method, 
                                        locations_method = locations_method, 
                                        convert_count = convert_count, 
-                                       output_dir = output_dir)
+                                       output_dir = output_dir,
+                                       doSubsetPUMS = doSubsetPUMS)
   }
   
   return(region_list)
@@ -335,7 +340,7 @@ spew_mc <- function(num_places, pop_table, shapefile, pums_h, pums_p,
 #' level data
 spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
                        workplaces, marginals, output_dir, convert_count, sampling_method, 
-                       locations_method) {
+                       locations_method, doSubsetPUMS = TRUE) {
   # Start the clock on this specific place 
   place_start_time <- Sys.time()
 
@@ -396,7 +401,8 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
                                             pums_p = pums_p, 
                                             marginals = marginals,
                                             puma_id = puma_id, 
-                                            place_id = place_id)
+                                            place_id = place_id,
+                                            doSubsetPUMS = doSubsetPUMS)
 
      
 

@@ -58,7 +58,8 @@ read_data <- function(base_dir,
   } else {
     workplaces <- NULL
   }
-  
+
+
   if (!is.null(folders$marginals)) {
     marginals <- read_marginals(input_dir, folders, data_group)
   } else {
@@ -458,7 +459,7 @@ read_roads <- function(path_to_roads, road_id) {
 #' 
 #' @return data frame with counts 
 read_marginals <- function(input_dir, folders, data_group) {
-  # Get a character vector of files in marginal folder 
+                                        # Get a character vector of files in marginal folder
   marginal_files <- list.files(file.path(... = input_dir, folders$marginals))
   
   if (data_group == "US") {
@@ -471,6 +472,15 @@ read_marginals <- function(input_dir, folders, data_group) {
   } else if (data_group == "ipums") {
     
   } else if (data_group == "none") {
-    
+      if(sampling_method == "ipf"){
+            # Subset marginal file with "marginals" in name
+          marginal_ind <- grep(pattern = "marginals", x = marginal_files)
+          marginal_file <- marginal_files[marginal_ind]
+          marginals <- readRDS(file = file.path(input_dir, folders$marginals, marginal_file))
+          print("got marginals for none group ipf")
+      }
+    return(marginals)
+
+
   }
 }

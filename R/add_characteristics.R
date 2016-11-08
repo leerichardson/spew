@@ -96,7 +96,8 @@ demo_sample <- function(pop_df, char_pums, var_names, args = NULL){
 #' @param bounds data frame of upper and lower bounds (inclusive) for variables (numeric)
 #' @param category_names short name of the category, will be visible to person.  Either length one and the bounds will be pasted to it or length of the number of rows of the bounds with names of your choice.
 #' @param output_file if not NULL then we save the file as a rds object to output_file
-make_cat_var_obj<- function(var_name, type="ord", bounds, category_name, output_file = NULL){
+#' @param df data frame with place_id and category counts
+make_cat_var_obj<- function(var_name, type="ord", bounds, category_name, output_file = NULL, df = NULL){
     stopifnot(all(is.numeric(c(bounds[, 1], bounds[, 2]))))
     stopifnot(sum(colnames(bounds) %in% c("upper", "lower")) == 2)
     stopifnot(all(bounds[,1] <= bounds[,2]))
@@ -107,12 +108,18 @@ make_cat_var_obj<- function(var_name, type="ord", bounds, category_name, output_
         stopifnot(length(category_name) == 1)
         marg_names <-  apply(bounds, 1,
                              function(row) paste(category_name, row[1], row[2], sep = "-"))
-        }
-    ll <- list(type=type,
+    }
+    if(!is.null(df)){
+        stopifnot(colnames(df)[1] == "place_id")
+        colnames(df) <- c("place_id", marg_names)  
+    }
+    ll <- list(df = df, type=type,
                lookup=data.frame(marg_names = marg_names, bounds, stringsAsFactors = FALSE))
-    if (!is.null(output_file)) saveRDS(assign(var_name, ll), output_file)
     new_ll <- list(ll)
     names(new_ll) <- var_name
+    new_ll <- c(new_ll)
+    if (!is.null(output_file)) saveRDS( new_ll, output_file)
+   
     return(new_ll)
 }
 

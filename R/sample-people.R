@@ -5,16 +5,17 @@
 #' @param pums_h dataframe of the households we are sampling from 
 #' @param puma_id vector indicating which specific puma in PUMS we are sampling 
 #' from, if any 
-#' @return numeric with the indicies of the household PUMS to sample 
+#' @return numeric with the indicies of the household PUMS to sample
+#' @param doSubsetPUMS logical.  When we do not need to subset the pums
 sample_households <- function(method, n_house, pums_h, pums_p = NULL,
                               puma_id = NULL, place_id = NULL, 
-                              marginals = NULL) {
+                              marginals = NULL, doSubsetPUMS = TRUE) {
   if (method == "uniform") {
     households <- sample_uniform(n_house, pums_h, puma_id = puma_id, place_id = place_id)
   } else if (method == "ipf") {
     households <- sample_ipf(n_house = n_house, pums_h = pums_h, pums_p = pums_p, 
                              puma_id = puma_id, place_id = place_id, 
-                             marginals = marginals)
+                             marginals = marginals, doSubsetPUMS = doSubsetPUMS)
   } else {
     stop("Sampling method must be ipf or uniform")
   }
