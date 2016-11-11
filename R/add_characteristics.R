@@ -19,7 +19,6 @@ add_characteristic <- function(synth_pop_path, args, pop_type = "people",
         out <- lapply(file.path(synth_pop_path, file_names), char_fun,
                       synth_pop_path, pop_type, args)
     } else{
-        ## do stuff
     }
     return(out)
 }
@@ -30,10 +29,10 @@ add_characteristic <- function(synth_pop_path, args, pop_type = "people",
 #' @param output_path the path to the folder of where the new output is to go
 #' @param pop_type "b" for both; "household", or "people" populations
 #' @param args list of additional arguments including the suffix
-#' @return logical, writes out new synth pop
+#' @return logical, writes out new synth pop)
 add_char_demo <- function(synth_pop_fn, output_path, pop_type, args){
     ## Read in the population
-    if (pop_type == "b"){
+    if (pop_type == "both"){
         synth_pop_p<- read.csv(synth_pop_fn)
         synth_pop_h <- read.csv(gsub("people", "household", synth_pop_fn))
         synth_pop <- join(synth_pop_p,
@@ -59,7 +58,7 @@ add_char_demo <- function(synth_pop_fn, output_path, pop_type, args){
     if(is.null(suffix)) suffix <- "_v2"
     output_path <- paste0(args$output_path, suffix)
     if(!dir.exists(output_path)) dir.create(output_path)
-    write.csv(new_df, file.path(output_path, basename(synth_pop_fn)))
+    write.csv(new_df, file.path(output_path, basename(synth_pop_fn)), row.names = FALSE)
     return(TRUE)
 }
 
