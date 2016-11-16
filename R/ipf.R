@@ -1,4 +1,4 @@
-#' Sample households PUMS accoording to IPD 
+#' Sample households PUMS accoording to IPF 
 #' 
 #' @param n_house number of households to sample 
 #' @param pums_h household pums 
