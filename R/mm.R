@@ -9,22 +9,39 @@
 #' @param puma_id id indicating the current puma 
 #' @param place_id id indicating the current region
 #' @param doSubsetPUMS logical.  When we do not need to subset the pums
-sample_ipf <- function(n_house, pums_h, pums_p, mm_obj,
+sample_mm <- function(n_house, pums_h, pums_p, mm_obj,
                        puma_id = NULL, place_id = NULL, doSubsetPUMS = TRUE){
-
-    ## Step 0:  join PUMS
-    ## Fill in
-    pums <- TRUE
+    if(n_house == 0){  # No households to sample
+        return(NULL)
+    }
     
-    ## Step 1:  Check if the mm_obj names are contained in the pums names
-    stopifnot(check_mm_obj(mm_obj, pums_h))
+    mom1_df <- mm_obj$moments_list$mom1    
+    if (sum(mom1_df$place_id == place_id) < 1){ # there is no place_id  that matches the MM_OBJ
+        
+        ## Sample uniformly
+        weights <- rep(1, nrow(pums_h)) / nrow(pums_h)
+        pums <- pums_h
+        
+    } else{ # Do the MM procedure
 
-    ## Step 2:  get the weights for the pums_h records
-    mm_row <- getMMRow(place_id, puma_id, mm_obj)
-    weights <- solveMMWeights(place_id = place_id, mm_row,
-                              pums, assumption = mm_obj$assumption, mm_obj$meq)
+        ## Step 1:  Check if the mm_obj names are contained in the pums names
+        mm_vars <- colnames(mom1_df)[-which(colnames(mom1_df) %in% c("place_id", "puma_id"))]
+        stopifnot(length(mm_vars) > 0 )
+        pums_vars <- unique(c(colnames(pums_h), colnames(pum_p)))
+        stopifnot(sum(mm_vars %in% pums_vars) == length(mm_vars))
+        
+        ## Step 2:  join PUMS
+        marginals <- mom1_df[1, - which(colnames(mom1_df) %in% c("place_id", "puma_id"))]
+        pums <- subset_pums(pums_h, pums_p, marginals = marginals, puma_id = puma_id)
 
-    ## Step 3: sample households
+        ## Step 3:  get the weights for the pums_h records
+        ## TODO make functional for future moments
+        mm_row <- mom1_df[mom1_df$place_id == place_id,]
+        weights <- solveMMWeights(place_id = place_id, mm_row,
+                                  pums, assumption = mm_obj$assumption, meq = (mm_obj$nMom + 1))
+    }
+
+    ## Step 4: sample households
     inds <- sample(1:nrow(pums), n_house, replace = T, prob = weights)
     households <- pums_h[inds,]
     return(households)
@@ -128,7 +145,7 @@ extrapolateProbsToPUMS <- function(p, n, pums, var_name){
         ind <- which(n == pums[ii, var_name])
         return(new_p[ind])
         })
-    x <- x /sum(x)
+    x <- x / sum(x)
     return(x)
 }
 
@@ -161,13 +178,47 @@ extrapolateProbsToPUMSjoint <- function(p, n, pums, var_names, tab){
 #' @param moments_list a list with each entry as a data frame.  The first df is the first moments, the second the second moments, etc.  Each df has the following format:  place_id | puma_id | var1 moment | var 2 moment |
 #' @param assumption is either "independent" or "joint"
 #' @param nMom number of moments
+#' @param type either "cont" for continuous variable or "ord" for ordered variable
+#' @param region identifier for region
 #' @param path if not NULL we will save this object
 #' @return list of moment obj
-make_mm_obj <- function(moments_list, assumption = "independent", nMom = 1, path = NULL){
+makeMMObj <- function(moments_list, assumption = "independent", nMom = 1,
+                      type = "cont", region = NULL, path = NULL){
     stopifnot(assumption %in% c("independent", "joint"))
-    ll <- list(assumption = assumption, nMom = nMom, moments_list = moments_list)
+    mm_obj<- list(assumption = assumption, nMom = nMom, type = type, region = region, moments_list = moments_list)
     if(!is.null(path)){
-        save(ll, path)
+        save(mm_obj, file = path)
     }
-    return(ll)
+    return(mm_obj)
+}
+
+#' Impute Missing Values in a data frame
+#'
+#' @param df where ever column may be imputed (so each column is numeric)
+#' @param method of imputation, "mean" imputes the mean of the other values into the NA values.  "bootstrap" resamples from non-NA vals.
+#' @return df of same dimension, now with no missing vals
+imputeMissingVals <- function(df, method = "mean"){
+    ## TODO  add in joint distribution imputations
+    dimInit <- dim(df)
+    if(method == "mean"){
+        df <- apply(df, 2, function(col) {
+            missing_inds <- which(is.na(col))
+            mn <- mean(col, na.rm = TRUE) 
+            col[missing_inds] <- mn
+            return(col)
+        })
+
+    } else if (method == "bootstrap"){
+         df <- apply(df, 2, function(col) {
+             missing_inds <- which(is.na(col))
+             if(length(missing_inds) < 1){
+                 return(col)
+             }
+            missing_vals <- col[sample(1:length(col)[-missing_inds], length(missing_inds), replace = TRUE)]
+            col[missing_inds] <- missing_vals
+            return(col)
+         })
+    }
+    stopifnot(all(dimInit == dim(df)))
+    return(df)
 }
