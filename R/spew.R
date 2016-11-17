@@ -6,7 +6,7 @@
 #' @param parallel_type Indicating to run sequentially or parallel. If parallel, 
 #' the back-end is specified, either "MPI", "SOCK", or "MC"
 #' @param sampling_method character of sampling method. Default: "uniform", can also 
-#' be "ipf" if appropriate marginal data is included
+#' be "ipf" or "mm" if appropriate marginal/moments data is included
 #' @param locations_method character vector indicating the type of location 
 #' sampling to use. Default to "uniform". can also be "roads" if appropriate line 
 #' shapefiles are included. 
@@ -15,7 +15,7 @@
 #' the population is the total number of households 
 #' @param vars list with two elements: household and person. This specifies 
 #' which variables to include in the corresponding household and person PUMS data-set
-#' @param doSubsetPUMS logical.  When we do not need to subset the pums for IPf
+#' @param doSubsetPUMS logical.  When we do not need to subset the pums for IPF
 #' @export
 #' @return logical indicating whether or not this run of spew ended successfully 
 call_spew <- function(base_dir, folders = NULL, data_group = "US", parallel_type = "SEQ",
@@ -27,9 +27,13 @@ call_spew <- function(base_dir, folders = NULL, data_group = "US", parallel_type
   
   # Given directory, folders, vars, and data-group, read input data into a list 
   data_list <- read_data(base_dir = base_dir, folders = folders, data_group = data_group, vars)
-  
+
   # Given the data list, make sure everything is formatted correctly 
   formatted_data <- format_data(data_list = data_list, data_group = data_group)
+
+    if(sampling_method == "mm"){ # replace the marginals with moments data
+        formatted_data$marginals <- formatted_data$moments
+    }
   
   # Call the SPEW algorithm on the formatted data 
   spew(base_dir = base_dir, pop_table = formatted_data$pop_table, 
@@ -118,7 +122,10 @@ spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools,
                       "sample_uniform", "sample_ipf", "subset_pums", "align_pums", 
                       "fill_cont_table", "update_freqs", "get_targets", "sample_with_cont", 
                       "samp_ipf_inds", "assign_weights", "calc_dists", "get_ord_dists", 
-                      "get_cat_dists", "remove_excess")
+                      "get_cat_dists", "remove_excess",
+                      "sample_mm", "solve_mm_weights", "solve_mm_for_joint",
+                      "solve_mm_for_var", "extrapolate_probs_to_pums",
+                      "extrapolate_probs_to_pums_joint", "make_mm_obj", "impute_missing_vals")
   
   # Call either the sequential, or parallel version of the SPEW algorithm 
   num_places <- nrow(pop_table)
@@ -332,7 +339,7 @@ spew_mc <- function(num_places, pop_table, shapefile, pums_h, pums_p,
 #' @param marginals list with elements corresponding to marginal totals 
 #' of population variables 
 #' @param sampling_method character vector indicating the type of sampling 
-#' method to use, defaults to "uniform"
+#' method to use, defaults to "uniform".  Other options are "ipf" and "mm"
 #' @param locations_method character vector indicating the type of location 
 #' sampling to use, defaults to "uniform", can also be "roads" 
 #' @param output dir character vector containing the location to save the

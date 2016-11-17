@@ -65,6 +65,12 @@ read_data <- function(base_dir,
   } else {
     marginals <- NULL
   }
+
+  if(!is.null(folders$moments)){
+      moments <- read_moments(input_dir, folders, data_group)
+  } else {
+      moments <- NULL
+  }
   
   read_time <- difftime(Sys.time(), read_start_time, units = "secs")
   read_time <- round(read_time, digits = 2)  
@@ -77,7 +83,8 @@ read_data <- function(base_dir,
               shapefiles = shapefiles, 
               schools = schools, 
               workplaces = workplaces, 
-              marginals = marginals))
+              marginals = marginals,
+              moments = moments))
 }
 
 #' Read in the population counts  
@@ -483,4 +490,24 @@ read_marginals <- function(input_dir, folders, data_group) {
 
 
   }
+}
+
+#' Read in the R data object for moment matching
+#'
+#' @param input_dir character vector specifying the directory containing 
+#' all of the input data 
+#' @param folders list which contains the path of each sub-directory with the 
+#' specific data
+#' @param data_group character either "US", "ipums" or "none" which tells 
+#' read_data if the input data follows a particular format. Used mainly for 
+#' the pre-formatted data-types we have on our Olympus
+#' @return moment object
+read_moments <- function(input_dir, folders, data_group){
+    moments_files <- list.files(file.path(... = input_dir, folders$moments))
+     
+    ## Subset marginal file with "moments" in name
+    marginal_ind <- grep(pattern = "mm", x = moments_files)
+    marginal_file <- marginal_files[marginal_ind]
+    moments <- readRDS(file = file.path(input_dir, folders$moments, marginal_file))
+    return(moments)
 }

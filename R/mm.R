@@ -14,7 +14,6 @@ sample_mm <- function(n_house, pums_h, pums_p, mm_obj,
     if(n_house == 0){  # No households to sample
         return(NULL)
     }
-    
     mom1_df <- mm_obj$moments_list$mom1    
     if (sum(mom1_df$place_id == place_id) < 1){ # there is no place_id  that matches the MM_OBJ
         
@@ -27,9 +26,9 @@ sample_mm <- function(n_house, pums_h, pums_p, mm_obj,
         ## Step 1:  Check if the mm_obj names are contained in the pums names
         mm_vars <- colnames(mom1_df)[-which(colnames(mom1_df) %in% c("place_id", "puma_id"))]
         stopifnot(length(mm_vars) > 0 )
-        pums_vars <- unique(c(colnames(pums_h), colnames(pum_p)))
+        pums_vars <- unique(c(colnames(pums_h), colnames(pums_p)))
         stopifnot(sum(mm_vars %in% pums_vars) == length(mm_vars))
-        
+
         ## Step 2:  join PUMS
         marginals <- mom1_df[1, - which(colnames(mom1_df) %in% c("place_id", "puma_id"))]
         pums <- subset_pums(pums_h, pums_p, marginals = marginals, puma_id = puma_id)
@@ -37,7 +36,7 @@ sample_mm <- function(n_house, pums_h, pums_p, mm_obj,
         ## Step 3:  get the weights for the pums_h records
         ## TODO make functional for future moments
         mm_row <- mom1_df[mom1_df$place_id == place_id,]
-        weights <- solveMMWeights(place_id = place_id, mm_row,
+        weights <- solve_mm_weights(place_id = place_id, mm_row,
                                   pums, assumption = mm_obj$assumption, meq = (mm_obj$nMom + 1))
     }
 
@@ -56,7 +55,7 @@ sample_mm <- function(n_house, pums_h, pums_p, mm_obj,
 #' @param assumption  "independence"
 #' @return  x vector of length of the number of  records in the PUMS.  These are probabilities for each of the records.
 #' @details the function solve.QP from the "quadprog" package is used.
-solveMMWeights <- function(place_id, mm_row, pums, assumption = "independence", meq = 2){
+solve_mm_weights <- function(place_id, mm_row, pums, assumption = "independence", meq = 2){
     stopifnot(assumption %in% c("independence", "joint"))
     stopifnot(mm_row$place_id == place_id)
     stopifnot(sum(colnames(mm_row)[1:2] %in% c("puma_id", "place_id")) == 2)
@@ -64,11 +63,11 @@ solveMMWeights <- function(place_id, mm_row, pums, assumption = "independence", 
         p <- ncol(mm_row) - 2 # number of variables to determine weights
         weight_mat <- matrix(0, nrow = nrow(pums), ncol = p)
         for (var_ind in 3:ncol(mm_row)){
-            weight_mat[, var_ind - 2] <- solveMMforVar(var_ind = var_ind, place_id, mm_row, pums, assumption, meq = 2)
+            weight_mat[, var_ind - 2] <- solve_mm_for_var(var_ind = var_ind, place_id, mm_row, pums, assumption, meq = 2)
         }
         x <- apply(weight_mat, 1, prod)
     } else if (assumption == "joint"){
-        x <- solveMMforJoint(place_id, mm_row, pums, assumption, meq = 2)
+        x <- solve_mm_for_joint(place_id, mm_row, pums, assumption, meq = 2)
     }
     x <- ifelse(x < 0, 0, x)
     x <- x /sum(x)
@@ -76,14 +75,14 @@ solveMMWeights <- function(place_id, mm_row, pums, assumption = "independence", 
     return(x)
 }
 
-#' Do the MM solving for joint distribution
+#' Do the Moment Matching solving for joint distribution
 #'
 #' @param mm_row dataframe of 1 row, includes place_id, puma_id, and averages, with names matching PUMS
 #' @param pums the subsetted PUMS from which the sample will be drawn
 #' @param assumption  "joint"
 #' @param meq (number of moments + 1) to match (2 is default and corresponds to matching the average)
 #' @return  x vector of length of the number of records in the PUMS.  These are probabilities for each of the records in the PUMS.
-solveMMforJoint <- function(place_id, mm_row, pums, assumption, meq = 2){
+solve_mm_for_joint <- function(place_id, mm_row, pums, assumption, meq = 2){
     M <- as.numeric(mm_row[, -c(1:2)])
     n_var <- ncol(mm_row) - 2
     var_names <- names(mm_row)[-c(1:2)]
@@ -99,7 +98,7 @@ solveMMforJoint <- function(place_id, mm_row, pums, assumption, meq = 2){
     meq <- 2
     p <- solve.QP(Q, dvec, A, b, meq)
     p <- p$solution
-    x <- extrapolateProbsToPUMSjoint(p, n, pums, var_names, tab)
+    x <- extrapolate_probs_to_pums_joint(p, n, pums, var_names, tab)
     return(x)
     }
     
@@ -112,7 +111,7 @@ solveMMforJoint <- function(place_id, mm_row, pums, assumption, meq = 2){
 #' @param assumption  "independence"
 #' @param meq (number of moments + 1) to match (2 is default and corresponds to matching the average)
 #' @return  x vector of length of the number of records in the PUMS.  These are probabilities for each of the records in the PUMS.
-solveMMforVar <- function(var_ind, place_id, mm_row, pums, assumption, meq = 2){
+solve_mm_for_var <- function(var_ind, place_id, mm_row, pums, assumption, meq = 2){
     var_name <- colnames(mm_row)[var_ind]
     ## The below notation follows that of solve.QP.  See help file for more details
     M <- mm_row[var_ind] # the average value of var_name for this tract
@@ -125,7 +124,7 @@ solveMMforVar <- function(var_ind, place_id, mm_row, pums, assumption, meq = 2){
     meq <- 2
     p <- solve.QP(Q, dvec, A, b, meq)
     p <- p$solution
-    x <- extrapolateProbsToPUMS(p, n, pums, var_name)
+    x <- extrapolate_probs_to_pums(p, n, pums, var_name)
     return(x)
 }
 
@@ -136,7 +135,7 @@ solveMMforVar <- function(var_ind, place_id, mm_row, pums, assumption, meq = 2){
 #' @param pums PUMS data frame
 #' @param var_name varaible name we are matching on
 #' @return probabilities for whole data frame
-extrapolateProbsToPUMS <- function(p, n, pums, var_name){
+extrapolate_probs_to_pums <- function(p, n, pums, var_name){
     counts <- sapply(1:length(p), function(ii){
         length(which(pums[, var_name]== n[ii]))
     })
@@ -157,18 +156,22 @@ extrapolateProbsToPUMS <- function(p, n, pums, var_name){
 #' @param var_name varaible name we are matching on
 #' @param tab data frame with categories and frequency
 #' @return probabilities for whole data frame
-extrapolateProbsToPUMSjoint <- function(p, n, pums, var_names, tab){
+extrapolate_probs_to_pums_joint <- function(p, n, pums, var_names, tab){
     new_p <- p / tab$Freq
     colnames(n) <- var_names
-    small_df <- data.frame(n, p = new_p)
-    df <- join(pums[, var_names], small_df)
+    small_df <- data.frame(n)
+    small_df <- as.data.frame(apply(small_df, 2, as.character), stringsAsFactors = FALSE)
+    small_df$p <- new_p
+    pums_sub <- pums[, var_names]
+    pums_sub <- as.data.frame(apply(pums_sub, 2, as.character), stringsAsFactors = FALSE)
+    df <- join(pums_sub, small_df)
     stopifnot(nrow(df) == nrow(pums))
-    x <- df$p
+    x <- as.numeric(df$p)
     ## TODO
     ## Make a better join because it is not matching exactly.  Match on characters??
     x <- ifelse(is.na(x), 0, x)
-    x <- x /sum(x)
-    print(paste("We are sampling from, ", sum(x > 0), "unique PUMS records"))
+    x <- x / sum(x)
+    print(paste("We are sampling from, ", round(sum(x > 0)/length(x) * 100, 2), "% unique PUMS records"))
     return(x)
 }
 
@@ -182,12 +185,12 @@ extrapolateProbsToPUMSjoint <- function(p, n, pums, var_names, tab){
 #' @param region identifier for region
 #' @param path if not NULL we will save this object
 #' @return list of moment obj
-makeMMObj <- function(moments_list, assumption = "independent", nMom = 1,
+make_mm_obj <- function(moments_list, assumption = "independent", nMom = 1,
                       type = "cont", region = NULL, path = NULL){
     stopifnot(assumption %in% c("independent", "joint"))
     mm_obj<- list(assumption = assumption, nMom = nMom, type = type, region = region, moments_list = moments_list)
     if(!is.null(path)){
-        save(mm_obj, file = path)
+        saveRDS(mm_obj, file = path)
     }
     return(mm_obj)
 }
@@ -197,7 +200,7 @@ makeMMObj <- function(moments_list, assumption = "independent", nMom = 1,
 #' @param df where ever column may be imputed (so each column is numeric)
 #' @param method of imputation, "mean" imputes the mean of the other values into the NA values.  "bootstrap" resamples from non-NA vals.
 #' @return df of same dimension, now with no missing vals
-imputeMissingVals <- function(df, method = "mean"){
+impute_missing_vals <- function(df, method = "mean"){
     ## TODO  add in joint distribution imputations
     dimInit <- dim(df)
     if(method == "mean"){

@@ -16,8 +16,14 @@ sample_households <- function(method, n_house, pums_h, pums_p = NULL,
     households <- sample_ipf(n_house = n_house, pums_h = pums_h, pums_p = pums_p, 
                              puma_id = puma_id, place_id = place_id, 
                              marginals = marginals, doSubsetPUMS = doSubsetPUMS)
-  } else {
-    stop("Sampling method must be ipf or uniform")
+  } else if (method == "mm"){
+      mm_obj <- marginals
+      households <- sample_mm(n_house = n_house, pums_h = pums_h, pums_p = pums_p, 
+                              mm_obj = mm_obj, puma_id = puma_id, place_id = place_id, 
+                              doSubsetPUMS = doSubsetPUMS)
+  }
+  else {
+    stop("Sampling method must be ipf, mm,   or uniform")
   }
   
   # Subset the sampled indices from the PUMS, and add 
@@ -46,10 +52,10 @@ sample_households <- function(method, n_house, pums_h, pums_p = NULL,
 sample_people <- function(method, household_pums, pums_p, puma_id = NULL, place_id = NULL) {
   if (method == "uniform") {
     sampled_people <- plyr::join(household_pums, pums_p, type = "left", by = "SERIALNO")
-  } else if (method == "ipf") {
+  } else if (method %in%  c("ipf", "mm")) {
     sampled_people <- plyr::join(household_pums, pums_p, type = "left", by = "SERIALNO")
   } else {
-    stop("Sampling method must be ipf or uniform")
+    stop("Sampling method must be ipf, mm, or uniform")
   }
   
   # Remove names which comp
