@@ -467,26 +467,27 @@ read_roads <- function(path_to_roads, road_id) {
 #' @return data frame with counts 
 read_marginals <- function(input_dir, folders, data_group) {
                                         # Get a character vector of files in marginal folder
-  marginal_files <- list.files(file.path(... = input_dir, folders$marginals))
-  
-  if (data_group == "US") {
-    # Subset marginal file with "marginals" in name
-    marginal_ind <- grep(pattern = "marginals", x = marginal_files)
-    marginal_file <- marginal_files[marginal_ind]
-    marginals <- readRDS(file = file.path(input_dir, folders$marginals, marginal_file))
-    return(marginals)
-
-  } else if (data_group == "ipums") {
+    marginals <- NULL
+    marginal_files <- list.files(file.path(... = input_dir, folders$marginals))
     
-  } else if (data_group == "none") {
-      if(sampling_method == "ipf"){
-            # Subset marginal file with "marginals" in name
-          marginal_ind <- grep(pattern = "marginals", x = marginal_files)
-          marginal_file <- marginal_files[marginal_ind]
-          marginals <- readRDS(file = file.path(input_dir, folders$marginals, marginal_file))
-          print("got marginals for none group ipf")
-      }
-    return(marginals)
+    if (data_group == "US") {
+                                        # Subset marginal file with "marginals" in name
+        marginal_ind <- grep(pattern = "marginals", x = marginal_files)
+        marginal_file <- marginal_files[marginal_ind]
+        marginals <- readRDS(file = file.path(input_dir, folders$marginals, marginal_file))
+        return(marginals)
+
+    } else if (data_group == "ipums") {
+        
+    } else if (data_group == "none") {
+        if(sampling_method == "ipf"){
+                                        # Subset marginal file with "marginals" in name
+            marginal_ind <- grep(pattern = "marginals", x = marginal_files)
+            marginal_file <- marginal_files[marginal_ind]
+            marginals <- readRDS(file = file.path(input_dir, folders$marginals, marginal_file))
+            print("got marginals for none group ipf")
+        }
+        return(marginals)
 
 
   }
@@ -506,8 +507,8 @@ read_moments <- function(input_dir, folders, data_group){
     moments_files <- list.files(file.path(... = input_dir, folders$moments))
      
     ## Subset marginal file with "moments" in name
-    marginal_ind <- grep(pattern = "mm", x = moments_files)
-    marginal_file <- marginal_files[marginal_ind]
-    moments <- readRDS(file = file.path(input_dir, folders$moments, marginal_file))
+    moments_ind <- grep(pattern = "mm", x = moments_files)
+    moments_file <- moments_files[moments_ind]
+    moments <- readRDS(file = file.path(input_dir, folders$moments, moments_file))
     return(moments)
 }

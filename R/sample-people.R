@@ -10,6 +10,7 @@
 sample_households <- function(method, n_house, pums_h, pums_p = NULL,
                               puma_id = NULL, place_id = NULL, 
                               marginals = NULL, doSubsetPUMS = TRUE) {
+    
   if (method == "uniform") {
     households <- sample_uniform(n_house, pums_h, puma_id = puma_id, place_id = place_id)
   } else if (method == "ipf") {
@@ -25,7 +26,7 @@ sample_households <- function(method, n_house, pums_h, pums_p = NULL,
   else {
     stop("Sampling method must be ipf, mm,   or uniform")
   }
-  
+
   # Subset the sampled indices from the PUMS, and add 
   # in puma and place ids to the final pums 
   sampled_households <- pums_h[households, ]

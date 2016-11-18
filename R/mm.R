@@ -14,8 +14,8 @@ sample_mm <- function(n_house, pums_h, pums_p, mm_obj,
     if(n_house == 0){  # No households to sample
         return(NULL)
     }
-    mom1_df <- mm_obj$moments_list$mom1    
-    if (sum(mom1_df$place_id == place_id) < 1){ # there is no place_id  that matches the MM_OBJ
+    mom1_df <- mm_obj$moments_list$mom1
+    if (sum(as.character(mom1_df$place_id) == place_id, na.rm = TRUE) < 1){ # there is no place_id  that matches the MM_OBJ
         
         ## Sample uniformly
         weights <- rep(1, nrow(pums_h)) / nrow(pums_h)
@@ -31,19 +31,18 @@ sample_mm <- function(n_house, pums_h, pums_p, mm_obj,
 
         ## Step 2:  join PUMS
         marginals <- mom1_df[1, - which(colnames(mom1_df) %in% c("place_id", "puma_id"))]
-        pums <- subset_pums(pums_h, pums_p, marginals = marginals, puma_id = puma_id)
+        ## TODO:  FIX to be more general
+        pums <- pums_h
 
         ## Step 3:  get the weights for the pums_h records
         ## TODO make functional for future moments
-        mm_row <- mom1_df[mom1_df$place_id == place_id,]
+        mm_row <- mom1_df[which(as.character(mom1_df$place_id) == place_id),]
         weights <- solve_mm_weights(place_id = place_id, mm_row,
                                   pums, assumption = mm_obj$assumption, meq = (mm_obj$nMom + 1))
     }
-
-    ## Step 4: sample households
+    ## Step 4: sample household indices
     inds <- sample(1:nrow(pums), n_house, replace = T, prob = weights)
-    households <- pums_h[inds,]
-    return(households)
+    return(inds)
 }
 
 
@@ -96,8 +95,11 @@ solve_mm_for_joint <- function(place_id, mm_row, pums, assumption, meq = 2){
     dvec <- rep(0, N)
     b <- c(1, M, rep(0, N))
     meq <- 2
-    p <- solve.QP(Q, dvec, A, b, meq)
-    p <- p$solution
+    p <- tryCatch({solve.QP(Q, dvec, A, b, meq)$solution}, error = function(e){
+        print(e)
+        p <- rep(1, length(nrow(tab)))
+        return(p)
+    })
     x <- extrapolate_probs_to_pums_joint(p, n, pums, var_names, tab)
     return(x)
     }
@@ -122,8 +124,11 @@ solve_mm_for_var <- function(var_ind, place_id, mm_row, pums, assumption, meq = 
     dvec <- rep(0, N)
     b <- c(1, M, rep(0, N))
     meq <- 2
-    p <- solve.QP(Q, dvec, A, b, meq)
-    p <- p$solution
+    p <- tryCatch({solve.QP(Q, dvec, A, b, meq)$solution}, error = function(e){
+        print(e)
+        p <- rep(1, N)
+        return(p)
+                  })
     x <- extrapolate_probs_to_pums(p, n, pums, var_name)
     return(x)
 }

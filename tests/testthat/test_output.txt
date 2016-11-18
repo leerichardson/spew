@@ -2,8 +2,8 @@
 [1] "Place: 1"
 [1] "Total Places: 2"
 [1] "Households: 941"
-[1] "People: 1959"
-[1] "Time: 0.3"
+[1] "People: 1913"
+[1] "Time: 0.32"
 [1] "Schools: 0.1"
 [1] "Workplaces: 0.1"
 [1] "Puma: 400"
@@ -11,13 +11,13 @@
 [1] "Place: 2"
 [1] "Total Places: 2"
 [1] "Households: 954"
-[1] "People: 1979"
+[1] "People: 2058"
 [1] "Time: 0.29"
 [1] "Schools: 0.1"
 [1] "Workplaces: 0.1"
 [1] "Puma: 400"
-[1] "Location runs in: 3.68"
+[1] "Location runs in: 3.79"
 Warnings -----------------------------------------------------------------------
 Failed -------------------------------------------------------------------------
 DONE ===========================================================================
-[1] "/home/shannon/Desktop/montreal/mm"
+[1] "/home/shannon/Dropbox/Montreal/mm"
