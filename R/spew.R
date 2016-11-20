@@ -231,7 +231,9 @@ spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p,
   mpi.bcast.cmd(library(sp))
   mpi.bcast.cmd(library(rgeos))
   mpi.bcast.cmd(library(data.table))
-  mpi.bcast.cmd(library(mipfp))
+    mpi.bcast.cmd(library(mipfp))
+    mpi.bcast.cmd(library(quadprog))
+    
   
   # Export functions to all of the workers ------
   for (obj in export_objects) {
@@ -277,7 +279,7 @@ spew_sock <- function(num_places, pop_table, shapefile, pums_h, pums_p,
   # Run for-each to generate each place on a separate core 
   region_list <- foreach(place = 1:num_places, 
                          .packages = c("plyr", "methods", "sp", "rgeos", 
-                                       "data.table", "mipfp"),
+                                       "data.table", "mipfp", "quadprog"),
                          .errorhandling = 'pass', 
                          .export = export_objects) %dopar% {
                            print(paste0("Region ", place, " out of ", num_places))
