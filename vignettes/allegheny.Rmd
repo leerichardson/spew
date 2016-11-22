@@ -1,0 +1,106 @@
+1---
+title: "SPEW and Montreal"
+author: Shannon Gallagher, Lee Richardson, Samuel Ventura, and William Eddy
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: journal
+    highlight: tango
+---
+
+```{r, include=FALSE}
+library(knitr) # We need the knitr package to set chunk options
+# Set default knitr options for knitting code into the report:
+opts_chunk$set(cache=TRUE, autodep=TRUE, cache.comments=FALSE)
+```
+
+#	Introduction
+Welcome to SPEW (Synthetic Population and Ecosystems of the World).  This guide is for use in generating a custom synthetic ecosystem of Montreal using the `R` package [spew](https://github.com/leerichardson/spew).  This vignette will walk through the set-up of more general Canadian data and putting it in a format for our program to create a synthetic ecosystem of Montreal.
+
+The steps include the following:
+
+1. Download the input data
+        
+2. Use `spew` to generate a synthetic ecosystem of Montreal
+    
+3. Run diagnotics
+
+# Custom Montreal Synthetic Ecosystem	
+Our custom Montreal synthetic ecosystem will include population counts and geographies from Statistics Canada and microdata from IPUMS-I.
+
+It is helpful to create a folder with the following subdirectories:
+   
++ montreal
+	+ input
+		+ counts
+	+ marginals
+      	+ pums
+      	+ shapefiles
+	+ output
+  	+ logfiles
+
+
+
+## Input Data
+   The first step is to  obtain the essential data.  This includes population counts (`.csv`), geographies (`.shp`, `.dbf`, `.shx`), and microdata (`.csv`).  SPEW currently supports US ACS data and IPUMS-I data.  We also include helper functions to format your data into a format which SPEW can handle.  Additionally, we can include supplementary data such as population characteristics (e.g. household income) and environmental characteristics (e.g. schools) and we will cover this in a later section.
+
+#### Counts
+We subset the counts to those pertaining to Montreal.  Make sure to set your own data path(s).  **WARNING** It is *vital* that we keep any leading 0s, and so when in doubt use `colClasses = "character"`.
+
+	
+
+#### Shapefiles
+We will also extract Montreal's shapefiles from the larger Canada shapefiles.
+
+
+We check whether the two can be joined to one another.
+   
+
+	
+#### Microdata	
+Finally, we extract the relevant microdata.
+
+
+## Using SPEW
+
+### A minimal example   
+
+With the preliminaries done, we can now use SPEW to generate a synthetic ecosystem of Allegheny County.
+
+If you haven't already, download the package with
+
+```{r eval=FALSE}
+library(devtools)
+devtools::install_github("leerichardson/spew")
+```		
+```{r}
+## Libraries
+library(devtools)
+##library(spew)
+devtools::load_all("~/spew")
+library(methods)
+library(sp)
+library(maptools)
+library(rgeos)
+# Parallel Packages 
+#library(Rmpi)
+library(foreach)
+library(doParallel)
+library(parallel)
+# Speed packages 
+library(data.table)
+# IPF
+library(mipfp)
+# Data manipulation packages 
+library(stringdist)
+library(plyr)
+```
+And that's it!  SPEW generated all the synthetic ecosystems of Montreal.  The results are in the `output` folder.  For each sub-region in Montreal there is both a person-level and household-level population, together comprising the synthetic ecosystem of Montreal.	
+
+
+## Analyzing Our Synthetic Ecosystem
+The synthetic ecosystems, by their nature, are large and often comprise a number of files, thus making them difficult to parse.  As such, we have included functions  to obtain a "bird's eye" view of the synthetic ecostem.
+
+
+### A more comprehensive synthetic ecosystem (Allegheny County, PA)

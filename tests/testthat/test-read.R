@@ -113,7 +113,7 @@ test_that("United States functions", {
   # Overall --------------------------------
   base_path <- file.path(spew_dir, "data-raw/10")
   delaware <- read_data(base_dir = base_path, folders = delaware_folders, data_group = "US")
-  expect_true(all.equal(names(delaware), c("pop_table", "pums", "lookup", "shapefiles", "schools", "workplaces", "marginals")))  
+  expect_true(all.equal(names(delaware), c("pop_table", "pums", "lookup", "shapefiles", "schools", "workplaces", "marginals", "moments")))  
 })
 
 test_that("ipums functions", {

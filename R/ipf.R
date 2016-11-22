@@ -8,12 +8,12 @@
 #' @param k number between 0 and 1, weight of orginal variables 
 #' @param puma_id id indicating the current puma 
 #' @param place_id id indicating the current region
-#' @param doSubsetPUMS logical.  When we do not need to subset the pums
+#' @param do_subset_pums logical.  When we do not need to subset the pums
 sample_ipf <- function(n_house, pums_h, pums_p, marginals, alpha = 0, k = .001, 
-                       puma_id = NULL, place_id = NULL, doSubsetPUMS = TRUE) {
+                       puma_id = NULL, place_id = NULL, do_subset_pums = TRUE) {
                                         # Step 1: Align PUMS with Marginals
 
-    if(doSubsetPUMS){
+    if(do_subset_pums){
         pums <- subset_pums(pums_h = pums_h, pums_p = pums_p, marginals = marginals, puma_id = puma_id)
     } else {
         pums <- pums_h
