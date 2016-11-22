@@ -5,7 +5,7 @@
 ## library(spew)
 library(devtools)
 library(plyr)
-load_all("~/spew")
+library(spew)
 path <- "~/Desktop/montreal"
 path2 <- "~/Dropbox/Montreal"
 synth_pop_fn <- file.path(path, "spew_montreal/people_4620700.01.csv")
@@ -25,4 +25,4 @@ args <- list(suffix = "smoking", char_pums = char_pums, marginals = marginals, i
 synth_pop_path <- file.path(path, "spew_montreal")
 synth_pop_path <- file.path(path, "output/output_462/eco")
 
-out <- add_characteristic(synth_pop_path, args, pop_type)
+out <- spew:::add_characteristic(synth_pop_path, args, pop_type)
