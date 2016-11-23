@@ -1,0 +1,62 @@
+---
+title: "SPEW: A brief tour"
+author: Department of Statistics, Carnegie Mellon University
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: textmate
+---
+
+```{r, include=FALSE}
+library(knitr) # We need the knitr package to set chunk options
+# Set default knitr options for knitting code into the report:
+opts_chunk$set(cache=TRUE, autodep=TRUE, cache.comments=FALSE)
+```	
+
+#	Introduction
+Welcome to SPEW (Synthetic Population and Ecosystems of the World).  This guide is for use in generating a custom synthetic ecosystem of Montreal using the `R` package [spew](https://github.com/leerichardson/spew).  This vignette will walk through the set-up of the ficticious human ecosystem of Tartanville, expanding upon the essential input data for SPEW, supplementary environments and individual-level characteristics, and different methods for producing individuals and their ecosystems.
+
+
+### Downloading SPEW	
+Open up an `R` session and run the following commands.
+
+
+          
+```{r, eval = FALSE}     
+library(devtools)
+install_github("leerichardson/spew")
+```
+
+###	Tartanville:  Spewing our first synthetic ecosystem		
+		
+```{r}
+## libraries
+library(ggplot2)   
+	
+## Generating Tartanville
+devtools::load_all("~/spew")
+data(tartanville)
+tartanville_syneco <- spewr(tartanville$pop_table, tartanville$shapefile,
+                            tartanville$pums_h, tartanville$pums_p)
+plot_syneco(tartanville, tartanville_syneco,
+            region_name = "Tartanville", pretty = TRUE)
+#summarize_syneco(tartanville_syneco, vars_hh = c("HHINC", "NP"),
+#                 vars_p = c("AGEP", "SEX"))
+
+```
+
+### Essential Input Data
+
+SPEW requires three essential data inputs connected through the variables `place_id` and `puma_id`.
+
+| Input Data        | Description                                                    | Required Variables    | Format |
+|-------------------|----------------------------------------------------------------|-----------------------|--------|
+| Population Counts | Table of number of individuals per region                      | `place_id`, `puma_id` | `.csv` |
+| Shapefile         | Spatial boundaries of the regions in Population Counts         | `place_id`            | `.shp` |
+| Microdata         | Table of individual records with individual-level characteristics | `puma_id`             | `.csv` |
+
+Given a row in the table of population counts with the variables `place_id` and `puma_id`, one should be able to find the unique region `place_id` in the shapefile that matches that of the row along with the microdata records with the same `puma_id`.
+	
+

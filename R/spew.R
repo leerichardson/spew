@@ -166,8 +166,8 @@ spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools,
     stop("parallel_type must be SEQ, MPI, SOCK, or MC")
   }
 
-  # Print the diagnostics and summaries of the entire place 
-  print_region_list(region_list)
+  ## Print the diagnostics and summaries of the entire place
+  if(do_write) print_region_list(region_list)
   location_time <- difftime(Sys.time(), location_start_time, units = "secs")
   location_time <- round(location_time, digits = 2)  
   location_time_statement <- paste0("Location runs in: ", location_time)
