@@ -42,10 +42,15 @@ tartanville_syneco <- spewr(tartanville$pop_table, tartanville$shapefile,
                             tartanville$pums_h, tartanville$pums_p)
 plot_syneco(tartanville, tartanville_syneco,
             region_name = "Tartanville", pretty = TRUE)
-#summarize_syneco(tartanville_syneco, vars_hh = c("HHINC", "NP"),
-#                 vars_p = c("AGEP", "SEX"))
-
+results <- summarize_syneco(tartanville_syneco,
+                 vars_df = data.frame(var_name = c("NP", "HHINC", "AGEP", "SEX"),
+                                      pop_type = c("hh", "hh", "p", "p"),
+                                      var_type = c("cont", "cont", "cont", "cat"),
+                                      stringsAsFactors = FALSE), verbose = TRUE)
 ```
+
+	
+	
 
 ### Essential Input Data
 
