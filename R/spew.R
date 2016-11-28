@@ -439,15 +439,18 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
      
 
       total_hh <- total_hh + nrow(sampled_households)
-      
+
+      noise <- .0002 ## kinda gimicky, should add actual argument to spew
+      if(!do_write)  noise <- .1
     
     # Locations ----------------
     locations <- sample_locations(method = locations_method, 
                                   place_id = place_id,
                                   n_house = n_house, 
                                   shapefile = shapefile, 
-                                  noise = .0002, 
-                                  shapefile_id)
+                                  noise = noise, 
+                                  shapefile_id,
+                                  do_write = do_write)
     sampled_households$longitude <- locations@coords[, 1]
     sampled_households$latitude <- locations@coords[, 2]
     rm(locations); gc()

@@ -74,18 +74,18 @@ Uniform sampling of locations means sampling uniformly within the boundaries of 
 #### Road-based sampling 
 
 **Ex.**
-```{r eval = FALSE}	
+```{r}	
 devtools::load_all("~/spew")
-data(tartanville)
-tartanville_syneco <- spewr(tartanville$pop_table, tartanville$shapefile,
-                            tartanville$pums_h, tartanville$pums_p)
+library(ggplot2)
+library(plyr)
+library(maptools)
+shapefile <- list(boundaries = tartanville$shapefile, roads = tartanville$roads)
+
+tartanville_syneco <- spewr(tartanville$pop_table, shapefile,
+                            tartanville$pums_h, tartanville$pums_p,
+                            locations_method = "roads")
 plot_syneco(tartanville, tartanville_syneco,
             region_name = "Tartanville", pretty = TRUE)
-summarize_syneco(tartanville_syneco,
-                 vars_df = data.frame(var_name = c("NP", "HHINC", "AGEP", "SEX"),
-                                      pop_type = c("hh", "hh", "p", "p"),
-                                      var_type = c("cont", "cont", "cont", "cat"),
-                                      stringsAsFactors = FALSE), verbose = TRUE)
 ```	
      
 ### Sampling of population characteristics {.tabset}
