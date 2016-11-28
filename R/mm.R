@@ -183,16 +183,17 @@ extrapolate_probs_to_pums_joint <- function(p, n, pums, var_names, tab){
 
 #' Make mm object
 #'
-#' @param moments_list a list with each entry as a data frame.  The first df is the first moments, the second the second moments, etc.  Each df has the following format:  place_id | puma_id | var1 moment | var 2 moment |
+#' @param moments_list a list with each entry as a data frame.  The first df is the first moments, the second the second moments, etc.  Each df has the following format:  place_id | puma_id | var1 moment | var 2 moment |.  The dfs are named mom1, mom2, ...
 #' @param assumption is either "independent" or "joint"
 #' @param nMom number of moments
 #' @param type either "cont" for continuous variable or "ord" for ordered variable
 #' @param region identifier for region
 #' @param path if not NULL we will save this object
-#' @return list of moment obj
-make_mm_obj <- function(moments_list, assumption = "independent", nMom = 1,
+#' @return list of moment object
+#' @export
+make_mm_obj <- function(moments_list, assumption = "independence", nMom = 1,
                       type = "cont", region = NULL, path = NULL){
-    stopifnot(assumption %in% c("independent", "joint"))
+    stopifnot(assumption %in% c("independence", "joint"))
     mm_obj<- list(assumption = assumption, nMom = nMom, type = type, region = region, moments_list = moments_list)
     if(!is.null(path)){
         saveRDS(mm_obj, file = path)
@@ -205,6 +206,7 @@ make_mm_obj <- function(moments_list, assumption = "independent", nMom = 1,
 #' @param df where ever column may be imputed (so each column is numeric)
 #' @param method of imputation, "mean" imputes the mean of the other values into the NA values.  "bootstrap" resamples from non-NA vals.
 #' @return df of same dimension, now with no missing vals
+#' @export
 impute_missing_vals <- function(df, method = "mean"){
     ## TODO  add in joint distribution imputations
     dimInit <- dim(df)

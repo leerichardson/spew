@@ -3,8 +3,6 @@ title: "SPEW: A brief tour"
 author: Department of Statistics, Carnegie Mellon University
 output:
   html_document:
-    toc: true
-    toc_float: true
     theme: flatly
     highlight: textmate
 ---
@@ -13,11 +11,14 @@ output:
 library(knitr) # We need the knitr package to set chunk options
 # Set default knitr options for knitting code into the report:
 opts_chunk$set(cache=TRUE, autodep=TRUE, cache.comments=FALSE)
-```	
+```
+<img src = "spew-too.png" style="height:15%;position:absolute;top:0px;right:0px;" />
+	
 
-#	Introduction
-Welcome to SPEW (Synthetic Population and Ecosystems of the World).  This guide is for use in generating a custom synthetic ecosystem of Montreal using the `R` package [spew](https://github.com/leerichardson/spew).  This vignette will walk through the set-up of the ficticious human ecosystem of Tartanville, expanding upon the essential input data for SPEW, supplementary environments and individual-level characteristics, and different methods for producing individuals and their ecosystems.
+#	Introduction {.tabset}
+Welcome to SPEW (Synthetic Population and Ecosystems of the World).  This guide is for use in for basic usage of the `R` package [spew](https://github.com/leerichardson/spew).  This vignette will walk through the set-up of the ficticious human ecosystem of Tartanville, expanding upon the essential input data for SPEW, supplementary environments and individual-level characteristics, and different methods for producing individuals and their ecosystems.
 
+## A true quickstart 	
 
 ### Downloading SPEW	
 Open up an `R` session and run the following commands.
@@ -36,13 +37,15 @@ install_github("leerichardson/spew")
 library(ggplot2)   
 	
 ## Generating Tartanville
+library(maptools)
+library(plyr)
 devtools::load_all("~/spew")
 data(tartanville)
 tartanville_syneco <- spewr(tartanville$pop_table, tartanville$shapefile,
                             tartanville$pums_h, tartanville$pums_p)
 plot_syneco(tartanville, tartanville_syneco,
             region_name = "Tartanville", pretty = TRUE)
-results <- summarize_syneco(tartanville_syneco,
+summarize_syneco(tartanville_syneco,
                  vars_df = data.frame(var_name = c("NP", "HHINC", "AGEP", "SEX"),
                                       pop_type = c("hh", "hh", "p", "p"),
                                       var_type = c("cont", "cont", "cont", "cat"),
@@ -52,7 +55,98 @@ results <- summarize_syneco(tartanville_syneco,
 	
 	
 
-### Essential Input Data
+
+## More sampling methods {.tabset}
+
+SPEW uses random sampling to sample both locations of residence for the synthetic individuals and individual records from the microdata.  SPEW is modular in that it can use different methods of sampling to emphasize different aspects of the synthetic ecosystem.  A few methods are demonstrated here.  The methods in **bold** are the default options.
+
+### Sampling of locations {.tabset}
+
+1. **Uniform sampling**
+
+2. Road-based sampling
+
+#### Uniform sampling 
+Uniform sampling of locations means sampling uniformly within the boundaries of a region from the inputted shapefile.  Population density is maintained at a macro-level but may not accurately reflect the actual population density of a region.  For instance, synthetic individuals may be placed in lakes by mistake under this method.
+
+**Ex.** As shown in the 'A true quickstart' tab.
+
+#### Road-based sampling 
+
+**Ex.**
+```{r eval = FALSE}	
+devtools::load_all("~/spew")
+data(tartanville)
+tartanville_syneco <- spewr(tartanville$pop_table, tartanville$shapefile,
+                            tartanville$pums_h, tartanville$pums_p)
+plot_syneco(tartanville, tartanville_syneco,
+            region_name = "Tartanville", pretty = TRUE)
+summarize_syneco(tartanville_syneco,
+                 vars_df = data.frame(var_name = c("NP", "HHINC", "AGEP", "SEX"),
+                                      pop_type = c("hh", "hh", "p", "p"),
+                                      var_type = c("cont", "cont", "cont", "cat"),
+                                      stringsAsFactors = FALSE), verbose = TRUE)
+```	
+     
+### Sampling of population characteristics {.tabset}
+
+1. **Uniform sampling**
+
+2. Iterative Proportional Fitting (IPF)
+
+3. Moment Matching (MM)
+
+
+#### Uniform sampling
+     
+Uniform sampling of population characteristics means sampling from the microdata where each record is given equal weight.  Thus, is the microdata is thought to be representative of the regions, then the resulting synthetic individuals should have close to the correct distribution of population characteristics.  If the microdata is not representative, then we must implement other sampling methods.
+
+**Ex.** As shown in the 'A true quickstart' tab.
+
+
+#### Iterative Proportional Fitting
+
+
+#### Moment Matching
+Say we have the first moment(s) of a continuous or ordered variable(s)'s distribution  for every sub-region in the region of interest (e.g. average household size for every block in Tartanville).  Moment matching is a method to calculate weights for the microdata records so that after sampling, the sample average of the variable(s) will be matched to the given averages.  We demonstrate with the average household size (NP) of Tartanville.  The average household sizes have been exaggerated here as we are generating a small synthetic population.
+
+**Ex.** We first make the `moments` object for use in SPEW.    
+
+       
+```{r}
+NP_avg <- c(3.2, 0, 6.0,
+            2.0, 3.2, 3.1,
+            4.0, 4.8, 3.9)
+supplementary_data <- list(moments = make_mm_obj(moments_list =
+                           list(mom1 = data.frame(place_id = paste0("T", 1:9),
+                                                  puma_id = "T",
+                                                  NP = NP_avg)),
+                           assumption = "independence",
+                                nMom = 1, type = "cont"))
+
+```
+And then we use SPEW.
+
+```{r}
+library(quadprog)
+tartanville_syneco_mm <- spewr(tartanville$pop_table, tartanville$shapefile,
+                               tartanville$pums_h, tartanville$pums_p,
+                               supplementary_data = supplementary_data,
+                               sampling_method = "mm")
+
+plot_syneco(tartanville, tartanville_syneco_mm,
+            region_name = "Tartanville", pretty = TRUE)
+out <- summarize_syneco(tartanville_syneco_mm,
+                 vars_df = data.frame(var_name = c("NP"),
+                                      pop_type = c("hh"),
+                                      var_type = c("cont"),
+                                      stringsAsFactors = FALSE), verbose = TRUE)
+abs(out$NP$Mean - NP_avg[-2])
+```    
+
+## Assigning environments 
+     
+## Essential input data to SPEW format
 
 SPEW requires three essential data inputs connected through the variables `place_id` and `puma_id`.
 
@@ -64,4 +158,4 @@ SPEW requires three essential data inputs connected through the variables `place
 
 Given a row in the table of population counts with the variables `place_id` and `puma_id`, one should be able to find the unique region `place_id` in the shapefile that matches that of the row along with the microdata records with the same `puma_id`.
 	
-
+## Supplementary data format     

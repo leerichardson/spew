@@ -31,24 +31,50 @@ spewr <- function(pop_table, shapefile, pums_h, pums_p,
     if(do_parallel){
         parallel_type <- "SOCK"
     }
-    
-    if(is.null(supplementary_data)){
-        schools <- NULL
-        workplaces <- NULL
-        marginals <- NULL
+
+    ## Add roads
+    if (!is.null(supplementary_data$roads)){
+        shapefile <- list(boundaries = shapefile, roads = supplementary_data$roads)
     }
+
+    supp_data <- get_supp_data(supplementary_data)
 
     ## TODO:  needs adapted to supplementary data
 
     pops <- spew(base_dir = NULL, pop_table = pop_table, shapefile = shapefile,
              pums_h = pums_h, pums_p = pums_p,
-             schools = NULL, workplaces = NULL,
-             marginals = NULL, convert_count = FALSE, parallel_type = parallel_type,
+             schools = supp_data$schools, workplaces = supp_data$workplaces,
+             marginals = supp_data$marginals,
+             convert_count = FALSE, parallel_type = parallel_type,
              sampling_method = sampling_method, locations_method = locations_method,
              outfile_loc = "", do_subset_pums = TRUE, do_write = FALSE)
 
     return(pops)
 }
+
+#' Format the supplementary data so it is compatible with SPEW
+#'
+#' @param supplementary_data list of supplementary data
+#' @return list of supplementary data that is compatible with SPEW
+get_supp_data <- function(supplementary_data){
+    supp_data <- list(schools = NULL, workplaces = NULL,
+                      marginals = NULL)
+    ## Put the data in the proper place
+    if(!is.null(supplementary_data)){
+        nms <- names(supplementary_data)
+        for (ii in 1:length(supplementary_data)) {
+            if(nms[ii] %in% names(supp_data)){
+                ind <- which(names(supp_data) == nms[i])
+                supp_data[[ind]] <- supplementary_data[[ii]]
+            }else if (nms[ii] == "moments"){
+                supp_data$marginals <- supplementary_data[[ii]]
+            }
+        }
+    }
+    return(supp_data)
+}
+
+    
 
 
 #' Plotting the synthetic ecosystem
