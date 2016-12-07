@@ -39,7 +39,6 @@ sample_ipf <- function(n_house, pums_h, pums_p, marginals, alpha = 0, k = .001,
 #' @param pums_p dataframe of people pums
 #' @param marginals list of marginals totals 
 #' @param puma_id id for subsetting the pums 
-#' 
 #' @return pums with only relevant 
 subset_pums <- function(pums_h, pums_p, marginals, puma_id) {
   # Subset PUMS to only marginal and ID variables ----
@@ -74,6 +73,7 @@ subset_pums <- function(pums_h, pums_p, marginals, puma_id) {
 #' @param pums dataframe subsetted to only the marginal vars
 #' @param marginals list containing all of the marginal totals 
 #' @param suffix what we add to the variable name to create the new variable name.  Default is "_marg"
+#' @export
 #' @return pums dataframe with the marginal columns binded on
 align_pums <- function(pums, marginals, suffix="_marg") {
   var_names <- names(marginals)

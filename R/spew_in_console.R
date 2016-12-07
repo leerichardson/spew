@@ -93,7 +93,8 @@ plot_syneco <- function(input_data, syneco, region_name = NULL, pretty = FALSE, 
                                      fill = "gray60", col = "gray60") +
             ggtitle(paste(region_name, "Synthetic Ecosystem")) +
             theme(line = element_blank(),
-                  panel.background = element_rect(fill = "white")
+                  panel.background = element_rect(fill = "white"),
+                  legend.title = element_blank()
                   ) + labs(x = "Longitude", y = "Latitude")
 
         if(!is.null(input_data$roads)){  ## add the roads if available
@@ -111,6 +112,16 @@ plot_syneco <- function(input_data, syneco, region_name = NULL, pretty = FALSE, 
                                 place_id = input_data$shapefile@data$place_id)
         g <- g + geom_text(data = coords_df, aes(x= X1, y = X2, label = place_id),
                            col = "white", size = 8)
+        if(!is.null(input_data$environments)){
+             ## The color blind palette
+        cbbPalette <- c("#E69F00", "#56B4E9",
+                       "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+        cols <- rep(cbbPalette, length.out = length(unique(input_data$environments$Type)))
+        colScale <- scale_colour_manual(name = "reg", values = cols)
+            g <- g + geom_point(data = input_data$environments, aes(x = longitude, y = latitude,
+                                                                    col = Type, group = Type),  shape = 17, size = 5) + colScale
+        }
+        
         print(g)
     } else{
         plot(input_data$shapefile)
@@ -121,6 +132,12 @@ plot_syneco <- function(input_data, syneco, region_name = NULL, pretty = FALSE, 
         text(coords, labels = input_data$shapefile@data$place_id)
         households <- do.call('rbind', lapply(syneco, "[[", 1))
         points(households$longitude, households$latitude, col = 2, pch = 16)
+        if(!is.null(input_data$environments)){
+            cbbPalette <- c("#E69F00", "#56B4E9",
+                       "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+            points(input_data$environments$longitude, input_data$environments$latitude,
+                   pch = 17, col = cbbPalette[factor(input_data$environments$Type)])
+        }
         title(paste(region_name, "Synthetic Ecosystem"))
     }
     invisible(g)

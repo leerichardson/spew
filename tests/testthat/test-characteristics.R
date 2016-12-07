@@ -20,7 +20,7 @@ test_that("Characteristic Assignment Functions", {
     out <- demo_sample(pop_df, char_pums, var_names)
     expect_equal(nrow(na.omit(out)), 0)
 
-    ## Testing make_cat_var_obj
+    ## Testing make_ipf_var_obj
     ll <- vector(mode = "list", length = 2)
     var_name <- "AGEGRP"
     type <- "ord"
@@ -29,7 +29,7 @@ test_that("Characteristic Assignment Functions", {
         ##    bounds <- data.frame(lower=c(0, 5, 7, 10, 12, 15, 18, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85),
         ##                       upper =  c(4, 6, 9, 11, 14, 17, 19, 24, 29, 34, 39, 44, 49, 54, 59, 64, 69, 74, 79, 84, Inf))
     category_name <- "AGEGRP"
-    test <- make_cat_var_obj(var_name, type, bounds, category_name)
+    test <- make_ipf_obj(var_name, type, bounds, category_name)
 
 })
 

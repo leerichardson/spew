@@ -88,7 +88,7 @@ demo_sample <- function(pop_df, char_pums, var_names, args = NULL){
 
 
 
-#' Set up for converting to categorical variable for align_pums
+#' Set up for creating a set of marginal information for IPF sampling
 #'
 #' @param var_name name of the variable matching the PUMS
 #' @param type "ord" for ordinal or  "cat" for categorical, the type of variable to be converted to
@@ -96,7 +96,9 @@ demo_sample <- function(pop_df, char_pums, var_names, args = NULL){
 #' @param category_names short name of the category, will be visible to person.  Either length one and the bounds will be pasted to it or length of the number of rows of the bounds with names of your choice.
 #' @param output_file if not NULL then we save the file as a rds object to output_file
 #' @param df data frame with place_id and category counts
-make_cat_var_obj<- function(var_name, type="ord", bounds, category_name, output_file = NULL, df = NULL){
+#' @return a list in the format for use in IPF
+#' @export
+make_ipf_obj<- function(var_name, type="ord", bounds, category_name, output_file = NULL, df = NULL){
     stopifnot(all(is.numeric(c(bounds[, 1], bounds[, 2]))))
     stopifnot(sum(colnames(bounds) %in% c("upper", "lower")) == 2)
     stopifnot(all(bounds[,1] <= bounds[,2]))
