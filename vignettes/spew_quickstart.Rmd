@@ -167,7 +167,6 @@ ipf_obj_hhinc
 
 ## Head of Household Race
 var_name <- c("RAC1P")
-var_name <- "HHINC"
 type <- "cat"
 bounds <- data.frame(lower = c(1, 2), upper = c(1, 2))
 category_name <- c("Tartan", "Argyle")
@@ -259,13 +258,116 @@ SPEW requires three essential data inputs connected through the variables `place
 
 | Input Data        | Description                                                    | Required Variables    | Format |
 |-------------------|----------------------------------------------------------------|-----------------------|--------|
-| Population Counts | Table of number of individuals per region                      | `place_id`, `puma_id` | `.csv` |
-| Shapefile         | Spatial boundaries of the regions in Population Counts         | `place_id`            | `.shp` |
-| Microdata         | Table of individual records with individual-level characteristics | `puma_id`             | `.csv` |
+| Population Counts | Table of number of individuals per region.                      | `place_id`, `puma_id` | `.csv` |
+| Shapefile         | Spatial boundaries of the regions in Population Counts.         | `place_id`            | `.shp` |
+| Microdata         | Table of individual records with individual-level characteristics.  Also known as Public Use Microdata Samples (PUMS).  We need both household-level microdata (`pums_h`) and individual-level microdata (`pums_p`). | `puma_id`             | `.csv` |
 
-Given a row in the table of population counts with the variables `place_id` and `puma_id`, one should be able to find the unique region `place_id` in the shapefile that matches that of the row along with the microdata records with the same `puma_id`. 
+Given a row in the table of population counts with the variables `place_id` and `puma_id`, one should be able to find the unique region `place_id` in the shapefile that matches that of the row along with the microdata records with the same `puma_id`.
+
+Additionally, the above may be combined into a list along with a `roads` variable, `environments` variable and a `supplementary_data` variable to form an object used to spew the final synthetic ecosystem, e.g. in the format of `tartanville`
+```{r}
+data(tartanville)
+names(tartanville)
+class(tartanville)
+lapply(tartanville, class)
+```	            
 	
 ## Supplementary data format
 
+### Supplementary data formats
+Due to the increasing complexity of the data required for more sophisticated sampling methods, we describe here the form supplementary data needs to be in.
+   
+### Road-based sampling (`roads`)
+The roads are in the form of spatial lines.  
 
-## Advanced SPEW   
+```{r}
+data(tartanville)
+class(tartanville$roads)
+```
+To create a synthetic ecosystem, we need to adapt the `shapefile` argument of the function `spewr`.  It needs the following format
+
+```
+shapefile <- list(boundaries = {orig.shapefile.regions}, roads = {my.roads})
+```  
+
+### Moment Matching (MM) (`moments`)
+The moments object is created through the `make_mm_obj` function.  This function requires a `moments_list` argument which has the following format.
+
+ + `mom1` a data frame with the columns `place_id`, `puma_id` and `var1` through `var{p}` which are the average for `var1` through `var{p}` respectively for the given place.
+
++ `assumption` is either "independence" or "joint" which effects the sampling.
+
++ `nMom` should be 1 at this moment in time
+
++ `type` should be "cont"  for continuous variables
+```
+moments_list <- list(mom1 = data.frame(place_id = {my.place.ids}, puma_id = {my.pumas},
+                                       var1 = {var1.avg}, var2 = {var2.avg}, ..., var{p} ={varp.avg}),
+				       assumption = {my.assumption},
+				       nMom = 1, type = "cont")
+```          
+Finally, the `moments` object is added to the list of supplementary data,
+
+```
+supplementary_data <- list(moments = moments)
+```		 	     
+### Iterative Proportional Fitting (IPF) (`marginals`)
+The `marginals` requires the most data.  The variable `marginals` is itself a list such as
+```
+list(var1 = ipf_obj_var1[[1]], var2 = ipf_obj_var2[[1]], var{p} = ipf_obj_varp[[1]])
+```
+The names of the list must be names that are either found in resulting synthetic households or synthetic persons.
+
+The individual IPF objects are created using the `make_ipf_obj` function requiring the following arguments:
+
++ `var_name` name of the variable that must match a column name of the resulting synthetic households or synthetic persons.
+
++ `bounds` either "ord" for ordinal or  "cat" for categorical, the type of variable to be converted to
+
++ `category_name` short name of the category, will be visible to person.  Either length one and the bounds will be pasted to it or length of the number of rows of the bounds with names of your choice.
+
++ `df` data frame with place_id and category counts
+
+Finally, the `marginals` object is added to the list of supplementary data,
+
+```
+supplementary_data <- list(marginals = marginals)
+```		 	       
+
+		    
+### Environments  (`environments`)
+This is a data frame with the following arguments
+
+```
+environments <- data.frame(ID = {IDs}, Type = {environment.type},
+	     longitude = {longitude}, latitude = {latitude},
+	     capacity = {capacity.of.place})
+```	     
+
+## Advanced SPEW
+The tools shown in this vignette are mainly for small synthetic ecosystems ( < 1 million synthetic individuals).  However, SPEW is equipped to produce large synthetic ecosystems.
+
+The function `call_spew` is a function that automates the process of reading in data from pre-specified folders and writes out the synthetic ecosystems to files within an output folder.
+
+It is helpful to have the following directory structure
+    
++ region_to_spew
+	+ input
+		+ counts
+	+ marginals
+      	+ pums
+      	+ shapefiles
+	+ output
+  	+ logfiles
+
+In `call_spew`, two formats have been adapted to speed the process of SPEW due to the similar nature of the data.  The first is "usa" for US states as the data all originates from the US Census.  The second is "ipums" where the data originates from IPUMS-I and GeoHive.
+
+A third custom option is available for data sources that do not fit into either of the above options.
+
+Additionally, `call_spew` has been adapted to specifically assign schools from [NCES](http://nces.ed.gov/ipeds/datacenter/) so that children are assigned to either private or public schools, within the county if possible based upon the appropriate grade range from the microdata from the US Census.
+
+Functions are available to provide graphical and textual summaries of these synthetic ecosystems generated by `call_spew`.
+
+Finally, `call_spew` has been painstakingly designed to support 3 parallel backends (SOCK, RMPI, and MC) to provide the most efficient use of available computing resources in addition to the non-parallel "SEQ" option.
+
+For more information, please see the [full documentation]().	 

@@ -315,9 +315,11 @@ tartanville_syneco_mm &lt;- spewr(tartanville$pop_table, tartanville$shapefile,
 <p><strong>Ex.</strong> We must make the <code>marginals</code> object for use of the IPF sampling method. We create two marginal objects, one for household income and the other for head of household race and combine them together for use in SPEW.</p>
 <pre class="r"><code>## Income
 var_name &lt;- &quot;HHINC&quot;
+## How to cut the variable
 type &lt;- &quot;ord&quot;
 bounds &lt;- data.frame(lower = c(0, 50), upper = c(49, Inf))
 category_name &lt;- c(&quot;HHINC_0-49&quot;, &quot;HHINC_50-Inf&quot;)
+## How often we expect to see each category for each region.
 df &lt;- data.frame(place_id = paste0(&quot;T&quot;, 1:9),  v1 = c(30, 0, 5, 10, 13, 9, 2, 1, 5))
 df$v2 &lt;- tartanville$pop_table$n_house - df$v1
 #
@@ -346,7 +348,6 @@ ipf_obj_hhinc</code></pre>
 ## 2 HHINC_50-Inf    50   Inf</code></pre>
 <pre class="r"><code>## Head of Household Race
 var_name &lt;- c(&quot;RAC1P&quot;)
-var_name &lt;- &quot;HHINC&quot;
 type &lt;- &quot;cat&quot;
 bounds &lt;- data.frame(lower = c(1, 2), upper = c(1, 2))
 category_name &lt;- c(&quot;Tartan&quot;, &quot;Argyle&quot;)
@@ -361,7 +362,6 @@ ipf_obj &lt;- list(HHINC = ipf_obj_hhinc[[1]], RAC1P = ipf_obj_rac1p[[1]])
 supplementary_data &lt;- list(moments = ipf_obj)</code></pre>
 <p>As demonstration of how we cut our variables, we use a function called <code>align_pums</code>.</p>
 <pre class="r"><code>pums_h &lt;- align_pums(tartanville$pums_h, ipf_obj, suffix = &quot;_ipf&quot;) # split into categories
-
 kable(head(pums_h))</code></pre>
 <table>
 <thead>
@@ -445,7 +445,7 @@ tartanville_syneco_ipf &lt;- spewr(tartanville$pop_table, tartanville$shapefile,
 ## [1] &quot;Region 7 out of 9&quot;
 ## [1] &quot;Region 8 out of 9&quot;
 ## [1] &quot;Region 9 out of 9&quot;
-## [1] &quot;Location runs in: 1.54&quot;</code></pre>
+## [1] &quot;Location runs in: 1.4&quot;</code></pre>
 <pre class="r"><code>out &lt;- summarize_syneco(tartanville_syneco_ipf,
                  vars_df = data.frame(var_name = c(&quot;HHINC_ipf&quot;, &quot;RAC1P_ipf&quot;),
                                       pop_type = c(&quot;hh&quot;, &quot;hh&quot;),
@@ -575,31 +575,132 @@ table(t1_assignments$school)</code></pre>
 <tbody>
 <tr class="odd">
 <td align="left">Population Counts</td>
-<td align="left">Table of number of individuals per region</td>
+<td align="left">Table of number of individuals per region.</td>
 <td align="left"><code>place_id</code>, <code>puma_id</code></td>
 <td align="left"><code>.csv</code></td>
 </tr>
 <tr class="even">
 <td align="left">Shapefile</td>
-<td align="left">Spatial boundaries of the regions in Population Counts</td>
+<td align="left">Spatial boundaries of the regions in Population Counts.</td>
 <td align="left"><code>place_id</code></td>
 <td align="left"><code>.shp</code></td>
 </tr>
 <tr class="odd">
 <td align="left">Microdata</td>
-<td align="left">Table of individual records with individual-level characteristics</td>
+<td align="left">Table of individual records with individual-level characteristics. Also known as Public Use Microdata Samples (PUMS). We need both household-level microdata (<code>pums_h</code>) and individual-level microdata (<code>pums_p</code>).</td>
 <td align="left"><code>puma_id</code></td>
 <td align="left"><code>.csv</code></td>
 </tr>
 </tbody>
 </table>
 <p>Given a row in the table of population counts with the variables <code>place_id</code> and <code>puma_id</code>, one should be able to find the unique region <code>place_id</code> in the shapefile that matches that of the row along with the microdata records with the same <code>puma_id</code>.</p>
+<p>Additionally, the above may be combined into a list along with a <code>roads</code> variable, <code>environments</code> variable and a <code>supplementary_data</code> variable to form an object used to spew the final synthetic ecosystem, e.g. in the format of <code>tartanville</code></p>
+<pre class="r"><code>data(tartanville)
+names(tartanville)</code></pre>
+<pre><code>## [1] &quot;pop_table&quot;    &quot;shapefile&quot;    &quot;pums_h&quot;       &quot;pums_p&quot;      
+## [5] &quot;roads&quot;        &quot;environments&quot;</code></pre>
+<pre class="r"><code>class(tartanville)</code></pre>
+<pre><code>## [1] &quot;list&quot;</code></pre>
+<pre class="r"><code>lapply(tartanville, class)</code></pre>
+<pre><code>## $pop_table
+## [1] &quot;data.frame&quot;
+## 
+## $shapefile
+## [1] &quot;SpatialPolygonsDataFrame&quot;
+## attr(,&quot;package&quot;)
+## [1] &quot;sp&quot;
+## 
+## $pums_h
+## [1] &quot;data.frame&quot;
+## 
+## $pums_p
+## [1] &quot;data.frame&quot;
+## 
+## $roads
+## [1] &quot;SpatialLinesDataFrame&quot;
+## attr(,&quot;package&quot;)
+## [1] &quot;sp&quot;
+## 
+## $environments
+## [1] &quot;data.frame&quot;</code></pre>
 </div>
 <div id="supplementary-data-format" class="section level2">
 <h2>Supplementary data format</h2>
+<div id="supplementary-data-formats" class="section level3">
+<h3>Supplementary data formats</h3>
+<p>Due to the increasing complexity of the data required for more sophisticated sampling methods, we describe here the form supplementary data needs to be in.</p>
+</div>
+<div id="road-based-sampling-roads" class="section level3">
+<h3>Road-based sampling (<code>roads</code>)</h3>
+<p>The roads are in the form of spatial lines.</p>
+<pre class="r"><code>data(tartanville)
+class(tartanville$roads)</code></pre>
+<pre><code>## [1] &quot;SpatialLinesDataFrame&quot;
+## attr(,&quot;package&quot;)
+## [1] &quot;sp&quot;</code></pre>
+<p>To create a synthetic ecosystem, we need to adapt the <code>shapefile</code> argument of the function <code>spewr</code>. It needs the following format</p>
+<pre><code>shapefile &lt;- list(boundaries = {orig.shapefile.regions}, roads = {my.roads})</code></pre>
+</div>
+<div id="moment-matching-mm-moments" class="section level3">
+<h3>Moment Matching (MM) (<code>moments</code>)</h3>
+<p>The moments object is created through the <code>make_mm_obj</code> function. This function requires a <code>moments_list</code> argument which has the following format.</p>
+<ul>
+<li><p><code>mom1</code> a data frame with the columns <code>place_id</code>, <code>puma_id</code> and <code>var1</code> through <code>var{p}</code> which are the average for <code>var1</code> through <code>var{p}</code> respectively for the given place.</p></li>
+<li><p><code>assumption</code> is either “independence” or “joint” which effects the sampling.</p></li>
+<li><p><code>nMom</code> should be 1 at this moment in time</p></li>
+<li><p><code>type</code> should be “cont” for continuous variables</p>
+<pre><code>moments_list &lt;- list(mom1 = data.frame(place_id = {my.place.ids}, puma_id = {my.pumas},
+                                   var1 = {var1.avg}, var2 = {var2.avg}, ..., var{p} ={varp.avg}),
+                   assumption = {my.assumption},
+                   nMom = 1, type = &quot;cont&quot;)</code></pre>
+<p>Finally, the <code>moments</code> object is added to the list of supplementary data,</p></li>
+</ul>
+<pre><code>supplementary_data &lt;- list(moments = moments)</code></pre>
+</div>
+<div id="iterative-proportional-fitting-ipf-marginals" class="section level3">
+<h3>Iterative Proportional Fitting (IPF) (<code>marginals</code>)</h3>
+<p>The <code>marginals</code> requires the most data. The variable <code>marginals</code> is itself a list such as</p>
+<pre><code>list(var1 = ipf_obj_var1[[1]], var2 = ipf_obj_var2[[1]], var{p} = ipf_obj_varp[[1]])</code></pre>
+<p>The names of the list must be names that are either found in resulting synthetic households or synthetic persons.</p>
+<p>The individual IPF objects are created using the <code>make_ipf_obj</code> function requiring the following arguments:</p>
+<ul>
+<li><p><code>var_name</code> name of the variable that must match a column name of the resulting synthetic households or synthetic persons.</p></li>
+<li><p><code>bounds</code> either “ord” for ordinal or “cat” for categorical, the type of variable to be converted to</p></li>
+<li><p><code>category_name</code> short name of the category, will be visible to person. Either length one and the bounds will be pasted to it or length of the number of rows of the bounds with names of your choice.</p></li>
+<li><p><code>df</code> data frame with place_id and category counts</p></li>
+</ul>
+<p>Finally, the <code>marginals</code> object is added to the list of supplementary data,</p>
+<pre><code>supplementary_data &lt;- list(marginals = marginals)</code></pre>
+</div>
+<div id="environments-environments" class="section level3">
+<h3>Environments (<code>environments</code>)</h3>
+<p>This is a data frame with the following arguments</p>
+<pre><code>environments &lt;- data.frame(ID = {IDs}, Type = {environment.type},
+         longitude = {longitude}, latitude = {latitude},
+         capacity = {capacity.of.place})</code></pre>
+</div>
 </div>
 <div id="advanced-spew" class="section level2">
 <h2>Advanced SPEW</h2>
+<p>The tools shown in this vignette are mainly for small synthetic ecosystems ( &lt; 1 million synthetic individuals). However, SPEW is equipped to produce large synthetic ecosystems.</p>
+<p>The function <code>call_spew</code> is a function that automates the process of reading in data from pre-specified folders and writes out the synthetic ecosystems to files within an output folder.</p>
+<p>It is helpful to have the following folders</p>
+<ul>
+<li>region_to_spew
+<ul>
+<li>input
+<ul>
+<li>counts</li>
+</ul></li>
+<li>marginals
+<ul>
+<li>pums</li>
+<li>shapefiles</li>
+</ul></li>
+<li>output</li>
+<li>logfiles</li>
+</ul></li>
+</ul>
 </div>
 </div>
 
