@@ -12,6 +12,8 @@ get_dist_mat(pop, places, dist_fxn = haversine_dist)
 \item{places}{data frame of places to assign with n rows}
 
 \item{dist_fxn}{currently "haversine" with args for x1, y1, x2, y2, returning a scalar value between 0 and 1}
+
+\item{cap_fxn}{a function with one argument, a single capacity.  This should be a monotone increasing function.  The default is cap_default.}
 }
 \value{
 m x n matrix with scaled distance between 0 and 1.  Eg.  Entry ij means that the scaled distance between row i from pop and row j from places is entry ij.

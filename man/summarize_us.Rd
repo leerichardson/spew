@@ -5,7 +5,8 @@
 \title{Summarize us populations}
 \usage{
 summarize_us(output_dir, us_fs, varsToSummarize = list(vars_hh = "base",
-  vars_p = "base"), doPrint = FALSE, sampSize = 10^4, sum_level = 2)
+  vars_p = "base"), doPrint = FALSE, sampSize = 10^4, sum_level = 2,
+  threshold_list = NULL)
 }
 \arguments{
 \item{output_dir}{path}
@@ -19,6 +20,8 @@ summarize_us(output_dir, us_fs, varsToSummarize = list(vars_hh = "base",
 \item{sampSize}{number of people to retain (default is 10000) per region for plotting}
 
 \item{sum_level}{1 - state, 2- country or 3- tract - the subregions which we summarize and eventually plot}
+
+\item{threshold_list}{at list of thresholds and names to convert PUMS into factor variables for plotting or use in align_pums}
 }
 \value{
 list

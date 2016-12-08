@@ -5,7 +5,7 @@
 \title{Version 2 of run_diags.  This will instead return a row of summary numbers with a corresponding column name.}
 \usage{
 summary_diags(type = "hh", input_dir = "./", output_dir = input_dir,
-  summary_vars = "base", region_name = basename(input_dir),
+  ummary_vars = "base", region_name = basename(input_dir),
   var_list = NULL)
 }
 \arguments{
@@ -15,11 +15,11 @@ summary_diags(type = "hh", input_dir = "./", output_dir = input_dir,
 
 \item{output_dir}{Directory where files should be output.}
 
-\item{summary_vars}{which variables should we summarize.  The default value is 'base' which includes total number of records.  For households 'base' includes longitude and latitude and the names.  For people, this includes gender.  Otherwise we summarize the base variables and the the variable names which we should summarize.  For the summary output to be something other than a factor variable then see var_list.}
-
 \item{region_name}{string default is basename of input_dir}
 
 \item{var_list}{category labels.  Each name of a list entry should correspond to a variable in summary_vars.  The actual entry then is the category names.}
+
+\item{summary_vars}{which variables should we summarize.  The default value is 'base' which includes total number of records.  For households 'base' includes longitude and latitude and the names.  For people, this includes gender.  Otherwise we summarize the base variables and the the variable names which we should summarize.  For the summary output to be something other than a factor variable then see var_list.}
 }
 \value{
 summary_list list of summary numbers and list of features

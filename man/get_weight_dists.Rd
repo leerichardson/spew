@@ -4,7 +4,8 @@
 \alias{get_weight_dists}
 \title{Weight place assignment probabilities}
 \usage{
-get_weight_dists(dist_mat, places, method = "uniform")
+get_weight_dists(dist_mat, places, method = "uniform",
+  cap_fxn = cap_default)
 }
 \arguments{
 \item{dist_mat}{a m x n matrix where m is the number of people and 

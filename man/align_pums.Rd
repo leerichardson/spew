@@ -4,12 +4,14 @@
 \alias{align_pums}
 \title{Match the pums variables with marginal totals}
 \usage{
-align_pums(pums, marginals)
+align_pums(pums, marginals, suffix = "_marg")
 }
 \arguments{
 \item{pums}{dataframe subsetted to only the marginal vars}
 
 \item{marginals}{list containing all of the marginal totals}
+
+\item{suffix}{what we add to the variable name to create the new variable name.  Default is "_marg"}
 }
 \value{
 pums dataframe with the marginal columns binded on

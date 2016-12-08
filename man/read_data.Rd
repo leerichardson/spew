@@ -2,19 +2,16 @@
 % Please edit documentation in R/read.R
 \name{read_data}
 \alias{read_data}
-\title{Read in all necessary data}
+\title{Read in the SPEW input data}
 \usage{
-read_data(input_dir, folders = list(pop_table = "popTables", pums =
-  "pums/2013", schools = "schools/2013", lookup = "tables", shapefiles =
-  "tiger", workplaces = "workplaces"), data_group = "US",
-  vars = list(household = NA, person = NA))
+read_data(base_dir, folders = list(pop_table = NULL, pums = NULL, shapefiles =
+  NULL, roads = NULL, schools = NULL, lookup = NULL, workplaces = NULL),
+  data_group = "US", vars = list(household = NA, person = NA))
 }
 \arguments{
-\item{input_dir}{character vector specifying the directory containing 
-all of the input data}
+\item{base_dir}{character vector specifying the ecosystem directory}
 
-\item{folders}{list which contains the path of each sub-directory with the 
-specific data}
+\item{folders}{list containing the path of each data sub directory}
 
 \item{data_group}{character either "US", "ipums" or "none" which tells 
 read_data if the input data follows a particular format. Used mainly for 
@@ -28,6 +25,6 @@ list in which each element contains one of our standardized
 data sources
 }
 \description{
-Read in all necessary data
+Based on the hierarchy on the Olympus Supercomputer
 }
 

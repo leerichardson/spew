@@ -5,7 +5,7 @@
 \title{Assign a place with long/lat coords to a synthetic population}
 \usage{
 assign_place_coords(pop, places, place_name = "place", method = "uniform",
-  dist_fxn = euclidean_dist)
+  dist_fxn = euclidean_dist, cap_fxn = cap_default)
 }
 \arguments{
 \item{pop}{data frame with "longitude" and "latitude" columns}
@@ -14,9 +14,11 @@ assign_place_coords(pop, places, place_name = "place", method = "uniform",
 
 \item{place_name}{string that will become the column name of the place}
 
-\item{method}{c("uniform", "capacity") The method on how we assign places}
+\item{method}{c("uniform", "capacity") The method on how we assign places.  The "uniform" argument  means that we do not consider capacity in assignments, only distance.  Conversely, "capacity" means we do consider}
 
-\item{dist_fxn}{(haversine_dist) or a function with args x1, y1, x2, y2}
+\item{dist_fxn}{a function with args x1, y1, x2, y2 that returns a single number.  The default is Euclidean Distance $d((x1, y1), (x2,y2) = \sqrt{(x1-x2)^2 + (y1 - y2)^2}.  The distance should satisfy the requirements of a metric.}
+
+\item{cap_fxn}{a function with one argument, a single capacity.  This should be a monotone increasing function.  The default is cap_default.}
 }
 \value{
 pop data frame with column of place_name with the place_ids
