@@ -90,11 +90,11 @@ demo_sample <- function(pop_df, char_pums, var_names, args = NULL){
 
 #' Set up for creating a set of marginal information for IPF sampling
 #'
-#' @param var_name name of the variable matching the PUMS
+#' @param var_name name of the variable matching the PUMS/microdata
 #' @param type "ord" for ordinal or  "cat" for categorical, the type of variable to be converted to
-#' @param bounds data frame of upper and lower bounds (inclusive) for variables (numeric)
+#' @param bounds dataframe of upper and lower bounds (inclusive) for variables (numeric)
 #' @param category_names short name of the category, will be visible to person.  Either length one and the bounds will be pasted to it or length of the number of rows of the bounds with names of your choice.
-#' @param output_file if not NULL then we save the file as a rds object to output_file
+#' @param output_file if not NULL then we save the file as a RDS object to output_file
 #' @param df data frame with place_id and category counts
 #' @return a list in the format for use in IPF
 #' @export

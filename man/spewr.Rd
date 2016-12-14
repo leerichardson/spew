@@ -10,29 +10,29 @@ spewr(pop_table, shapefile, pums_h, pums_p, supplementary_data = NULL,
 }
 \arguments{
 \item{pop_table}{dataframe with rows corresponding to places which 
-need to have a population generated. Columns also required are "puma_id"
+need to have a population generated. The dataframe needs the  columns  with the follow names: "puma_id"
 and "n_house".}
 
 \item{shapefile}{sp class object used for assigning households to 
 particular locations}
 
-\item{pums_h}{dataframe with microdata corresponding to housegolds}
+\item{pums_h}{dataframe with microdata corresponding to households.  Each row of the dataframe should correspond to one household with characteristics such as household size, household income, etc.}
 
-\item{pums_p}{dataframe with microdata corresponding to people}
+\item{pums_p}{dataframe with microdata corresponding to people.  Each row of the dataframe should correspond to one person with characteristics such as household ID, race, age, etc.}
 
-\item{supplementary_data}{default NULL but otherwise a list of supplementary data which may include schools, workplaces, marginals, or moments.}
+\item{supplementary_data}{default is NULL.   This is a list of supplementary data which may include schools, workplaces, marginals, or moments.}
 
-\item{sampling_method}{character vector indicating the type of sampling 
-method to use, defaults to "uniform". Can also be "ipf" with appropriate marginal data or "mm" with appropriate moments data.}
+\item{sampling_method}{character string indicating the type of sampling 
+method to use, defaults to "uniform". Can also be "ipf" with appropriate marginal data or "mm" with appropriate moments data as supplementary data.}
 
 \item{locations_method}{character vector indicating the type of location 
 sampling to use, defaults to "uniform", can also be "roads"}
 
 \item{convert_count}{logical meant to indicate if we are going to convert 
 population totals from people to household counts. Default: FALSE, assumes
-the population is the total number of households}
+the population in 'pop_table'  is the total number of households per region.}
 
-\item{do_parallel}{should we run this in parallel with the foreach?  Default is FALSE.  If true, the required packages of 'foreach' and `doParallel` must be installed.}
+\item{do_parallel}{a logical indicating whether we should generate synthetic ecoystems in parallel with the foreach  Default is FALSE.  If true, the required packages of 'foreach' and `doParallel` must be installed.}
 }
 \value{
 a synthetic ecosystem with synthetic households, synthetic individuals along with the place_id and puma_id

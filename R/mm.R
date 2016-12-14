@@ -181,14 +181,14 @@ extrapolate_probs_to_pums_joint <- function(p, n, pums, var_names, tab){
 }
 
 
-#' Make mm object
+#' Make moment matching object
 #'
 #' @param moments_list a list with each entry as a data frame.  The first df is the first moments, the second the second moments, etc.  Each df has the following format:  place_id | puma_id | var1 moment | var 2 moment |.  The dfs are named mom1, mom2, ...
-#' @param assumption is either "independent" or "joint"
-#' @param nMom number of moments
+#' @param assumption is either "independent" or "joint".  "independent" assumes that the distributions of the characteristics are independent of one another.  "joint" means we use the empirical distribution of the microdata when finding weights in moment matching.
+#' @param nMom number of moments.  Currently, we only support the first moment, e.g. the average of a variable.  Default is 1.
 #' @param type either "cont" for continuous variable or "ord" for ordered variable
 #' @param region identifier for region
-#' @param path if not NULL we will save this object
+#' @param path if not NULL we will save this object to the specified path as a RDS object.
 #' @return list of moment object
 #' @export
 make_mm_obj <- function(moments_list, assumption = "independence", nMom = 1,

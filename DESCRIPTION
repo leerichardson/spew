@@ -1,12 +1,12 @@
 Package: spew
 Type: Package
 Title: Synthetic Populations and Ecosystems of the World
-Version: 1.1.1
-Date: 2015-11-03
+Version: 1.2.0
+Date: 2016-12-14
 Author: Lee Richardson, Shannon Gallagher, Sam Ventura
 Maintainer: Lee Richardson <leerich@cmu.edu>
 Description: Functions for generating synthetic ecosystems
-License: What license is it under?
+License: 
 Suggests: 
     testthat,
     knitr,
