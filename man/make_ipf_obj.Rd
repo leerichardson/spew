@@ -8,13 +8,13 @@ make_ipf_obj(var_name, type = "ord", bounds, category_name,
   output_file = NULL, df = NULL)
 }
 \arguments{
-\item{var_name}{name of the variable matching the PUMS}
+\item{var_name}{name of the variable matching the PUMS/microdata}
 
 \item{type}{"ord" for ordinal or  "cat" for categorical, the type of variable to be converted to}
 
-\item{bounds}{data frame of upper and lower bounds (inclusive) for variables (numeric)}
+\item{bounds}{dataframe of upper and lower bounds (inclusive) for variables (numeric)}
 
-\item{output_file}{if not NULL then we save the file as a rds object to output_file}
+\item{output_file}{if not NULL then we save the file as a RDS object to output_file}
 
 \item{df}{data frame with place_id and category counts}
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/mm.R
 \name{make_mm_obj}
 \alias{make_mm_obj}
-\title{Make mm object}
+\title{Make moment matching object}
 \usage{
 make_mm_obj(moments_list, assumption = "independence", nMom = 1,
   type = "cont", region = NULL, path = NULL)
@@ -10,20 +10,20 @@ make_mm_obj(moments_list, assumption = "independence", nMom = 1,
 \arguments{
 \item{moments_list}{a list with each entry as a data frame.  The first df is the first moments, the second the second moments, etc.  Each df has the following format:  place_id | puma_id | var1 moment | var 2 moment |.  The dfs are named mom1, mom2, ...}
 
-\item{assumption}{is either "independent" or "joint"}
+\item{assumption}{is either "independent" or "joint".  "independent" assumes that the distributions of the characteristics are independent of one another.  "joint" means we use the empirical distribution of the microdata when finding weights in moment matching.}
 
-\item{nMom}{number of moments}
+\item{nMom}{number of moments.  Currently, we only support the first moment, e.g. the average of a variable.  Default is 1.}
 
 \item{type}{either "cont" for continuous variable or "ord" for ordered variable}
 
 \item{region}{identifier for region}
 
-\item{path}{if not NULL we will save this object}
+\item{path}{if not NULL we will save this object to the specified path as a RDS object.}
 }
 \value{
 list of moment object
 }
 \description{
-Make mm object
+Make moment matching object
 }
 

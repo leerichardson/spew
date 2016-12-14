@@ -11,12 +11,12 @@ plot_syneco(input_data, syneco, region_name = NULL, pretty = FALSE, ...)
 
 \item{syneco}{the outputted synthetic ecosystem data from spewR}
 
-\item{region_name}{string}
+\item{region_name}{string, will become the title of the plot}
 
-\item{pretty}{logical if TRUE, we make a ggplot and return it}
+\item{pretty}{logical if TRUE, we make a ggplot and return it.  Otherwise, we use base R to plot.}
 }
 \value{
-plot of the synthetic ecosystem
+plot of the synthetic ecosystem if applicable
 }
 \description{
 Plotting the synthetic ecosystem
