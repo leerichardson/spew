@@ -1,7 +1,38 @@
-context("Sampling Locations")
+context("Location Sampling")
 
-test_that("Location functions", {
+test_that("Single and Multiple Polygons", {
+  library(sp)
+  library(rgeos)
+  data(sd_data)
+  
+  multiple_polygons <- sample_locations(method = "uniform", 
+                                        place_id = 46027965700, n_house = 100, 
+                                        shapefile = sd_data$shapefiles$shapefile)
+  expect_equal(is.null(multiple_polygons), FALSE)
+  
+  num_samples <- floor(runif(1, min = 1, max = 200))
+  rand_row <- floor(runif(1, min = 1, max = nrow(sd_data$pop_table)))  
+  single_polygon <- sample_locations(method = "uniform", 
+                                     place_id = sd_data$pop_table[rand_row, "place_id"], 
+                                     n_house = num_samples, 
+                                     shapefile = sd_data$shapefiles$shapefile)
+  expect_equal(length(single_polygon), num_samples)
+})
 
+test_that("IPUMS Shapefiles work", {
+  library(sp)
+  library(rgeos)
+  data(uruguay_format)
+  
+  num_samples <- 100
+  place_names <- uruguay_format$shapefiles$place_id
+  for (place in place_names[1:6]) {
+    samp <- sample_locations(method = "uniform", place, num_samples, uruguay_format$shapefiles)
+    expect_equal(length(samp), num_samples)
+  }
+})
+
+test_that("Uniform, Road, Large and Small", {
   # Load in the South Dakota data
   library(maptools)
   library(rgeos)
@@ -62,8 +93,4 @@ test_that("Location functions", {
   road_pts_locs2 <- samp_roads(100, road_pts2, .01)
   expect_true(class(road_pts_locs) == "SpatialPoints")
   expect_true(length(road_pts_locs) == length(road_pts_locs2))
-
-  # Test the reading roads functions, look for speedups   
-  sd_roads <- read_roads(path_to_roads = roads_path, road_id = "46111")
-  expect_true(class(sd_roads) == "SpatialLinesDataFrame")
 })
