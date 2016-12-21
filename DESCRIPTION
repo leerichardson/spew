@@ -6,7 +6,7 @@ Date: 2016-12-14
 Author: Lee Richardson, Shannon Gallagher, Sam Ventura
 Maintainer: Lee Richardson <leerich@cmu.edu>
 Description: Functions for generating synthetic ecosystems
-License: License: GPL-3
+License: GPL-3 
 Suggests: 
     testthat,
     knitr,
