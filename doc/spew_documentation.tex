@@ -16,13 +16,13 @@
 
 \title{\large{Synthetic Populations and Ecosystems of the World} \\
 		Version 1.2.0}
-\author{Bill Eddy}
+\author{\normalsize{Bill Eddy}}
 \author{Shannon Gallagher}
 \author{Lee Richardson}
 \author{Sam Ventura}
 \affil[1]{Department of Statistics, Carnegie Mellon University}
 \affil[2]{MIDAS Informatics Services Group}
-\date{\today}
+\date{\normalsize{\today}}
 
 \begin{document}
 
@@ -34,136 +34,135 @@
 
 \newpage 
 \section{Introduction}
+	This document provides specific details version 1.2.0 of SPEW synthetic ecosystems were generated. All ecosystems are generated with the R package, \verb|spew|. SPEW ecosystems are synchronized with our software, so SPEW 1.2.0 ecosystems are all generated with version 1.2.0 of the software. The \verb|spew| R package and supplementary code is available online at: \\
 	
-	This document provides specific details on how we generate our synthetic ecosystems. As the data and methodology are updated, this document will be updated to reflect the changes. The software used to generate our ecosystems is in the R package, \verb|spew|. The release of ecosystems will be synchoronized with versions of the software. Thus, our version 1.1.0 ecosystems were created with \verb|spew| version 1.1.0. One caveat is that lots of code is written to collect and transform the data for \verb|spew|. This is available online at: \\
-
-		\url{https://github.com/leerichardson/spew_olympus} \\
-
-	In future versions, we'll consolodate these two code bases into one location. 
-	\vspace{1mm}
-
-	In this document, the term SPEW, or \verb|spew|, will be used often. By SPEW, we mean the final synthetic ecosystems. By \verb|spew|, we mean the software used to generate the ecosystems. 
-
-	The current version of SPEW has 124 total synthetic ecosystems, which can be grouped into three categories. We have 52 \textbf{United States} ecosystems, one for each state. The major addition to the United States ecosystems is that locations are samlpled using road data. Second, we have 71 ecosystems using \textbf{IPUMS} data. This is more than previous versions of SPEW, as various speed, storage, and data issues have been resolved. Finally, we have one \textbf{custom} synthetic ecosystem from Canada, which is the same as in previous versions.
-
-	The R package \verb|spew| is designed to abstract the process of raw data sources to final ecosystem. For example, different data sources were used for the United States, Canada, and IPUMS ecosystems, but \verb|spew| created them all. This abstraction enhances our ecosystems in many ways. For one, \verb|spew| requires standardized data. Standardization specifies the exact format of input data to be usable by \verb|spew|. This expedites the process of moving from raw data to final ecosystem. In addition, \verb|spew| makes our ecosytems more reliable. Since \verb|spew| generates each ecosystem, fixing bugs in one place propogates to all other ecosystems. Finally, \verb|spew| is flexible and provides a straighforward way to add new elements to the ecosystem (eg: restaraunts, hospitals, etc...), as new data and methodology is discovered.  
-
-	For interested users, we provide the \verb|spew| source code. This allows users to track down the exact details in generation of their ecosystems. In the future, we hope \verb|spew| will be independent of us, and will be helpful to parties interested in their own synthetic ecosystems. Our software is publically accesible on Github at:  \\
-
 	\url{https://github.com/leerichardson/spew} \\
+
+	SPEW 1.2.0 contains 126 synthetic ecosystems, grouped into three categories:: United States, IPUMS, and Custom. The United States has 52 synthetic ecosystems, one for each state. Each US synthetic ecosystem is a union of tract-level synthetic ecosystems, paired with school and workplace environments. There are 73 IPUMS synthetic ecosystems, each corresponding to a specific country. We refer to these as IPUMS synthetic ecosystems, because they were generated using IPUMS microdata and Shapefiles. IPUMS synthetic ecosytems are unions of administrative level 1 synthetic ecosystems. Finally, we have generated one Custom synthetic ecosystem for Canada, using input data from Statistics Canada. Like the US, the Canada synthetic ecosystem is a union of tract-level ecosostems. The details of SPEW 1.2.0 ecosystems are summarize in Table \ref{tab:spew_1.2.0}. 
+
+	\begin{table}[h!]
+	\label{tab:spew_1.2.0}
+	\caption{Summary of SPEW 1.2.0 Synthetic Ecosystem Characteristics}
+	\begin{tabular}{ |c|c|c|c|c|c| } 
+		\hline
+		Group & Total & Level & Characteristics & Spatial & Environments \\ 
+		\hline \hline 
+		United States & 52 & Tract & IPF & Road-Based & Schools, Workplaces \\ 
+		IPUMS & 73 & Level 1 & SRS & Uniform & None \\ 
+		Custom & 1 & Tract & SRS & Uniform & None \\ 
+		\hline
+	\end{tabular}
+	\end{table}	
+
+	There are two key improvements to SPEW 1.2.0 ecosystems. First, the United States population characteristics are generated using an Iterative Proportional Fitting (IPF) sampling scheme. Second, each ecosystem is paired with a diagnostic report, summarizing the contents of the ecosystem. 
 
 \newpage 
 \section{Data Sources}
+ 	This section describes the data sources we used used to generate our ecosystems. Each ecosystem represents a \textbf{region}. Typically, each region is partitioned into \textbf{sub regions}, the union of which makes up a region. Generating an ecosystem for a region \verb|spew| requires three data sources:
 
-	 	This section describes the data sources we used used to generate our ecosystems. Each ecosystem represents a \textbf{region}. Typically, each region is partitioned into \textbf{sub regions}, the union of which makes up a region. Generating an ecosystem for a region \verb|spew| requires three data sources:
+ 	\begin{enumerate}
+		\item \textbf{Population counts}: How many people are in the region. This tells us the number of either people or households is each sub-region. 
+		\item \textbf{Geographies}: Geographic boundaries of the regions, typically a shapefile. \footnote{From ArcGis: ``A shapefile is an Esri vector data storage format for storing the location, shape, and attributes of geographic features''}. Each polygon in the shapefile corresponds to a sub-region, and these must align with the population counts. 
+		\item \textbf{Microdata}: Individual records. This is typically a data-set in which each row is an individual, and each column is a characteristic of that individual. Some example columns are age, sex, and income.
+	\end{enumerate}
 
-	 	\begin{enumerate}
-			\item \textbf{Population counts}: How many people are in the region. This tells us the number of either people or households is each sub-region. 
-			\item \textbf{Geographies}: Geographic boundaries of the regions, typically a shapefile. \footnote{From ArcGis: ``A shapefile is an Esri vector data storage format for storing the location, shape, and attributes of geographic features''}. Each polygon in the shapefile corresponds to a sub-region, and these must align with the population counts. 
-			\item \textbf{Microdata}: Individual records. This is typically a data-set in which each row is an individual, and each column is a characteristic of that individual. Some example columns are age, sex, and income.
-		\end{enumerate}
+	More data can be included (eg: schools and workplaces) when available. But all \verb|spew| ecosystems use these three data sources.
 
-		More data can be included (eg: schools and workplaces) when available. But all \verb|spew| ecosystems use these three data sources.
+	In the introduction, we mentioned that this version of SPEW has three different data groups: United States, IPUMS, and Canada. The following sections detail the data sources used to generate ecosystems for each group. 
 
-		In the introduction, we mentioned that this version of SPEW has three different data groups: United States, IPUMS, and Canada. The following sections detail the data sources used to generate ecosystems for each group. 
+\subsection{United States}	
+	The United States synthetic ecosystem is our most detailed. Data comes largely from the US census, with supplementary data on schools and workplaces. Because the US census data is so detailed, ecosystems are created at the tract level. This means sub-region ecosystems have population sizes ranging from $500-10,000$. Users can aggregate these tracts together to construct larger synthetic ecosystems. 
 
-	\subsection{United States}
-		
-		The United States synthetic ecosystem is our most detailed. Data comes largely from the US census, with supplementary data on schools and workplaces. Because the US census data is so detailed, ecosystems are created at the tract level. This means sub-region ecosystems have population sizes ranging from $500-10,000$. Users can aggregate these tracts together to construct larger synthetic ecosystems. 
+	\subsubsection{Population Counts}
+	American Community Survey Summary Tables (2006-2010) 
+	\begin{itemize}
+		\item Available at: \url{https://www.census.gov/programs-surveys/acs/technical-documentation/summary-file-documentation.html}
+		\item Total number of households by Tract 
+	\end{itemize}
 
-		\subsubsection{Population Counts}
-		American Community Survey Summary Tables (2006-2010) 
-		\begin{itemize}
-			\item Available at: \url{https://www.census.gov/programs-surveys/acs/technical-documentation/summary-file-documentation.html}
-			\item Total number of households by Tract 
-		\end{itemize}
+	\subsubsection{Geographies}
+	US Census Topologically Integrated Geographic Encoding and Referencing (TIGER) Shapefiles (2010)
+	\begin{itemize}
+		\item Available at \url{https://www.census.gov/geo/maps-data/data/tiger.html}
+		\item Geographies at the Census tract level \footnote{See: \url{http://www2.census.gov/geo/pdfs/reference/geodiagram.pdf} for an image of the Census Geographic Hierarchy}
+		\item Roads at the County level
+	\end{itemize}
 
-		\subsubsection{Geographies}
-		US Census Topologically Integrated Geographic Encoding and Referencing (TIGER) Shapefiles (2010)
-		\begin{itemize}
-			\item Available at \url{https://www.census.gov/geo/maps-data/data/tiger.html}
-			\item Geographies at the Census tract level \footnote{See: \url{http://www2.census.gov/geo/pdfs/reference/geodiagram.pdf} for an image of the Census Geographic Hierarchy}
-			\item Roads at the County level
-		\end{itemize}
+	\subsubsection{Microdata}
+	1-Year American Community Survey (2013)
+	\begin{itemize}
+		\item Available at: \url{http://www2.census.gov/acs2013_1yr/pums/}
+		\item Corresponds to 2010 defined Census geography
+		\item Both household and people populations
+		\item See appendix for variables used 
+	\end{itemize}
 
-		\subsubsection{Microdata}
-		1-Year American Community Survey (2013)
-		\begin{itemize}
-			\item Available at: \url{http://www2.census.gov/acs2013_1yr/pums/}
-			\item Corresponds to 2010 defined Census geography
-			\item Both household and people populations
-			\item See appendix for variables used 
-		\end{itemize}
+	\subsubsection{Schools}
+	National Center for Education Statistics School Data (2011-2013)
+	\begin{itemize}
+		\item Available at: \url{http://nces.ed.gov/ccd/elsi/tableGenerator.aspx}
+		\item Public Schools (2013) have latitude/longitude information. Private schools (2011) only have county level information. 
+		\item More information at: \url{http://data.olympus.psc.edu/syneco/west/north_america/united_states/schools/}
+	\end{itemize}
 
-		\subsubsection{Schools}
-		National Center for Education Statistics School Data (2011-2013)
-		\begin{itemize}
-			\item Available at: \url{http://nces.ed.gov/ccd/elsi/tableGenerator.aspx}
-			\item Public Schools (2013) have latitude/longitude information. Private schools (2011) only have county level information. 
-			\item More information at: \url{http://data.olympus.psc.edu/syneco/west/north_america/united_states/schools/}
-		\end{itemize}
+	\subsubsection{Workplaces}		
+	ESRI Workplace Data (2009)
+	\begin{itemize}
+		\item Available with a license from ESRI
+		\item ID, employee counts, and county of different businesses in the US
+		\item More information at \url{http://data.olympus.psc.edu/syneco/west/north_america/united_states/workplaces/}
+	\end{itemize}
 
-		\subsubsection{Workplaces}		
-		ESRI Workplace Data (2009)
-		\begin{itemize}
-			\item Available with a license from ESRI
-			\item ID, employee counts, and county of different businesses in the US
-			\item More information at \url{http://data.olympus.psc.edu/syneco/west/north_america/united_states/workplaces/}
-		\end{itemize}
+\subsection{IPUMS}
+	IPUMS synthetic ecosystems combine three global data sources. The most important of which is the Minnesota Population Center's International Public Microdata Sample (IPUMS). Not only does IPUMS provide microdata, but also corresponding shapefiles, which allow us to sample the sub-region synthetic ecosystems more accurately. Population counts come from another global source, Geohive. In this version, we omit data collected from the GADM project, although we hope to incorporate this greater geographic detail in future versions. 
 
-	\subsection{IPUMS}
+	\subsubsection{Population Counts}
+	Geohive 
+	\begin{itemize}
+		\item Available at: \url{http://www.geohive.com/}
+		\item Compiles population statistics from various statistical agencies throughout the world (The list can be seen here \url{http://www.geohive.com/earth/statorgz.aspx})
+		\item Population counts from over 150 countries at various administrative levels. 
+	\end{itemize}
 
-		IPUMS synthetic ecosystems combine three global data sources. The most important of which is the Minnesota Population Center's International Public Microdata Sample (IPUMS). Not only does IPUMS provide microdata, but also corresponding shapefiles, which allow us to sample the sub-region synthetic ecosystems more accurately. Population counts come from another global source, Geohive. In this version, we omit data collected from the GADM project, although we hope to incorporate this greater geographic detail in future versions. 
+	\subsubsection{Geography}
+	IPUMS Shapefiles 
+	\begin{itemize}
+		\item Available at: \url{https://international.ipums.org/international/}
+		\item Shapefiles corresponding to IPUMS microdata. 
+		\item Available at administrative level 1 
+	\end{itemize}
 
-		\subsubsection{Population Counts}
-		Geohive 
-		\begin{itemize}
-			\item Available at: \url{http://www.geohive.com/}
-			\item Compiles population statistics from various statistical agencies throughout the world (The list can be seen here \url{http://www.geohive.com/earth/statorgz.aspx})
-			\item Population counts from over 150 countries at various administrative levels. 
-		\end{itemize}
+	\subsubsection{Microdata}	
+	International Public Use Microdata Sample (IPUMS)
+	\begin{itemize}			
+		\item Available at: \url{https://international.ipums.org/international/}
+		\item Microdata from 82 different countries 
+		\item See the appendix for the variables used 
+	\end{itemize}
 
-		\subsubsection{Geography}
-		IPUMS Shapefiles 
-		\begin{itemize}
-			\item Available at: \url{https://international.ipums.org/international/}
-			\item Shapefiles corresponding to IPUMS microdata. 
-			\item Available at administrative level 1 
-		\end{itemize}
+\subsection{Canada}	
+	Our Canadian synthetic ecosystem is similar to the United States, since it's also at the tract level. However, detailed data coming from roads, schools, and workplaces is not included. Our Canadian inpur data comes from Statistics Canada.
 
-		\subsubsection{Microdata}	
-		International Public Use Microdata Sample (IPUMS)
-		\begin{itemize}			
-			\item Available at: \url{https://international.ipums.org/international/}
-			\item Microdata from 82 different countries 
-			\item See the appendix for the variables used 
-		\end{itemize}
+	\subsubsection{Population Counts}
+	Statistics Canada Census Profile (2011)
+	\begin{itemize}
+		\item Available at: \url{https://www12.statcan.gc.ca/census-recensement/2011/dp-pd/prof/details/download-telecharger/comprehensive/comp-csv-tab-dwnld-tlchrgr.cfm?Lang=E} specifying the Census Tracts option.
+		\item Total population for every tract 
+	\end{itemize}
 
+	\subsubsection{Geographies}
+	Statistics Canada Boundary File (2011)
+	\begin{itemize}
+		\item Available at: \url{https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/bound-limit-2011-eng.cfm} specifying the English, ArcGIS, and Census tract option.
+		\item Geographies at the Census Tract level 
+	\end{itemize}
 
-	\subsection{Canada}	
-
-		Our Canadian synthetic ecosystem is similar to the United States, since it's also at the tract level. However, detailed data coming from roads, schools, and workplaces is not included. Our Canadian inpur data comes from Statistics Canada.
-
-		\subsubsection{Population Counts}
-		Statistics Canada Census Profile (2011)
-		\begin{itemize}
-			\item Available at: \url{https://www12.statcan.gc.ca/census-recensement/2011/dp-pd/prof/details/download-telecharger/comprehensive/comp-csv-tab-dwnld-tlchrgr.cfm?Lang=E} specifying the Census Tracts option.
-			\item Total population for every tract 
-		\end{itemize}
-
-		\subsubsection{Geographies}
-		Statistics Canada Boundary File (2011)
-		\begin{itemize}
-			\item Available at: \url{https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/bound-limit-2011-eng.cfm} specifying the English, ArcGIS, and Census tract option.
-			\item Geographies at the Census Tract level 
-		\end{itemize}
-
-		\subsubsection{Microdata}
-		Public Use Microdata File (2011) 
-		\begin{itemize}
-			\item Obtained with special permissions from Statistics Canada
-			\item Variables defined in the appendix
-		\end{itemize}
+	\subsubsection{Microdata}
+	Public Use Microdata File (2011) 
+	\begin{itemize}
+		\item Obtained with special permissions from Statistics Canada
+		\item Variables defined in the appendix
+	\end{itemize}
 
 \newpage
 \section{Methods}		
