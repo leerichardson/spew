@@ -1,13 +1,13 @@
 Package: spew
 Type: Package
 Title: Synthetic Populations and Ecosystems of the World
-Version: 1.2.0
+Version: 1.3.0
 Date: 2016-12-14
 Author: Lee Richardson, Shannon Gallagher, Sam Ventura
-Maintainer: Lee Richardson <leerich@cmu.edu>
-Description: Functions for generating synthetic ecosystems
+Maintainer: Lee Richardson <leerichardson2013@gmail.com>
+Description: General purpose Synthetic Ecosystem generation
 License: GPL-3 
-Suggests: 
+Suggests:
     testthat,
     knitr,
     rmarkdown,
@@ -16,11 +16,14 @@ Suggests:
     stringdist,
     ggmap,
     rgeos,
-    ipfp
+    Rmpi,
+    mipfp,
+    quadprog,
+    data.table,
+    snow
 VignetteBuilder: knitr
-Imports: 
+Imports:
     sp,
     maptools,
-    plyr,
-    data.table
+    plyr
 RoxygenNote: 5.0.1
