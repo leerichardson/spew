@@ -5,17 +5,11 @@
 \title{Extract data-group from location name}
 \usage{
 get_data_group(location_name)
-
-get_data_group(location_name)
 }
 \arguments{
 \item{location}{name character vector}
-
-\item{location}{name character vector}
 }
 \description{
-Extract data-group from location name
-
 Extract data-group from location name
 }
 

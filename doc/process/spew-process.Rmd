@@ -1,0 +1,38 @@
+---
+title: "SPEW Development Process"
+author: "Lee Richardson"
+date: "January 2, 2017"
+output: html_document
+---
+
+This document details the SPEW development process.
+
+# Organization of SPEW 
+
+# Adding R Code 
+  Avoid one-off if-statements if possible. 
+  Use defaults
+  If necesary, please write a comment explaining why this is here, eg: ipf IF statement. 
+  If using another function, use package::function 
+  If using a "Suggests" package, do requireNamespace
+  
+# Unit Testing 
+
+# Documentation 
+
+## Functions 
+
+## New Data for SPEW ecosystem releases 
+
+## New Methods for SPEW ecosystem release 
+
+# Automated Checks 
+
+# Integration with Travis 
+
+# Adding Major Features 
+
+## Branches
+
+## Code Reviews 
+

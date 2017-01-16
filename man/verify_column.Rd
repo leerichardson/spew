@@ -5,21 +5,13 @@
 \title{Verify the column is the correct size}
 \usage{
 verify_column(column, df_size)
-
-verify_column(column, df_size)
 }
 \arguments{
 \item{column}{to be verified}
 
 \item{data-frame}{size}
-
-\item{column}{to be verified}
-
-\item{data-frame}{size}
 }
 \description{
-Verify the column is the correct size
-
 Verify the column is the correct size
 }
 

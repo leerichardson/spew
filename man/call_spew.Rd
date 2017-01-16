@@ -8,7 +8,7 @@ call_spew(base_dir, folders = NULL, data_group = "US",
   parallel_type = "SEQ", sampling_method = "uniform",
   locations_method = "uniform", convert_count = FALSE,
   vars = list(household = NA, person = NA), do_subset_pums = TRUE,
-  doWrite = TRUE)
+  do_write = TRUE)
 }
 \arguments{
 \item{base_dir}{character specifying ecosystem directory}
@@ -30,12 +30,14 @@ population totals from people to household counts. Default: FALSE, assumes
 the population is the total number of households}
 
 \item{vars}{list with two elements: household and person. This specifies 
-which variables to include in the corresponding household and person PUMS data-set
- @param do_subset_pums logical, do we need to subset PUMS when doing the method of sampling.  Default is TRUE.}
+which variables to include in the corresponding household and person PUMS data-set}
+
+\item{do_subset_pums}{logical, do we need to subset PUMS when doing the method of sampling.  Default is TRUE.}
+
+\item{do_write}{logical, do we need to write out the synthetic populations and environments?
+If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.}
 
 \item{data-group}{character, either "US", "ipums", or "none"}
-
-\item{do_write}{logical, do we need to write out the synthetic populations and environments?  If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.}
 }
 \value{
 logical indicating whether or not this run of spew ended successfully

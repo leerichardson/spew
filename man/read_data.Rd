@@ -6,7 +6,8 @@
 \usage{
 read_data(base_dir, folders = list(pop_table = NULL, pums = NULL, shapefiles =
   NULL, roads = NULL, schools = NULL, lookup = NULL, workplaces = NULL),
-  data_group = "US", vars = list(household = NA, person = NA))
+  data_group = "US", vars = list(household = NA, person = NA),
+  time = TRUE)
 }
 \arguments{
 \item{base_dir}{character vector specifying the ecosystem directory}

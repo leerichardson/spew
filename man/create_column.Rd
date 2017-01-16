@@ -5,8 +5,6 @@
 \title{Parse a SPEW Log-file to into an appropriate column}
 \usage{
 create_column(logfile, name, type = "numeric")
-
-create_column(logfile, name, type = "numeric")
 }
 \arguments{
 \item{logfile}{character vector of a SPEW log-file}
@@ -16,18 +14,8 @@ extract from the SPEW log-file}
 
 \item{character}{default is "numeric". Determines whether
 or not the final lgogfile should be converted to a numeric.}
-
-\item{logfile}{character vector of a SPEW log-file}
-
-\item{name}{character with the name of the column to
-extract from the SPEW log-file}
-
-\item{character}{default is "numeric". Determines whether
-or not the final lgogfile should be converted to a numeric.}
 }
 \description{
-Parse a SPEW Log-file to into an appropriate column
-
 Parse a SPEW Log-file to into an appropriate column
 }
 

@@ -38,7 +38,8 @@ sampling to use, defaults to "uniform", can also be "roads"}
 
 \item{do_subset_pums}{logical, do we need to subset PUMS when doing the method of sampling.  Default is TRUE.}
 
-\item{do_write}{logical, do we need to write out the synthetic populations and environments?  If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.}
+\item{do_write}{logical, do we need to write out the synthetic populations and environments?
+If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.}
 }
 \value{
 synthetic population .csv file for both household and person 

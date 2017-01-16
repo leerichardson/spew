@@ -50,7 +50,8 @@ Only set to "/dev/null" for internal testing putposes.}
 
 \item{do_subset_pums}{logical, do we need to subset PUMS when doing the method of sampling.  Default is TRUE.}
 
-\item{do_write}{logical, do we need to write out the synthetic populations and environments?  If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.}
+\item{do_write}{logical, do we need to write out the synthetic populations and environments?
+If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.}
 }
 \value{
 logical indicating whether or not this run of spew ended successfully
