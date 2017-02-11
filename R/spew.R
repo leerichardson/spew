@@ -15,15 +15,15 @@
 #' the population is the total number of households 
 #' @param vars list with two elements: household and person. This specifies 
 #' which variables to include in the corresponding household and person PUMS data-set
-#'  @param do_subset_pums logical, do we need to subset PUMS when doing the method of sampling.  Default is TRUE.
-#' @param do_write logical, do we need to write out the synthetic populations and environments?  If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.
+#' @param do_subset_pums logical, do we need to subset PUMS when doing the method of sampling.  Default is TRUE.
+#' @param do_write logical, do we need to write out the synthetic populations and environments?  
+#' If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.
 #' @export
 #' @return logical indicating whether or not this run of spew ended successfully 
 call_spew <- function(base_dir, folders = NULL, data_group = "US", parallel_type = "SEQ",
-                          sampling_method = "uniform", locations_method = "uniform", 
+                      sampling_method = "uniform", locations_method = "uniform", 
                       convert_count = FALSE, vars = list(household = NA, person = NA),
-                      do_subset_pums = TRUE, doWrite = TRUE
-                      ) {  
+                      do_subset_pums = TRUE, do_write = TRUE) {  
   spew_start_time <- Sys.time()
   
   # Given directory, folders, vars, and data-group, read input data into a list 
@@ -32,10 +32,6 @@ call_spew <- function(base_dir, folders = NULL, data_group = "US", parallel_type
   # Given the data list, make sure everything is formatted correctly 
   formatted_data <- format_data(data_list = data_list, data_group = data_group)
 
-    if(sampling_method == "mm"){ # replace the marginals with moments data
-        formatted_data$marginals <- formatted_data$moments
-    }
-  
   # Call the SPEW algorithm on the formatted data 
   spew(base_dir = base_dir, pop_table = formatted_data$pop_table, 
        shapefile = formatted_data$shapefiles, pums_h = formatted_data$pums$pums_h, 
@@ -82,7 +78,8 @@ call_spew <- function(base_dir, folders = NULL, data_group = "US", parallel_type
 #' @param outfile_loc Defaults to "", so we print out the parallel run information. 
 #' Only set to "/dev/null" for internal testing putposes.
 #' @param do_subset_pums logical, do we need to subset PUMS when doing the method of sampling.  Default is TRUE.
-#' @param do_write logical, do we need to write out the synthetic populations and environments?  If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.
+#' @param do_write logical, do we need to write out the synthetic populations and environments?  
+#' If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.
 #' 
 #' @export
 #' @return logical indicating whether or not this run of spew ended successfully 
@@ -91,20 +88,18 @@ spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools,
                  sampling_method = "uniform", locations_method = "uniform", 
                  outfile_loc = "", do_subset_pums = TRUE, do_write = TRUE) {
   location_start_time <- Sys.time()
-
-  if(do_write){
   
-      ## Update, create output directory based on the base directory 
+  # Write out the Population table + Environments ------
+  if (do_write) {
+      # Update, create output directory based on the base directory 
       output_dir <- file.path(base_dir, "output")
       if (!dir.exists(output_dir)) {
           dir.create(output_dir, recursive = TRUE)          
       }
 
-
-      ## Write out the Popualation Table 
       write_pop_table(pop_table, output_dir)
       
-      ## Write out the Environments  
+      # Write out the Environments  
       env_dir <- file.path(output_dir, "environments")
       if (!dir.exists(env_dir)) {
           dir.create(env_dir, recursive = TRUE)          
@@ -117,9 +112,11 @@ spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools,
       if (!is.null(workplaces)) {
           write_workplaces(workplaces, env_dir)
       }
-  } else{ output_dir <- "."}
+  } else { 
+      output_dir <- "."
+  }
   
-  ## Set the objects to send to the workers if parallel back-end is SOCK or MPI 
+  # Set the objects to send to the workers if parallel back-end is SOCK or MPI 
   export_objects <- c("spew_place", "people_to_households", "sample_households", 
                       "sample_locations", "sample_people", "write_data", 
                       "people_to_households", "assign_schools", "assign_schools_inner", 
@@ -130,12 +127,11 @@ spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools,
                       "sample_uniform", "sample_ipf", "subset_pums", "align_pums", 
                       "fill_cont_table", "update_freqs", "get_targets", "sample_with_cont", 
                       "samp_ipf_inds", "assign_weights", "calc_dists", "get_ord_dists", 
-                      "get_cat_dists", "remove_excess",
-                      "sample_mm", "solve_mm_weights", "solve_mm_for_joint",
-                      "solve_mm_for_var", "extrapolate_probs_to_pums",
+                      "get_cat_dists", "remove_excess","sample_mm", "solve_mm_weights", 
+                      "solve_mm_for_joint","solve_mm_for_var", "extrapolate_probs_to_pums",
                       "extrapolate_probs_to_pums_joint", "make_mm_obj", "impute_missing_vals")
   
-  ## Call either the sequential, or parallel version of the SPEW algorithm 
+  # Call either the sequential, or parallel version of the SPEW algorithm 
   num_places <- nrow(pop_table)
   if (parallel_type == "SEQ") {
     region_list <- spew_seq(num_places, pop_table, shapefile, pums_h, pums_p, 
@@ -166,8 +162,11 @@ spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools,
     stop("parallel_type must be SEQ, MPI, SOCK, or MC")
   }
 
-  ## Print the diagnostics and summaries of the entire place
-  if(do_write) print_region_list(region_list)
+  # Print the diagnostics and summaries of the entire place
+  if (do_write) {
+    print_region_list(region_list)
+  }
+  
   location_time <- difftime(Sys.time(), location_start_time, units = "secs")
   location_time <- round(location_time, digits = 2)  
   location_time_statement <- paste0("Location runs in: ", location_time)
@@ -175,7 +174,6 @@ spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools,
   
   return(region_list)
 }
-
 
 #' Run SPEW Sequentially 
 spew_seq <- function(num_places, pop_table, shapefile, pums_h, pums_p, 
@@ -199,7 +197,8 @@ spew_seq <- function(num_places, pop_table, shapefile, pums_h, pums_p,
                                        locations_method = locations_method, 
                                        convert_count = convert_count, 
                                        output_dir = output_dir,
-                                       do_subset_pums = do_subset_pums, do_write = do_write)
+                                       do_subset_pums = do_subset_pums, 
+                                       do_write = do_write)
   }
   
   return(region_list)
@@ -245,9 +244,8 @@ spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p,
   mpi.bcast.cmd(library(sp))
   mpi.bcast.cmd(library(rgeos))
   mpi.bcast.cmd(library(data.table))
-    mpi.bcast.cmd(library(mipfp))
-    mpi.bcast.cmd(library(quadprog))
-    
+  mpi.bcast.cmd(library(mipfp))
+  mpi.bcast.cmd(library(quadprog))
   
   # Export functions to all of the workers ------
   for (obj in export_objects) {
@@ -268,7 +266,8 @@ spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p,
                             sampling_method = sampling_method, 
                             locations_method = locations_method, 
                             convert_count = convert_count, 
-                            output_dir = output_dir, do_subset_pums = do_subset_pums,
+                            output_dir = output_dir, 
+                            do_subset_pums = do_subset_pums,
                             do_write = do_write)
   
   # Close the connections and MPI
@@ -367,7 +366,8 @@ spew_mc <- function(num_places, pop_table, shapefile, pums_h, pums_p,
 #' sampling to use, defaults to "uniform", can also be "roads" 
 #' @param output_dir character vector containing the location to save the
 #' @param do_subset_pums logical, do we need to subset PUMS when doing the method of sampling.  Default is TRUE.
-#' @param do_write logical, do we need to write out the synthetic populations and environments?  If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.
+#' @param do_write logical, do we need to write out the synthetic populations and environments?  
+#' If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.
 #' @return synthetic population .csv file for both household and person 
 #' level data
 spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
@@ -397,8 +397,7 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   }
   
   for (n_house in iter_vec) {
-    # If this is the second increment of this place, append the 
-    # final households 
+    # If this is the second increment of this place, make sure we append
     iter <- iter + 1
     if (iter == 2) {
       append <- TRUE
@@ -435,13 +434,10 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
                                             puma_id = puma_id, 
                                             place_id = place_id,
                                             do_subset_pums = do_subset_pums)
+    total_hh <- total_hh + nrow(sampled_households)
 
-     
-
-      total_hh <- total_hh + nrow(sampled_households)
-
-      noise <- .0002 ## kinda gimicky, should add actual argument to spew
-      if(!do_write)  noise <- .1
+    noise <- .0002 # kinda gimicky, should add actual argument to spew
+    if(!do_write)  noise <- .1
     
     # Locations ----------------
     locations <- sample_locations(method = locations_method, 
@@ -489,11 +485,12 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
       workplace_time <- round(school_time, digits = 2)
     }
 
-      ## Return populations if do_write is FALSE
-      if(!do_write) return(list(households = sampled_households,
-                               people = sampled_people, place_id = place_id,
-                               puma_id = puma_id))
-          
+    # Return populations if do_write is FALSE
+    if (!do_write) {
+      return(list(households = sampled_households,
+                             people = sampled_people, place_id = place_id,
+                             puma_id = puma_id))
+    }    
 
     
     # Write the synthetic populations as CSV's
@@ -505,7 +502,7 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
                output_dir = output_dir, append = append)    
   }
   
-  # Collect diagnostic and summary information on this particular 
+  # Collect diagnostic and summary information on this particular   
   # job and return this to the make_data function for analysis 
   place_time <- difftime(Sys.time(), place_start_time, units = "secs")
   place_time <- as.numeric(round(place_time, digits = 2))

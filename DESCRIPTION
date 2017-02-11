@@ -7,6 +7,8 @@ Author: Lee Richardson, Shannon Gallagher, Sam Ventura
 Maintainer: Lee Richardson <leerichardson2013@gmail.com>
 Description: General purpose Synthetic Ecosystem generation
 License: GPL-3 
+URL: http://github.com/leerichardson/spew
+BugReports: http://github.com/leerichardson/spew/issues
 Suggests:
     testthat,
     knitr,
