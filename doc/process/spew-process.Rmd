@@ -5,7 +5,7 @@ date: "January 2, 2017"
 output: html_document
 ---
 
-This document details the SPEW development process. It is written for people who are adding code to the SPEW package. After reading, contributors should understand the organization of SPEW software, and how they can contribute to it. The goal is for all SPEW software contributors to write consistent, robust, modular, and easily extendable code. 
+This document details the SPEW development process. It is written for people who are adding code to the SPEW package. After reading, contributors should understand the organization of SPEW software, and how to effectively contribute. The goal is for all SPEW software to be consistent, robust, modular, and easily extendable.
 
 The SPEW development process is by no means optimal. We are consistently looking for new approaches for a more efficient process. However, we need to ensure that changes to the process do not interfere with consistency and correctness, since SPEW ecosystems and software have already been publically released. 
 
@@ -17,12 +17,12 @@ SPEW software serves two primary goals:
 1. Generating synthetic ecosystems for release on Olympus 
 2. Providing general-purpose tools for custom synthetic ecosystems 
 
-To meet goal 1, a separate directory **olympus/** contains all of the code corresponding to ecosystem generation on olympus. The Olympus directory has the code for running SPEW on olympus, generating reports, collecting data. In addition, the spew geographic hierarchy is here. More information on Olympus is provided below. 
+To meet goal 1, a separate directory **olympus/** contains all of the code corresponding to ecosystem generation on olympus. The Olympus directory has the code for running SPEW on olympus, generating reports, collecting data, etc. In addition, the spew geographic hierarchy is here. More information on Olympus is provided below. 
 
-To meet goal 2, SPEW software is organized into an R-package. The primary reference SPEW uses is the book **R Packages**, by Hadley Wickham. The book is available online at: <http://r-pkgs.had.co.nz/>. The majority of this document details the specifics of package development, tailored to SPEW. In particular, if you do not understand a component of the SPEW package, this is often the first place to look. 
+To meet goal 2, SPEW software is organized into an R package. The primary reference SPEW uses is the book **R Packages**, by Hadley Wickham. The book is available online at: <http://r-pkgs.had.co.nz/>. The majority of this document details the specifics of package development, tailored to SPEW. In particular, if you do not understand a component of the SPEW package, this book is often the first place to look. 
 
-# Adding R Code 
-Since SPEW is an R-package, a big part of the development process is writing R-code. Follow R-package conventions, all R-code is located in the *R/* directory. Within the *R/* directory, there are *.R* files, with functions implementing the SPEW code. An important point is that all code in **R/** are functions, rather than scripts. This is because (almost) everything is R is a function call, so the primary code in packages are functions. Each *.R* file contains a group of related functions. For example, *R/ipf.R* has all functions related to IPF sampling, and *R/read.R* has all functions for reading input data. 
+# R Code 
+Since SPEW is an R-package, a big part of the development process is writing R-code. Follow R-package conventions, all R-code is located in the *R/* directory. Within the *R/* directory, there are *.R* files, with functions implementing the SPEW framework. An important point is that all code in **R/** are functions, rather than scripts. This is because (almost) everything is R is a function call, so the primary code in packages are functions. Each *.R* file contains a group of related functions. For example, *R/ipf.R* has all functions related to IPF sampling, and *R/read.R* has all functions for reading input data. 
 
 ## Consistency 
 A goal of SPEW software moving forward is consistent syntax. To achieve consistent syntax, we follow the Style guide described in Hadley Wickham's book, [Advanced R](http://adv-r.had.co.nz/Style.html). Admittedly, we are not fully compliant with the style guide right now. But, hopefully we can keep iterating and fixing the SPEW code. The point of the Style guide isn't to be pedantic and dogmatic, but rather for ensuring that code is consistent, regardless of the contributor. Often, it is difficult to read or understand someone else's code if the style/syntax is different. This is highly inefficient, since a lot work goes into parsing, testing, and understanding the code. Following a consistent syntax alleviates this issue.
@@ -61,7 +61,7 @@ There are three steps involved in the procedure:
 2. Estimating the contingency table 
 3. Sampling using the contingency table weights 
 
-Over-time, the function has been modified in order to meet various deadlines. To see this, we can look at the history of changes to this particular file: <https://github.com/leerichardson/spew/commits/master/R/ipf.R>. This section walks through some of the issues with this function, and re-factors the function back into style-guide compliance. Of course, all of this must be done while retaining the correctness of the function. Ultimately, the goal is for all of the SPEW R-code to follow this syntax. While it will take some effort, it will go a long way towards making SPEW readable and reliable moving forward. 
+Over-time, the function has been modified in order to meet various deadlines. To see this, we can look at the history of changes to this particular file: <https://github.com/leerichardson/spew/commits/master/R/ipf.R>. This section walks through some of the issues with this function, and re-factors the function back into style-guide compliance. Of course, all of this must be done while retaining the correctness of the function. Ultimately, we want all SPEW code following consistent syntax. While this will take effort, it will go a long way towards making SPEW readable and reliable moving forward. 
 
 Immediately, we can see problems with the function. First, some of the comments have been moved to the far-right corner of the line. In addition, step 2 of the procesure and the corresponding comment aren't aligned. Finally, the syntax surrounding the if statement doesn't follow the spacing section of the Style guide. Generally speaking, spacing within a function should be consistent, and every line should start with the same indent. In addition, coding syntax should follow the style guide. Fixing these issues:
 
@@ -88,20 +88,40 @@ sample_ipf <- function(n_house, pums_h, pums_p, marginals, alpha = 0, k = .001,
 }
 ```
 
-Which already looks much better. In particular, the structure of the function is now much more clear, and the steps are vivid to anyone reading it. 
+Which already looks much better. In particular, the structure of the function is now much more clear, and three step procedure is obvious to anyone reading it. 
 
 ## If statements 
-The `sample_ipf` function provides room to explore another *important* point about the R-code, if-statements. Generally speaking, we want to minimize the amount of ad-hoc, if-statements in the SPEW code. However, there are many situations where an if-statement is the only method capable of solving the problem. The main message is that even if an *if-statement* is necessary, its purpose should be well documented, and efforts should be made not to obstruct the readibility of the primary functions. 
-
+The `sample_ipf` function provides room to explore another *important* point about the R-code, if-statements. Generally speaking, we want to minimize the amount of ad-hoc, if-statements in the SPEW code. However, in many situations if-statements are the only method capable of solving the problem. So, we face a tradeoff. The main concept is that even if an if-statement is necessary, its purpose should be well documented, and it should be obvious to anyone reading the code why the if-statement should be there. 
+  
 Upon reviewing the history, we can see the if-statement in `sample_ipf` was added during the following commit message:
 
 > "made changes to IPF to use on a custom population. There was also an issue with a single variable IPF that I fixed."
 
-The main problem is that no-where, either in the code or the commit message, is the issue described. So, it is unclear what in particular the issue was, and what the corresponding if-statement does to fix it. Clearly, this if-statement was added in a hurry, to meet a deadline. However, rushing these statements into the code is damaging. For SPEW to be maintainable, a better balance must be struck between *getting it done* and maintaining the quality of the software. 
+The main problem is that no-where, either in the code or the commit message, is the issue described. So, it is unclear _why_ this particular if-statement fixes the problem. Clearly, this was added in a rush in order to meet a deadline. While this is ok, too much reliance of this anxiety-ridden approach will slowly deteriorate SPEW. For SPEW to be maintainable, a better balance must be struck between _getting it done_ and maintaining the quality of the software. 
 
-In addition, since the if-statement clearly corresponds to the smaller `subset_pums` function, it is more appropriate to implement there. This way, the top-level wrapper function is still readable, and the if-statement occurs at the level where it actually takes place. 
+Finally, since the if-statement clearly corresponds to the smaller `subset_pums` function, it is more appropriate to implement there. This way, the top-level wrapper function is still readable, and the if-statement occurs at the level where it actually takes place. With these changes, the function is restored!
 
-Appropriate usage of if-statements in SPEW can be summarized as:
+```{r, eval = FALSE}
+sample_ipf <- function(n_house, pums_h, pums_p, marginals, alpha = 0, k = .001, 
+                       puma_id = NULL, place_id = NULL, do_subset_pums = TRUE) {
+  # Step 1: Align PUMS with Marginals
+  pums <- subset_pums(pums_h = pums_h, pums_p = pums_p, marginals = marginals, puma_id = puma_id)
+  pums <- align_pums(pums, marginals)
+
+  # Step 2: Fill in the contingency table
+  table <- fill_cont_table(pums = pums, marginals = marginals, place_id = place_id, n_house = n_house)
+  # Write out the contingency table HERE.
+  
+  # Step 3: Sample with contingency table weights 
+  households <- sample_with_cont(pums = pums, table = table, alpha = alpha, 
+                                 k = k, marginals = marginals)
+  
+  return(households)
+}
+```
+
+
+In sum, a strategy for if statements 
 
 1. Avoid ad-hoc if statements if possible
 2. If the if-statement is necessary, include it at the appropriate level (not the top-level wrapper function)
@@ -113,8 +133,10 @@ Appropriate usage of if-statements in SPEW can be summarized as:
 ## CRAN Specific Conventions 
 - If using another function, use package::function 
 - If using a "Suggests" package, do requireNamespace
-  
+
+
 # Unit Testing 
+
 
 
 # Documentation 
@@ -122,28 +144,37 @@ SPEW uses three different layers of documentation. First, the R-code if document
 
 
 
+
 ## Functions 
+
 
 
 ## New Data for SPEW ecosystem releases 
 
 
+
 ## New Methods for SPEW ecosystem release 
 
 
+
 # Automated Checks 
+In the R-world, a package truly _makes it_ when it is avaialable on CRAN. CRAN stands for the Comprehensive R Archive Network,  
 
 
-# Integration with Travis 
+## Integration with Travis 
+
 
 
 # Adding Major Features 
 
 
+
 ## Branches
 
 
+
 ## Code Reviews 
+
 
 
 # Olympus 
