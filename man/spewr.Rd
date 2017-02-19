@@ -6,7 +6,7 @@
 \usage{
 spewr(pop_table, shapefile, pums_h, pums_p, supplementary_data = NULL,
   sampling_method = "uniform", locations_method = "uniform",
-  convert_count = FALSE, do_parallel = FALSE)
+  convert_count = FALSE, do_parallel = FALSE, noise = 0.1)
 }
 \arguments{
 \item{pop_table}{dataframe with rows corresponding to places which 
@@ -33,6 +33,8 @@ population totals from people to household counts. Default: FALSE, assumes
 the population in 'pop_table'  is the total number of households per region.}
 
 \item{do_parallel}{a logical indicating whether we should generate synthetic ecoystems in parallel with the foreach  Default is FALSE.  If true, the required packages of 'foreach' and `doParallel` must be installed.}
+
+\item{noise}{a numeric value indicating the value of the noise we add to household locations during road-based sampling.  Default is .1.}
 }
 \value{
 a synthetic ecosystem with synthetic households, synthetic individuals along with the place_id and puma_id

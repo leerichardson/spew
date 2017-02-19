@@ -6,7 +6,7 @@
 \usage{
 spew_mpi(num_places, pop_table, shapefile, pums_h, pums_p, schools, workplaces,
   marginals, sampling_method, locations_method, convert_count, output_dir,
-  export_objects, do_subset_pums = TRUE, do_write = TRUE)
+  export_objects, do_subset_pums = TRUE, do_write = TRUE, noise = noise)
 }
 \description{
 Run SPEW in Parallel with an MPI backend

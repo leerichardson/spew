@@ -5,11 +5,17 @@
 \title{Extract the total run-time from a SPEW log-file}
 \usage{
 get_total_time(logfile)
+
+get_total_time(logfile)
 }
 \arguments{
 \item{SPEW}{log-file}
+
+\item{SPEW}{log-file}
 }
 \description{
+Extract the total run-time from a SPEW log-file
+
 Extract the total run-time from a SPEW log-file
 }
 

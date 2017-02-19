@@ -6,7 +6,7 @@
 \usage{
 spew_place(index, pop_table, shapefile, pums_h, pums_p, schools, workplaces,
   marginals, output_dir, convert_count, sampling_method, locations_method,
-  do_subset_pums = TRUE, do_write = TRUE)
+  do_subset_pums = TRUE, do_write = TRUE, noise = 2e-04)
 }
 \arguments{
 \item{index}{numeric with the pop_table row to generate}
@@ -38,7 +38,9 @@ sampling to use, defaults to "uniform", can also be "roads"}
 
 \item{do_subset_pums}{logical, do we need to subset PUMS when doing the method of sampling.  Default is TRUE.}
 
-\item{do_write}{logical, do we need to write out the synthetic populations and environments?
+\item{do_write}{logical, do we need to write out the synthetic populations and environments?}
+
+\item{noise}{a numeric value indicating the value of the noise we add to household locations during road-based sampling.  Default is .0002.
 If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.}
 }
 \value{

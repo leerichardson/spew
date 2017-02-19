@@ -55,7 +55,7 @@ hh_list <- ipums_list$hh_sum_list
 ```
 There is/are `r ipums_fs$nLevels` level(s) of nested ecosystems in `r toupper(country_name)`.
 
-There is/are `r nrow(ipums_fs$paths_df)` lowest level subregions.
+There is/are `r nrow(ipums_fs$paths_df)` lowest level sub-regions.
 
 ## Data
 
