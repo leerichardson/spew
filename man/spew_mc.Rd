@@ -6,7 +6,7 @@
 \usage{
 spew_mc(num_places, pop_table, shapefile, pums_h, pums_p, schools, workplaces,
   marginals, sampling_method, locations_method, convert_count, output_dir,
-  outfile_loc, do_subset_pums = TRUE, do_write = TRUE)
+  outfile_loc, do_subset_pums = TRUE, do_write = TRUE, noise = 2e-04)
 }
 \description{
 Run SPEW in Parallel with a Multicore backend

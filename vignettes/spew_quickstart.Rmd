@@ -15,7 +15,7 @@ library(knitr) # We need the knitr package to set chunk options
 opts_chunk$set(cache=TRUE, autodep=TRUE, cache.comments=FALSE)
 ```
 <a href="http://www.stat.cmu.edu/~spew">	
-<img src = "spew-too.png" style="height:.75%;position:absolute;top:0px;right:0px;" />
+<img src = "SPEW.jpg" style="height:.75%;position:absolute;top:0px;right:0px;" />
 </a>	
 
 #	Introduction 

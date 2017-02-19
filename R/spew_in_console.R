@@ -18,12 +18,13 @@
 #' population totals from people to household counts. Default: FALSE, assumes
 #' the population in 'pop_table'  is the total number of households per region.
 #' @param do_parallel  a logical indicating whether we should generate synthetic ecoystems in parallel with the foreach  Default is FALSE.  If true, the required packages of 'foreach' and `doParallel` must be installed.
+#' @param noise a numeric value indicating the value of the noise we add to household locations during road-based sampling.  Default is .1.
 #' @return a synthetic ecosystem with synthetic households, synthetic individuals along with the place_id and puma_id
 #' @export 
 spewr <- function(pop_table, shapefile, pums_h, pums_p,
                   supplementary_data = NULL, 
                   sampling_method = "uniform", locations_method = "uniform",
-                  convert_count = FALSE, do_parallel = FALSE){
+                  convert_count = FALSE, do_parallel = FALSE, noise = .1){
 
     ## TODO:  Check if data is compatible
     
@@ -45,9 +46,9 @@ spewr <- function(pop_table, shapefile, pums_h, pums_p,
              pums_h = pums_h, pums_p = pums_p,
              schools = supp_data$schools, workplaces = supp_data$workplaces,
              marginals = supp_data$marginals,
-             convert_count = FALSE, parallel_type = parallel_type,
+             convert_count = convert_count, parallel_type = parallel_type,
              sampling_method = sampling_method, locations_method = locations_method,
-             outfile_loc = "", do_subset_pums = TRUE, do_write = FALSE)
+             outfile_loc = "", do_subset_pums = TRUE, do_write = FALSE, noise = noise)
 
     return(pops)
 }
