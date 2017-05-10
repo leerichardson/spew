@@ -1,0 +1,386 @@
+\documentclass{article}
+
+\usepackage{graphicx}
+\usepackage{dirtree}
+\usepackage{algorithm2e}
+\usepackage{centernot}
+\usepackage{url}
+
+% Bibliography
+\usepackage{natbib}	
+
+\begin{document}
+
+% Title Page ---
+\begin{center}
+\large{{\bf SPEW \\ Synthetic Populations and Ecosystems of the World}} \\ 
+\vspace {2ex}
+\large{Version 1.2.0} \\
+\vspace{2ex}
+\today \\
+\vspace{2ex}
+\large{Shannon Gallagher} \\
+\large{William F Eddy} \\
+\large{Lee Richardson} \\	
+\large{Sam Ventura} \\
+\vspace{5ex}
+\large{MIDAS Informatics Services Group} \\
+\vspace{2ex}
+\large{Department of Statistics, Carnegie Mellon University}
+\end{center}
+
+\newpage 
+
+\tableofcontents
+
+\newpage 
+\section{Introduction}
+\label{sec:intro}
+The SPEW framework generates synthetic ecosystems for using different data sources and methodologies. A detailed description of the SPEW framework is given in \cite{spew}, an article which will be referenced frequently. In contrast, this document provides details on the latest release of SPEW synthetic ecosystems, version 1.2.0. The goal is to explain the details of the released ecosytems and software so users can quickly understand and get started. SPEW 1.2.0 data files and software are distributed simentaneously. So, SPEW 1.2.0 refers to both data files and the software that generated it. 
+
+There are two main improvements to SPEW 1.2.0. First, United States synthetic ecosystems use an Iterative Proportional Fitting (IPF) based methodology for sampling population characteristics. Second, each synthetic ecosystem is paired with a diagnostic report, summarizing the contents of each ecosystem. 
+
+In total, SPEW 1.2.0 contains 126 synthetic ecosystems, described in Table \ref{tab:summary}. The 126 ecosystems are categorized into three groups, by their the input data: United States, IPUMS, and Canadianda. The data sources used for each ecosystem group are described in Section \ref{sec:data}. Next, the methodologies used for generating synthetic ecosystems are descibed in Section \ref{sec:methods}. Finally, the structure of the data files are described in Section \ref{sec:output}.
+
+\begin{table}[ht]
+  \centering 
+  \caption{The three data groups for current SPEW 1.2.0 synthetic ecosystems: U.S., IPUMS, and Canada. Count gives the total number of ecosystems in this group, level gives the size of each ecosystem, and region level gives the lowest region level generated \vspace{2em}}
+  \label{tab:summary}
+ \resizebox{\textwidth}{!}{
+  \begin{tabular}{|r|r|r|r|r|r|r|}
+    \hline
+    Group & Count & Level & Region Level \\
+    \hline 
+    \hline
+    United States & 52 & State & Tract \\ \hline
+    IPUMS & 73 & Country & Admin. Level 1 \\ \hline
+    Canada & 1 & Country & Tract  \\ 
+    \hline  
+  \end{tabular}
+  }
+ \end{table}
+
+\newpage 
+\section{Data Sources}
+\label{sec:data}
+This section describes the data sources used for generating SPEW ecosystems. Each SPEW 1.2.0 ecosystem requires three inputs:
+
+\begin{enumerate}
+	\item Population counts
+	\item Geography 
+	\item Population Characteristics
+\end{enumerate}
+
+These data sources are described in detail in \cite{spew}. This section details the data used for each of the three data groups: United States, IPUMS, and Canada. 
+
+\subsection{United States}	
+United States synthetic ecosystems are the most detailed. A synthetic ecosystem is produced for each tract, containing approximately $1000-2000$ households and $3000-7000$ agents. In addition to the three required data sources, the United states using road-level data for spatial sampling, summary file data for Iterative Proportional Fitting, and school and workplace data for environmental components. 
+
+\subsubsection{Population Counts}
+American Community Survey Summary Tables (2006-2010) \cite{2010sf}
+\begin{itemize}
+	\item Available at: \url{https://www.census.gov/programs-surveys/acs/technical-documentation/summary-file-documentation.html}
+	\item Total number of households by Tract 
+\end{itemize}
+
+\subsubsection{Geographies}
+US Census Topologically Integrated Geographic Encoding and Referencing (TIGER) Shapefiles (2010) \cite{ustiger2010}
+\begin{itemize}
+	\item Available at \url{https://www.census.gov/geo/maps-data/data/tiger.html}
+	\item Geographies at the Census tract level
+	\item Roads at the County level
+\end{itemize}
+
+\subsubsection{Microdata}
+1-Year American Community Survey (2013) \cite{1yearuspums2013}
+\begin{itemize}
+	\item Available at: \url{http://www2.census.gov/acs2013_1yr/pums/}
+	\item Corresponds to 2010 census geography 
+	\item Both household and people populations
+\end{itemize}
+
+\subsubsection{Summary files}
+5-Year American Community Survey Summary files \cite{2010sf}
+\begin{itemize}
+	\item Available at: \url{http://www.census.gov/programs-surveys/acs/data/summary-file.html#.html}
+	\item Corresponds to 2010 census geography
+	\item Population characteristic totals at the tract level 
+\end{itemize}
+
+\subsubsection{Schools}
+National Center for Education Statistics School Data (2013) \cite{elsi2015}
+\begin{itemize}
+	\item Available at: \url{http://nces.ed.gov/ccd/elsi/tableGenerator.aspx}
+	\item Public Schools (2013) have latitude/longitude information. Private schools (2011) only have county level information. 
+\end{itemize}
+
+\subsubsection{Workplaces}		
+ESRI Workplace Data (2009) \cite{esriBusiness}
+\begin{itemize}
+	\item Available with a license from ESRI
+	\item ID, employee counts, and county of different businesses in the US
+\end{itemize}
+
+\subsection{IPUMS}
+IPUMS synthetic ecosystems only use the three required data sources. Microdata and Geographies come from IPUMS, and population counts come from Geohive.
+
+\subsubsection{Population Counts}
+Geohive \cite{geohive}
+\begin{itemize}
+	\item Available at: \url{http://www.geohive.com/}
+	\item Compiles population statistics from various statistical agencies throughout the world (The list can be seen here \url{http://www.geohive.com/earth/statorgz.aspx})
+	\item Population counts from over 150 countries at various administrative levels. 
+\end{itemize}
+
+\subsubsection{Geography}
+IPUMS Shapefiles \cite{ipumsi}
+\begin{itemize}
+	\item Available at: \url{https://international.ipums.org/international/}
+	\item Shapefiles corresponding to IPUMS microdata. 
+	\item Available at administrative level 1 
+\end{itemize}
+
+\subsubsection{Microdata} \cite{ipumsi}
+International Public Use Microdata Sample (IPUMS)
+\begin{itemize}			
+	\item Available at: \url{https://international.ipums.org/international/}
+	\item Microdata from 82 different countries 
+	\item See the appendix for the variables used 
+\end{itemize}
+
+\subsection{Canada}	
+The Canadian synthetic ecosystem uses custom national data from Statistics Canada producing synthetic ecosystems at the tract level. Only the three required data sources are used
+
+\subsubsection{Population Counts}
+Statistics Canada Census Profile (2011)
+\begin{itemize}
+	\item Available at: \url{https://www12.statcan.gc.ca/census-recensement/2011/dp-pd/prof/details/download-telecharger/comprehensive/comp-csv-tab-dwnld-tlchrgr.cfm?Lang=E} specifying the Census Tracts option.
+	\item Total population for every tract 
+\end{itemize}
+
+\subsubsection{Geographies}
+Statistics Canada Boundary File (2011)
+\begin{itemize}
+	\item Available at: \url{https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/bound-limit-2011-eng.cfm} specifying the English, ArcGIS, and Census tract option.
+	\item Geographies at the Census Tract level 
+\end{itemize}
+
+\subsubsection{Microdata}
+Public Use Microdata File (2011) \cite{statcan}
+\begin{itemize}
+	\item Obtained with special permissions from Statistics Canada
+	\item Variables defined in the appendix
+\end{itemize}
+
+\newpage
+\section{Methods} % ---
+\label{sec:methods}
+This section describes the methodology used for SPEW 1.2.0 synthetic ecosystems. SPEW splits a location into {\bf regions}, then generates a synthetic ecosystem for each region. For each region, SPEW samples household characteristics, person characteristics, and assigns locations to agents and households. In addition, SPEW assigns agents to environmental components if the data is available. The SPEW framework is summarized in Algorithm \ref{alg:spew}. 
+\begin{algorithm}
+\caption{Process for Generating Synthetic Ecosystems with SPEW } 
+\label{alg:spew}
+\SetKwInOut{Input}{input}\SetKwInOut{Output}{output}
+\SetAlgoLined
+\Input{Harmonized counts, geographies, population characteristics and supp. data}
+ \For{Every region} {
+  1. Sample population characteristics of households \\
+  1. Sample population characteristics of agents \\
+  2. Sample locations of agents \\
+  3. Add environmental components (e.g. schools, workplaces, vectors, etc)\\
+  \Output{Synthetic ecosystem for region} 
+  }
+\end{algorithm}
+
+Algorithm \ref{alg:spew} is general, and different methodologies can be used for each step. This section details the approaches SPEW 1.2.0 uses for each data group. Table \ref{tab:methods} gives the methodology used for each of the three data groups. 
+
+\begin{table}[ht]
+  \centering 
+  \caption{Methdologies used for the three data groups. \vspace{2em}}
+  \label{tab:methods}
+ \resizebox{\textwidth}{!}{
+  \begin{tabular}{|r|r|r|r|r|r|r|}
+    \hline
+    Group & Population Characteristics Sampling & Spatial Sampling & Environmental Components \\
+    \hline 
+    \hline
+    United States & IPF & Roads & Schools, Workplaces \\ \hline
+    IPUMS & SRS & Uniform & None \\ \hline
+    Canada & SRS & Uniform & None \\ 
+    \hline  
+  \end{tabular}
+  }
+ \end{table}
+
+While most sections refer to \cite{spew} for details, the software availabe online at:
+
+\vspace{2mm}
+	\url{https://github.com/leerichardson/spew}
+\vspace{2mm}
+
+So the exact details are available to look up, if users are interested. 
+
+\subsection{Sample population characteristics of households}
+SPEW 1.2.0 uses two different approaches for sampling population characteristics of households:
+
+\begin{itemize}
+	\item Simple Random Sampling
+	\item Iterative Proportional Fitting
+\end{itemize}
+
+Both approaches are explained in \cite{spew}. In this version, the United States synthetic ecosystems use Iterative Proportional Fitting, and all of the other ecosystems use Simple Random Sampling. 
+
+\subsection{Sample locations of agents}
+For SPEW 1.2.0, sampling locations of agents was done in the same for all data groups. Every microdata source contained two files: one for households, and one for people. In addition, an ID variable linked the household and person level microdata. Once households were sampled, the person level population was created by including every person whose household was chosen. If a household was chosen more than once, then the corresponding agents were chosen an equivalent number of times. 
+
+\subsection{Spatial Sampling of Agents}
+SPEW 1.2.0 uses two different approaches for spatial sampling of agents:
+
+\begin{itemize}
+	\item Sampling Uniformly Across a Region
+	\item Sampling Uniformly Across Roads
+\end{itemize}
+
+Both approaches are explained in \cite{spew}. The United States samples uniformly across roads, and all other ecosystems sample uniformly across a region.
+
+\subsection{School Assignments}
+Only the United States synthetic ecosystems include school assignments. School assignments use an adapted gravity model, which depends on school capacity and distane. Like the other methodologies, the description is given in \cite{spew}. 
+
+\subsection{Workplace Assignments}
+Similar to schools, workplaces are only included in United States synthetic ecosystems. The same gravity model framework is used, described in \cite{spew}. 
+
+\subsection{Diagnostics}
+SPEW's current version contains diagnostic reports for each ecosystem. These reports include
+
+\begin{itemize}
+  \item General Info
+    \begin{itemize}
+    \item The country (state) name 
+    \item The number of administrative levels available in the country (state)
+    \item The number of sub-regions
+    \item A map of population density with real household assignments
+    \end{itemize}
+  \item Synthetic Households and Synthetic People
+    \begin{itemize}
+  \item Total number in country (state)
+  \item Graphs of population characteristics per region
+  \item The population characteristics included in the synthetic ecosystem
+    \end{itemize}
+  \item Generation information
+\end{itemize}
+
+\noindent These summaries and graphs allow the user to see whether the synthetic ecosystems pass the ``eye test.'' A discussion of diagnostic is contained in \cite{spew}. 
+
+\newpage
+\section{Output}
+\label{sec:output}
+SPEW synthetic ecosystems are available online at: 
+
+\vspace{2mm}
+	\url{http://data.olympus.psc.edu/syneco/}. 
+\vspace{2mm}
+
+Synthetic ecosystems are stored in a geographic hierarchy, based on the hierarchy of the United Nations Statistics division. This hierarchy is available at: 
+	
+\vspace{2mm}
+	\url{http://unstats.un.org/unsd/methods/m49/m49alpha.htm}). 
+\vspace{2mm}
+
+The lowest level of our geographic hierarchy is a country. Each country has a corresponding ISO3 code, invaluable for matching data accross sources. Sometimes, we have data at lower levels than country. In this case, we extend the geographic hierarchy to include data at lower levels within the country. An example is the United States, where we have data at the state level, so we include a state level in the hierarchy, underneath the US country.
+
+The hierarchy is as follows:
+
+\begin{enumerate}
+	\item Region
+	\item Sub-region 
+	\item Country
+	\item Lower level data (if available)
+\end{enumerate}
+
+Below are example file-paths for China and Califoria, within the hierarchy:
+
+\begin{itemize}
+	\item \url{spew_1.2.0/asia/eastern_asia/chn}
+	\item \url{spew_1.2.0/americas/northern_america/usa/06}
+\end{itemize}
+
+\subsection{Directory Structure}
+Each synthetic ecosystem is contained within its own directory. In this directory, the input data goes in the \url{input/} folder, and the output data in the \url{output/} folder. The \url{input/} directory organizes input data by type (counts, shapefiles, etc), year, and geographic level. The geographic levels won't necesarily match accross different data types, as they come from entirely different sources. Finally, the \url{diags/} folder contains an html file with the diahnostics report. 
+
+The specific directory structure is
+
+\newpage
+\dirtree{%
+.1 location.
+.2 input.
+.3 counts.
+.4 type. 
+.5 year.
+.6 level.
+.3 pums.
+.4 type. 
+.5 year.
+.6 level.
+.3 shapefiles.
+.4 type. 
+.5 year.
+.6 level.
+.3 other data sources.
+.4 type. 
+.5 year.
+.6 level.
+.2 output.
+.3 pums type.
+.4 count type. 
+.5 shapefile type. 
+.6 region.
+.7 eco.
+.8 person csv's.
+.8 household csv's.
+.8 other csv's.
+.6 region.
+.7 eco.
+.8 person csv's.
+.8 household csv's.
+.8 other csv's.
+.2 diags.
+}
+
+In addition, since Canada required lots of manual preparation, we have included a \url{prep/} folder, with the custom scripts to prepare the data. 
+
+\newpage
+\bibliographystyle{apa}
+\bibliography{spew_refs}
+
+\newpage 
+\appendix
+
+\section{Codebook}
+SPEW 1.2.0 ecosystems use a different source of microdata for each data group. This section gives the variables used for each data group and points to the relevant documentation. 
+
+\subsection{United States}
+United States ecosystems use the American Community Survey, and release the following variables. THe codebook for this version of the ACS is located at:
+
+\vspace{2em}
+	\url{https://usa.ipums.org/usa/resources/codebooks/DataDict2013.pdf}
+\vspace{2em}
+
+\subsection{Canada}
+The Canada codebook is online at:
+
+\vspace{2em}
+	\url{http://data.olympus.psc.edu/syneco/spew_1.2.0/americas/northern_america/can/input/prep/Individual%20file/English/Documentation%20and%20user%20guide/2011%20NHS%20Individuals%20PUMF%20User%20Guide.pdf}
+\vspace{2em}
+
+\subsection{IPUMS: International Public Use Microdata Sample}
+The data dictionary for IPUMS is online at:
+
+\vspace{2em}
+	\url{https://usa.ipums.org/usa/resources/codebooks/DataDict0610.pdf}
+\vspace{2em}
+
+\newpage 
+\section{Acknowledgements}
+This work was supported by the Models of Infectious Disease Agency Study (MIDAS) from the National Institute of General Medical Sciences (NIGMS), Cooperative Agreement NIH 1 U24 GM110707-01. The content is solely the responsibility of the authors and does not necessarily represent the official views of the NIGMS or the National Institutes of Health (NIH).
+
+\end{document}
+

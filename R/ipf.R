@@ -1,4 +1,4 @@
-#' Sample households PUMS accoording to IPD 
+#' Sample households PUMS accoording to IPF 
 #' 
 #' @param n_house number of households to sample 
 #' @param pums_h household pums 
@@ -8,15 +8,23 @@
 #' @param k number between 0 and 1, weight of orginal variables 
 #' @param puma_id id indicating the current puma 
 #' @param place_id id indicating the current region
+#' @param do_subset_pums logical.  When we do not need to subset the pums
 sample_ipf <- function(n_house, pums_h, pums_p, marginals, alpha = 0, k = .001, 
-                       puma_id = NULL, place_id = NULL) {
-  # Step 1: Align PUMS with Marginals
-  pums <- subset_pums(pums_h = pums_h, pums_p = pums_p, marginals = marginals, puma_id = puma_id)
-  pums <- align_pums(pums, marginals)
-  
+                       puma_id = NULL, place_id = NULL, do_subset_pums = TRUE) {
+                                        # Step 1: Align PUMS with Marginals
+
+    if(do_subset_pums){
+        pums <- subset_pums(pums_h = pums_h, pums_p = pums_p, marginals = marginals, puma_id = puma_id)
+    } else {
+        pums <- pums_h
+    }
+    pums <- align_pums(pums, marginals)
+
+
   # Step 2: Fill in the contingency table
-  table <- fill_cont_table(pums = pums, marginals = marginals, place_id = place_id, n_house = n_house)
-  # Write out the contingency table HERE.
+    table <- fill_cont_table(pums = pums, marginals = marginals, place_id = place_id, n_house = n_house)
+
+                                        # Write out the contingency table HERE.
   
   # Step 3: Sample with contingency table weights 
   households <- sample_with_cont(pums = pums, table = table, alpha = alpha, 
@@ -31,7 +39,6 @@ sample_ipf <- function(n_house, pums_h, pums_p, marginals, alpha = 0, k = .001,
 #' @param pums_p dataframe of people pums
 #' @param marginals list of marginals totals 
 #' @param puma_id id for subsetting the pums 
-#' 
 #' @return pums with only relevant 
 subset_pums <- function(pums_h, pums_p, marginals, puma_id) {
   # Subset PUMS to only marginal and ID variables ----
@@ -66,6 +73,7 @@ subset_pums <- function(pums_h, pums_p, marginals, puma_id) {
 #' @param pums dataframe subsetted to only the marginal vars
 #' @param marginals list containing all of the marginal totals 
 #' @param suffix what we add to the variable name to create the new variable name.  Default is "_marg"
+#' @export
 #' @return pums dataframe with the marginal columns binded on
 align_pums <- function(pums, marginals, suffix="_marg") {
   var_names <- names(marginals)
@@ -107,9 +115,10 @@ align_pums <- function(pums, marginals, suffix="_marg") {
 #' @return table a data-frame containing all of the 
 #' marginal combinations and their frequencies 
 fill_cont_table <- function(pums, marginals, place_id, n_house) {
+
   # Initialize the seed table 
   marg_col_inds <- grep(pattern = "_marg", names(pums))
-  marg_cols <- pums[, marg_col_inds]
+  marg_cols <- pums[, marg_col_inds, drop = FALSE]
   seed <- table(marg_cols)
   
   # Extract and scale target_data and target_list 
@@ -120,17 +129,36 @@ fill_cont_table <- function(pums, marginals, place_id, n_house) {
   # Fill contingency table with ipf 
   ipf_fit <- mipfp::Ipfp(seed = seed, target.list = target_list, target.data = target_data)
   ipf_tab <- ipf_fit$x.hat
-  
+
 # # Write out the IPF Tables for analysis 
 # tab_loc <- file.path("/home/lee/Dropbox/ipf_midas/synthpop_ipf_unif/tables", paste0("table_", place_id))
 # saveRDS(object = ipf_tab, file = tab_loc)
-  
-  table <- as.data.frame(ipf_tab)
+    table <- as.data.frame(ipf_tab)
+    if(length(dim(ipf_tab)) <= 1){
+        colnames(table)[1] <- paste0(names(marginals), "_marg")
+    }
   stopifnot(sum(table$Freq) - n_house < 1)
 
   # Round frequencies to whole numbers, update so
   # it matches the n_house total # of households 
   table$Freq <- round(table$Freq, digits = 0)
+  
+  # In the rare case where none of the frequncies round up 
+  # to one, randomly select n_house of the highest 90th percent
+  # quantile...
+  if (all(table$Freq == 0)) {
+    table <- as.data.frame(ipf_tab)
+    high_freq_val <- quantile(table$Freq, probs = .9)
+    remaining_inds <- which(table$Freq > high_freq_val)
+    inds <- sample(x = remaining_inds, 
+                   size = n_house, 
+                   replace = TRUE,
+                   prob = table$Freq[remaining_inds])
+    ind_tab <- table(inds)
+    table$Freq[as.numeric(names(ind_tab))] <- as.numeric(ind_tab)
+    table$Freq <- round(table$Freq, digits = 0)
+  }
+
   while (sum(table$Freq) != n_house) {
     table$Freq <- update_freqs(table$Freq, n_house)
   }
@@ -175,6 +203,13 @@ get_targets <- function(marg_cols, marginals, place_id, n_house) {
     marg_df <- marginals[[var]]$df
     place_row <- which(marg_df$place_id == place_id)
     marg_row <- marg_df[place_row, -1]
+
+    # If all the marginals are 0, set the marginal row 
+    # to the average for the state 
+    if (all(marg_row == 0)) {
+      marg_avg <- unlist(lapply(marg_df, mean)[-1])
+      marg_row[1, ] <- marg_avg
+    }
     
     # Scale the marginals by the n_house 
     marg_row_props <- as.numeric(marg_row) / sum(as.numeric(marg_row))
@@ -195,11 +230,14 @@ get_targets <- function(marg_cols, marginals, place_id, n_house) {
 #' @param pums dataframe with marginal columns 
 #' @param table dataframe with marginal combinations and frequencies 
 #' @param alpha number between 0 and 1, weight of categorical variables 
-#' @param k number between 0 and 1, weight of orginal variables 
+#' @param k number between 0 and 1, weight of
+#' orginal variables 
 #' @param marginals list with marginal data 
 #' 
 #' @return indices of sampled households 
 sample_with_cont <- function(pums, table, alpha, k, marginals) {
+
+
   # Remove marginal combinations with 0 frequencies 
   table <- table[which(table$Freq != 0), ]
   
@@ -249,11 +287,10 @@ assign_weights <- function(pums, table, alpha, k, marginals) {
   n <- nrow(pums)
   m <- nrow(table)
   dist_mat <- matrix(0, nrow = n, ncol = m)  
-    
   # Calculate the weights for each column of the distance matrix 
-  for (i in 1:m) {
-    col_weights <- calc_dists(pums = pums, table_row = table[i, ], 
-                              alpha = alpha, k = k, marginals = marginals)
+    for (i in 1:m) {
+        col_weights <- calc_dists(pums = pums, table_row = table[i, ], 
+                                  alpha = alpha, k = k, marginals = marginals)
     dist_mat[, i] <- col_weights
   }
   
@@ -269,11 +306,13 @@ assign_weights <- function(pums, table, alpha, k, marginals) {
 #' 
 #' @param table_row 
 calc_dists <- function(pums, table_row, alpha, k, marginals) {
-  # Get the ordinal and categorical variable names 
+                                        # Get the ordinal and categorical variable names
+
   var_types <- lapply(marginals, function(x) x[["type"]])
   ord_vars <- names(which(var_types == "ord"))
   cat_vars <- names(which(var_types == "cat"))
-  
+    ord_df <- 1
+   cat_df <- 1
   # Get ordinal distances 
   if (length(ord_vars) > 0) {
     ord_df <- sapply(1:length(ord_vars), get_ord_dists, ord_vars, table_row, pums, alpha, k)
@@ -283,7 +322,7 @@ calc_dists <- function(pums, table_row, alpha, k, marginals) {
   if (length(cat_vars) > 0) {
     cat_df <- sapply(1:length(cat_vars), get_cat_dists, cat_vars, table_row, pums, alpha, k)
   }
-  
+
   # Combine ordinal and categorical distances and return   
   df <- cbind(ord_df, cat_df)
   dists <- apply(df, 1, prod)
@@ -292,6 +331,7 @@ calc_dists <- function(pums, table_row, alpha, k, marginals) {
 }
 
 get_ord_dists <- function(ind, ord_vars, table_row, pums, alpha, k) {
+
   # Extract the orginal variable from pums 
   ord_var_name <- paste0(ord_vars[ind], "_marg")  
   pums_var <- pums[, ord_var_name]
@@ -310,14 +350,14 @@ get_ord_dists <- function(ind, ord_vars, table_row, pums, alpha, k) {
 }
 
 get_cat_dists <- function(ind, cat_vars, table_row, pums, alpha, k) {
+
   # Get PUMS rows of categorical val 
   cat_var_name <- paste0(cat_vars[ind], "_marg")
   dip <- as.character(pums[, cat_var_name])
   
-  # Get valeu of cat val, calculate the distance and return 
-  cat_val <- table_row[cat_var_name]
+    ## Get value of cat val, calculate the distance and return
+    cat_val <- table_row[cat_var_name]
   dic <- lapply(cat_val, as.character)[[1]]
-  
   dist <- ifelse(dip == dic, alpha, 1 - alpha) 
   dist <- 1 - dist
   

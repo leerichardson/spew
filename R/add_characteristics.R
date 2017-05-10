@@ -19,7 +19,6 @@ add_characteristic <- function(synth_pop_path, args, pop_type = "people",
         out <- lapply(file.path(synth_pop_path, file_names), char_fun,
                       synth_pop_path, pop_type, args)
     } else{
-        ## do stuff
     }
     return(out)
 }
@@ -30,10 +29,10 @@ add_characteristic <- function(synth_pop_path, args, pop_type = "people",
 #' @param output_path the path to the folder of where the new output is to go
 #' @param pop_type "b" for both; "household", or "people" populations
 #' @param args list of additional arguments including the suffix
-#' @return logical, writes out new synth pop
+#' @return logical, writes out new synth pop)
 add_char_demo <- function(synth_pop_fn, output_path, pop_type, args){
     ## Read in the population
-    if (pop_type == "b"){
+    if (pop_type == "both"){
         synth_pop_p<- read.csv(synth_pop_fn)
         synth_pop_h <- read.csv(gsub("people", "household", synth_pop_fn))
         synth_pop <- join(synth_pop_p,
@@ -59,7 +58,7 @@ add_char_demo <- function(synth_pop_fn, output_path, pop_type, args){
     if(is.null(suffix)) suffix <- "_v2"
     output_path <- paste0(args$output_path, suffix)
     if(!dir.exists(output_path)) dir.create(output_path)
-    write.csv(new_df, file.path(output_path, basename(synth_pop_fn)))
+    write.csv(new_df, file.path(output_path, basename(synth_pop_fn)), row.names = FALSE)
     return(TRUE)
 }
 
@@ -89,14 +88,17 @@ demo_sample <- function(pop_df, char_pums, var_names, args = NULL){
 
 
 
-#' Set up for converting to categorical variable for align_pums
+#' Set up for creating a set of marginal information for IPF sampling
 #'
-#' @param var_name name of the variable matching the PUMS
+#' @param var_name name of the variable matching the PUMS/microdata
 #' @param type "ord" for ordinal or  "cat" for categorical, the type of variable to be converted to
-#' @param bounds data frame of upper and lower bounds (inclusive) for variables (numeric)
+#' @param bounds dataframe of upper and lower bounds (inclusive) for variables (numeric)
 #' @param category_names short name of the category, will be visible to person.  Either length one and the bounds will be pasted to it or length of the number of rows of the bounds with names of your choice.
-#' @param output_file if not NULL then we save the file as a rds object to output_file
-make_cat_var_obj<- function(var_name, type="ord", bounds, category_name, output_file = NULL){
+#' @param output_file if not NULL then we save the file as a RDS object to output_file
+#' @param df data frame with place_id and category counts
+#' @return a list in the format for use in IPF
+#' @export
+make_ipf_obj<- function(var_name, type="ord", bounds, category_name, output_file = NULL, df = NULL){
     stopifnot(all(is.numeric(c(bounds[, 1], bounds[, 2]))))
     stopifnot(sum(colnames(bounds) %in% c("upper", "lower")) == 2)
     stopifnot(all(bounds[,1] <= bounds[,2]))
@@ -107,12 +109,18 @@ make_cat_var_obj<- function(var_name, type="ord", bounds, category_name, output_
         stopifnot(length(category_name) == 1)
         marg_names <-  apply(bounds, 1,
                              function(row) paste(category_name, row[1], row[2], sep = "-"))
-        }
-    ll <- list(type=type,
+    }
+    if(!is.null(df)){
+        stopifnot(colnames(df)[1] == "place_id")
+        colnames(df) <- c("place_id", marg_names)  
+    }
+    ll <- list(df = df, type=type,
                lookup=data.frame(marg_names = marg_names, bounds, stringsAsFactors = FALSE))
-    if (!is.null(output_file)) saveRDS(assign(var_name, ll), output_file)
     new_ll <- list(ll)
     names(new_ll) <- var_name
+    new_ll <- c(new_ll)
+    if (!is.null(output_file)) saveRDS( new_ll, output_file)
+   
     return(new_ll)
 }
 

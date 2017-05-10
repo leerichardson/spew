@@ -3,10 +3,13 @@
 #' @param pop data frame with "longitude" and "latitude" columns
 #' @param places data frame with "longitude" and "latitude" and an "ID" column, perhaps a "capacity" column
 #' @param place_name string that will become the column name of the place
-#' @param method c("uniform", "capacity") The method on how we assign places
-#' @param dist_fxn (haversine_dist) or a function with args x1, y1, x2, y2
-#' @return pop data frame with column of place_name with the place_ids
-assign_place_coords<- function(pop, places, place_name ="place", method = "uniform", dist_fxn = euclidean_dist){
+#' @param method c("uniform", "capacity") The method on how we assign places.  The "uniform" argument  means that we do not consider capacity in assignments, only distance.  Conversely, "capacity" means we do consider capacity when assigning agents to places.  The default is "uniform". 
+#' @param dist_fxn  a function with args x1, y1, x2, y2 that returns a single number.  The default is Euclidean Distance $d((x1, y1), (x2,y2) = \sqrt{(x1-x2)^2 + (y1 - y2)^2}$.  The distance should satisfy the requirements of a metric.
+#' @param cap_fxn a function with one argument, a single capacity.  This should be a monotone increasing function.  The default is cap_default.
+#' @export
+#' @return  data frame with column of place_name with the place_ids, e.g. assignments of the places to the agents.
+assign_place_coords<- function(pop, places, place_name ="place", method = "uniform", dist_fxn = euclidean_dist,
+                               cap_fxn = cap_default){
 
     # First check if the pop df and the places df are in the right format
     stopifnot(checkDF(pop, type = "coords"))
@@ -19,9 +22,10 @@ assign_place_coords<- function(pop, places, place_name ="place", method = "unifo
 
     # Scale distance mat between 0 and 1 for each row
     dist_mat <- t(apply(dist_mat, 1, function(row){
-        out <- (row - min(row, na.rm = TRUE) ) /
-            (max(row, na.rm = TRUE) - min(row,
-                                               na.rm = TRUE)  + .001)
+        mn <- mean(row, na.rm = TRUE)
+        bd <- c(row, row + mn, row - mn)
+        out <- (row - min(bd, na.rm = TRUE)) /
+            (max(bd, na.rm = TRUE) - min(bd, na.rm = TRUE) )
         return(out)
             }))
 
@@ -30,7 +34,7 @@ assign_place_coords<- function(pop, places, place_name ="place", method = "unifo
         method <- "uniform"
     }
 
-    weight_mat <- get_weight_dists(dist_mat, places, method)
+    weight_mat <- get_weight_dists(dist_mat, places, method, cap_fxn)
 
     # Use weights to assign place
     place_inds <- apply(weight_mat, 1, function(row) sample(1:nrow(places), size = 1, prob = row))
@@ -45,6 +49,16 @@ assign_place_coords<- function(pop, places, place_name ="place", method = "unifo
     names(pop)[ncol(pop)] <- place_name
     return(pop)
     
+}
+
+#' How to weight the capacities of of school.  
+#'
+#' @param cap a single number
+#' @return the weighted capacity, a single number.
+#' @details this default version returns the ceiling(capacity / 10).
+#' @export
+cap_default <- function(cap){
+    return(ceiling(cap / 10))
 }
 
 #' Check if df is in the right format
@@ -65,6 +79,7 @@ checkDF <- function(df, type = "coords"){
 #' @param pop data frame of the population with m rows
 #' @param places data frame of places to assign with n rows
 #' @param dist_fxn currently "haversine" with args for x1, y1, x2, y2, returning a scalar value between 0 and 1
+#' @param cap_fxn a function with one argument, a single capacity.  This should be a monotone increasing function.  The default is cap_default.
 #' @return m x n matrix with scaled distance between 0 and 1.  Eg.  Entry ij means that the scaled distance between row i from pop and row j from places is entry ij.
 get_dist_mat <- function(pop, places, dist_fxn = haversine_dist){
     m <- nrow(pop) # number of individuals in pop
@@ -115,6 +130,7 @@ haversine_dist <- function(x1, y1, x2, y2){
 #' @param y1 latitude of object 1 (vector)
 #' @param x2 longitude of object 2 (vector)
 #' @param y2 latitude of object 2 (vector)
+#' @export
 #' @return numeric 
 euclidean_dist <- function(x1, y1, x2, y2){
     d <- sqrt((x1 - x2)^2 + (y1 - y2)^2)
@@ -128,7 +144,7 @@ euclidean_dist <- function(x1, y1, x2, y2){
 #' @param places data frame of places with an ID column
 #' @param method ("uniform", "capacity")
 #' @return m x n matrix of probabilities.  Each row should sum to 1
-get_weight_dists <- function(dist_mat, places, method="uniform"){
+get_weight_dists <- function(dist_mat, places, method="uniform", cap_fxn = cap_default){
   m <- nrow(dist_mat)
   n <- ncol(dist_mat)
 
@@ -141,7 +157,7 @@ get_weight_dists <- function(dist_mat, places, method="uniform"){
   capacity <- as.numeric(as.character(places$capacity))
   stopifnot(length(capacity) == n)
   
-  places_weight <- ceiling(capacity/20)
+  places_weight <- cap_fxn(capacity)
   places_weight <- ifelse(is.na(places_weight), 1, places_weight)
   places_weight_mat <- matrix(rep(places_weight, each = m), nrow = m)
   dist_mat <- dist_mat

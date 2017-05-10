@@ -1,0 +1,31 @@
+\contentsline {section}{\numberline {1}Introduction}{3}
+\contentsline {section}{\numberline {2}Data Sources}{4}
+\contentsline {subsection}{\numberline {2.1}United States}{4}
+\contentsline {subsubsection}{\numberline {2.1.1}Population Counts}{4}
+\contentsline {subsubsection}{\numberline {2.1.2}Geographies}{4}
+\contentsline {subsubsection}{\numberline {2.1.3}Microdata}{5}
+\contentsline {subsubsection}{\numberline {2.1.4}Summary files}{5}
+\contentsline {subsubsection}{\numberline {2.1.5}Schools}{5}
+\contentsline {subsubsection}{\numberline {2.1.6}Workplaces}{5}
+\contentsline {subsection}{\numberline {2.2}IPUMS}{5}
+\contentsline {subsubsection}{\numberline {2.2.1}Population Counts}{6}
+\contentsline {subsubsection}{\numberline {2.2.2}Geography}{6}
+\contentsline {subsubsection}{\numberline {2.2.3}Microdata}{6}
+\contentsline {subsection}{\numberline {2.3}Canada}{6}
+\contentsline {subsubsection}{\numberline {2.3.1}Population Counts}{6}
+\contentsline {subsubsection}{\numberline {2.3.2}Geographies}{7}
+\contentsline {subsubsection}{\numberline {2.3.3}Microdata}{7}
+\contentsline {section}{\numberline {3}Methods}{8}
+\contentsline {subsection}{\numberline {3.1}Sample population characteristics of households}{8}
+\contentsline {subsection}{\numberline {3.2}Sample locations of agents}{9}
+\contentsline {subsection}{\numberline {3.3}Spatial Sampling of Agents}{9}
+\contentsline {subsection}{\numberline {3.4}School Assignments}{9}
+\contentsline {subsection}{\numberline {3.5}Workplace Assignments}{9}
+\contentsline {subsection}{\numberline {3.6}Diagnostics}{9}
+\contentsline {section}{\numberline {4}Output}{11}
+\contentsline {subsection}{\numberline {4.1}Directory Structure}{11}
+\contentsline {section}{\numberline {A}Codebook}{14}
+\contentsline {subsection}{\numberline {A.1}United States}{14}
+\contentsline {subsection}{\numberline {A.2}Canada}{14}
+\contentsline {subsection}{\numberline {A.3}IPUMS: International Public Use Microdata Sample}{14}
+\contentsline {section}{\numberline {B}Acknowledgements}{15}

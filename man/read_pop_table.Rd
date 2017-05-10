@@ -11,7 +11,7 @@ read_pop_table(input_dir, folders, data_group)
 all of the input data}
 
 \item{folders}{list which contains the path of each sub-directory with the 
-specific data}
+specific datadelaware_marginals}
 
 \item{data_group}{character either "US", "ipums" or "none" which tells 
 read_data if the input data follows a particular format. Used mainly for 

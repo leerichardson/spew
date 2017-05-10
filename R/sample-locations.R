@@ -9,13 +9,15 @@
 #' that this is a list with two shapefiles if me
 #' @param noise the standard deviation of how much 
 #' we jitter the road locations in each direction (only if method is "roads")
+#' @param do_write logical if TRUE, we read in the roads and subset them.  If FALSE, we use the roads provided in shapefile$roads.  Default is TRUE.
 #' @return SpatialPoints object with coordinates for the n households
-sample_locations <- function(method, place_id, n_house, shapefile, noise = .001, shapefile_id = NULL) {
+sample_locations <- function(method, place_id, n_house, shapefile, noise = .001, shapefile_id = NULL, do_write = TRUE) {
   # Call the appropriate location sampling function
   if (method == "uniform") {
     locs <- sample_locations_uniform(place_id, n_house, shapefile, noise, shapefile_id)
   } else if (method == "roads") {
-    locs <- sample_locations_roads(place_id, n_house, shapefile, noise, shapefile_id)
+      locs <- sample_locations_roads(place_id, n_house, shapefile, noise,
+                                     shapefile_id, do_write)
   } else {
     stop("location sampling method must be uniform or roads")
   }
@@ -57,7 +59,13 @@ sample_locations_uniform <- function(place_id, n_house, shapefile, noise = .001,
   
   # Subset the shapefile to the polygon 
   # specified by the place_id argument 
-  slots <- methods::slot(shapefile, "polygons")  
+    slots <- methods::slot(shapefile, "polygons")
+    if(length(region) <= 0){
+        print(shapefile_id)
+        print(place_id)
+        print(head(shapefile$place_id))
+        stop()
+    }
   poly <- slots[[region]]
   
   # Remove holes from polygon if any are found 
@@ -111,13 +119,15 @@ remove_holes <- function(polygon) {
 #' In addition, we must have road shapefiles so shapefile is a list with both 
 #' the tracts and the roads, tracts is the first object and roads the second.
 #' @param noise the standard deviation of how much we jitter the road locations in each direction
+#' @param do_write logical if TRUE, we read in the roads and subset them.  If FALSE, we use the roads provided in shapefile$roads.  Default is TRUE. 
 #' @return SpatialPoints object with coordinates for the n households
-sample_locations_roads <- function(place_id, n_house, shapefile, noise = .0001, shapefile_id) {
+sample_locations_roads <- function(place_id, n_house, shapefile,
+                                   noise = .0001, shapefile_id, do_write = TRUE) {
   stopifnot(any(names(shapefile) == "roads"))
-  # Get the intersection of the boundary shapefile 
-  # and the roads shapefile 
-  new_shp <- subset_shapes_roads(place_id, shapefile)
-  
+  ## Get the intersection of the boundary shapefile 
+  ## and the roads shapefile
+
+  new_shp <- subset_shapes_roads(place_id, shapefile, do_write)
   # If the new shape is NULL, sample uniform instead of roads  
   if (is.null(new_shp)) {
     warning("Can't sample from roads, sampling uniformly")
@@ -137,8 +147,9 @@ sample_locations_roads <- function(place_id, n_house, shapefile, noise = .0001, 
 #' @param shapefile sp class with all of the locations for each place id.  
 #' In addition, we must have road shapefiles so shapefile is a list with both the 
 #' tracts and the roads, tracts is the first object and roads the second.
+#' @param do_write logical if TRUE, we read in the roads and subset them.  If FALSE, we use the roads provided in shapefile$roads.  Default is TRUE.
 #' @return new_shp - roads within the tract, a SpatialLines object
-subset_shapes_roads <- function(place_id, shapefile) {
+subset_shapes_roads <- function(place_id, shapefile, do_write = TRUE) {
   stopifnot(class(shapefile) == "list")
   stopifnot(length(shapefile) == 2)
   stopifnot(class(shapefile[[1]]) == "SpatialPolygonsDataFrame")
@@ -146,15 +157,19 @@ subset_shapes_roads <- function(place_id, shapefile) {
   # Subset the regions to the place_id polygon
   regions <- shapefile[[1]]
   poly <- regions[regions@data$place_id == place_id, ]
-  
-  # Extract the place-county ID. If it's not there, then 
-  # return NULL, which triggers uniform sampling
-  place_county <- substr(place_id, 1, 5)
 
-  # Read in the specific roads shapefile. If there's no 
-  # corresponding file for this county, return NULL 
-  # which will call the uniform sampling instead 
-  roads_sub <- read_roads(path_to_roads = shapefile$roads, road_id = place_county)
+  if(do_write){ # if we are writing, we have to read in the files
+      ## Extract the place-county ID. If it's not there, then 
+      ## return NULL, which triggers uniform sampling
+      place_county <- substr(place_id, 1, 5)
+
+      ## Read in the specific roads shapefile. If there's no 
+      ## corresponding file for this county, return NULL 
+      ## which will call the uniform sampling instead 
+      roads_sub <- read_roads(path_to_roads = shapefile$roads, road_id = place_county)
+  } else{ #otherwise we use the roads provided
+      roads_sub <- shapefile$roads
+  }
   if (is.null(roads_sub)) {
     return(NULL)
   }

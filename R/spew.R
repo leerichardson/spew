@@ -6,7 +6,7 @@
 #' @param parallel_type Indicating to run sequentially or parallel. If parallel, 
 #' the back-end is specified, either "MPI", "SOCK", or "MC"
 #' @param sampling_method character of sampling method. Default: "uniform", can also 
-#' be "ipf" if appropriate marginal data is included
+#' be "ipf" or "mm" if appropriate marginal/moments data is included
 #' @param locations_method character vector indicating the type of location 
 #' sampling to use. Default to "uniform". can also be "roads" if appropriate line 
 #' shapefiles are included. 
@@ -15,26 +15,32 @@
 #' the population is the total number of households 
 #' @param vars list with two elements: household and person. This specifies 
 #' which variables to include in the corresponding household and person PUMS data-set
+#' @param do_subset_pums logical, do we need to subset PUMS when doing the method of sampling.  Default is TRUE.
+#' @param do_write logical, do we need to write out the synthetic populations and environments?  
+#' If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.
+#' @param noise a numeric value indicating the value of the noise we add to household locations during road-based sampling.  Default is .0002.
 #' @export
 #' @return logical indicating whether or not this run of spew ended successfully 
 call_spew <- function(base_dir, folders = NULL, data_group = "US", parallel_type = "SEQ",
-                          sampling_method = "uniform", locations_method = "uniform", 
-                          convert_count = FALSE, vars = list(household = NA, person = NA)) {  
+                      sampling_method = "uniform", locations_method = "uniform", 
+                      convert_count = FALSE, vars = list(household = NA, person = NA),
+                      do_subset_pums = TRUE, do_write = TRUE, noise = .0002) {  
   spew_start_time <- Sys.time()
   
   # Given directory, folders, vars, and data-group, read input data into a list 
   data_list <- read_data(base_dir = base_dir, folders = folders, data_group = data_group, vars)
-  
+
   # Given the data list, make sure everything is formatted correctly 
   formatted_data <- format_data(data_list = data_list, data_group = data_group)
-  
+
   # Call the SPEW algorithm on the formatted data 
   spew(base_dir = base_dir, pop_table = formatted_data$pop_table, 
        shapefile = formatted_data$shapefiles, pums_h = formatted_data$pums$pums_h, 
        pums_p = formatted_data$pums$pums_p, schools = formatted_data$schools, 
        workplaces = formatted_data$workplaces, marginals = formatted_data$marginals, 
        parallel_type = parallel_type,  sampling_method = sampling_method, 
-       locations_method = locations_method, convert_count = convert_count)
+       locations_method = locations_method, convert_count = convert_count,
+       do_subset_pums = do_subset_pums, do_write = do_write, noise = noise)
 
   # Print out the overall run-time of SPEW!
   spew_time <- difftime(Sys.time(), spew_start_time, units = "secs")
@@ -71,71 +77,97 @@ call_spew <- function(base_dir, folders = NULL, data_group = "US", parallel_type
 #' @param locations_method character vector indicating the type of location 
 #' sampling to use, defaults to "uniform", can also be "roads". 
 #' @param outfile_loc Defaults to "", so we print out the parallel run information. 
-#' Only set to "/dev/null" for internal testing putposes. 
-#' 
+#' Only set to "/dev/null" for internal testing putposes.
+#' @param do_subset_pums logical, do we need to subset PUMS when doing the method of sampling.  Default is TRUE.
+#' @param do_write logical, do we need to write out the synthetic populations and environments?  
+#' If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.
+#' @param noise a numeric value indicating the value of the noise we add to household locations during road-based sampling.  Default is .0002.
 #' @export
 #' @return logical indicating whether or not this run of spew ended successfully 
 spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools, 
                  workplaces, marginals, convert_count, parallel_type = "SEQ", 
                  sampling_method = "uniform", locations_method = "uniform", 
-                 outfile_loc = "") {
+                 outfile_loc = "", do_subset_pums = TRUE, do_write = TRUE, noise = .0002) {
   location_start_time <- Sys.time()
   
-  # Update, create output directory based on the base directory 
-  output_dir <- file.path(base_dir, "output")
-  if (!dir.exists(output_dir)) {
-    dir.create(output_dir, recursive = TRUE)          
+  # Write out the Population table + Environments ------
+  if (do_write) {
+      # Update, create output directory based on the base directory 
+      output_dir <- file.path(base_dir, "output")
+      if (!dir.exists(output_dir)) {
+          dir.create(output_dir, recursive = TRUE)          
+      }
+
+      write_pop_table(pop_table, output_dir)
+      
+      # Write out the Environments  
+      env_dir <- file.path(output_dir, "environments")
+      if (!dir.exists(env_dir)) {
+          dir.create(env_dir, recursive = TRUE)          
+      }
+      
+      if (!is.null(schools)) {    
+          write_schools(schools, env_dir)
+      }
+      
+      if (!is.null(workplaces)) {
+          write_workplaces(workplaces, env_dir)
+      }
+  } else { 
+      output_dir <- "."
   }
   
-  # Write out the Popualation Table 
-  write_pop_table(pop_table, output_dir)
-  
-  # Write out the Environments  
-  env_dir <- file.path(output_dir, "environments")
-  if (!dir.exists(env_dir)) {
-    dir.create(env_dir, recursive = TRUE)          
-  }
-  
-  if (!is.null(schools)) {    
-    print("Writing Schools!")
-    write_schools(schools, env_dir)
-  }
-  
-  if (!is.null(workplaces)) {
-    print("Writing Workplaces!")
-    write_workplaces(workplaces, env_dir)
-  }
+  # Set the objects to send to the workers if parallel back-end is SOCK or MPI 
+  export_objects <- c("spew_place", "people_to_households", "sample_households", 
+                      "sample_locations", "sample_people", "write_data", 
+                      "people_to_households", "assign_schools", "assign_schools_inner", 
+                      "weight_dists", "get_dists", "haversine", "subset_schools", 
+                      "assign_workplaces", "assign_workplaces_inner", "remove_holes", 
+                      "sample_locations_uniform", "sample_locations_roads", 
+                      "subset_shapes_roads", "samp_roads", "print_region_list", "read_roads", 
+                      "sample_uniform", "sample_ipf", "subset_pums", "align_pums", 
+                      "fill_cont_table", "update_freqs", "get_targets", "sample_with_cont", 
+                      "samp_ipf_inds", "assign_weights", "calc_dists", "get_ord_dists", 
+                      "get_cat_dists", "remove_excess","sample_mm", "solve_mm_weights", 
+                      "solve_mm_for_joint","solve_mm_for_var", "extrapolate_probs_to_pums",
+                      "extrapolate_probs_to_pums_joint", "make_mm_obj", "impute_missing_vals")
   
   # Call either the sequential, or parallel version of the SPEW algorithm 
   num_places <- nrow(pop_table)
   if (parallel_type == "SEQ") {
     region_list <- spew_seq(num_places, pop_table, shapefile, pums_h, pums_p, 
                             schools, workplaces, marginals, sampling_method, 
-                            locations_method, convert_count, output_dir)
+                            locations_method, convert_count, output_dir,
+                            do_subset_pums =  do_subset_pums, do_write = do_write, noise = noise)
     
   } else if (parallel_type == "MPI") {
     region_list <- spew_mpi(num_places, pop_table, shapefile, pums_h, pums_p, 
                             schools, workplaces, marginals, sampling_method, 
-                            locations_method, convert_count, output_dir)
+                            locations_method, convert_count, output_dir, export_objects,
+                            do_subset_pums = do_subset_pums, do_write = do_write, noise = noise)
     
   } else if (parallel_type == "SOCK") {
     region_list <- spew_sock(num_places, pop_table, shapefile, pums_h, pums_p, 
                              schools, workplaces, marginals, sampling_method, 
                              locations_method, convert_count, output_dir, 
-                             outfile_loc)
+                             outfile_loc, export_objects,
+                             do_subset_pums = do_subset_pums, do_write = do_write, noise = noise)
     
   } else if (parallel_type == "MC") {
     region_list <- spew_mc(num_places, pop_table, shapefile, pums_h, pums_p, 
                            schools, workplaces, marginals, sampling_method, 
-                           locations_method, convert_count, output_dir, 
-                           outfile_loc)
+                           locations_method, convert_count, output_dir,
+                           do_subset_pums = do_subset_pums, do_write = do_write, noise = noise)
     
   } else {
     stop("parallel_type must be SEQ, MPI, SOCK, or MC")
   }
 
-  # Print the diagnostics and summaries of the entire place 
-  print_region_list(region_list)
+  # Print the diagnostics and summaries of the entire place
+  if (do_write) {
+    print_region_list(region_list)
+  }
+  
   location_time <- difftime(Sys.time(), location_start_time, units = "secs")
   location_time <- round(location_time, digits = 2)  
   location_time_statement <- paste0("Location runs in: ", location_time)
@@ -144,11 +176,12 @@ spew <- function(base_dir, pop_table, shapefile, pums_h, pums_p, schools,
   return(region_list)
 }
 
-
 #' Run SPEW Sequentially 
 spew_seq <- function(num_places, pop_table, shapefile, pums_h, pums_p, 
                      schools, workplaces, marginals, sampling_method, 
-                     locations_method, convert_count, output_dir) {  
+                     locations_method, convert_count, output_dir,
+                     do_subset_pums = TRUE,
+                     do_write = TRUE, noise = .0002) {  
   region_list <- vector(mode = "list", length = num_places)
   
   for (place in 1:num_places) {
@@ -164,7 +197,9 @@ spew_seq <- function(num_places, pop_table, shapefile, pums_h, pums_p,
                                        sampling_method = sampling_method, 
                                        locations_method = locations_method, 
                                        convert_count = convert_count, 
-                                       output_dir = output_dir)
+                                       output_dir = output_dir,
+                                       do_subset_pums = do_subset_pums, 
+                                       do_write = do_write, noise = noise)
   }
   
   return(region_list)
@@ -173,7 +208,9 @@ spew_seq <- function(num_places, pop_table, shapefile, pums_h, pums_p,
 #' Run SPEW in Parallel with an MPI backend 
 spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p, 
                      schools, workplaces, marginals, sampling_method, 
-                     locations_method, convert_count, output_dir) {
+                     locations_method, convert_count, output_dir, 
+                     export_objects, do_subset_pums = TRUE,
+                     do_write = TRUE, noise = noise) {
   # Set up the MPI workers
   num_workers <- mpi.universe.size()
   mpi.spawn.Rslaves(nslaves = num_workers)
@@ -188,7 +225,7 @@ spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p,
   # because the core olympus directories don't have our updated functions. 
   hostname <- system("hostname", intern = TRUE)
   print(paste0("Hostname: ", hostname))
-  if (grep("olympus", hostname) == 1) {
+  if (length(grep("olympus", hostname)) == 1) {
     print("On Olympus, switching lib-paths")
     username <- system("whoami", intern = TRUE)
     print(paste0("Username: ", username))
@@ -208,22 +245,10 @@ spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p,
   mpi.bcast.cmd(library(sp))
   mpi.bcast.cmd(library(rgeos))
   mpi.bcast.cmd(library(data.table))
-  mpi.bcast.cmd(library(bit64))
   mpi.bcast.cmd(library(mipfp))
+  mpi.bcast.cmd(library(quadprog))
   
   # Export functions to all of the workers ------
-  export_objects <- c("spew_place", "people_to_households", "sample_households", 
-                      "sample_locations", "sample_people", "write_data", 
-                      "people_to_households", "assign_schools", "assign_schools_inner", 
-                      "weight_dists", "get_dists", "haversine", "subset_schools", 
-                      "assign_workplaces", "assign_workplaces_inner", "remove_holes", 
-                      "sample_locations_uniform", "sample_locations_roads", 
-                      "subset_shapes_roads", "samp_roads", "print_region_list", "read_roads", 
-                      "sample_uniform", "sample_ipf", "subset_pums", "align_pums", 
-                      "fill_cont_table", "update_freqs", "get_targets", "sample_with_cont", 
-                      "samp_ipf_inds", "assign_weights", "calc_dists", "get_ord_dists", 
-                      "get_cat_dists", "remove_excess")
-  
   for (obj in export_objects) {
     cat("Sending To Workers: ", obj, fill = TRUE)
     do.call("mpi.bcast.Robj2slave" , list (obj = as.name(obj)))
@@ -242,7 +267,9 @@ spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p,
                             sampling_method = sampling_method, 
                             locations_method = locations_method, 
                             convert_count = convert_count, 
-                            output_dir = output_dir)
+                            output_dir = output_dir, 
+                            do_subset_pums = do_subset_pums,
+                            do_write = do_write, noise = noise)
   
   # Close the connections and MPI
   mpi.close.Rslaves()
@@ -254,30 +281,21 @@ spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p,
 #' Run SPEW in Parallel with a SOCK backend 
 spew_sock <- function(num_places, pop_table, shapefile, pums_h, pums_p, 
                       schools, workplaces, marginals, sampling_method, 
-                      locations_method, convert_count, output_dir, outfile_loc) {
+                      locations_method, convert_count, output_dir, outfile_loc, 
+                      export_objects, do_subset_pums = TRUE,
+                      do_write = TRUE, noise = .0002) {
   # Set up a SOCK cluster 
   num_workers <- min(num_places, parallel::detectCores(), 64) 
   cluster <- makeCluster(num_workers, type = "SOCK", outfile = outfile_loc)
   doParallel::registerDoParallel(cluster)
   
   # Export objects to the SOCK cluster  
-  export_objects <- c("spew_place", "people_to_households", "sample_households", 
-                      "sample_locations", "sample_people", "write_data", 
-                      "people_to_households", "assign_schools", "assign_schools_inner", 
-                      "weight_dists", "get_dists", "haversine", "subset_schools", 
-                      "assign_workplaces", "assign_workplaces_inner", "remove_holes", 
-                      "sample_locations_uniform", "sample_locations_roads", 
-                      "subset_shapes_roads", "samp_roads", "print_region_list", "read_roads", 
-                      "sample_uniform", "sample_ipf", "subset_pums", "align_pums", 
-                      "fill_cont_table", "update_freqs", "get_targets", "sample_with_cont", 
-                      "samp_ipf_inds", "assign_weights", "calc_dists", "get_ord_dists", 
-                      "get_cat_dists", "remove_excess")
   parallel::clusterExport(cl = cluster, varlist = export_objects, envir = environment())  
   
   # Run for-each to generate each place on a separate core 
   region_list <- foreach(place = 1:num_places, 
                          .packages = c("plyr", "methods", "sp", "rgeos", 
-                                       "data.table", "bit64", "mipfp"),
+                                       "data.table", "mipfp", "quadprog"),
                          .errorhandling = 'pass', 
                          .export = export_objects) %dopar% {
                            print(paste0("Region ", place, " out of ", num_places))
@@ -292,7 +310,9 @@ spew_sock <- function(num_places, pop_table, shapefile, pums_h, pums_p,
                                                sampling_method = sampling_method, 
                                                locations_method = locations_method, 
                                                convert_count = convert_count, 
-                                               output_dir = output_dir)
+                                               output_dir = output_dir,
+                                               do_subset_pums = do_subset_pums,
+                                               do_write = do_write, noise = noise)
                            print(paste0("Finished ", pop_table[place, "place_id"]))
                            times
                          }
@@ -304,32 +324,27 @@ spew_sock <- function(num_places, pop_table, shapefile, pums_h, pums_p,
 #' Run SPEW in Parallel with a Multicore backend 
 spew_mc <- function(num_places, pop_table, shapefile, pums_h, pums_p, 
                     schools, workplaces, marginals, sampling_method, 
-                    locations_method, convert_count, output_dir, outfile_loc) {  
-  # Set up the Multi-core Cluster
-  num_workers <- min(num_places, parallel::detectCores(), 64)   
-  doMC::registerDoMC(num_workers)
+                    locations_method, convert_count, output_dir, outfile_loc,
+                    do_subset_pums = TRUE, do_write = TRUE, noise = .0002) {
   
-  # Run for-each to generate each place on a separate core 
-  region_list <- foreach(place = 1:num_places, 
-                         .packages = c("plyr", "methods", "sp", "rgeos", 
-                                       "data.table", "bit64", "mipfp"),
-                         .errorhandling = 'pass') %dopar% {
-                           print(paste0("Region ", place, " out of ", num_places))
-                           times <- spew_place(index = place, 
-                                               pop_table = pop_table, 
-                                               shapefile = shapefile, 
-                                               pums_h = pums_h, 
-                                               pums_p = pums_p, 
-                                               schools = schools, 
-                                               workplaces = workplaces, 
-                                               marginals = marginals, 
-                                               sampling_method = sampling_method, 
-                                               locations_method = locations_method, 
-                                               convert_count = convert_count, 
-                                               output_dir = output_dir)
-                           print(paste0("Finished ", pop_table[place, "place_id"]))
-                           times
-                         }  
+  num_workers <- detectCores()
+  region_list <- mclapply(X = 1:num_places, 
+                          FUN = spew_place, 
+                          pop_table = pop_table, 
+                          shapefile = shapefile, 
+                          pums_h = pums_h, 
+                          pums_p = pums_p, 
+                          schools = schools, 
+                          workplaces = workplaces, 
+                          marginals = marginals, 
+                          sampling_method = sampling_method, 
+                          locations_method = locations_method, 
+                          convert_count = convert_count, 
+                          output_dir = output_dir, 
+                          mc.cores = num_workers,
+                          do_subset_pums = do_subset_pums,
+                          do_write = do_write, noise = noise)
+  
   return(region_list)
 }
 
@@ -347,15 +362,20 @@ spew_mc <- function(num_places, pop_table, shapefile, pums_h, pums_p,
 #' @param marginals list with elements corresponding to marginal totals 
 #' of population variables 
 #' @param sampling_method character vector indicating the type of sampling 
-#' method to use, defaults to "uniform"
+#' method to use, defaults to "uniform".  Other options are "ipf" and "mm"
 #' @param locations_method character vector indicating the type of location 
 #' sampling to use, defaults to "uniform", can also be "roads" 
-#' @param output dir character vector containing the location to save the
+#' @param output_dir character vector containing the location to save the
+#' @param do_subset_pums logical, do we need to subset PUMS when doing the method of sampling.  Default is TRUE.
+#' @param do_write logical, do we need to write out the synthetic populations and environments?
+#' @param noise a numeric value indicating the value of the noise we add to household locations during road-based sampling.  Default is .0002.
+#' If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.
 #' @return synthetic population .csv file for both household and person 
 #' level data
 spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
                        workplaces, marginals, output_dir, convert_count, sampling_method, 
-                       locations_method) {
+                       locations_method, do_subset_pums = TRUE, do_write = TRUE,
+                       noise = .0002) {
   # Start the clock on this specific place 
   place_start_time <- Sys.time()
 
@@ -367,8 +387,10 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   # To avoid data-frames larger than 5 Million, generate large 
   # places incrementally, appending rows onto each-other 
   append <- FALSE
-  max_size <- 3000000
+  max_size <- 5000000
   iter <- 0
+  total_hh <- 0
+  total_people <- 0
   number_iters <- floor(n_house / max_size)
   if (number_iters == 0) {
     iter_vec <- n_house
@@ -378,8 +400,7 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
   }
   
   for (n_house in iter_vec) {
-    # If this is the second increment of this place, append the 
-    # final households 
+    # If this is the second increment of this place, make sure we append
     iter <- iter + 1
     if (iter == 2) {
       append <- TRUE
@@ -414,15 +435,18 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
                                             pums_p = pums_p, 
                                             marginals = marginals,
                                             puma_id = puma_id, 
-                                            place_id = place_id)
-    
+                                            place_id = place_id,
+                                            do_subset_pums = do_subset_pums)
+    total_hh <- total_hh + nrow(sampled_households)
+
     # Locations ----------------
     locations <- sample_locations(method = locations_method, 
                                   place_id = place_id,
                                   n_house = n_house, 
                                   shapefile = shapefile, 
-                                  noise = .0002, 
-                                  shapefile_id)
+                                  noise = noise, 
+                                  shapefile_id,
+                                  do_write = do_write)
     sampled_households$longitude <- locations@coords[, 1]
     sampled_households$latitude <- locations@coords[, 2]
     rm(locations); gc()
@@ -433,6 +457,8 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
                                     pums_p = pums_p, 
                                     puma_id = puma_id, 
                                     place_id = place_id)
+    total_people <- total_people + nrow(sampled_people)
+    
     # Schools --------------
     school_time <- 0
     if (!is.null(schools)) {
@@ -458,6 +484,14 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
       workplace_time <- difftime(Sys.time(), workplace_start_time, units = "secs")
       workplace_time <- round(school_time, digits = 2)
     }
+
+    # Return populations if do_write is FALSE
+    if (!do_write) {
+      return(list(households = sampled_households,
+                             people = sampled_people, place_id = place_id,
+                             puma_id = puma_id))
+    }    
+
     
     # Write the synthetic populations as CSV's
     write_data(df = sampled_households, place_id = place_id, 
@@ -468,14 +502,14 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, schools,
                output_dir = output_dir, append = append)    
   }
   
-  # Collect diagnostic and summary information on this particular 
+  # Collect diagnostic and summary information on this particular   
   # job and return this to the make_data function for analysis 
   place_time <- difftime(Sys.time(), place_start_time, units = "secs")
   place_time <- as.numeric(round(place_time, digits = 2))
   place_time_statement <- paste0("Time: ", place_time)
   
-  hh_statement <- paste0("Households: ", n_house)
-  people_statement <- paste0("People: ", nrow(sampled_people))  
+  hh_statement <- paste0("Households: ", total_hh)
+  people_statement <- paste0("People: ", total_people)  
   school_statement <- paste0("Schools: ", school_time)
   workplace_statement <- paste0("Workplaces: ", workplace_time)  
   place_statement <- paste0("Place: ", index) 

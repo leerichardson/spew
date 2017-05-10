@@ -392,7 +392,7 @@ extractStCoTr <- function(paths_df){
 #' @return vector of column names, the header
 extractHeader <- function(path){
     header <- readLines(path, n=1)
-    nms <- unlist(strsplit(header, split = "[[:punct:]]"))
+    nms <- unlist(strsplit(header, split = ","))
     nms <- nms[nchar(nms) > 0]
     return(nms)
     }
@@ -445,7 +445,7 @@ summarize_us <-  function(output_dir, us_fs,
     for (lev in 1:nSubReg){
         # Lowest level regions in subregion
         reg <- paste(sum_col[lev, ], collapse= "")
-        if (nSubReg > 1){
+        if (nSubReg > 0){ #Fix 3/15/17
             all_reg <- apply(stcotr[, 1:sum_level], 1,
                          paste, collapse = "")
         } else {
@@ -506,7 +506,7 @@ summarize_us <-  function(output_dir, us_fs,
     for (lev in 1:nSubReg){
         # Lowest level regions in subregion
         reg <- paste(sum_col[lev, ], collapse= "")
-        if (nSubReg > 1){
+        if (nSubReg > 0){ #fixed 3/15/17 for Washington DC to run
             all_reg <- apply(stcotr[, 1:sum_level], 1,
                          paste, collapse = "")
         } else {
@@ -845,7 +845,6 @@ fipsToPlaceName <- function(fips, level, df = us){
     } else {
         stopifnot(nchar(fips) == 5)
         ind <- which(as.character(df$COUNTYFP) == fips)
-        stopifnot(length(ind) > 0)
         pn <- df$County[ind][1]
         pn <- gsub(" County", "", pn)
         return(pn)

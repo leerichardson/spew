@@ -2,42 +2,49 @@
 % Please edit documentation in R/spew.R
 \name{call_spew}
 \alias{call_spew}
-\title{Wrapper function to read, format, and generare SPEW synthetic ecosystem}
+\title{Wrapper function to read, format, and generate SPEW synthetic ecosystems}
 \usage{
-call_spew(input_dir, folders = NULL, data_group, output_dir,
-  parallel = TRUE, sampling_method = "uniform",
+call_spew(base_dir, folders = NULL, data_group = "US",
+  parallel_type = "SEQ", sampling_method = "uniform",
   locations_method = "uniform", convert_count = FALSE,
-  vars = list(household = NA, person = NA))
+  vars = list(household = NA, person = NA), do_subset_pums = TRUE,
+  do_write = TRUE, noise = 2e-04)
 }
 \arguments{
-\item{input_dir}{character specifying input data directory}
+\item{base_dir}{character specifying ecosystem directory}
 
 \item{folders}{list specifying sub-directories for each data-source}
 
-\item{output_dir}{character indication where to write ecosystems}
+\item{parallel_type}{Indicating to run sequentially or parallel. If parallel, 
+the back-end is specified, either "MPI", "SOCK", or "MC"}
 
-\item{parallel}{logical whether or not to run in parallel}
-
-\item{sampling_method}{character of sampling}
+\item{sampling_method}{character of sampling method. Default: "uniform", can also 
+be "ipf" or "mm" if appropriate marginal/moments data is included}
 
 \item{locations_method}{character vector indicating the type of location 
-sampling to use, defaults to "uniform", can also be "roads".}
+sampling to use. Default to "uniform". can also be "roads" if appropriate line 
+shapefiles are included.}
 
 \item{convert_count}{logical meant to indicate if we are going to convert 
-population totals to househole counts}
+population totals from people to household counts. Default: FALSE, assumes
+the population is the total number of households}
 
-\item{vars}{list with two components: household and person. This specifies 
-which variables to include in the corresponding PUMS data-set}
+\item{vars}{list with two elements: household and person. This specifies 
+which variables to include in the corresponding household and person PUMS data-set}
+
+\item{do_subset_pums}{logical, do we need to subset PUMS when doing the method of sampling.  Default is TRUE.}
+
+\item{do_write}{logical, do we need to write out the synthetic populations and environments?
+If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.}
+
+\item{noise}{a numeric value indicating the value of the noise we add to household locations during road-based sampling.  Default is .0002.}
 
 \item{data-group}{character, either "US", "ipums", or "none"}
-
-\item{make_plots}{logical indicating whether we should make maps of 
-the synthetic households.}
 }
 \value{
 logical indicating whether or not this run of spew ended successfully
 }
 \description{
-Wrapper function to read, format, and generare SPEW synthetic ecosystem
+Wrapper function to read, format, and generate SPEW synthetic ecosystems
 }
 

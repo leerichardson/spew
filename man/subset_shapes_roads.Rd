@@ -4,7 +4,7 @@
 \alias{subset_shapes_roads}
 \title{Subset the shapefile and road lines to proper roads within specified tract}
 \usage{
-subset_shapes_roads(place_id, shapefile)
+subset_shapes_roads(place_id, shapefile, do_write = TRUE)
 }
 \arguments{
 \item{place_id}{numeric specifiying the ID of the region we are 
@@ -13,6 +13,8 @@ subsampling}
 \item{shapefile}{sp class with all of the locations for each place id.
 In addition, we must have road shapefiles so shapefile is a list with both the 
 tracts and the roads, tracts is the first object and roads the second.}
+
+\item{do_write}{logical if TRUE, we read in the roads and subset them.  If FALSE, we use the roads provided in shapefile$roads.  Default is TRUE.}
 }
 \value{
 new_shp - roads within the tract, a SpatialLines object

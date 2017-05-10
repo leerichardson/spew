@@ -13,7 +13,8 @@ sample_with_cont(pums, table, alpha, k, marginals)
 
 \item{alpha}{number between 0 and 1, weight of categorical variables}
 
-\item{k}{number between 0 and 1, weight of orginal variables}
+\item{k}{number between 0 and 1, weight of
+orginal variables}
 
 \item{marginals}{list with marginal data}
 }

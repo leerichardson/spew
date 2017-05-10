@@ -5,7 +5,7 @@
 \title{Summarize ipums populations}
 \usage{
 summarize_ipums(output_dir, ipums_fs, varsToSummarize = list(vars_hh = "base",
-  vars_p = "base"), doPrint = FALSE, sampSize = 10^3)
+  vars_p = "base"), doPrint = FALSE, sampSize = 10^3, readFun = read.csv)
 }
 \arguments{
 \item{output_dir}{path}
@@ -17,6 +17,8 @@ summarize_ipums(output_dir, ipums_fs, varsToSummarize = list(vars_hh = "base",
 \item{doPrint}{logical}
 
 \item{sampSize}{number of people to retain (default is 10000) per region for plotting}
+
+\item{readFun}{(how to read in file either read.csv or fread from data.table)}
 }
 \description{
 Summarize ipums populations

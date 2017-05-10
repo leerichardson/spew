@@ -1,46 +1,19 @@
 context("SPEW")
 
-test_that("SPEW algorithm runs as expected", {
+
+test_that("Parallel Backends", {
+  # Skip the parallel backend tests if Rmpi not installed 
+  skip_if_not_installed("Rmpi")
+
   data(sd_data)
   data(uruguay_format)
-  
-  library(stringdist)
   library(sp)
+  library(rgeos)
   library(data.table)
-  
+  library(parallel)
   library(Rmpi)
-  library(doParallel)
-  library(doSNOW)
-  library(doMC)
   library(foreach)
-  
-  # Sample locations --------------
-  multiple_polygons <- sample_locations(method = "uniform", place_id = 46027965700, n_house = 100, 
-                                        shapefile = sd_data$shapefiles$shapefile)
-  expect_equal(is.null(multiple_polygons), FALSE)
-  
-  num_samples <- floor(runif(1, min = 1, max = 200))
-  rand_row <- floor(runif(1, min = 1, max = nrow(sd_data$pop_table)))  
-  single_polygon <- sample_locations(method = "uniform", place_id = sd_data$pop_table[rand_row, "place_id"], 
-                                     n_house = num_samples, shapefile = sd_data$shapefiles$shapefile)
-  expect_equal(length(single_polygon), num_samples)
-  
-  # Verify the ipums shapefiles work as well using uruguay data 
-  place_names <- uruguay_format$shapefiles$place_id
-  for (place in place_names[1:6]) {
-    samp <- sample_locations(method = "uniform", place, num_samples, uruguay_format$shapefiles)
-    expect_equal(length(samp), num_samples)
-  }
-  
-  # Make sure the 0 household places are caught
-  test_ind <- 100
-  sd_data$pop_table[test_ind, "n_house"] <- 0
-  expect_output(spew_place(test_ind, sd_data$pop_table, sd_data$shapefiles, 
-                           sd_data$pums$pums_h, sd_data$pums$pums_p, 
-                           schools = sd_data$schools, workplaces = sd_data$workplaces,
-                           sampling_method = "uniform", locations_method = "uniform", 
-                           output_dir = "~/Desktop/46", convert_count = FALSE), 
-                "Place has 0 Households!")
+  library(doParallel)
   
   
   # Open a file to store the outputs of this test-run 
@@ -56,43 +29,61 @@ test_that("SPEW algorithm runs as expected", {
                sampling_method = "uniform", locations_method = "uniform", 
                outfile_loc = "/dev/null")  
   
-  mpi <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
-              schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
-              pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
-              base_dir = "tmp/", parallel_type = "MPI", convert_count = FALSE, 
-              sampling_method = "uniform", locations_method = "uniform", 
-              outfile_loc = "/dev/null")  
-
 #   mc <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
 #              schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
 #              pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
 #              base_dir = "tmp/", parallel_type = "MC", convert_count = FALSE, 
 #              sampling_method = "uniform", locations_method = "uniform", 
 #              outfile_loc = "/dev/null")
-#   expect_true(sock[[1]]$total_households == mc[[1]]$total_households) 
-#   expect_true(sock[[1]]$total_households == mpi[[1]]$total_households)
+# expect_true(sock[[1]]$total_households == mc[[1]]$total_households) 
   
-  # Make sure the parallel runs faster than the regular ---------
+  mpi <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
+            schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
+            pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
+            base_dir = "tmp/", parallel_type = "MPI", convert_count = FALSE, 
+            sampling_method = "uniform", locations_method = "uniform", 
+            outfile_loc = "/dev/null")
+  expect_true(sock[[1]]$total_households == mpi[[1]]$total_households)
+  
+  sink()
+  unlink("test_output.txt")
+  unlink("tmp/", recursive = TRUE)  
+})
+
+test_that("SPEW algorithm runs as expected", {
+  data(sd_data)
+  data(uruguay_format)
+  library(sp)
+  library(rgeos)
+  library(data.table)
+
+  # Make sure the 0 household places are caught
+  test_ind <- 100
+  sd_data$pop_table[test_ind, "n_house"] <- 0
+  expect_output(spew_place(test_ind, sd_data$pop_table, sd_data$shapefiles, 
+                           sd_data$pums$pums_h, sd_data$pums$pums_p, 
+                           schools = sd_data$schools, workplaces = sd_data$workplaces,
+                           sampling_method = "uniform", locations_method = "uniform", 
+                           output_dir = "~/Desktop/46", convert_count = FALSE), 
+                "Place has 0 Households!")
+
+  # Verify SPEW algorithms runs as expected ---------
+  dir.create("tmp")
+  sink("test_output.txt")
+  
+  # Run SPEW on South Dakota 
   places <- 1:4
-  regular_md <- system.time(spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
+  regular_md <- spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
                                  schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL, 
                                  pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p, parallel_type = "SEQ",
-                                 base_dir = "tmp/",  convert_count = FALSE, sampling_method = "uniform", 
-                                 locations_method = "uniform"))
+                                 base_dir = "tmp/", convert_count = FALSE, sampling_method = "uniform", 
+                                 locations_method = "uniform")
 
   # Verify the environments are there and the correct written CSV's 
   expect_true(dir.exists("tmp/output/environments"))
   expect_true(file.exists("tmp/output/environments//private_schools.csv"))
 
-  parallel_md <- system.time(spew(pop_table = sd_data$pop_table[places, ], shapefile = sd_data$shapefiles$shapefile,
-                                  schools = sd_data$schools, workplaces = sd_data$workplaces, marginals = NULL,
-                                  pums_h = sd_data$pums$pums_h, pums_p = sd_data$pums$pums_p,
-                                  base_dir = "tmp/", parallel_type = "SOCK", convert_count = FALSE, 
-                                  sampling_method = "uniform", locations_method = "uniform",  
-                                  outfile_loc = "/dev/null"))    
-  expect_true(as.logical(parallel_md[1] < regular_md[1]))
-
-  # Test the Serial Synth and convert count functions ---------------
+  # Run one region of Uruguay
   uruguay_region <- spew_place(index = 1, pop_table = uruguay_format$pop_table, 
                                shapefile = uruguay_format$shapefiles, pums_h = uruguay_format$pums$pums_h, 
                                schools = uruguay_format$schools, workplaces = uruguay_format$workplaces,
@@ -115,29 +106,11 @@ test_that("SPEW algorithm runs as expected", {
   original_nhouse <- uruguay_format$pop_table[1, "n_house"]
   expect_equal(nrow(synth_pums_h) == original_nhouse, FALSE)
   expect_equal(abs( (nrow(synth_pums_p) / original_nhouse) - 1) < .2, TRUE)
-  
-  # Create a large region iteratively. Test written Primarily for China/India  
-  #   uruguay_format$pop_table[3, "n_house"] <- 4000000  
-  #   uruguay_large <- spew_place(index = 3, pop_table = uruguay_format$pop_table, 
-  #                                shapefile = uruguay_format$shapefiles, pums_h = uruguay_format$pums$pums_h, 
-  #                                schools = uruguay_format$schools, workplaces = uruguay_format$workplaces,
-  #                                pums_p = uruguay_format$pums$pums_p, sampling_method = "uniform", 
-  #                                locations_method = "uniform", output_dir = "tmp/", convert_count = TRUE)
-  #   
-  #   large_tst <- fread("tmp/output_858004/eco/people_cerrolargo.csv")
-  #   dif <- abs(nrow(large_tst) - 4000000)
-  #   expect_true(dif < 500000)
-  
+
   # Remove all of the temporary outputs we used for testing 
   sink()
   unlink("test_output.txt")
   unlink("tmp/", recursive = TRUE)  
-
-  # Test that we can partition large population tables 
-  # that cause the parallel runs to fails
-  expect_equal(partition_pt(222, 100), c(1, 101, 201, 222))
-  expect_equal(partition_pt(222, 200), c(1, 201, 222))
-  expect_equal(partition_pt(1000, 100), c(1, 101, 201, 301, 401, 501, 601, 701, 801, 901, 1000))    
 })
 
 test_that("SPEW wrapper runs as expected", {

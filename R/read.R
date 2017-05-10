@@ -58,11 +58,18 @@ read_data <- function(base_dir,
   } else {
     workplaces <- NULL
   }
-  
+
+
   if (!is.null(folders$marginals)) {
     marginals <- read_marginals(input_dir, folders, data_group)
   } else {
     marginals <- NULL
+  }
+
+  if(!is.null(folders$moments)){
+      moments <- read_moments(input_dir, folders, data_group)
+  } else {
+      moments <- NULL
   }
   
   read_time <- difftime(Sys.time(), read_start_time, units = "secs")
@@ -76,7 +83,8 @@ read_data <- function(base_dir,
               shapefiles = shapefiles, 
               schools = schools, 
               workplaces = workplaces, 
-              marginals = marginals))
+              marginals = marginals,
+              moments = moments))
 }
 
 #' Read in the population counts  
@@ -197,6 +205,11 @@ read_pums <- function(input_dir, folders, data_group, vars = list(household = NA
     
     # Use the unique household ID's for household pums  
     pums_p <- fread(pums_files, stringsAsFactors = FALSE)
+    
+    # Verify none of the classes are integer64
+#     int64_inds <- which(unlist(lapply(pums_p, class)) == "integer64")
+#     pums_p[, int64_inds] <- as.character(pums_p[, int64_inds])    
+    
     unique_hh_indices <- !duplicated(pums_p$SERIAL)
     pums_h <- pums_p[unique_hh_indices, ]
   
@@ -213,7 +226,7 @@ read_pums <- function(input_dir, folders, data_group, vars = list(household = NA
 
   if (!is.na(vars$person)[1]) {
     pums_p <- pums_p[, vars$person]  
-  }  
+  } 
   
   return(list(pums_h = pums_h, pums_p = pums_p))
 }
@@ -453,19 +466,49 @@ read_roads <- function(path_to_roads, road_id) {
 #' 
 #' @return data frame with counts 
 read_marginals <- function(input_dir, folders, data_group) {
-  # Get a character vector of files in marginal folder 
-  marginal_files <- list.files(file.path(... = input_dir, folders$marginals))
-  
-  if (data_group == "US") {
-    # Subset marginal file with "marginals" in name
-    marginal_ind <- grep(pattern = "marginals", x = marginal_files)
-    marginal_file <- marginal_files[marginal_ind]
-    marginals <- readRDS(file = file.path(input_dir, folders$marginals, marginal_file))
-    return(marginals)
+                                        # Get a character vector of files in marginal folder
+    marginals <- NULL
+    marginal_files <- list.files(file.path(... = input_dir, folders$marginals))
+    
+    if (data_group == "US") {
+                                        # Subset marginal file with "marginals" in name
+        marginal_ind <- grep(pattern = "marginals", x = marginal_files)
+        marginal_file <- marginal_files[marginal_ind]
+        marginals <- readRDS(file = file.path(input_dir, folders$marginals, marginal_file))
+        return(marginals)
 
-  } else if (data_group == "ipums") {
-    
-  } else if (data_group == "none") {
-    
+    } else if (data_group == "ipums") {
+        
+    } else if (data_group == "none") {
+        if(sampling_method == "ipf"){
+                                        # Subset marginal file with "marginals" in name
+            marginal_ind <- grep(pattern = "marginals", x = marginal_files)
+            marginal_file <- marginal_files[marginal_ind]
+            marginals <- readRDS(file = file.path(input_dir, folders$marginals, marginal_file))
+            print("got marginals for none group ipf")
+        }
+        return(marginals)
+
+
   }
+}
+
+#' Read in the R data object for moment matching
+#'
+#' @param input_dir character vector specifying the directory containing 
+#' all of the input data 
+#' @param folders list which contains the path of each sub-directory with the 
+#' specific data
+#' @param data_group character either "US", "ipums" or "none" which tells 
+#' read_data if the input data follows a particular format. Used mainly for 
+#' the pre-formatted data-types we have on our Olympus
+#' @return moment object
+read_moments <- function(input_dir, folders, data_group){
+    moments_files <- list.files(file.path(... = input_dir, folders$moments))
+     
+    ## Subset marginal file with "moments" in name
+    moments_ind <- grep(pattern = "mm", x = moments_files)
+    moments_file <- moments_files[moments_ind]
+    moments <- readRDS(file = file.path(input_dir, folders$moments, moments_file))
+    return(moments)
 }

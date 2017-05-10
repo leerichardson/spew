@@ -1,0 +1,52 @@
+\begin{thebibliography}{}
+
+\bibitem[\protect\astroncite{Center}{2014}]{ipumsi}
+Center, M.~P. (2014).
+\newblock Integrated public use microdata series, international: Version 6.3.
+\newblock [Machine-readable database].
+
+\bibitem[\protect\astroncite{Esri}{2009}]{esriBusiness}
+Esri (2009).
+\newblock { US business data throughout this paper originated from Esri. Esri
+  Business Data is the intellectual property of Esri and are used herein under
+  license. Copyright © Esri. All rights reserved. For more information about
+  Esri® software, please visit \url{www.esri.com}.}
+
+\bibitem[\protect\astroncite{Gallagher et~al.}{2016}]{spew}
+Gallagher, S., Richardson, L., Ventura, S.~L., and Eddy, W.~F. (2016).
+\newblock {SPEW: Synthetic Populations and Ecosystems of the World}.
+\newblock {\em Submitted.}
+
+\bibitem[\protect\astroncite{GeoHive}{2016}]{geohive}
+GeoHive (2016).
+\newblock \url{http://www.geohive.com/}.
+
+\bibitem[\protect\astroncite{of~Education. Institute of Education Sciences.
+  National Center~for Education~Statistics}{2015}]{elsi2015}
+of~Education. Institute of Education Sciences. National Center~for
+  Education~Statistics, U.~D. (2015).
+\newblock Elsi tablegenerator.
+\newblock Electronic.
+
+\bibitem[\protect\astroncite{{Statistics Canada}}{2011}]{statcan}
+{Statistics Canada} (2011).
+\newblock {Census of Canada, 2011, Families File (public-use microdata file)}.
+\newblock CD. All computations, use and interpretation of these data re
+  entirely those of the author.
+
+\bibitem[\protect\astroncite{{U.S. Census Bureau}}{2010a}]{ustiger2010}
+{U.S. Census Bureau} (2010a).
+\newblock {2010 TIGER/LineShapefiles (machine-readable data files)}.
+\newblock Electronic.
+
+\bibitem[\protect\astroncite{{U.S. Census Bureau}}{2010b}]{2010sf}
+{U.S. Census Bureau} (2010b).
+\newblock {American Community Survey Summary Files 2006-2010}.
+\newblock Electronic.
+
+\bibitem[\protect\astroncite{{U.S. Census Bureau}}{2013}]{1yearuspums2013}
+{U.S. Census Bureau} (2013).
+\newblock {American Community Survey Public Use Microdata Sample 2013}.
+\newblock Electronic.
+
+\end{thebibliography}

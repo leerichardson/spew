@@ -8,10 +8,10 @@ parallel_type=$3
 eco_name=$(basename $base_dir)
 
 # Make sure the base directory exists. If not, exit
-# if [ ! -d "$base_dir" ]; then
-#   echo "Directory doesn't exist!"
-#   exit
-# fi
+if [ ! -d "$base_dir" ]; then
+  echo "Directory doesn't exist!"
+  exit
+fi
 
 # Checking if the MPI argument is specified 
 if [ -z "$3" ]; then 
