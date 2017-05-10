@@ -10,7 +10,7 @@
 #' @return TRUE and a written file of private_schools_locs.csv with the additional variables of Long and Lat
 sample_priv_school_locations <- function(region_path){
 
-    ## Read in schools
+    print(basename(region_path))
 
     ## Read in shapefile
     shapefile_path <- file.path(region_path, "input/shapefiles/natstat/2010/tract")
@@ -18,19 +18,27 @@ sample_priv_school_locations <- function(region_path){
     ind_shp <- which(grepl(pattern = "\\.shp", x = shapefiles_files) & 
                        !grepl(pattern = "\\.xml", x = shapefiles_files)) 
     filename <- shapefiles_files[ind_shp]
-    filename <- gsub(".shp", "", filename)
+##    filename <- gsub(".shp", "", filename)
     full_path <- file.path(region_path, "input/shapefiles/natstat/2010/tract")
-    shapefile <- rgdal::readOGR(".", filename)
+    shapefile <- readShapeSpatial(file.path(full_path, filename))
+##    shapefile <- rgdal::readOGR(".", filename)
     shapefile_coords <- coordinates(shapefile)
 
     ## Read in schools
     schools <- read.csv(file.path(region_path,
                                   "output/environments/private_schools.csv"))
-    ## Reorder by county
-    schools_co <- schools[order(schools$CoNo),]
+  
+    counties <-  as.numeric(as.character(unique(shapefile$COUNTYFP10)))
 
-    ## Get how many schoolsa re in each county
-    co_table <- table(schools$CoNo)
+    ## This will ensure an assignment
+    schools$CoNo <- ifelse(!(schools$CoNo %in% counties),
+                   sample(counties, 1), schools$CoNo)
+
+    ## Reorder by county
+    schools_co <- schools[order(schools$CoNo), ]
+
+    ## Get how many schools  are in each county
+    co_table <- table(schools_co$CoNo)
 
     ## Get the coordinates
     coords <- do.call('rbind', lapply(1:length(co_table),
