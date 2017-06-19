@@ -5,6 +5,8 @@
 \title{Convert a SPEW Logfile into a data-frame}
 \usage{
 spewlog_to_df(logfile, columns)
+
+spewlog_to_df(logfile, columns)
 }
 \arguments{
 \item{logfile}{character with the file-name}
@@ -12,8 +14,16 @@ spewlog_to_df(logfile, columns)
 \item{columns}{character vector indicating the
 names of the columns we are extracting from the
 log-file}
+
+\item{logfile}{character with the file-name}
+
+\item{columns}{character vector indicating the
+names of the columns we are extracting from the
+log-file}
 }
 \description{
+Convert a SPEW Logfile into a data-frame
+
 Convert a SPEW Logfile into a data-frame
 }
 

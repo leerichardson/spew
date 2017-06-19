@@ -1,5 +1,5 @@
 ---
-title: "SPEW Output Summary"
+title: "SPEW Output Summary for `r library(spew); `"
 subtitle: "Synthetic Populations and Ecosystems of the World"
 output: 
   html_document:

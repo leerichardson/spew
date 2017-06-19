@@ -5,7 +5,7 @@
 echo "test"
 
 
-for dir in /mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/americas/northern_america/usa/* ; do
+for dir in /mnt/lustre0/data/shared_group_data/syneco/spew_1.2.0/americas/northern_america/usa/* ; do
     [ -d "${dir}" ] || continue # if not a directory, skip
     dirname="$(basename "${dir}")"
     ## Clear old report

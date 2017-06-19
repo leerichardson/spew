@@ -7,7 +7,8 @@
 spew(base_dir, pop_table, shapefile, pums_h, pums_p, schools, workplaces,
   marginals, convert_count, parallel_type = "SEQ",
   sampling_method = "uniform", locations_method = "uniform",
-  outfile_loc = "", do_subset_pums = TRUE, do_write = TRUE)
+  outfile_loc = "", do_subset_pums = TRUE, do_write = TRUE,
+  noise = 2e-04)
 }
 \arguments{
 \item{base_dir}{character specifying ecosystem directory}
@@ -52,6 +53,8 @@ Only set to "/dev/null" for internal testing putposes.}
 
 \item{do_write}{logical, do we need to write out the synthetic populations and environments?
 If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.}
+
+\item{noise}{a numeric value indicating the value of the noise we add to household locations during road-based sampling.  Default is .0002.}
 }
 \value{
 logical indicating whether or not this run of spew ended successfully

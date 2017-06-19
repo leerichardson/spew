@@ -189,7 +189,7 @@ test_that("custom group read functions", {
   #  Make sure we are using the correct data-raw directory 
   # as opposed to the test/testthat one within the package 
   spew_dir <- system.file("", package = "spew")
-  data_path <- paste0(spew_dir, "/", "data-raw/")
+  data_path <- paste0(spew_dir, "/", "data-raw/ury")
 
   # Skip if the delaware data is not available!  
   if (!file.exists(data_path)) {

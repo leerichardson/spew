@@ -5,7 +5,7 @@
 echo "Run IPUMS-I"
 jj=1
 
-for i in $(find /mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/ -mindepth 3 -maxdepth 3 -type d)
+for i in $(find /mnt/lustre0/data/shared_group_data/syneco/spew_1.2.0/ -mindepth 3 -maxdepth 3 -type d)
 do
     iso=$(basename $i)
     if [[ $iso == "usa" ]] || [[ $iso == "can" ]]; then
