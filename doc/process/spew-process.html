@@ -137,50 +137,53 @@ $(document).ready(function () {
 </div>
 <div id="spew-organization" class="section level1">
 <h1>SPEW Organization</h1>
-<p>All SPEW code is on Github at <a href="https://github.com/leerichardson/spew" class="uri">https://github.com/leerichardson/spew</a>. Here, the <strong>olympus/</strong> directory contains all code used for generating and hosting our ecosystems. The <strong>doc/</strong> directory contains our formal documentation, and everything else corresponds to code for the R-package.</p>
+<p>All SPEW code is on Github at <a href="https://github.com/leerichardson/spew" class="uri">https://github.com/leerichardson/spew</a>. The <strong>olympus/</strong> directory contains all code used for generating and hosting our ecosystems. The <strong>doc/</strong> directory contains our formal documentation, and everything else corresponds to the R-package.</p>
 <div id="olympus" class="section level2">
 <h2>Olympus</h2>
 <p>The <strong>olympus/</strong> directory contains code for running SPEW on Olympus, generating reports, collecting and formatting data, analyzing logfiles, and generating the SPEW geographic hierarchy. All of our files are located on Olympus at:</p>
 <p><strong>/mnt/beegfs1/data/shared_group_data/syneco</strong>.</p>
 <p>Here, directories with names <em>spew_NUMBER</em> are releases of SPEW ecosystems data. The directory <strong>olympus/</strong> synchronizes with the <strong>olympus/</strong> directory on Github. Lee uses the file <strong>olympus/move_file.bash</strong> for moving code back and forth, which is easily adapted to other computers. Files we no longer use are in the <strong>old/</strong> directory.</p>
-<p>Our final ecosystems are available online at: <a href="http://data.olympus.psc.edu/syneco/" class="uri">http://data.olympus.psc.edu/syneco/</a>. This website simply mirrors the Olympus directory:</p>
+<p>Our final ecosystems are available online at: <a href="http://data.olympus.psc.edu/syneco/" class="uri">http://data.olympus.psc.edu/syneco/</a>. This website is just an online version of the Olympus directory:</p>
 <p><strong>/mnt/lustre0/machines/data.olympus.psc.edu/srv/apache/data/syneco</strong></p>
-<p>So, anything we want to appear online, we can just put here. We currently post finalized versions of our ecosystems using “symlinks” between this directory and the directory all of our files are in, to avoid copying.</p>
+<p>Implying that anything we want to appear online, we can just put here. We post finalized versions of our ecosystems using “symlinks” between this directory and our Olympus directory, to avoid copying.</p>
 <p>We now briefly explain each subdirectory inside <strong>olympus/</strong>.</p>
 <ul>
-<li><strong>call_spew/</strong>: All code for generating synthetic ecosystems on Olympus using the <em>spew</em> package</li>
-<li><strong>data/</strong>: All code for downloading and pre-procesing data. Still needs to be moved from <strong>old/spew_olympus</strong><br />
+<li><strong>call_spew/</strong>: Generating synthetic ecosystems on Olympus using the <em>spew</em> package</li>
+<li><strong>data/</strong>: Downloading and pre-procesing data. Still needs to be moved from <strong>old/spew_olympus</strong><br />
 </li>
-<li><strong>logfiles/</strong>: Code for extracting and analyzing logfiles from SPEW output. Used to generate timings in the paper.</li>
-<li><strong>reports/</strong>: Code for generating diagnostic reports</li>
-<li><strong>spew_hierarchy/</strong>: Code for generating our geographic directories</li>
-<li><strong>misc/</strong>: Everything else, including for custom ecosystems</li>
+<li><strong>logfiles/</strong>:Extracting and analyzing logfiles from SPEW runs, used to generate figures in the paper.</li>
+<li><strong>reports/</strong>: Generating diagnostic reports</li>
+<li><strong>spew_hierarchy/</strong>: Creating our directory structure</li>
+<li><strong>misc/</strong>: Everything else, including for custom ecosystems (e.g. Canada)</li>
 </ul>
 </div>
 <div id="r-package" class="section level2">
 <h2>R-Package</h2>
-<p>The primary reference for our <em>spew</em> R-package is <strong>R Packages</strong>, available online at: <a href="http://r-pkgs.had.co.nz/" class="uri">http://r-pkgs.had.co.nz/</a>. Most of our structure follows the structure from this book. For new contributors, the two most important parts are the <strong>R/</strong> folder, where all R-code lives, and <strong>tests/</strong> for verifying accuracy of our R-code. The primary concept to remember is that all code should have a corresponding test, and all tests should pass before adding code. The <strong>data/</strong> and <strong>data-raw/</strong> folders have example data, which can be used for testing new code.</p>
+<p>The primary reference for our <em>spew</em> R-package is the book <strong>R Packages</strong>, available online at:</p>
+<p><a href="http://r-pkgs.had.co.nz/" class="uri">http://r-pkgs.had.co.nz/</a>.</p>
+<p>For new contributors, the two most important parts are the <strong>R/</strong> folder, where all R-code lives, and <strong>tests/</strong>, for verifying that our R-code works. The fundamental concept to remember is that all code should have a corresponding test, and all tests should pass before adding code.</p>
+<p>The <strong>data/</strong> and <strong>data-raw/</strong> folders have example data for testing new R-code, both locally and against data (as it is) on Olympus.</p>
 </div>
 </div>
 <div id="r-code" class="section level1">
 <h1>R-Code</h1>
-<p>We (ideally) follow the style guide available from R-packages at: <a href="http://r-pkgs.had.co.nz/r.html" class="uri">http://r-pkgs.had.co.nz/r.html</a>. Unfortunately, previous spew code was hastily written, so our package is not entirely consistent. Please strive to follow these conventions when adding code, since this makes things much simpler to understand. Additionally, please make sure code is adequately commented, meaning that anyone reading it should be able to understand why and how things are what they are. If you are a new contributor, we are available to review and comment on new additions.</p>
-<p>An example of re-factoring some existing code is contained in the appendix.</p>
+<p>We (ideally) follow the style guide available from R-packages at: <a href="http://r-pkgs.had.co.nz/r.html" class="uri">http://r-pkgs.had.co.nz/r.html</a>. Unfortunately, some spew code was hastily written, so our package is not entirely consistent. Please strive to follow these conventions when adding code. Additionally, please make sure code is adequately commented. We are available to review any new code added to SPEW.</p>
+<p>An example of re-factoring existing code is contained in the appendix.</p>
 <div id="functions" class="section level2">
 <h2>Functions</h2>
-<p>The <strong>R/</strong> directory has files for various groupings of functions. It is important to stress that all R-code in these files should be functions, not scripts. Ideally, the functions should work as generally as possible, and shouldn’t have specific functionality tailored to Olympus file-paths.</p>
-<p>The main function is in the <strong>spew.R</strong> file, containing the <strong>call_spew</strong> function we use on olympus, and the <strong>spew</strong> function used more generally. The <strong>spew</strong> function essentially loops rows of the population table, generating a synthetic population for each row. We also include different wrappers for running this in parallel.</p>
+<p>The <strong>R/</strong> directory has files for various groupings of functions. It is important to stress that all R-code in these files should be functions: not scripts. Ideally, functions should be as general as possible, and shouldn’t be tailored to Olympus file-paths. (with obvious exceptions: the <strong>R/ read.R</strong> files only purpose is reading data on Olympus).</p>
+<p>The main functions are in the <strong>spew.R</strong> file, containing the <strong>call_spew</strong> function for Olympis, and the <strong>spew</strong> which works more generally. The <strong>spew</strong> function essentially loops rows of the population table, generating a synthetic population for each row. We also include different wrappers for running this in parallel.</p>
 </div>
 <div id="unit-tests" class="section level2">
 <h2>Unit Tests</h2>
 <p>Key to keeping our functions correct are unit-tests. Unit testing is covered in detail here <a href="http://r-pkgs.had.co.nz/tests.html" class="uri">http://r-pkgs.had.co.nz/tests.html</a>. All functions added to <em>spew</em> should have a corresponding tests, and all test must pass before code is added. If it is the end of the day, and the code still doesn’t work, it is better to wait than put it online without testing.</p>
 <div id="integration-with-travis-ci" class="section level3">
 <h3>Integration with Travis CI</h3>
-<p>It would be great to integrate SPEW with the Travis Continuous Integration system. This way, every time code is added, all automatic checks required by CRAN (and our tests) are automatically ran, and we are notified if the new code breaks any of our existing tests. We hope to incorporate this soon.</p>
+<p>It would be great to integrate SPEW with the Travis Continuous Integration system. Travis runs all automatic checks required by CRAN, along with our unit-tests, each time code is added. We hope to incorporate this soon.</p>
 <div id="minor-details" class="section level4">
 <h4>Minor Details</h4>
 <ul>
-<li>If using a function from another package, use package::function</li>
+<li>If using a function from another package, use package::function. For example, if we are using the <strong>spsample</strong> function from package <strong>sp</strong>, write <strong>sp::spsample</strong>.</li>
 <li>If using a “Suggests” package, use a requireNamespace condittional before calling</li>
 </ul>
 </div>
@@ -189,29 +192,29 @@ $(document).ready(function () {
 </div>
 <div id="documentation" class="section level1">
 <h1>Documentation</h1>
-<p>SPEW has two layers of documentation: for R-functions, and a more formal documentation for each public release. Both are detailed next.</p>
+<p>SPEW has two layers of documentation: for R-functions, and formal documentation for each public release. Both are detailed next.</p>
 <div id="r-functions" class="section level2">
 <h2>R-Functions</h2>
-<p>Each R-function should be documented, following <a href="http://r-pkgs.had.co.nz/man.html" class="uri">http://r-pkgs.had.co.nz/man.html</a>. The documentation should be as concise as possible. Additionally, remember to move to a new-line when writing documentation, and try to keep less than 100 characters per line.</p>
+<p>We document R-functions following <a href="http://r-pkgs.had.co.nz/man.html" class="uri">http://r-pkgs.had.co.nz/man.html</a>. The documentation should be as concise as possible. Additionally, remember to move to a new-line when writing documentation, and try to keep less than 100 characters per line.</p>
 </div>
 <div id="spew-ecosystems" class="section level2">
 <h2>SPEW Ecosystems</h2>
 <p>Each release of SPEW ecosystems codes with a corresponding <em>.pdf</em> documentation, located at <strong>doc/ecosystems/VERSION</strong>. While the template and wording remains similar, we need to revise this carefully for each release, and make sure all relevant details are contained here. The following are components we need in each set of <em>.pdf</em> documentation.</p>
 <div id="new-data-sources" class="section level3">
 <h3>New Data Sources</h3>
-<p>All data-sources should used in this release must be documented here. If you are adding new data, you must document it here. Recall that all code for downloading and pre-processing of data should be made available at: <strong>olympus/data</strong>.</p>
+<p>All data-sources should used in this release must be documented here. If you are adding new data, you must document it here. All code for downloading and pre-processing data should be made avaialable at: <strong>olympus/data</strong>.</p>
 </div>
 <div id="new-methodology" class="section level3">
 <h3>New Methodology</h3>
-<p>All methodology for each component <em>spew</em> must be detailed here. If you are adding new methodology, it must be formally documented here.</p>
+<p>All methodology for <em>spew</em> must be detailed here. If you are adding new methodology, it must be formally documented here.</p>
 </div>
 <div id="clarifications-for-this-release" class="section level3">
 <h3>Clarifications for this release</h3>
-<p>Details of the release, including anything done in an ad-hoc manner, should be recorded. For example, we might need to record that “For canada, we adapted the version of spatial sampling because there was no lake data”.</p>
+<p>All details of the release must be documented. For example, we might need to record that “For canada, we adapted the version of spatial sampling because there was no lake data”.</p>
 </div>
 <div id="description-of-file-formatting" class="section level3">
 <h3>Description of file-formatting</h3>
-<p>We have a complicated directory for each ecosystem, which should be layed out here.</p>
+<p>Describe the file hierarchy of SPEW ecosystems (ours is complicated).</p>
 </div>
 </div>
 </div>

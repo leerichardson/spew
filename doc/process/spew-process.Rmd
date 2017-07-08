@@ -20,7 +20,7 @@ SPEW serves two purposes:
 To meet goal 1, we generate and host our synthetic ecosystems on the Olympus computing cluster, hosted by the Pittsburgh Supercomputing Center (PSC). To meet goal 2, we organize SPEW into an R-package, avaialble for users with  custom data. The next section details code for both code for Olympus and the R-package.
 
 # SPEW Organization 
-All SPEW code is on Github at <https://github.com/leerichardson/spew>. Here, the **olympus/** directory contains all code used for generating and hosting our ecosystems. The **doc/** directory contains our formal documentation, and everything else corresponds to code for the R-package. 
+All SPEW code is on Github at <https://github.com/leerichardson/spew>. The **olympus/** directory contains all code used for generating and hosting our ecosystems. The **doc/** directory contains our formal documentation, and everything else corresponds to the R-package. 
 
 ## Olympus 
 The **olympus/** directory contains code for running SPEW on Olympus, generating reports, collecting and formatting data, analyzing logfiles, and generating the SPEW geographic hierarchy. All of our files are located on Olympus at: 
@@ -29,65 +29,71 @@ The **olympus/** directory contains code for running SPEW on Olympus, generating
 
 Here, directories with names _spew_NUMBER_ are releases of SPEW ecosystems data. The directory **olympus/** synchronizes with the **olympus/** directory on Github. Lee uses the file **olympus/move_file.bash** for moving code back and forth, which is easily adapted to other computers. Files we no longer use are in the **old/** directory.
 
-Our final ecosystems are available online at: <http://data.olympus.psc.edu/syneco/>. This website simply mirrors the Olympus directory:
+Our final ecosystems are available online at: <http://data.olympus.psc.edu/syneco/>. This website is just an online version of the Olympus directory:
 
   **/mnt/lustre0/machines/data.olympus.psc.edu/srv/apache/data/syneco**
 
-So, anything we want to appear online, we can just put here. We currently post finalized versions of our ecosystems using "symlinks" between this directory and the directory all of our files are in, to avoid copying. 
+Implying that anything we want to appear online, we can just put here. We post finalized versions of our ecosystems using "symlinks" between this directory and our Olympus directory, to avoid copying. 
 
 We now briefly explain each subdirectory inside **olympus/**. 
 
-* **call_spew/**: All code for generating synthetic ecosystems on Olympus using the *spew* package
-* **data/**: All code for downloading and pre-procesing data. Still needs to be moved from **old/spew_olympus**  
-* **logfiles/**: Code for extracting and analyzing logfiles from SPEW output. Used to generate timings in the paper.
-* **reports/**: Code for generating diagnostic reports
-* **spew_hierarchy/**: Code for generating our geographic directories 
-* **misc/**: Everything else, including for custom ecosystems 
+* **call_spew/**: Generating synthetic ecosystems on Olympus using the *spew* package
+* **data/**: Downloading and pre-procesing data. Still needs to be moved from **old/spew_olympus**  
+* **logfiles/**:Extracting and analyzing logfiles from SPEW runs, used to generate figures in the paper.
+* **reports/**: Generating diagnostic reports
+* **spew_hierarchy/**: Creating our directory structure 
+* **misc/**: Everything else, including for custom ecosystems (e.g. Canada) 
 
 ## R-Package 
-The primary reference for our *spew* R-package is  **R Packages**, available online at: <http://r-pkgs.had.co.nz/>.
-Most of our structure follows the structure from this book. For new contributors, the two most important parts are the **R/** folder, where all R-code lives, and **tests/**  for verifying accuracy of our R-code. The primary concept  to remember is that all code should have a corresponding test, and all tests should pass before adding code. The **data/** and **data-raw/** folders have example data, which can be used for testing new code.
+The primary reference for our *spew* R-package is the book **R Packages**, available online at:
+
+<http://r-pkgs.had.co.nz/>.
+
+For new contributors, the two most important parts are the **R/** folder, where all R-code lives, and **tests/**, for verifying that our R-code works. The fundamental concept to remember is that all code should have a corresponding test, and all tests should pass before adding code. 
+
+The **data/** and **data-raw/** folders have example data for testing new R-code, both locally and against data (as it is) on Olympus. 
 
 # R-Code 
-We (ideally) follow the style guide available from R-packages at: <http://r-pkgs.had.co.nz/r.html>. Unfortunately, previous spew code was hastily written, so our package is not entirely consistent. Please strive to follow these conventions when adding code, since this makes things much simpler to understand. Additionally, please make sure code is adequately commented, meaning that anyone reading it should be able to understand why and how things are what they are. If you are a new contributor, we are available to review and comment on new additions. 
+We (ideally) follow the style guide available from R-packages at: <http://r-pkgs.had.co.nz/r.html>. Unfortunately, some spew code was hastily written, so our package is not entirely consistent. Please strive to follow these conventions when adding code. Additionally, please make sure code is adequately commented. We are available to review any new code added to SPEW.
 
-An example of re-factoring some existing code is contained in the appendix. 
+An example of re-factoring existing code is contained in the appendix. 
 
 ## Functions 
-The **R/** directory has files for various groupings of functions. It is important to stress that all R-code in these files should be functions, not scripts. Ideally, the functions should work as generally as possible, and shouldn't have specific functionality tailored to Olympus file-paths.
+The **R/** directory has files for various groupings of functions. It is important to stress that all R-code in these files should be functions: not scripts. Ideally, functions should be as general as possible, and shouldn't be tailored to Olympus file-paths. (with obvious exceptions: the **R/ read.R** files only purpose is reading data on Olympus).
 
-The main function is in the **spew.R** file, containing the **call_spew** function we use on olympus, and the **spew** function used more generally. The **spew** function essentially loops rows of the population table, generating a synthetic population for each row. We also include different wrappers for running this in parallel. 
+The main functions are in the **spew.R** file, containing the **call_spew** function for Olympis, and the **spew** which works more generally. The **spew** function essentially loops rows of the population table, generating a synthetic population for each row. We also include different wrappers for running this in parallel. 
 
 ## Unit Tests
+
 Key to keeping our functions correct are unit-tests. Unit testing is covered in detail here  <http://r-pkgs.had.co.nz/tests.html>. All functions added to *spew* should have a corresponding tests, and all test must pass before code is added. If it is the end of the day, and the code still doesn't work, it is better to wait than put it online without testing. 
 
 ### Integration with Travis CI 
-It would be great to integrate SPEW with the Travis Continuous Integration system. This way, every time code is added, all automatic checks required by CRAN (and our tests) are automatically ran, and we are notified if the new code breaks any of our existing tests. We hope to incorporate this soon.
+It would be great to integrate SPEW with the Travis Continuous Integration system. Travis runs all automatic checks required by CRAN, along with our unit-tests, each time code is added. We hope to incorporate this soon.
 
 #### Minor Details  
-- If using a function from another package, use package::function 
+- If using a function from another package, use package::function. For example, if we are using the **spsample** function from package **sp**, write **sp::spsample**. 
 - If using a "Suggests" package, use a requireNamespace condittional before calling 
 
 # Documentation 
-SPEW has two layers of documentation: for R-functions, and a more formal documentation for each public release. Both are detailed next. 
+SPEW has two layers of documentation: for R-functions, and formal documentation for each public release. Both are detailed next. 
 
 ## R-Functions 
-Each R-function should be documented, following  <http://r-pkgs.had.co.nz/man.html>. The documentation should be as concise as possible. Additionally, remember to move to a new-line when writing documentation, and try to keep less than 100 characters per line. 
+We document R-functions following <http://r-pkgs.had.co.nz/man.html>. The documentation should be as concise as possible. Additionally, remember to move to a new-line when writing documentation, and try to keep less than 100 characters per line. 
 
 ## SPEW Ecosystems 
 Each release of SPEW ecosystems codes with a corresponding *.pdf* documentation, located at **doc/ecosystems/VERSION**. While the template and wording remains similar, we need to revise this carefully for each release, and make sure all relevant details are contained here. The following are components we need in each set of *.pdf* documentation.
 
 ### New Data Sources  
-All data-sources should used in this release must be documented here. If you are adding new data, you must document it here. Recall that all code for downloading and pre-processing of data should be made available at: **olympus/data**. 
+All data-sources should used in this release must be documented here. If you are adding new data, you must document it here. All code for downloading and pre-processing data should be made avaialable at: **olympus/data**. 
 
 ### New Methodology 
-All methodology for each component *spew* must be detailed here. If you are adding new methodology, it must be formally documented here. 
+All methodology for *spew* must be detailed here. If you are adding new methodology, it must be formally documented here. 
 
 ### Clarifications for this release 
-Details of the release, including anything done in an ad-hoc manner, should be recorded. For example, we might need to record that "For canada, we adapted the version of spatial sampling because there was no lake data". 
+All details of the release must be documented. For example, we might need to record that "For canada, we adapted the version of spatial sampling because there was no lake data". 
 
 ### Description of file-formatting
-We have a complicated directory for each ecosystem, which should be layed out here. 
+Describe the file hierarchy of SPEW ecosystems (ours is complicated). 
 
 # Appendix 
 Extraneous details on the SPEW process are given here. 
