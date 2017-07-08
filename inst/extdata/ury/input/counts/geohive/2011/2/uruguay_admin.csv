@@ -1,0 +1,23 @@
+departamento,capital,area insq.km.,population1996-05-22census,population2004-06-14census,population2011-09-01census,level
+Artigas,Artigas,"11,928","75,059","78,019","73,378",level2
+Canelones,Canelones,"4,536","443,053","485,240","520,187",level2
+Cerro Largo,Melo,"13,648","82,510","86,564","84,698",level2
+Colonia,Colonia,"6,106","120,241","119,266","123,203",level2
+Durazno,Durazno,"11,643","55,716","58,859","57,088",level2
+Flores,Trinidad,"5,144","25,030","25,104","25,050",level2
+Florida,Florida,"10,417","66,503","68,181","67,048",level2
+Lavalleja,Minas,"10,016","61,085","60,925","58,815",level2
+Maldonado,Maldonado,"4,793","127,502","140,192","164,300",level2
+Montevideo,Montevideo,530,"1,344,839","1,325,968","1,319,108",level2
+Paysandu,Paysandu,"13,922","111,509","113,244","113,124",level2
+Rio Negro,Fray Bentos,"9,282","51,713","53,989","54,765",level2
+Rivera,Rivera,"9,370","98,472","104,921","103,493",level2
+Rocha,Rocha,"10,551","70,292","69,937","68,088",level2
+Salto,Salto,"14,163","117,597","123,120","124,878",level2
+San Jose,San Jose de Mayo,"4,992","96,664","103,104","108,309",level2
+Soriano,Mercedes,"9,008","81,557","84,563","82,595",level2
+Tacuarembo,Tacuarembo,"15,438","84,919","90,489","90,053",level2
+Treinta y Tres,Treinta y Tres,"9,529","49,502","49,318","48,134",level2
+total, ,"175,016","3,163,763","3,241,003","3,286,314",total
+"
+		source:  Instituto Nacional de Estadistica and the Instituto Geografico Militar, Uruguay.",foot
