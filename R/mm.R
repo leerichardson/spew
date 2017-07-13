@@ -8,12 +8,14 @@
 #' @param mm_obj list with moment matching data
 #' @param puma_id id indicating the current puma 
 #' @param place_id id indicating the current region
-#' @param do_subset_pums logical.  When we do not need to subset the pums
+#' 
 sample_mm <- function(n_house, pums_h, pums_p, mm_obj,
-                       puma_id = NULL, place_id = NULL, do_subset_pums = TRUE){
+                       puma_id = NULL, place_id = NULL) {
+  
     if(n_house == 0){  # No households to sample
         return(NULL)
     }
+  
     mom1_df <- mm_obj$moments_list$mom1
     if (sum(as.character(mom1_df$place_id) == place_id, na.rm = TRUE) < 1){ # there is no place_id  that matches the MM_OBJ
         

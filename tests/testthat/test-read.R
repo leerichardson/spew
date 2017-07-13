@@ -8,7 +8,6 @@ test_that("United States functions", {
   # as opposed to the test/testthat one within the package 
   data_path <- system.file("extdata/10/input", package = "spew")
   
-  
   # Skip if the delaware data is not available!  
   if (!file.exists(data_path)) {
     skip("Skipping: Can't find Delaware Data!")
@@ -130,9 +129,8 @@ test_that("ipums functions", {
   # Make sure we are using the correct data-raw directory 
   # as opposed to the test/testthat one within the package 
   library(data.table)
-  spew_dir <- system.file("", package = "spew")
-  data_path <- file.path(spew_dir, "data-raw/ury/input")  
-  
+  data_path <- system.file("extdata/ury/input", package = "spew")
+
   # Skip if the delaware data is not available!  
   if (!file.exists(data_path)) {
     skip("Skipping: Can't find Uruguay Data!")
@@ -143,7 +141,7 @@ test_that("ipums functions", {
                           pums = "pums", 
                           shapefiles = "shapefiles")  
 
-  # Pop Table --------------------------------
+  # Pop Table ---
   uruguay_counts <- read_pop_table(data_path, 
                                    data_group = "ipums", 
                                    folders = uruguay_folders)
@@ -152,7 +150,7 @@ test_that("ipums functions", {
   standard_counts <- standardize_pop_table(uruguay_counts, data_group = "ipums")
   expect_equal(names(standard_counts), c("place_id", "n_house", "level"))
 
-  # PUMS -------------------------------------
+  # PUMS ---
   uruguay_pums <- read_pums(data_path, 
                             data_group = "ipums", 
                             folders = uruguay_folders, 
@@ -163,7 +161,7 @@ test_that("ipums functions", {
   standard_pums <- standardize_pums(pums = uruguay_pums, data_group = "ipums")
   expect_equal("puma_id" %in% names(standard_pums$pums_h), TRUE)
 
-  # Shapefile --------------------------------
+  # Shapefile ---
   library(maptools)
   uruguay_shape <- read_shapefiles(data_path, 
                                    data_group = "ipums", 
@@ -174,12 +172,11 @@ test_that("ipums functions", {
   standard_shape <- standardize_shapefiles(uruguay_shape, data_group = "ipums")
   expect_equal("puma_id" %in% names(standard_shape), TRUE)  
 
-  # Overall ----------------------------------
-  base_dir <- file.path(spew_dir, "data-raw/ury")
+  # Overall ---
+  base_dir <- system.file("extdata/ury", package = "spew")
   uruguay_data <- read_data(base_dir = base_dir, 
                             data_group = "ipums", 
-                            folders = uruguay_folders, 
-                            time = FALSE)
+                            folders = uruguay_folders)
   
   expect_equal("SERIALNO" %in% names(uruguay_data$pums$pums_p), TRUE)
   expect_equal("puma_id" %in% names(uruguay_data$pums$pums_h), TRUE)
@@ -187,35 +184,33 @@ test_that("ipums functions", {
 })
 
 test_that("custom group read functions", {
-  #  Make sure we are using the correct data-raw directory 
-  # as opposed to the test/testthat one within the package 
-  spew_dir <- system.file("", package = "spew")
-  data_path <- paste0(spew_dir, "/", "data-raw/ury")
-
+  data_path <- system.file("extdata/ury", package = "spew")
+  
   # Skip if the delaware data is not available!  
   if (!file.exists(data_path)) {
     skip("Skipping: Can't find Custom Data!")
   }
   
-  custom_folders <- list(pop_table = paste0(data_path, "/ury/input/counts/geohive/2011/1/uruguay_revised.csv"), 
-                         pums = list(pums_h = paste0(data_path, "/ury/input/pums/ipums/2011/1/uruguay.csv"), 
-                                     pums_p = paste0(data_path, "/ury/input/pums/ipums/2011/1/uruguay.csv")), 
-                         shapefiles = paste0(data_path, "/ury/input/shapefiles/ipums/2011/1/uruguay_revised.shp"))
+  custom_folders <- list(pop_table = paste0(data_path, "/input/counts/geohive/2011/1/uruguay_revised.csv"), 
+                         pums = list(pums_h = paste0(data_path, "/input/pums/ipums/2011/1/uruguay.csv"), 
+                                     pums_p = paste0(data_path, "/input/pums/ipums/2011/1/uruguay.csv")), 
+                         shapefiles = paste0(data_path, "/input/shapefiles/ipums/2011/1/uruguay_revised.shp"))
   
-  # Counts --------------------------------
+  # Counts ---
   counts <- read_pop_table(input_dir = NULL, 
                            folders = custom_folders, 
                            data_group = "none")
+  
   expect_equal(class(counts), "data.frame")
   expect_error(standardize_pop_table(counts, data_group = "none"), "%in% pt_names is not TRUE", fixed = TRUE)
-  
-  # Shapefile -----------------------------
+
+  # Shapefile ---
   shapefile <- read_shapefiles(input_dir = NULL, 
                                folders = custom_folders,
                                data_group = "none")
   expect_equal(as.character(class(shapefile)), "SpatialPolygonsDataFrame")
 
-  # Pums ---------------------------------
+  # Pums ---
   pums <- read_pums(input_dir = NULL, 
                     folders =custom_folders, 
                     data_group = "none", 

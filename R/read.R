@@ -131,7 +131,6 @@ read_pop_table <- function(input_dir, folders, data_group) {
     
   } else if (data_group == "none") {
     pop_table <- read.csv(folders$pop_table, stringsAsFactors = FALSE, colClasses = "character")
-    pop_table$n_house <- as.numeric(pop_table$n_house)
     return(pop_table)
   }
   
@@ -181,7 +180,7 @@ standardize_pop_table <- function(pop_table, data_group){
   return(pop_table)
 }
 
-# Read PUMS data --------------------
+# Read PUMS data ---
 read_pums <- function(input_dir, folders, data_group, vars = list(household = NA, person = NA)) {
   pums_dir <- file.path(input_dir, folders$pums)
   pums_files <- list.files(pums_dir)
@@ -206,12 +205,7 @@ read_pums <- function(input_dir, folders, data_group, vars = list(household = NA
     stopifnot(length(pums_files) == 1)
     
     # Use the unique household ID's for household pums  
-    pums_p <- fread(pums_files, stringsAsFactors = FALSE)
-    
-    # Verify none of the classes are integer64
-#     int64_inds <- which(unlist(lapply(pums_p, class)) == "integer64")
-#     pums_p[, int64_inds] <- as.character(pums_p[, int64_inds])    
-    
+    pums_p <- data.table::fread(pums_files, stringsAsFactors = FALSE)
     unique_hh_indices <- !duplicated(pums_p$SERIAL)
     pums_h <- pums_p[unique_hh_indices, ]
   

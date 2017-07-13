@@ -106,8 +106,7 @@ get_level <- function(shapefile_names, pop_table) {
 get_shapefile_indices <- function(shapefile_names, count_names) {
   # Match the shapefile names against the count names. And make sure 
   # that both everything is matched and that 
-  shapefile_indices <- amatch(count_names, shapefile_names, method = "jw", 
-                              maxDist = .3)
+  shapefile_indices <- stringdist::amatch(count_names, shapefile_names, method = "jw", maxDist = .3)
   
   # Make sure the shapefile indices are unique, have no missing
   # values, and that there is the same amount of these as count names 
@@ -296,7 +295,8 @@ remove_excess_words <- function(names) {
 #' Take the total population and divide it by the number of regions
 #' @param total total number of households in the coutry
 #' @param shapefile_names names exactly corresponding to shapefile_names
-#' @return data frame that matches pop_table and shapefile names exactly, splitting the population evenly
+#' @return data frame that matches pop_table and shapefile names exactly, 
+#' splitting the population evenly
 force_pop <- function(pop_table, shapefile_names){
     total <- pop_table$n_house[pop_table$place_id == "total"]
     if(class(total) %in% c("character", factor)){
