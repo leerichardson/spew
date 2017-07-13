@@ -51,7 +51,13 @@ The primary reference for our *spew* R-package is the book **R Packages**, avail
 
 For new contributors, the two most important parts are the **R/** folder, where all R-code lives, and **tests/**, for verifying that our R-code works. The fundamental concept to remember is that all code should have a corresponding test, and all tests should pass before adding code. 
 
-The **data/** and **data-raw/** folders have example data for testing new R-code, both locally and against data (as it is) on Olympus. 
+Our package includes internal data for verifying our code and tests work. The data is organized as follows:
+
+* **data/**: Formatted data we can use for our functions. Data in this directory can be loaded using `data(tartanville)`
+* **data-raw/**: R-scripts used to generate data located in the **data/** folder 
+* **inst/extdata**: Example data input directories from Olympus. 
+
+An example of how this works: For a new version of SPEW, I download the input data into **inst/extdata**. Then, I write an r-script in **data-raw** which saves the binary (*.rda*) file for easy use in **data/**.
 
 # R-Code 
 We (ideally) follow the style guide available from R-packages at: <http://r-pkgs.had.co.nz/r.html>. Unfortunately, some spew code was hastily written, so our package is not entirely consistent. Please strive to follow these conventions when adding code. Additionally, please make sure code is adequately commented. We are available to review any new code added to SPEW.
@@ -64,7 +70,6 @@ The **R/** directory has files for various groupings of functions. It is importa
 The main functions are in the **spew.R** file, containing the **call_spew** function for Olympis, and the **spew** which works more generally. The **spew** function essentially loops rows of the population table, generating a synthetic population for each row. We also include different wrappers for running this in parallel. 
 
 ## Unit Tests
-
 Key to keeping our functions correct are unit-tests. Unit testing is covered in detail here  <http://r-pkgs.had.co.nz/tests.html>. All functions added to *spew* should have a corresponding tests, and all test must pass before code is added. If it is the end of the day, and the code still doesn't work, it is better to wait than put it online without testing. 
 
 ### Integration with Travis CI 
@@ -93,7 +98,7 @@ All methodology for *spew* must be detailed here. If you are adding new methodol
 All details of the release must be documented. For example, we might need to record that "For canada, we adapted the version of spatial sampling because there was no lake data". 
 
 ### Description of file-formatting
-Describe the file hierarchy of SPEW ecosystems (ours is complicated). 
+We have a complicated directory for each ecosystem, which should be layed out here. 
 
 # Appendix 
 Extraneous details on the SPEW process are given here. 
@@ -175,5 +180,39 @@ A strategy for if-statements:
 3. Clearly describe *why*, if the if-statement is nececssary the if-statement is necessary
 
 ### Using defaults to add new-features 
-When adding to *spew*, make the existing method a default. Defaults allow us to update the code in one place, avoiding having to update a million smaller locations anytime something changes. 
+When adding new features to *spew*, add as an option in one place, and set the existing methodology to be the default. This way, we only need to update the code in one place, rather than having to propogate changes in multiple functions. 
+
+## The SPEW algorithm 
+The core of our SPEW implementation is the function, `spew`. This section describes the function in detail. 
+
+### Inputs 
+SPEW has three types of input data:
+
+1. Required Data 
+2. Supplementary data
+3. Options 
+
+Required data refers to the three essential input data-sources
+
+| Data Types | R-variable name | Required Variables | Format |
+|---|---|---|
+| Population Counts | `pop_table` | `place_id`, `puma_id` | `.csv` |
+| Shapefile         | `shapefile` | `place_id`            | `.shp` |
+| Indidivual Microdata | `pums_p`| `puma_id` | `.csv` |
+| Household Microdata | `pums_h` | `puma_id` | `.csv` |
+
+All `spew` calls require these four inputs as data. 
+
+Supplementary data means any external data required outside of the original data. Right now, we have types:
+
+1. Schools
+2. Workplaces 
+3. Roads 
+4. Marginal tables for IPF
+5. Marginal tables for MM
+
+The default is for each of these to be set to NULL. The `spew` function checks this, and will assign supplementary data only if it is avaialble. 
+
+Options are various parameters we tweak during runs of SPEW. For instance, one is "output_type", which determines whether we return the ecosystem either inside the R secction, or write the output.
+
 
