@@ -18,5 +18,6 @@ delaware_folders <- list(pop_table = "counts/natstat/2010/tract",
 
 # Call spews read_data function on the delaware data-directory 
 delaware <- read_data(base_dir = delaware_path, folders = delaware_folders, data_group = "US")
+delaware <- format_data(data_list = delaware, data_group = "US")
 
-devtools::use_data(delaware)
+devtools::use_data(delaware, overwrite = TRUE)
