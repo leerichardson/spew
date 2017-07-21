@@ -15,4 +15,3 @@ vector of column names, the header
 \description{
 Extract header of a file
 }
-

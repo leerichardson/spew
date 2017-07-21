@@ -18,4 +18,3 @@ How to weight the capacities of of school.
 \details{
 this default version returns the ceiling(capacity / 10).
 }
-

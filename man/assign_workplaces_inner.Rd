@@ -17,4 +17,3 @@ ID of ESRI workplace or NA
 \description{
 Function which assigns workplaces
 }
-

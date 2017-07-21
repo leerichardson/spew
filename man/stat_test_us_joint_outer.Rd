@@ -24,4 +24,3 @@ stat_test_us_joint_outer(regionID, type = "b", level = "tract",
 \description{
 Test joint totals to synth pop using chi square
 }
-

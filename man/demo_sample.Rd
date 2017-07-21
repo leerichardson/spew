@@ -18,4 +18,3 @@ demo_sample(pop_df, char_pums, var_names, args = NULL)
 \description{
 Sample extra characteristics from char pums and add them to the pop df
 }
-

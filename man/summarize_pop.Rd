@@ -17,4 +17,3 @@ summary_list list of summary numbers with corresponding names
 \description{
 Get the summary values of a spew generated synthetic population and output a row of summary and the column names
 }
-

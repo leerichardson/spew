@@ -20,4 +20,3 @@ people numeric vector indicating the indices of people to sample
 \description{
 Sample from the individual person PUMS data frame
 }
-

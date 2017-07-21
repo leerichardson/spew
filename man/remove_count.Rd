@@ -18,4 +18,3 @@ desired place removed
 \description{
 Remove a row from the pop_table
 }
-

@@ -18,4 +18,3 @@ shapefiles which correspond to the count_names
 \description{
 Obtain the shapefile indices corresponding to the pop table
 }
-

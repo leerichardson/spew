@@ -19,4 +19,3 @@ list with each entry as list with data frame for the householder_var along with 
 \description{
 Read in joint objects from spew generation of IPF tables
 }
-

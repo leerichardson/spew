@@ -26,4 +26,3 @@ data frame with column of place_name with the place_ids, e.g. assignments of the
 \description{
 Assign a place with long/lat coords to a synthetic population
 }
-

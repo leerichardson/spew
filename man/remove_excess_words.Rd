@@ -15,4 +15,3 @@ names a character vector of updated names
 \description{
 Remove extraneous words from place names
 }
-

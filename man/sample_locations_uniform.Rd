@@ -26,4 +26,3 @@ SpatialPoints object with coordinates for the n households
 \description{
 Sample from a particular polygon shapefile
 }
-

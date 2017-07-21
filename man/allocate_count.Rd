@@ -18,4 +18,3 @@ new_counts a new numeric count vector with the
 \description{
 Re-allocate excess counts to other locations
 }
-

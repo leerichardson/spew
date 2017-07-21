@@ -25,4 +25,3 @@ Calculates the geodesic distance between two points
 specified by radian latitude/longitude using the
 Spherical Law of Cosines (slc)
 }
-

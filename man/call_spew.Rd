@@ -2,7 +2,7 @@
 % Please edit documentation in R/spew.R
 \name{call_spew}
 \alias{call_spew}
-\title{Wrapper function to read, format, and generate SPEW synthetic ecosystems}
+\title{Wrapper for reading, formatting, and writing SPEW ecosystems}
 \usage{
 call_spew(base_dir, folders = NULL, data_group = "US",
   parallel_type = "SEQ", sampling_method = "uniform",
@@ -45,6 +45,5 @@ If FALSE, then we instead return the synthetic households and people in a list. 
 logical indicating whether or not this run of spew ended successfully
 }
 \description{
-Wrapper function to read, format, and generate SPEW synthetic ecosystems
+Generates SPEW synthetic ecosystems on the Olympus Computing Cluster
 }
-

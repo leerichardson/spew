@@ -5,7 +5,7 @@
 \title{Sample coordinates from roads}
 \usage{
 sample_locations_roads(place_id, n_house, shapefile, noise = 1e-04,
-  shapefile_id, do_write = TRUE)
+  shapefile_id)
 }
 \arguments{
 \item{place_id}{numeric specifiying the ID of the region we are 
@@ -18,13 +18,7 @@ In addition, we must have road shapefiles so shapefile is a list with both
 the tracts and the roads, tracts is the first object and roads the second.}
 
 \item{noise}{the standard deviation of how much we jitter the road locations in each direction}
-
-\item{do_write}{logical if TRUE, we read in the roads and subset them.  If FALSE, we use the roads provided in shapefile$roads.  Default is TRUE.}
-}
-\value{
-SpatialPoints object with coordinates for the n households
 }
 \description{
 Sample coordinates from roads
 }
-

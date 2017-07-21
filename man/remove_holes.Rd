@@ -20,4 +20,3 @@ Borrowed the idea from the wild1 package, which
 I wasn't able to load for R 3.2.2, so I found the source code here:
 https://github.com/cran/wild1/blob/master/R/remove.holes.r
 }
-

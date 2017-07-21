@@ -4,8 +4,7 @@
 \alias{sample_mm}
 \title{Sample households PUMS according to MM}
 \usage{
-sample_mm(n_house, pums_h, pums_p, mm_obj, puma_id = NULL, place_id = NULL,
-  do_subset_pums = TRUE)
+sample_mm(n_house, pums_h, pums_p, mm_obj, puma_id = NULL, place_id = NULL)
 }
 \arguments{
 \item{n_house}{number of households to sample}
@@ -19,10 +18,7 @@ sample_mm(n_house, pums_h, pums_p, mm_obj, puma_id = NULL, place_id = NULL,
 \item{puma_id}{id indicating the current puma}
 
 \item{place_id}{id indicating the current region}
-
-\item{do_subset_pums}{logical.  When we do not need to subset the pums}
 }
 \description{
 Sample households PUMS according to MM
 }
-

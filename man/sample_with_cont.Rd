@@ -24,4 +24,3 @@ indices of sampled households
 \description{
 Sample from pums
 }
-

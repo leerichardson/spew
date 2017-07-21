@@ -23,4 +23,3 @@ marginal combinations and their frequencies
 \description{
 Fill marginal contingency with ipf
 }
-

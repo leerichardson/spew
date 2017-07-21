@@ -17,4 +17,3 @@ pop_table a data-frame with the places' counts combined together, and renamed by
 \description{
 Combine multiple rows of a pop_table into one and rename the aggregated row
 }
-

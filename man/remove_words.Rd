@@ -19,4 +19,3 @@ word removed
 \description{
 Remove excess words
 }
-

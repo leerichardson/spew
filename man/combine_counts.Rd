@@ -22,4 +22,3 @@ added to place1, and place2 removed from the pop_table
 \description{
 Combine two rows of a pop_table into one
 }
-

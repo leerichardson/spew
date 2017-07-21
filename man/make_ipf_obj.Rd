@@ -26,4 +26,3 @@ a list in the format for use in IPF
 \description{
 Set up for creating a set of marginal information for IPF sampling
 }
-

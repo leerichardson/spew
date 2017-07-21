@@ -26,4 +26,3 @@ Combine the household and people PUMS for IPF
 For details about the PUMS variables, 
 see http://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2010-2014.pdf.
 }
-

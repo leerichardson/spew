@@ -17,4 +17,3 @@ percent filled school (possibly over 1)
 \description{
 Compare capacities of generated schools and actual schools
 }
-

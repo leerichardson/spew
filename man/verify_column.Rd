@@ -2,6 +2,7 @@
 % Please edit documentation in R/logfiles.R
 \name{verify_column}
 \alias{verify_column}
+\alias{verify_column}
 \title{Verify the column is the correct size}
 \usage{
 verify_column(column, df_size)
@@ -22,4 +23,3 @@ Verify the column is the correct size
 
 Verify the column is the correct size
 }
-

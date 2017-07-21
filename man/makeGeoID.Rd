@@ -18,4 +18,3 @@ Make a 11 digit tract ID
 \details{
 The geographies should be US tracts
 }
-

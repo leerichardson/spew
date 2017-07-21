@@ -15,4 +15,3 @@ data frame
 \description{
 Extract the StCoTr number and put it in a df
 }
-

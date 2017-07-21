@@ -24,4 +24,3 @@ summary of the particular variable
 \description{
 Summarize a variable
 }
-

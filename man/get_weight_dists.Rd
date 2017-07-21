@@ -21,4 +21,3 @@ m x n matrix of probabilities.  Each row should sum to 1
 \description{
 Weight place assignment probabilities
 }
-

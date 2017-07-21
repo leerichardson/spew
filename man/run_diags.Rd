@@ -22,4 +22,3 @@ a print out of the files generated
 \description{
 Run basic 'sanity check' diagnostics on a folder of SPEW generated populations.  There should only be one household and one people file in each folder.  If not, look into append_pops().
 }
-

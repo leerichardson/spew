@@ -28,4 +28,3 @@ Outer function to perform chi square tests
 \details{
 to come
 }
-

@@ -12,4 +12,3 @@ calc_dists(pums, table_row, alpha, k, marginals)
 \description{
 Calculate distance b/w cont table row and pums
 }
-

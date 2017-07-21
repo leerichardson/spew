@@ -26,4 +26,3 @@ no spsample-methods exists, sampling is done in the bounding box
 of the object, using spsample.Spatial"
 s This was added because the Puerto Rico intersection gave SpatialPoints
 }
-

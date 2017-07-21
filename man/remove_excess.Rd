@@ -15,4 +15,3 @@ name with all of the excess baggage removed
 \description{
 Remove comma's, accents, etc. from name
 }
-

@@ -17,4 +17,3 @@ an appended SpatialDataFrame object with all the roads in the state
 \description{
 Read in road lines shapefiles
 }
-

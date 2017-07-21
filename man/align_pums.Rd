@@ -19,4 +19,3 @@ pums dataframe with the marginal columns binded on
 \description{
 Match the pums variables with marginal totals
 }
-

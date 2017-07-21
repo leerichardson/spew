@@ -21,4 +21,3 @@ Assign schools to a synthetic population.
 \references{
 See PUMS CODEBOOK:  http://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2010-2014.pdf
 }
-

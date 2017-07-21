@@ -21,4 +21,3 @@ A data frame of the syneco with the added characteristics from the microdata
 \description{
 Connect the synthetic ecosystems to the microdata
 }
-

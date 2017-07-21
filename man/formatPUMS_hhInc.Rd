@@ -15,4 +15,3 @@ pums with HINCP
 \description{
 Sync the PUMS HINCP with the HHH Race var
 }
-

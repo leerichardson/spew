@@ -15,4 +15,3 @@ data frame for plotting
 \description{
 Convert ipums_sum_list into a data frame for plotting
 }
-

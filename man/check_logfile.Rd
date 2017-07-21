@@ -2,6 +2,7 @@
 % Please edit documentation in R/logfiles.R
 \name{check_logfile}
 \alias{check_logfile}
+\alias{check_logfile}
 \title{Check to see if a SPEW log-file is complete}
 \usage{
 check_logfile(logfile)
@@ -25,4 +26,3 @@ Check to see if a SPEW log-file is complete
 
 Check to see if a SPEW log-file is complete
 }
-

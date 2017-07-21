@@ -2,7 +2,7 @@
 % Please edit documentation in R/read.R
 \name{read_data}
 \alias{read_data}
-\title{Read in the SPEW input data}
+\title{Read SPEW input data from files}
 \usage{
 read_data(base_dir, folders = list(pop_table = NULL, pums = NULL, shapefiles =
   NULL, roads = NULL, schools = NULL, lookup = NULL, workplaces = NULL),
@@ -11,20 +11,18 @@ read_data(base_dir, folders = list(pop_table = NULL, pums = NULL, shapefiles =
 \arguments{
 \item{base_dir}{character vector specifying the ecosystem directory}
 
-\item{folders}{list containing the path of each data sub directory}
+\item{folders}{list containing the subdirectory file-path containing where each 
+type of data is located}
 
-\item{data_group}{character either "US", "ipums" or "none" which tells 
-read_data if the input data follows a particular format. Used mainly for 
-the pre-formatted data-types we have on our Olympus}
+\item{data_group}{character either "US", "ipums" or "none": Gives the format 
+that read_data expects.}
 
-\item{vars}{list with two components: household and person. This specifies 
-which variables to include in the corresponding PUMS data-set}
+\item{vars}{list with household and person variables specifying which PUMS 
+variables to use}
 }
 \value{
-list in which each element contains one of our standardized 
-data sources
+list: Each elements contains a standardized data-source
 }
 \description{
-Based on the hierarchy on the Olympus Supercomputer
+Based on directory structure for input data on the Olympus computing cluster
 }
-

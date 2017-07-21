@@ -14,4 +14,3 @@ assessSynecosUS(syneco_list, type = "both")
 \description{
 Assess the environment use of our synthetic ecosystems
 }
-

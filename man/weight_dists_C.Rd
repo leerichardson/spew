@@ -18,4 +18,3 @@ m x n matrix of probabilities.  Each row should sum to 1
 \description{
 Weight school assignment probabilities by capacity only
 }
-

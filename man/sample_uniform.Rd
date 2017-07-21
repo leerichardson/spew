@@ -20,4 +20,3 @@ sample_uniform(n_house, pums_h, puma_id = NULL, place_id = NULL)
 \description{
 Sample households uniformly
 }
-

@@ -27,4 +27,3 @@ Loop over regions in a state folder to perform chi square tests
 \details{
 to come
 }
-

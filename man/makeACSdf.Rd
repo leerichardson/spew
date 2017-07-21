@@ -18,4 +18,3 @@ make a more usable df from acs objects
 \details{
 to come
 }
-

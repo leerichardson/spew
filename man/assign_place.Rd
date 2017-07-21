@@ -17,4 +17,3 @@ column corresponding to the people of the place assignment
 \description{
 Assign a place to a person
 }
-

@@ -15,4 +15,3 @@ a data frame with region id, variables (separated by a dash), chi. sq. value, do
 \description{
 Turn the output from test_features into a df
 }
-

@@ -16,4 +16,3 @@ length 5 for county}
 \description{
 Translate FIPS number to place name
 }
-

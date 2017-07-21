@@ -21,4 +21,3 @@ plot of the synthetic ecosystem if applicable
 \description{
 Plotting the synthetic ecosystem
 }
-

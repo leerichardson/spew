@@ -17,4 +17,3 @@ var_names a vector of variable names
 \description{
 Get the proper names to subset
 }
-

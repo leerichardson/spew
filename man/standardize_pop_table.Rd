@@ -9,4 +9,3 @@ standardize_pop_table(pop_table, data_group)
 \description{
 Make sure pop_table has the appropriate columns
 }
-

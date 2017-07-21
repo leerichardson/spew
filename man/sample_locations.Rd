@@ -5,7 +5,7 @@
 \title{Generic sampling locations function}
 \usage{
 sample_locations(method, place_id, n_house, shapefile, noise = 0.001,
-  shapefile_id = NULL, do_write = TRUE)
+  shapefile_id = NULL)
 }
 \arguments{
 \item{method}{character vector either "uniform" or "roads" determining 
@@ -21,8 +21,6 @@ that this is a list with two shapefiles if me}
 
 \item{noise}{the standard deviation of how much 
 we jitter the road locations in each direction (only if method is "roads")}
-
-\item{do_write}{logical if TRUE, we read in the roads and subset them.  If FALSE, we use the roads provided in shapefile$roads.  Default is TRUE.}
 }
 \value{
 SpatialPoints object with coordinates for the n households
@@ -30,4 +28,3 @@ SpatialPoints object with coordinates for the n households
 \description{
 Generic sampling locations function
 }
-

@@ -19,4 +19,3 @@ out_df of factors
 \description{
 Turn variables into factors, matching level of PUMS
 }
-

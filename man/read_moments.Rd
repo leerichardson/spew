@@ -23,4 +23,3 @@ moment object
 \description{
 Read in the R data object for moment matching
 }
-

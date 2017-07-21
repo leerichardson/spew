@@ -21,4 +21,3 @@ pop_list list of  dataframe of the population subsetted to the summary variables
 \description{
 Read in the population and subset it to appropriate variables
 }
-

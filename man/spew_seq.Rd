@@ -5,10 +5,9 @@
 \title{Run SPEW Sequentially}
 \usage{
 spew_seq(num_places, pop_table, shapefile, pums_h, pums_p, schools, workplaces,
-  marginals, sampling_method, locations_method, convert_count, output_dir,
-  do_subset_pums = TRUE, do_write = TRUE, noise = 2e-04)
+  marginals, output_type, output_dir, convert_count, sampling_method,
+  locations_method, road_noise, timer, verbose)
 }
 \description{
 Run SPEW Sequentially
 }
-

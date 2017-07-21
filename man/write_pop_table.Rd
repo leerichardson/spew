@@ -19,4 +19,3 @@ pop_table to the given output directory
 \description{
 Write out the final, formatted table
 }
-

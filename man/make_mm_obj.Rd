@@ -26,4 +26,3 @@ list of moment object
 \description{
 Make moment matching object
 }
-

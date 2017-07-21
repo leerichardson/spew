@@ -2,6 +2,7 @@
 % Please edit documentation in R/logfiles.R
 \name{create_column}
 \alias{create_column}
+\alias{create_column}
 \title{Parse a SPEW Log-file to into an appropriate column}
 \usage{
 create_column(logfile, name, type = "numeric")
@@ -30,4 +31,3 @@ Parse a SPEW Log-file to into an appropriate column
 
 Parse a SPEW Log-file to into an appropriate column
 }
-

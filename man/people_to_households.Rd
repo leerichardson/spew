@@ -19,4 +19,3 @@ number of households
 \description{
 Convert a population count to household count
 }
-

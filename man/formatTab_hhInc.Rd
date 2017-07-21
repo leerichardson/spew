@@ -15,4 +15,3 @@ the formatted table
 \description{
 Format tables for use in IPF
 }
-

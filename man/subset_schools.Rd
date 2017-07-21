@@ -20,4 +20,3 @@ or private
 \description{
 Subset the schools to that of the county
 }
-

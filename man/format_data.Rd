@@ -23,4 +23,3 @@ the place_id from the shapefile
 \description{
 Format data before entering make
 }
-

@@ -12,4 +12,3 @@ data frame for plotting
 \description{
 @param ipums_sum_list  output from summarize_ipums()
 }
-

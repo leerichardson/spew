@@ -9,4 +9,3 @@ assessSchUS(agents, schools_pub, schools_priv, distFun = haversine)
 \description{
 Assess the schools of the us against the agents
 }
-

@@ -16,4 +16,3 @@ the pop table}
 \description{
 Partition the poptable into chunks
 }
-

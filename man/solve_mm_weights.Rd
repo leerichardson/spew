@@ -25,4 +25,3 @@ Weight the records of the PUMS so the averages in mm_df will be obtained
 \details{
 the function solve.QP from the "quadprog" package is used.
 }
-

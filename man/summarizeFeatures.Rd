@@ -19,4 +19,3 @@ summary info
 \description{
 Summarizing a synthetic ecosystem
 }
-

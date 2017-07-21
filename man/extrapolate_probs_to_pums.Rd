@@ -21,4 +21,3 @@ probabilities for whole data frame
 \description{
 Take unique probabilites for table and spread them to rest of PUMS
 }
-

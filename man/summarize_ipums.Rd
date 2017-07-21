@@ -23,4 +23,3 @@ summarize_ipums(output_dir, ipums_fs, varsToSummarize = list(vars_hh = "base",
 \description{
 Summarize ipums populations
 }
-

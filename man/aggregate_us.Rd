@@ -9,4 +9,3 @@ aggregate_us(us_list, sum_level)
 \description{
 Aggregate us tracts
 }
-

@@ -15,4 +15,3 @@ list of supplementary data that is compatible with SPEW
 \description{
 Format the supplementary data so it is compatible with SPEW
 }
-

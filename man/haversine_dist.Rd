@@ -24,4 +24,3 @@ Get the haversine distance between two points (x1, y1) and (x2, y2) scaled betwe
 \references{
 http://andrew.hedges.name/experiments/haversine/
 }
-

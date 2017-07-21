@@ -24,4 +24,3 @@ stat_test_us_marg_outer(regionID, type = "b", level = "tract",
 \description{
 Test Marginal totals to synth pop using chi square
 }
-

@@ -29,4 +29,3 @@ Perform chi square test on tract for joint totals
 \details{
 to come
 }
-

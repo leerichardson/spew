@@ -21,4 +21,3 @@ list (same format as summarizeFileStructure)
 \description{
 #' Sumarize the files within the output dir
 }
-

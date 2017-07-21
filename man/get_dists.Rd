@@ -19,4 +19,3 @@ distance between two points on the globe
 \description{
 Get the distances between the schools and the people.
 }
-

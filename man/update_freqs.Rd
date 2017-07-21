@@ -14,4 +14,3 @@ update_freqs(freqs, n_house)
 \description{
 Update frequencies to match # of households
 }
-

@@ -14,4 +14,3 @@ readEnvUS(input_folder, type = "sch")
 \description{
 Read input data for environments for US
 }
-

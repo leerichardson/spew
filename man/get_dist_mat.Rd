@@ -21,4 +21,3 @@ m x n matrix with scaled distance between 0 and 1.  Eg.  Entry ij means that the
 \description{
 Get the distance matrix between two data frames that have "longitude" and "latitude" columns
 }
-

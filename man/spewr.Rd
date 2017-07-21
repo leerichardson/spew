@@ -42,4 +42,3 @@ a synthetic ecosystem with synthetic households, synthetic individuals along wit
 \description{
 A wrapper function for SPEW to use in console
 }
-

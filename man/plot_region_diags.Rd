@@ -37,4 +37,3 @@ logical or ggplot object
 \description{
 Plot the region diagnostics
 }
-

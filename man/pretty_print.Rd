@@ -17,4 +17,3 @@ print statement
 \description{
 Print text if doPrint
 }
-

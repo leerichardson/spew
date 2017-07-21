@@ -29,4 +29,3 @@ list
 \description{
 Summarize us populations
 }
-

@@ -27,4 +27,3 @@ Perform chi square test on tract for marginals totals
 \details{
 to come
 }
-

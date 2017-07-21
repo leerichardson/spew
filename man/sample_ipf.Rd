@@ -29,4 +29,3 @@ sample_ipf(n_house, pums_h, pums_p, marginals, alpha = 0, k = 0.001,
 \description{
 Sample households PUMS accoording to IPF
 }
-

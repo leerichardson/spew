@@ -16,4 +16,3 @@ error message detailing what went wrong
 \description{
 Check the pop_table has all the necessary components
 }
-

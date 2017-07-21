@@ -12,9 +12,9 @@ force_pop(pop_table, shapefile_names)
 \item{total}{total number of households in the coutry}
 }
 \value{
-data frame that matches pop_table and shapefile names exactly, splitting the population evenly
+data frame that matches pop_table and shapefile names exactly, 
+splitting the population evenly
 }
 \description{
 Take the total population and divide it by the number of regions
 }
-

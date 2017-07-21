@@ -9,4 +9,3 @@ assessWplUS(agents, wpl)
 \description{
 Assess the schools of the us against the agents
 }
-

@@ -24,4 +24,3 @@ a written synth pop with added characteristics
 \description{
 Add a characteristic to an existing population
 }
-

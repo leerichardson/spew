@@ -25,4 +25,3 @@ numeric with the indicies of the household PUMS to sample
 \description{
 Sample appropriate indices from household PUMS
 }
-

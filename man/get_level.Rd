@@ -20,4 +20,3 @@ use
 \description{
 Obtain the correct level for ipums data
 }
-

@@ -21,4 +21,3 @@ numeric
 \description{
 Get the euclidean distance between two points (x1, y1) and (x2, y2)
 }
-

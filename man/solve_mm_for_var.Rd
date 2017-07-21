@@ -23,4 +23,3 @@ x vector of length of the number of records in the PUMS.  These are probabilitie
 \description{
 Do the MM solving for an individual variable
 }
-

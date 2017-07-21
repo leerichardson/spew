@@ -21,4 +21,3 @@ names character vector of the replaced word
 \description{
 Replace an existing word
 }
-

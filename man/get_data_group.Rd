@@ -2,6 +2,7 @@
 % Please edit documentation in R/logfiles.R
 \name{get_data_group}
 \alias{get_data_group}
+\alias{get_data_group}
 \title{Extract data-group from location name}
 \usage{
 get_data_group(location_name)
@@ -18,4 +19,3 @@ Extract data-group from location name
 
 Extract data-group from location name
 }
-

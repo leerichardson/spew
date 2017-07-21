@@ -17,4 +17,3 @@ logical
 \description{
 Check if df is in the right format
 }
-

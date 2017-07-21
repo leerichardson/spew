@@ -23,4 +23,3 @@ weight matrix, rows = rows in pums, columns = rows in table
 \description{
 Assign weights for ipf-based sampling
 }
-

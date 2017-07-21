@@ -15,4 +15,3 @@ number of levels in file path
 \description{
 Get the number of levels in the structure
 }
-

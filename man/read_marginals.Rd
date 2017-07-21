@@ -23,4 +23,3 @@ data frame with counts
 \description{
 Read in the marginals population characteristic totals
 }
-

@@ -15,4 +15,3 @@ df of paths
 \description{
 Convert paths to data frame based on folders
 }
-

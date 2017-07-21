@@ -10,4 +10,3 @@ print_region_list(region_list)
 @param region_list a list containing all of the 
  summary and diagnostic information for each
 }
-

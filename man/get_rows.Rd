@@ -19,4 +19,3 @@ of the initial character vector (logfile)
 \description{
 Extract rows with a certain character
 }
-

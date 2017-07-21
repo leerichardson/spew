@@ -17,4 +17,3 @@ column of school ID assignments
 \description{
 Function which assigns schools
 }
-

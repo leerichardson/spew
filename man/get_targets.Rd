@@ -22,4 +22,3 @@ place_id
 \description{
 Obtain the target marginals for IPF
 }
-

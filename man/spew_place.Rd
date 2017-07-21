@@ -2,52 +2,50 @@
 % Please edit documentation in R/spew.R
 \name{spew_place}
 \alias{spew_place}
-\title{Create microdata for individual places}
+\title{Generate synthetic ecosystem for single place}
 \usage{
-spew_place(index, pop_table, shapefile, pums_h, pums_p, schools, workplaces,
-  marginals, output_dir, convert_count, sampling_method, locations_method,
-  do_subset_pums = TRUE, do_write = TRUE, noise = 2e-04)
+spew_place(index, pop_table, shapefile, pums_h, pums_p, schools = NULL,
+  workplaces = NULL, marginals = NULL, output_type = "console",
+  sampling_method = "uniform", locations_method = "uniform",
+  convert_count = FALSE, output_dir = NULL, road_noise = 2e-04,
+  timer = TRUE, verbose = TRUE)
 }
 \arguments{
-\item{index}{numeric with the pop_table row to generate}
+\item{index}{row of the pop-table to generate}
 
-\item{pop_table}{dataframe with columns corresponding to 
-which places need populations, and how many samples to take}
+\item{pop_table}{}
 
-\item{shapefile}{sp class object used for assigning households to 
-particular locations}
+\item{shapefile}{}
 
-\item{pums_h}{dataframe with microdata corresponding to housegolds}
+\item{pums_h}{}
 
-\item{pums_p}{dataframe with microdata corresponding to people}
+\item{pums_p}{}
 
-\item{schools}{dataframe with data corresponding to available schools}
+\item{schools}{}
 
-\item{workplaces}{dataframe with data corresponding to available workplaces}
+\item{workplaces}{}
 
-\item{marginals}{list with elements corresponding to marginal totals 
-of population variables}
+\item{marginals}{}
 
-\item{output_dir}{character vector containing the location to save the}
+\item{output_type}{}
 
-\item{sampling_method}{character vector indicating the type of sampling 
-method to use, defaults to "uniform".  Other options are "ipf" and "mm"}
+\item{sampling_method}{}
 
-\item{locations_method}{character vector indicating the type of location 
-sampling to use, defaults to "uniform", can also be "roads"}
+\item{locations_method}{}
 
-\item{do_subset_pums}{logical, do we need to subset PUMS when doing the method of sampling.  Default is TRUE.}
+\item{convert_count}{}
 
-\item{do_write}{logical, do we need to write out the synthetic populations and environments?}
+\item{output_dir}{}
 
-\item{noise}{a numeric value indicating the value of the noise we add to household locations during road-based sampling.  Default is .0002.
-If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.}
+\item{road_noise}{}
+
+\item{timer}{}
+
+\item{verbose}{}
 }
 \value{
-synthetic population .csv file for both household and person 
-level data
+List of a synthetic ecosystem
 }
 \description{
-Create microdata for individual places
+Generate synthetic ecosystem for single place
 }
-

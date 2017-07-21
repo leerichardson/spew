@@ -16,4 +16,3 @@ non-capital and ASCII names
 \description{
 Remove whitespace, capitals, and non ASCII
 }
-

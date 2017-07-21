@@ -16,4 +16,3 @@ detailing what went wrong
 \description{
 Check the shapefile has the necessary components
 }
-

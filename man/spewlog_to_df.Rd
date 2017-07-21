@@ -2,6 +2,7 @@
 % Please edit documentation in R/logfiles.R
 \name{spewlog_to_df}
 \alias{spewlog_to_df}
+\alias{spewlog_to_df}
 \title{Convert a SPEW Logfile into a data-frame}
 \usage{
 spewlog_to_df(logfile, columns)
@@ -26,4 +27,3 @@ Convert a SPEW Logfile into a data-frame
 
 Convert a SPEW Logfile into a data-frame
 }
-

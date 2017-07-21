@@ -4,18 +4,15 @@
 \alias{spew}
 \title{SPEW algorithm to generate synthetic ecosystems}
 \usage{
-spew(base_dir, pop_table, shapefile, pums_h, pums_p, schools, workplaces,
-  marginals, convert_count, parallel_type = "SEQ",
+spew(pop_table, shapefile, pums_h, pums_p, schools = NULL,
+  workplaces = NULL, marginals = NULL, output_type = "console",
+  base_dir = NULL, convert_count = FALSE, run_type = "SEQ",
   sampling_method = "uniform", locations_method = "uniform",
-  outfile_loc = "", do_subset_pums = TRUE, do_write = TRUE,
-  noise = 2e-04)
+  outfile_loc = "", road_noise = 2e-04, timer = TRUE, verbose = TRUE)
 }
 \arguments{
-\item{base_dir}{character specifying ecosystem directory}
-
-\item{pop_table}{dataframe with rows corresponding to places which 
-need to have a population generated. Columns also required are "puma_id"
-and "n_house".}
+\item{pop_table}{dataframe where rows correspond to places where populations 
+should be generated. Other requird columns are "n_house" and "puma_id"}
 
 \item{shapefile}{sp class object used for assigning households to 
 particular locations}
@@ -33,28 +30,34 @@ employees column, and stcotr column}
 \item{marginals}{list of marginal population totals. Each element of the 
 list contains the marginal totals of a separate variable}
 
+\item{output_type}{Default is "console" if we want to resulting population 
+as an R variable. Alternative is "write", which is used on Olympus for writing 
+out .csv files of the population}
+
+\item{base_dir}{character specifying ecosystem directory write to. Only used if
+output_type = "write"}
+
 \item{convert_count}{logical meant to indicate if we are going to convert 
 population totals from people to household counts. Default: FALSE, assumes
 the population is the total number of households}
 
-\item{parallel_type}{Indicating to run sequentially or parallel. Default: "SEQ". 
-If parallel, the back-end is specified, either "MPI", "SOCK", or "MC"}
+\item{run_type}{Whether to run sequentially in parallel. Default is "SEQ", for 
+a sequential run. If parallel, back-end is either "MPI", "SOCK", or "MC"}
 
-\item{sampling_method}{character vector indicating the type of sampling 
+\item{sampling_method}{character indicating the type of sampling 
 method to use, defaults to "uniform". Can also be "ipf" with appropriate marginal data.}
 
-\item{locations_method}{character vector indicating the type of location 
+\item{locations_method}{character indicating the type of location 
 sampling to use, defaults to "uniform", can also be "roads".}
 
 \item{outfile_loc}{Defaults to "", so we print out the parallel run information. 
 Only set to "/dev/null" for internal testing putposes.}
 
-\item{do_subset_pums}{logical, do we need to subset PUMS when doing the method of sampling.  Default is TRUE.}
+\item{road_noise}{Noise added to households during road-based sampling}
 
-\item{do_write}{logical, do we need to write out the synthetic populations and environments?
-If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.}
+\item{timer}{logical indicating we want to time the run}
 
-\item{noise}{a numeric value indicating the value of the noise we add to household locations during road-based sampling.  Default is .0002.}
+\item{verbose}{logical indicating we want to print output during the run}
 }
 \value{
 logical indicating whether or not this run of spew ended successfully
@@ -62,4 +65,3 @@ logical indicating whether or not this run of spew ended successfully
 \description{
 SPEW algorithm to generate synthetic ecosystems
 }
-

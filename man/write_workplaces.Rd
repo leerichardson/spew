@@ -17,4 +17,3 @@ logical TRUE if completed successfully
 \description{
 Write workplaces environment
 }
-

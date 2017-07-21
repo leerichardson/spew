@@ -17,4 +17,3 @@ formatted state/county/tract ID
 \description{
 Format the ids of a us state/county/tract
 }
-

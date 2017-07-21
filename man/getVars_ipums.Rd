@@ -17,4 +17,3 @@ list of the categorical and continuous variables na mes
 \description{
 Add the base variables to the vars to summarize
 }
-

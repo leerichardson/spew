@@ -20,4 +20,3 @@ list or data frame of input data
 \description{
 Read and subset synecos
 }
-

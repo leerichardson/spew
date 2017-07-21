@@ -24,4 +24,3 @@ data indicating the indices of people to sample
 \description{
 Output our final synthetic populations as csv's
 }
-
