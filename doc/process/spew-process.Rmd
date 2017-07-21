@@ -1,33 +1,116 @@
 ---
-title: "SPEW Development Process"
+title: "The SPEW Process"
 author: "Lee Richardson"
 date: "January 2, 2017"
 output: html_document
 ---
 
-This document details the SPEW development process. It is written for people who are adding code to the SPEW package. After reading, contributors should understand the organization of SPEW software, and how to effectively contribute. The goal is for all SPEW software to be consistent, robust, modular, and easily extendable.
+This document details the SPEW development process. It is written for people adding code to the SPEW package. After reading, contributors should understand the organization of SPEW and how to contribute. The goal is for all SPEW software to be consistent, robust, and modular. 
 
-The SPEW development process is by no means optimal. We are consistently looking for new approaches for a more efficient process. However, we need to ensure that changes to the process do not interfere with consistency and correctness, since SPEW ecosystems and software have already been publically released. 
+The process is by no means optimal, and we are interested in improvements. However, we need to guard against introducing error, since SPEW ecosystems are already publically available. Therefore, the SPEW process contains many checks and balances for ensuring new code is as correct as possible.
 
-The SPEW process is conservative, with many checks and balances for ensuring that code which is added to the current release has passed several tests. 
+This document is organized as follows. We first describe SPEW's organization, followed by the R-code structures, and conclude with the documentation system. 
 
-# SPEW Overview and Organization
-SPEW software serves two primary goals:
+# SPEW Overview 
+SPEW serves two purposes:
 
-1. Generating synthetic ecosystems for release on Olympus 
-2. Providing general-purpose tools for custom synthetic ecosystems 
+1. Generating and releasing synthetic ecosystems 
+2. Providing a general-purpose synthetic ecosystem generator 
 
-To meet goal 1, a separate directory **olympus/** contains all of the code corresponding to ecosystem generation on olympus. The Olympus directory has the code for running SPEW on olympus, generating reports, collecting data, etc. In addition, the spew geographic hierarchy is here. More information on Olympus is provided below. 
+To meet goal 1, we generate and host our synthetic ecosystems on the Olympus computing cluster, hosted by the Pittsburgh Supercomputing Center (PSC). To meet goal 2, we organize SPEW into an R-package, avaialble for users with  custom data. The next section details code for both code for Olympus and the R-package.
 
-To meet goal 2, SPEW software is organized into an R package. The primary reference SPEW uses is the book **R Packages**, by Hadley Wickham. The book is available online at: <http://r-pkgs.had.co.nz/>. The majority of this document details the specifics of package development, tailored to SPEW. In particular, if you do not understand a component of the SPEW package, this book is often the first place to look. 
+# SPEW Organization 
+All SPEW code is on Github at <https://github.com/leerichardson/spew>. The **olympus/** directory contains all code used for generating and hosting our ecosystems. The **doc/** directory contains our formal documentation, and everything else corresponds to the R-package. 
 
-# R Code 
-Since SPEW is an R-package, a big part of the development process is writing R-code. Follow R-package conventions, all R-code is located in the *R/* directory. Within the *R/* directory, there are *.R* files, with functions implementing the SPEW framework. An important point is that all code in **R/** are functions, rather than scripts. This is because (almost) everything is R is a function call, so the primary code in packages are functions. Each *.R* file contains a group of related functions. For example, *R/ipf.R* has all functions related to IPF sampling, and *R/read.R* has all functions for reading input data. 
+## Olympus 
+The **olympus/** directory contains code for running SPEW on Olympus, generating reports, collecting and formatting data, analyzing logfiles, and generating the SPEW geographic hierarchy. All of our files are located on Olympus at: 
 
-## Consistency 
-A goal of SPEW software moving forward is consistent syntax. To achieve consistent syntax, we follow the Style guide described in Hadley Wickham's book, [Advanced R](http://adv-r.had.co.nz/Style.html). Admittedly, we are not fully compliant with the style guide right now. But, hopefully we can keep iterating and fixing the SPEW code. The point of the Style guide isn't to be pedantic and dogmatic, but rather for ensuring that code is consistent, regardless of the contributor. Often, it is difficult to read or understand someone else's code if the style/syntax is different. This is highly inefficient, since a lot work goes into parsing, testing, and understanding the code. Following a consistent syntax alleviates this issue.
+  **/mnt/beegfs1/data/shared_group_data/syneco**.
 
-Here is an example function from the *R/ipf.R* file. This is the main IPF-wrapper function, which calls smaller IPF-related functions for carrying out the complete IPF sampling procedure. 
+Here, directories with names _spew_NUMBER_ are releases of SPEW ecosystems data. The directory **olympus/** synchronizes with the **olympus/** directory on Github. Lee uses the file **olympus/move_file.bash** for moving code back and forth, which is easily adapted to other computers. Files we no longer use are in the **old/** directory.
+
+Our final ecosystems are available online at: <http://data.olympus.psc.edu/syneco/>. This website is just an online version of the Olympus directory:
+
+  **/mnt/lustre0/machines/data.olympus.psc.edu/srv/apache/data/syneco**
+
+Implying that anything we want to appear online, we can just put here. We post finalized versions of our ecosystems using "symlinks" between this directory and our Olympus directory, to avoid copying. 
+
+We now briefly explain each subdirectory inside **olympus/**. 
+
+* **call_spew/**: Generating synthetic ecosystems on Olympus using the *spew* package
+* **data/**: Downloading and pre-procesing data. Still needs to be moved from **old/spew_olympus**  
+* **logfiles/**:Extracting and analyzing logfiles from SPEW runs, used to generate figures in the paper.
+* **reports/**: Generating diagnostic reports
+* **spew_hierarchy/**: Creating our directory structure 
+* **misc/**: Everything else, including for custom ecosystems (e.g. Canada) 
+
+## R-Package 
+The primary reference for our *spew* R-package is the book **R Packages**, available online at:
+
+<http://r-pkgs.had.co.nz/>.
+
+For new contributors, the two most important parts are the **R/** folder, where all R-code lives, and **tests/**, for verifying that our R-code works. The fundamental concept to remember is that all code should have a corresponding test, and all tests should pass before adding code. 
+
+Our package includes internal data for verifying our code and tests work. The data is organized as follows:
+
+* **data/**: Formatted data we can use for our functions. Data in this directory can be loaded using `data(tartanville)`
+* **data-raw/**: R-scripts used to generate data located in the **data/** folder 
+* **inst/extdata**: Example data input directories from Olympus. 
+
+An example of how this works: For a new version of SPEW, I download the input data into **inst/extdata**. Then, I write an r-script in **data-raw** which saves the binary (*.rda*) file for easy use in **data/**.
+
+# R-Code 
+We (ideally) follow the style guide available from R-packages at: <http://r-pkgs.had.co.nz/r.html>. Unfortunately, some spew code was hastily written, so our package is not entirely consistent. Please strive to follow these conventions when adding code. Additionally, please make sure code is adequately commented. We are available to review any new code added to SPEW.
+
+An example of re-factoring existing code is contained in the appendix. 
+
+## Functions 
+The **R/** directory has files for various groupings of functions. It is important to stress that all R-code in these files should be functions: not scripts. Ideally, functions should be as general as possible, and shouldn't be tailored to Olympus file-paths. (with obvious exceptions: the **R/ read.R** files only purpose is reading data on Olympus).
+
+The main functions are in the **spew.R** file, containing the **call_spew** function for Olympis, and the **spew** which works more generally. The **spew** function essentially loops rows of the population table, generating a synthetic population for each row. We also include different wrappers for running this in parallel. 
+
+## Unit Tests
+Key to keeping our functions correct are unit-tests. Unit testing is covered in detail here  <http://r-pkgs.had.co.nz/tests.html>. All functions added to *spew* should have a corresponding tests, and all test must pass before code is added. If it is the end of the day, and the code still doesn't work, it is better to wait than put it online without testing. 
+
+### Integration with Travis CI 
+It would be great to integrate SPEW with the Travis Continuous Integration system. Travis runs all automatic checks required by CRAN, along with our unit-tests, each time code is added. We hope to incorporate this soon.
+
+#### Minor Details  
+- If using a function from another package, use package::function. For example, if we are using the **spsample** function from package **sp**, write **sp::spsample**. 
+- If using a "Suggests" package, use a requireNamespace condittional before calling 
+
+# Documentation 
+SPEW has two layers of documentation: for R-functions, and formal documentation for each public release. Both are detailed next. 
+
+## R-Functions 
+We document R-functions following <http://r-pkgs.had.co.nz/man.html>. The documentation should be as concise as possible. Additionally, remember to move to a new-line when writing documentation, and try to keep less than 100 characters per line. 
+
+## SPEW Ecosystems 
+Each release of SPEW ecosystems codes with a corresponding *.pdf* documentation, located at **doc/ecosystems/VERSION**. While the template and wording remains similar, we need to revise this carefully for each release, and make sure all relevant details are contained here. The following are components we need in each set of *.pdf* documentation.
+
+### New Data Sources  
+All data-sources should used in this release must be documented here. If you are adding new data, you must document it here. All code for downloading and pre-processing data should be made avaialable at: **olympus/data**. 
+
+### New Methodology 
+All methodology for *spew* must be detailed here. If you are adding new methodology, it must be formally documented here. 
+
+### Clarifications for this release 
+All details of the release must be documented. For example, we might need to record that "For canada, we adapted the version of spatial sampling because there was no lake data". 
+
+### Description of file-formatting
+We have a complicated directory for each ecosystem, which should be layed out here. 
+
+# Appendix 
+Extraneous details on the SPEW process are given here. 
+
+## Re-factoring R Code 
+This section revises an existing *spew* R-function for compliance with the style guide. We hope this provides inspiration for how to get the code looking good, and eventually revise all code for consistency.
+
+Here is an example function from the *R/ipf.R* file. This is the IPF-wrapper function, sequentially calling functions implementing smaller pieces of the IPF method. There are three steps involved in the procedure:
+
+1. Aligning the PUMS microdata with the Marginal tables 
+2. Estimating the contingency table 
+3. Sampling using the contingency table weights 
 
 ```{r, eval = FALSE}
 sample_ipf <- function(n_house, pums_h, pums_p, marginals, alpha = 0, k = .001, 
@@ -55,51 +138,13 @@ sample_ipf <- function(n_house, pums_h, pums_p, marginals, alpha = 0, k = .001,
 }
 ```
 
-There are three steps involved in the procedure:
+We immediately spot problems with the function: 
 
-1. Aligning the PUMS microdata with the Marginal tables 
-2. Estimating the contingency table 
-3. Sampling using the contingency table weights 
+1. Some comments have been moved to the far-right corner of the line. 
+2. Step 2 of the procedure and the corresponding comment are not aligned. 
+3. The syntax surrounding the if statement doesn't follow the spacing section of the Style guide. 
 
-Over-time, the function has been modified in order to meet various deadlines. To see this, we can look at the history of changes to this particular file: <https://github.com/leerichardson/spew/commits/master/R/ipf.R>. This section walks through some of the issues with this function, and re-factors the function back into style-guide compliance. Of course, all of this must be done while retaining the correctness of the function. Ultimately, we want all SPEW code following consistent syntax. While this will take effort, it will go a long way towards making SPEW readable and reliable moving forward. 
-
-Immediately, we can see problems with the function. First, some of the comments have been moved to the far-right corner of the line. In addition, step 2 of the procesure and the corresponding comment aren't aligned. Finally, the syntax surrounding the if statement doesn't follow the spacing section of the Style guide. Generally speaking, spacing within a function should be consistent, and every line should start with the same indent. In addition, coding syntax should follow the style guide. Fixing these issues:
-
-```{r, eval = FALSE}
-sample_ipf <- function(n_house, pums_h, pums_p, marginals, alpha = 0, k = .001, 
-                       puma_id = NULL, place_id = NULL, do_subset_pums = TRUE) {
-  # Step 1: Align PUMS with Marginals
-  if (do_subset_pums) {
-      pums <- subset_pums(pums_h = pums_h, pums_p = pums_p, marginals = marginals, puma_id = puma_id)
-  } else {
-      pums <- pums_h
-  }
-  pums <- align_pums(pums, marginals)
-
-  # Step 2: Fill in the contingency table
-  table <- fill_cont_table(pums = pums, marginals = marginals, place_id = place_id, n_house = n_house)
-  # Write out the contingency table HERE.
-  
-  # Step 3: Sample with contingency table weights 
-  households <- sample_with_cont(pums = pums, table = table, alpha = alpha, 
-                                 k = k, marginals = marginals)
-  
-  return(households)
-}
-```
-
-Which already looks much better. In particular, the structure of the function is now much more clear, and three step procedure is obvious to anyone reading it. 
-
-## If statements 
-The `sample_ipf` function provides room to explore another *important* point about the R-code, if-statements. Generally speaking, we want to minimize the amount of ad-hoc, if-statements in the SPEW code. However, in many situations if-statements are the only method capable of solving the problem. So, we face a tradeoff. The main concept is that even if an if-statement is necessary, its purpose should be well documented, and it should be obvious to anyone reading the code why the if-statement should be there. 
-  
-Upon reviewing the history, we can see the if-statement in `sample_ipf` was added during the following commit message:
-
-> "made changes to IPF to use on a custom population. There was also an issue with a single variable IPF that I fixed."
-
-The main problem is that no-where, either in the code or the commit message, is the issue described. So, it is unclear _why_ this particular if-statement fixes the problem. Clearly, this was added in a rush in order to meet a deadline. While this is ok, too much reliance of this anxiety-ridden approach will slowly deteriorate SPEW. For SPEW to be maintainable, a better balance must be struck between _getting it done_ and maintaining the quality of the software. 
-
-Finally, since the if-statement clearly corresponds to the smaller `subset_pums` function, it is more appropriate to implement there. This way, the top-level wrapper function is still readable, and the if-statement occurs at the level where it actually takes place. With these changes, the function is restored!
+Fixing these issues:
 
 ```{r, eval = FALSE}
 sample_ipf <- function(n_house, pums_h, pums_p, marginals, alpha = 0, k = .001, 
@@ -120,63 +165,54 @@ sample_ipf <- function(n_house, pums_h, pums_p, marginals, alpha = 0, k = .001,
 }
 ```
 
+We can extract various principles out of this revision
 
-In sum, a strategy for if statements 
+### Consistency
+We want *spew* code following consistent syntax. Not to be pedantic or dogmatic, but rather for keeping consistency across contirbutors. It is ofter difficult to understand someone else's code following a different coding style or syntax. This is highly inefficient, since a lot work goes into parsing, testing, and understanding the code. Following a consistent syntax alleviates this issue.
+
+### If-statements 
+Generally speaking, we want to minimize ad-hoc if-statements in the SPEW code. However, in many situations if-statements are the only method for solving the problem. When if-statements are required, we really want it to be well documented, so anyone reading it knows why it should be there.
+
+A strategy for if-statements:
 
 1. Avoid ad-hoc if statements if possible
 2. If the if-statement is necessary, include it at the appropriate level (not the top-level wrapper function)
-3. Clearly describe *why* the if-statement is necessary
+3. Clearly describe *why*, if the if-statement is nececssary the if-statement is necessary
 
-## Using defaults 
-- Use defaults to add new features 
+### Using defaults to add new-features 
+When adding new features to *spew*, add as an option in one place, and set the existing methodology to be the default. This way, we only need to update the code in one place, rather than having to propogate changes in multiple functions. 
 
-## CRAN Specific Conventions 
-- If using another function, use package::function 
-- If using a "Suggests" package, do requireNamespace
+## The SPEW algorithm 
+The core of our SPEW implementation is the function, `spew`. This section describes the function in detail. 
 
+### Inputs 
+SPEW has three types of input data:
 
-# Unit Testing 
+1. Required Data 
+2. Supplementary data
+3. Options 
 
+Required data refers to the three essential input data-sources
 
+| Data Types | R-variable name | Required Variables | Format |
+|---|---|---|
+| Population Counts | `pop_table` | `place_id`, `puma_id` | `.csv` |
+| Shapefile         | `shapefile` | `place_id`            | `.shp` |
+| Indidivual Microdata | `pums_p`| `puma_id` | `.csv` |
+| Household Microdata | `pums_h` | `puma_id` | `.csv` |
 
-# Documentation 
-SPEW uses three different layers of documentation. First, the R-code if documented accoring to the `roxygen2` package. 
+All `spew` calls require these four inputs as data. 
 
+Supplementary data means any external data required outside of the original data. Right now, we have types:
 
+1. Schools
+2. Workplaces 
+3. Roads 
+4. Marginal tables for IPF
+5. Marginal tables for MM
 
+The default is for each of these to be set to NULL. The `spew` function checks this, and will assign supplementary data only if it is avaialble. 
 
-## Functions 
+Options are various parameters we tweak during runs of SPEW. For instance, one is "output_type", which determines whether we return the ecosystem either inside the R secction, or write the output.
 
-
-
-## New Data for SPEW ecosystem releases 
-
-
-
-## New Methods for SPEW ecosystem release 
-
-
-
-# Automated Checks 
-In the R-world, a package truly _makes it_ when it is avaialable on CRAN. CRAN stands for the Comprehensive R Archive Network,  
-
-
-## Integration with Travis 
-
-
-
-# Adding Major Features 
-
-
-
-## Branches
-
-
-
-## Code Reviews 
-
-
-
-# Olympus 
-- .Rbuildignore `(devtools::use_build_ignore("olympus"))`
 

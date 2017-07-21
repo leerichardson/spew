@@ -16,15 +16,12 @@ sample_households <- function(method, n_house, pums_h, pums_p = NULL,
   } else if (method == "ipf") {
     households <- sample_ipf(n_house = n_house, pums_h = pums_h, pums_p = pums_p, 
                              puma_id = puma_id, place_id = place_id, 
-                             marginals = marginals, do_subset_pums = do_subset_pums)
-  } else if (method == "mm"){
-      mm_obj <- marginals
+                             marginals = marginals)
+  } else if (method == "mm") {
       households <- sample_mm(n_house = n_house, pums_h = pums_h, pums_p = pums_p, 
-                              mm_obj = mm_obj, puma_id = puma_id, place_id = place_id, 
-                              do_subset_pums = do_subset_pums)
-  }
-  else {
-    stop("Sampling method must be ipf, mm,   or uniform")
+                              mm_obj = marginals, puma_id = puma_id, place_id = place_id)
+  } else {
+    stop("Sampling method must be ipf, mm, or uniform")
   }
 
   # Subset the sampled indices from the PUMS, and add 

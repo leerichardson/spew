@@ -14,8 +14,9 @@ library(knitr) # We need the knitr package to set chunk options
 # Set default knitr options for knitting code into the report:
 opts_chunk$set(cache=TRUE, autodep=TRUE, cache.comments=FALSE)
 ```
+
 <a href="http://www.stat.cmu.edu/~spew">	
-<img src = "SPEW.jpg" style="height:.75%;position:absolute;top:0px;right:0px;" />
+  <img src = "SPEW.jpg" style="height:.75%;position:absolute;top:0px;right:0px;" />
 </a>	
 
 #	Introduction 
@@ -30,7 +31,6 @@ Open up an `R` session and run the following commands.
 
 **Note:** the dependency `maptools` requires the `gpclib` permit.  The easiest way to get this is to download the `rgeos` package.
 
-          
 ```{r, eval = FALSE}     
 library(devtools)
 if(!require(rgeos)) install.packages("rgeos")	
@@ -40,18 +40,20 @@ install_github("leerichardson/spew")
 ##	Tartanville:  SPEW basics		
 		
 ```{r, warnings = FALSE}
-## libraries
 library(ggplot2)
 library(maptools)
 library(plyr)
 library(spew)		
 	
-## Generating Tartanville
+# Generate Tartanville 
 data(tartanville)
-tartanville_syneco <- spewr(tartanville$pop_table, tartanville$shapefile,
+tartanville_syneco <- spew(tartanville$pop_table, tartanville$shapefile,
                             tartanville$pums_h, tartanville$pums_p)
+
 plot_syneco(tartanville, tartanville_syneco,
-            region_name = "Tartanville", pretty = TRUE)
+            region_name = "Tartanville", 
+            pretty = TRUE)
+
 summarize_syneco(tartanville_syneco,
                  vars_df = data.frame(var_name = c("NP", "HHINC", "AGEP", "SEX"),
                                       pop_type = c("hh", "hh", "p", "p"),
@@ -59,19 +61,10 @@ summarize_syneco(tartanville_syneco,
                                       stringsAsFactors = FALSE), verbose = TRUE)
 ```
 
-	
-	
-
-
-
-
-
 # Sampling of locations 
 In SPEW, we assign locations to our synthetic agents.  We currently support two methods of location assignment:
 
-  
 1. **Uniform sampling**
-
 2. Road-based sampling
 
 ## Uniform sampling 
@@ -88,37 +81,34 @@ data(tartanville)
 library(plyr)
 shapefile <- list(boundaries = tartanville$shapefile, roads = tartanville$roads)
 
-tartanville_syneco <- spewr(tartanville$pop_table, shapefile,
+tartanville_syneco <- spew(tartanville$pop_table, shapefile,
                             tartanville$pums_h, tartanville$pums_p,
                             locations_method = "roads")
+
 plot_syneco(tartanville, tartanville_syneco,
-            region_name = "Tartanville", pretty = TRUE)
+            region_name = "Tartanville", 
+            pretty = TRUE)
 ```	
      
 # Sampling of characteristics
 In SPEW, we assign population characteristics to our synthetic agents.  We currently support three methods of population characteristics assignment:  
 
 1. **Uniform sampling**
-
 2. Moment Matching (MM)
-
-3.  Iterative Proportional Fitting (IPF)   
+3. Iterative Proportional Fitting (IPF)   
 
 ## Uniform sampling
      
 Uniform sampling of population characteristics means sampling from the microdata where each record is given equal weight.  Thus, if the microdata is thought to be representative of the regions, then the resulting synthetic individuals should have close to the correct distribution of population characteristics.  If the microdata is not representative, then we must implement other sampling methods.
 
 **Ex.** As shown in the 'A true quickstart' tab.
-
-
-
 	
 ## Moment Matching
 Assume we have the first moment(s) of a continuous or ordered variable(s)'s distribution  for every sub-region in the region of interest (e.g. average household size for every block in Tartanville).  Moment matching is a method to calculate weights for the microdata records so that after sampling, the sample average of the variable(s) will be matched to the given averages.  We demonstrate with the average household size (NP) of Tartanville.  The average household sizes have been exaggerated here as we are generating a small synthetic population.
 
 **Ex.**
 
-We first make the `moments` object for use in SPEW.    Here, the moments object is the average household size for each block.  The function `make_mm_obj` puts the data necessary for MM in the right format.  The format is discussed more in another section.  The `supplementary_data` is thus a list including the `moments` outputted from `make_mm_obj`.
+We first make the `moments` object for use in SPEW. Here, the moments object is the average household size for each block.  The function `make_mm_obj` puts the data necessary for MM in the right format.  The format is discussed more in another section.  The `supplementary_data` is thus a list including the `moments` outputted from `make_mm_obj`.
        
 ```{r}
 NP_avg <- c(3.2, 0, 6.0,
@@ -132,16 +122,20 @@ supplementary_data <- list(moments = make_mm_obj(moments_list =
                                 nMom = 1, type = "cont"))
 
 ```
+
 And then we use SPEW, with the additional library `quadprog`, which is required for MM.  Note we have supplemented `spewr` with both a `supplementary_data` argument and the sampling method of `'mm'`.  The outputted synthetic ecosystem is in the same format.  We see that MM matches the inputted average household sizes well.
 
 ```{r, warnings = FALSE}
 if(!require(quadprog)) install.packages("quadprog")    
 library(quadprog)
-tartanville_syneco_mm <- spewr(tartanville$pop_table, tartanville$shapefile,
-                               tartanville$pums_h, tartanville$pums_p,
-                               supplementary_data = supplementary_data,
-                               sampling_method = "mm")
 
+tartanville_syneco_mm <- spew(pop_table = tartanville$pop_table, 
+                              shapefile = tartanville$shapefile,
+                              pums_h = tartanville$pums_h, 
+                              pums_p = tartanville$pums_p,
+                              marginals = supplementary_data$moments, 
+                              sampling_method = "mm")
+                              
 out <- summarize_syneco(tartanville_syneco_mm,
                  vars_df = data.frame(var_name = c("NP"),
                                       pop_type = c("hh"),
@@ -149,7 +143,6 @@ out <- summarize_syneco(tartanville_syneco_mm,
                                       stringsAsFactors = FALSE), verbose = TRUE)
 abs(out$NP$Mean - NP_avg[-2])
 ```
-
 
 ## Iterative Proportional Fitting
 
@@ -188,7 +181,6 @@ ipf_obj_rac1p <- make_ipf_obj(var_name, type, bounds, category_name, df = df2)
 # Combine both together
 ipf_obj <- list(HHINC = ipf_obj_hhinc[[1]], RAC1P = ipf_obj_rac1p[[1]])
 supplementary_data <- list(moments = ipf_obj)
-
 ```
 As demonstration of how we cut our variables, we use a function called `align_pums`.  
 	
@@ -201,12 +193,10 @@ We are now ready to perform IPF-sampling and do so below.  We find that IPF matc
 ```{r, warnings = FALSE}
 if(!require(mipfp)) install.packages("mipfp")       
 library(mipfp)
-tartanville_syneco_ipf <- spewr(tartanville$pop_table, tartanville$shapefile,
+tartanville_syneco_ipf <- spew(tartanville$pop_table, tartanville$shapefile,
                                pums_h, tartanville$pums_p,
-                               supplementary_data = supplementary_data,
+                               marginals = supplementary_data$moments, 
                                sampling_method = "ipf")
-
-
 
 out <- summarize_syneco(tartanville_syneco_ipf,
                  vars_df = data.frame(var_name = c("HHINC_ipf", "RAC1P_ipf"),
@@ -214,13 +204,11 @@ out <- summarize_syneco(tartanville_syneco_ipf,
                                       var_type = c("cat", "cat"),
                                       stringsAsFactors = FALSE), verbose = TRUE)
 
-## to compare
 sum(abs(as.matrix(out$HHINC_ipf[, -1]) - as.matrix(df[-2, -1])))
 sum(abs(as.matrix(out$RAC1P_ipf[, -1]) - as.matrix(df2[-2, -1])))
 ```
 We see we almost match almost perfectly on race and very closely on house hold income.
 
-	
 # Assigning environments
 
 ## General assignment function
@@ -230,8 +218,9 @@ We can also assign environments to the population of Tartanville.  Environments 
 **Ex.**  We assign the children between ages 5 and 18 in T1 to one of the two schools in Tartanville.
 ```{r}
 knitr::kable(tartanville$environments)
-tartanville_syneco <- tartanville_syneco <- spewr(tartanville$pop_table, tartanville$shapefile,
-                                                  tartanville$pums_h, tartanville$pums_p)
+tartanville_syneco <- spew(tartanville$pop_table, tartanville$shapefile,
+                              tartanville$pums_h, tartanville$pums_p)
+
 plot_syneco(tartanville, tartanville_syneco,
             region_name = "Tartanville", pretty = TRUE)	
 ```

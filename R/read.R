@@ -1,16 +1,17 @@
-#' Read in the SPEW input data
+#' Read SPEW input data from files 
 #' 
-#' Based on the hierarchy on the Olympus Supercomputer
+#' Based on directory structure for input data on the Olympus computing cluster 
 #' 
 #' @param base_dir character vector specifying the ecosystem directory 
-#' @param folders list containing the path of each data sub directory 
-#' @param data_group character either "US", "ipums" or "none" which tells 
-#' read_data if the input data follows a particular format. Used mainly for 
-#' the pre-formatted data-types we have on our Olympus
-#' @param vars list with two components: household and person. This specifies 
-#' which variables to include in the corresponding PUMS data-set  
-#' @return list in which each element contains one of our standardized 
-#' data sources
+#' @param folders list containing the subdirectory file-path containing where each 
+#' type of data is located 
+#' @param data_group character either "US", "ipums" or "none": Gives the format 
+#' that read_data expects. 
+#' @param vars list with household and person variables specifying which PUMS 
+#' variables to use 
+#' 
+#' @return list: Each elements contains a standardized data-source
+#' 
 read_data <- function(base_dir, 
                       folders = list(pop_table = NULL, 
                                      pums = NULL, 
@@ -30,7 +31,7 @@ read_data <- function(base_dir,
   # Point the input directory to the input/ portion of the base directory
   input_dir <- file.path(base_dir, "input")
   
-  # Read in each source one by one -------------------------
+  # Read required data sources ---
   pop_table <- read_pop_table(input_dir, folders, data_group)
   pop_table <- standardize_pop_table(pop_table, data_group)
   
@@ -39,7 +40,8 @@ read_data <- function(base_dir,
   
   shapefiles <- read_shapefiles(input_dir, folders, data_group)
   shapefiles <- standardize_shapefiles(shapefiles, data_group)
-  
+      
+  # Read supplementary data sources (if avaialable) ---
   if (!is.null(folders$lookup)) {
     lookup <- read_lookup(input_dir, folders, data_group)
     lookup <- standardize_lookup(lookup, data_group)
@@ -129,7 +131,6 @@ read_pop_table <- function(input_dir, folders, data_group) {
     
   } else if (data_group == "none") {
     pop_table <- read.csv(folders$pop_table, stringsAsFactors = FALSE, colClasses = "character")
-    pop_table$n_house <- as.numeric(pop_table$n_house)
     return(pop_table)
   }
   
@@ -179,7 +180,7 @@ standardize_pop_table <- function(pop_table, data_group){
   return(pop_table)
 }
 
-# Read PUMS data --------------------
+# Read PUMS data ---
 read_pums <- function(input_dir, folders, data_group, vars = list(household = NA, person = NA)) {
   pums_dir <- file.path(input_dir, folders$pums)
   pums_files <- list.files(pums_dir)
@@ -204,12 +205,7 @@ read_pums <- function(input_dir, folders, data_group, vars = list(household = NA
     stopifnot(length(pums_files) == 1)
     
     # Use the unique household ID's for household pums  
-    pums_p <- fread(pums_files, stringsAsFactors = FALSE)
-    
-    # Verify none of the classes are integer64
-#     int64_inds <- which(unlist(lapply(pums_p, class)) == "integer64")
-#     pums_p[, int64_inds] <- as.character(pums_p[, int64_inds])    
-    
+    pums_p <- data.table::fread(pums_files, stringsAsFactors = FALSE)
     unique_hh_indices <- !duplicated(pums_p$SERIAL)
     pums_h <- pums_p[unique_hh_indices, ]
   
