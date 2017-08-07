@@ -2,7 +2,6 @@ context("Location Sampling")
 
 test_that("Single and Multiple Polygons", {
   library(sp)
-  library(rgeos)
   data(sd_data)
   
   multiple_polygons <- sample_locations(method = "uniform", 
@@ -21,7 +20,6 @@ test_that("Single and Multiple Polygons", {
 
 test_that("IPUMS Shapefiles work", {
   library(sp)
-  library(rgeos)
   data(uruguay_format)
   
   num_samples <- 100
@@ -32,34 +30,73 @@ test_that("IPUMS Shapefiles work", {
   }
 })
 
-test_that("Uniform, Road, Large and Small", {
+
+test_that("Road sampling works", {
+  skip_if_not_installed("rgeos")
+  library(rgeos)
+  library(sp)
+  library(maptools)
+
+  data(delaware)
+  row <- 2
+  pid <- delaware$pop_table$place_id[row]
+  number_houses <- delaware$pop_table$n_house[row]
+  
+  data_path <- system.file("extdata/10/input", package = "spew")
+  roads_path <- paste0(data_path, "/roads/natstat/2010/county")
+  roads_shapefile <- list(regions = delaware$shapefiles$shapefile, roads = roads_path)
+  
+  # Sample from the roads shapefile
+  road_locs <- sample_locations(method = "roads",
+                                place_id = pid,
+                                n_house = number_houses,
+                                shapefile = roads_shapefile,
+                                noise = .01)
+  # Sample Uniformly 
+  uniform_locs <- sample_locations(method = "uniform",
+                                        place_id = pid,
+                                        n_house = number_houses,
+                                        shapefile = delaware$shapefiles$shapefile, 
+                                        noise = .01)
+  
+  expect_true(length(uniform_locs) == length(road_locs))
+  
+  
+  # Verify sampling from roads works with a small number of houses
+  small_number_houses <- 10
+  small_road_locs <- sample_locations(method = "roads",
+                                      place_id = pid,
+                                      n_house = small_number_houses,
+                                      shapefile = roads_shapefile,
+                                      noise = .01)
+  expect_true(length(small_road_locs) == small_number_houses)
+  
+  # Verify the Spatial Points class works for road sampling 
+  road_pts <- sp::spsample(roads_shapefile[[1]], n = 100, type = "random")
+  road_pts_locs <- samp_roads(100, road_pts, .01)
+  expect_true(class(road_pts_locs) == "SpatialPoints")
+  
+  road_pts2 <- road_pts[1:2, ]
+  road_pts_locs2 <- samp_roads(100, road_pts2, .01)
+  expect_true(class(road_pts_locs) == "SpatialPoints")
+  expect_true(length(road_pts_locs) == length(road_pts_locs2))  
+})
+
+test_that("Uniform Large Households", {
   # Load in the South Dakota data
   library(maptools)
-  library(rgeos)
   library(sp)
   data(sd_data)
 
   # Verify the Uniform sampling methodology still works
   number_houses <- 1000
   pid <- "46135966302"
-  sid <- 107
+
   uniform_locations <- sample_locations(method = "uniform",
                                         place_id = pid,
                                         n_house = number_houses,
                                         shapefile = sd_data$shapefiles$shapefile, 
                                         noise = .01)
-  
-  # Set up the roads shapefile
-  spew_dir <- system.file("", package = "spew")
-  roads_path <- paste0(spew_dir, "/data-raw/46/tiger/roads_46")
-  roads_shapefile <- list(regions = sd_data$shapefiles$shapefile, roads = roads_path)
-  
-  # Sample from the roads shapefile
-  road_locs <- sample_locations(method = "roads",
-                               place_id = pid,
-                               n_house = number_houses,
-                               shapefile = roads_shapefile,
-                               noise = .01)
 
   # Verify uniform sampling works for a large number of points 
   large_num_houses <- 3000000
@@ -71,26 +108,5 @@ test_that("Uniform, Road, Large and Small", {
   
   # Verify the results are the correct class and equal length
   expect_true(class(uniform_locations) == "SpatialPoints")
-  expect_true(class(road_locs) == "SpatialPoints")
-  expect_true(length(uniform_locations) == length(road_locs))
   expect_true(length(uniform_locations_large) == large_num_houses)
-  
-  # Verify sampling from roads works with a small number of houses
-  small_number_houses <- 10
-  small_road_locs <- sample_locations(method = "roads",
-                                place_id = pid,
-                                n_house = small_number_houses,
-                                shapefile = roads_shapefile,
-                                noise = .01)
-  expect_true(length(small_road_locs) == small_number_houses)
-  
-  # Verify the Spatial Points class works for road sampling 
-  road_pts <- sp::spsample(roads_shapefile[[1]], n = 100, type = "random")
-  road_pts_locs <- samp_roads(100, road_pts, .01)
-  expect_true(class(road_pts_locs) == "SpatialPoints")
-  
-  road_pts2 <- road_pts[1:2, ]
-  road_pts_locs2 <- samp_roads(100, road_pts2, .01)
-  expect_true(class(road_pts_locs) == "SpatialPoints")
-  expect_true(length(road_pts_locs) == length(road_pts_locs2))
 })

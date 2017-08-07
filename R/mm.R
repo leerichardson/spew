@@ -9,12 +9,12 @@
 #' @param puma_id id indicating the current puma 
 #' @param place_id id indicating the current region
 #' 
-sample_mm <- function(n_house, pums_h, pums_p, mm_obj,
-                       puma_id = NULL, place_id = NULL) {
+sample_mm <- function(n_house, pums_h, pums_p, mm_obj, puma_id = NULL, place_id = NULL) {
+    if (!requireNamespace("quadprog", quietly = TRUE)) {
+      stop("quadprog needed for sample_mm to work.", call. = FALSE)
+    }  
   
-    if(n_house == 0){  # No households to sample
-        return(NULL)
-    }
+    if (n_house == 0) { return(NULL) }
   
     mom1_df <- mm_obj$moments_list$mom1
     if (sum(as.character(mom1_df$place_id) == place_id, na.rm = TRUE) < 1){ # there is no place_id  that matches the MM_OBJ
@@ -97,11 +97,13 @@ solve_mm_for_joint <- function(place_id, mm_row, pums, assumption, meq = 2){
     dvec <- rep(0, N)
     b <- c(1, M, rep(0, N))
     meq <- 2
-    p <- tryCatch({solve.QP(Q, dvec, A, b, meq)$solution}, error = function(e){
+    
+    p <- tryCatch({quadprog::solve.QP(Q, dvec, A, b, meq)$solution}, error = function(e){
         print(e)
         p <- rep(1, length(nrow(tab)))
         return(p)
     })
+    
     x <- extrapolate_probs_to_pums_joint(p, n, pums, var_names, tab)
     return(x)
     }
@@ -178,7 +180,7 @@ extrapolate_probs_to_pums_joint <- function(p, n, pums, var_names, tab){
     ## Make a better join because it is not matching exactly.  Match on characters??
     x <- ifelse(is.na(x), 0, x)
     x <- x / sum(x)
-    print(paste("We are sampling from, ", round(sum(x > 0)/length(x) * 100, 2), "% unique PUMS records"))
+    
     return(x)
 }
 

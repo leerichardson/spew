@@ -2,25 +2,20 @@ context("Format functions")
 
 test_that("United States formatting", { 
   # Write all format output to a file 
-  sink("format_output.txt")
-  
   data(sd_data)
   
   # Check to make sure the merge is of the pop_table 
   # and looking table works and is using the same class 
   sd_data$pop_table <- sd_data$pop_table[, 1:2]  
-  fd <- format_data(data_list = sd_data, data_group = "US")
+  fd <- format_data(data_list = sd_data, data_group = "US", verbose = FALSE)
   merged_puma <- fd$pop_table$puma_id
   expect_equal(any(is.na(merged_puma)), FALSE)
-  
-  sink()
-  unlink("format_output.txt")
 }) 
 
 test_that("ipums formatting", { 
-  # Write all format output to a file 
-  sink("format_output.txt")
+  skip_if_not_installed("stringdist")
   
+  # Write all format output to a file 
   data(uruguay_data)
   library(stringdist)
   
@@ -34,7 +29,7 @@ test_that("ipums formatting", {
   shape_indices <- get_shapefile_indices(shape_names, count_names)
 
   # Make sure the formatted data is doing the right thing 
-  uruguay_format <- format_data(data_list = uruguay_data, data_group = "ipums")
+  uruguay_format <- format_data(data_list = uruguay_data, data_group = "ipums", verbose = FALSE)
   expect_equal(nrow(uruguay_format$pop_table) == 19, TRUE)
   expect_equal(all(uruguay_format$pop_table$place_id == uruguay_format$pop_table$place_id), TRUE)  
 
@@ -45,14 +40,6 @@ test_that("ipums formatting", {
   expect_equal(new_counts[1] > pseudo_counts[1], TRUE)
   
   # Verify that we can combine counts and remove rows 
-  data(uruguay_format)
-  pt_combined <- combine_counts(pop_table = uruguay_format$pop_table, "Rocha", "Soriano")
-  expect_equal(nrow(pt_combined) == 18, TRUE)  
-  expect_equal("Soriano" %in% pt_combined$place_id, FALSE)
-
   pt_remove <- remove_count(pop_table = uruguay_format$pop_table, place = "Rocha")
   expect_equal(nrow(pt_remove) == 18, TRUE)
-  
-  sink()
-  unlink("format_output.txt")
 })

@@ -56,15 +56,14 @@ sample_locations_uniform <- function(place_id, n_house, shapefile, noise = .001,
     region <- which(shapefile$place_id == place_id)
   }
   
-  # Subset the shapefile to the polygon 
-  # specified by the place_id argument 
-    slots <- methods::slot(shapefile, "polygons")
-    if(length(region) <= 0){
-        print(shapefile_id)
-        print(place_id)
-        print(head(shapefile$place_id))
-        stop()
-    }
+  # Subset the shapefile to the polygon specified by the place_id argument 
+  slots <- methods::slot(shapefile, "polygons")
+  if(length(region) <= 0){
+      print(shapefile_id)
+      print(place_id)
+      print(head(shapefile$place_id))
+      stop()
+  }
   poly <- slots[[region]]
   
   # Remove holes from polygon if any are found 
@@ -100,6 +99,7 @@ sample_locations_uniform <- function(place_id, n_house, shapefile, noise = .001,
 #' @note Borrowed the idea from the wild1 package, which 
 #' I wasn't able to load for R 3.2.2, so I found the source code here:
 #' https://github.com/cran/wild1/blob/master/R/remove.holes.r
+#' 
 #' @return polygon without and Polygons with holes 
 remove_holes <- function(polygon) {
   is_hole <- lapply(polygon@Polygons, function(p) p@hole)
@@ -121,10 +121,14 @@ remove_holes <- function(polygon) {
 #' 
 sample_locations_roads <- function(place_id, n_house, shapefile, noise = .0001, shapefile_id) {
   stopifnot(any(names(shapefile) == "roads"))
-  ## Get the intersection of the boundary shapefile 
-  ## and the roads shapefile
-
+  
+  if (!requireNamespace("rgeos", quietly = TRUE)) {
+    stop("rgeos needed for sample_locations_roads to work.", call. = FALSE)
+  }
+  
+  # Get the intersection of the boundary shapefile  and the roads shapefile
   new_shp <- subset_shapes_roads(place_id, shapefile)
+  
   # If the new shape is NULL, sample uniform instead of roads  
   if (is.null(new_shp)) {
     warning("Can't sample from roads, sampling uniformly")
@@ -159,14 +163,15 @@ subset_shapes_roads <- function(place_id, shapefile) {
   # on Olympus because loading all the roads at once is too memory intensive, 
   # so we replace the SpatialLinesDataFrame with a file-path
   if (class(shapefile$roads) == "character") { 
-      # Extract the place-county ID. If it's not there, then 
-      # return NULL, which triggers uniform sampling
-      place_county <- substr(place_id, 1, 5)
+    # Extract the place-county ID. If it's not there, then 
+    # return NULL, which triggers uniform sampling
+    place_county <- substr(place_id, 1, 5)
 
-      # Read in the specific roads shapefile. If there's no 
-      # corresponding file for this county, return NULL 
-      # which will call the uniform sampling instead 
-      roads_sub <- read_roads(path_to_roads = shapefile$roads, road_id = place_county)
+    # Read in the specific roads shapefile. If there's no 
+    # corresponding file for this county, return NULL 
+    # which will call the uniform sampling instead 
+    roads_sub <- read_roads(path_to_roads = shapefile$roads, road_id = place_county)
+      
   } else{ # otherwise we use the roads provided
       roads_sub <- shapefile$roads
   }
