@@ -179,14 +179,20 @@ subset_shapes_roads <- function(place_id, shapefile) {
   if (is.null(roads_sub)) {
     return(NULL)
   }
+  ## We need to have both sets of shapefiles to have
+  ## the same CRS projections
+  proj4string(roads_sub) <-  proj4string(poly) 
   
-  # Subset the potential roads, intersect with the 
-  # polygon, verify it's the right class than return the 
-  # final intersected shapefile 
+  ## Subset the potential roads, intersect with the 
+  ## polygon, verify it's the right class than return the 
+  ## final intersected shapefile 
   potential_roads <- roads_sub[poly, ]
   new_shp <- rgeos::gIntersection(potential_roads, poly, drop_lower_td = TRUE)
-  stopifnot(class(new_shp) == "SpatialLines" | class(new_shp) == "SpatialPoints")
   
+
+  
+  stopifnot(class(new_shp) == "SpatialLines" | class(new_shp) == "SpatialPoints")
+    
   return(new_shp)
 }
 

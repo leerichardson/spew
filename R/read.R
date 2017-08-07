@@ -301,7 +301,8 @@ read_shapefiles <- function(input_dir, folders, data_group) {
                        !grepl(pattern = "\\.xml", x = shapefiles_files)) 
     filename <- shapefiles_files[ind_shp]
     full_path <- file.path(input_dir, folders$shapefiles, "/", filename)
-    shapefile <- maptools::readShapeSpatial(full_path)
+    ## Change into compatibility with readOGR instead of readShapeSpatial
+    shapefile <- read_shapespatial_to_ogr(full_path)
       
     # If road_data, read in its file-path. Otherwise, return shapefile 
     if (!is.null(folders$roads)) {
@@ -327,14 +328,33 @@ read_shapefiles <- function(input_dir, folders, data_group) {
       stopifnot(length(shp_indices) == 1)
       filename <- shapefiles[shp_indices]
     }
-    shapefile <- maptools::readShapeSpatial(filename)
+    shapefile <- read_shapespatial_to_ogr(filename)
     return(shapefile)
     
   } else if (data_group == "none") {
-    shapefile <- maptools::readShapeSpatial(folders$shapefiles)
+    shapefile <- read_shapespatial_to_ogr(folders$shapefiles)
     return(shapefile)
   }
 }
+
+
+#' Read in shapefile using readOGR
+#'
+#' @param full_path entire path to shapefile ending in .shp, i.e. what you would pass to readShapeSpatial
+#' @return the shapefile, class SpatialPolygonsDataFrame
+#' @note This is to keep up-to-date and use rgdal:readOGR instead of the now unsupported maptools::readShapeSpatial
+read_shapespatial_to_ogr <- function(full_path){
+    ## readOGR does not recognize tilde expansion, and so we must expand it
+    full_path <- path.expand(full_path)
+    ## Extract the basename
+    base_name <- gsub(".shp", "", basename(full_path))
+    ## Extract the folder
+    folder <- gsub(paste0("/", basename(full_path), "$"), "", full_path)
+    shp <- rgdal::readOGR(dsn=folder, layer=base_name,
+                          verbose = FALSE)
+    return(shp)
+}
+
 
 #  Standardize the shapefiles 
 standardize_shapefiles <- function(shapefiles, data_group) {
@@ -439,6 +459,7 @@ read_workplaces <- function(input_dir, folders, data_group) {
 #' @param path_to_roads full path to the directory of where 
 #' the roads are stored, the directory should have zip files that 
 #' have been unzipped for each county
+#' @param road_id ID of the tract the roads are in
 #' 
 #' @return an appended SpatialDataFrame object with all the roads in the state
 read_roads <- function(path_to_roads, road_id) {
@@ -458,9 +479,7 @@ read_roads <- function(path_to_roads, road_id) {
     }
     
     path_to_road <- file.path(path_to_roads, road_shapes[road])
-    road_shp <- maptools::readShapeSpatial(path_to_road)
-    # road_shp <- rgdal::readOGR(dsn = path_to_road) 
-    # add above line to remove warnings- need to debug if it is going to work 
+    road_shp <- read_shapespatial_to_ogr(path_to_road)
     
     # Take out the interstates (US Specific)
     interstate_inds <- which(as.character(road_shp@data$RTTYP) == "I")

@@ -3,6 +3,7 @@ context("Read Functions")
 test_that("United States functions", {
   library(maptools)
   library(rgeos)
+  library(rgdal)
   
   # Make sure we are using the correct data-raw directory 
   # as opposed to the test/testthat one within the package 
@@ -13,6 +14,7 @@ test_that("United States functions", {
     skip("Skipping: Can't find Delaware Data!")
   }
   
+  
   # Set the new delaware folders
   delaware_folders <- list(pop_table = "counts/natstat/2010/tract", 
                            pums = "pums/natstat/2013/puma", 
@@ -22,6 +24,13 @@ test_that("United States functions", {
                            lookup = "lookup/natstat/2010/tract", 
                            workplaces = "workplaces/natstat/2009/county", 
                            marginals = "marginals/natstat/2014/tract")
+
+  ## Test the read_shapespatial_to_ogr function
+
+  files <- list.files(file.path(data_path, delaware_folders$shapefiles))
+  file <- grep(".shp$", files, value = TRUE)
+  shp <- read_shapespatial_to_ogr(file.path(data_path, delaware_folders$shapefiles, file))
+  expect_true(as.character(class(shp)) == "SpatialPolygonsDataFrame")
 
   # Pop Table ---
   delaware_poptable <- read_pop_table(data_path, 
