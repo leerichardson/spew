@@ -8,27 +8,23 @@
 #' @param k number between 0 and 1, weight of orginal variables 
 #' @param puma_id id indicating the current puma 
 #' @param place_id id indicating the current region
-#' @param do_subset_pums logical.  When we do not need to subset the pums
+#' 
 sample_ipf <- function(n_house, pums_h, pums_p, marginals, alpha = 0, k = .001, 
-                       puma_id = NULL, place_id = NULL, do_subset_pums = TRUE) {
-                                        # Step 1: Align PUMS with Marginals
-
-    if(do_subset_pums){
-        pums <- subset_pums(pums_h = pums_h, pums_p = pums_p, marginals = marginals, puma_id = puma_id)
-    } else {
-        pums <- pums_h
+                       puma_id = NULL, place_id = NULL) {
+    if (!requireNamespace("mipfp", quietly = TRUE)) {
+      stop("mipfp package needed for sample_ipf function to work.", call. = FALSE)
     }
+  
+    # Step 1: Align PUMS with Marginals
+    pums <- subset_pums(pums_h = pums_h, pums_p = pums_p, marginals = marginals, puma_id = puma_id)
     pums <- align_pums(pums, marginals)
 
-
-  # Step 2: Fill in the contingency table
+    # Step 2: Fill in the contingency table
     table <- fill_cont_table(pums = pums, marginals = marginals, place_id = place_id, n_house = n_house)
-
-                                        # Write out the contingency table HERE.
-  
-  # Step 3: Sample with contingency table weights 
-  households <- sample_with_cont(pums = pums, table = table, alpha = alpha, 
-                                 k = k, marginals = marginals)
+    # Write out the contingency table HERE.
+    
+    # Step 3: Sample with contingency table weights 
+    households <- sample_with_cont(pums = pums, table = table, alpha = alpha, k = k, marginals = marginals)
   
   return(households)
 }
@@ -306,13 +302,13 @@ assign_weights <- function(pums, table, alpha, k, marginals) {
 #' 
 #' @param table_row 
 calc_dists <- function(pums, table_row, alpha, k, marginals) {
-                                        # Get the ordinal and categorical variable names
-
+  # Get the ordinal and categorical variable names
   var_types <- lapply(marginals, function(x) x[["type"]])
   ord_vars <- names(which(var_types == "ord"))
   cat_vars <- names(which(var_types == "cat"))
-    ord_df <- 1
-   cat_df <- 1
+  ord_df <- 1
+  cat_df <- 1
+   
   # Get ordinal distances 
   if (length(ord_vars) > 0) {
     ord_df <- sapply(1:length(ord_vars), get_ord_dists, ord_vars, table_row, pums, alpha, k)
@@ -331,7 +327,6 @@ calc_dists <- function(pums, table_row, alpha, k, marginals) {
 }
 
 get_ord_dists <- function(ind, ord_vars, table_row, pums, alpha, k) {
-
   # Extract the orginal variable from pums 
   ord_var_name <- paste0(ord_vars[ind], "_marg")  
   pums_var <- pums[, ord_var_name]
@@ -363,4 +358,3 @@ get_cat_dists <- function(ind, cat_vars, table_row, pums, alpha, k) {
   
   return(dist)
 }
-

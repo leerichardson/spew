@@ -4,12 +4,14 @@
 #' the read_data function 
 #' @param data_group character vector indiciating which group 
 #' the data is located in 
+#' @param verbose whether to print out the timings 
+#' 
 #' @return data_list list with an updated pop_table element which 
 #' indicates the places in which we will generate synthetic ecosystems.
 #' The table should include three columns: the place_id, number of households 
 #' to sample, and the puma id.  Note the the place_id should correspond to 
 #' the place_id from the shapefile 
-format_data <- function(data_list, data_group) {
+format_data <- function(data_list, data_group, verbose = TRUE) {
   format_start_time <- Sys.time()
   
   # Assert that we have all the REQUIRED (shapefile, pums, counts) elements 
@@ -21,12 +23,12 @@ format_data <- function(data_list, data_group) {
   if (data_group == "US") {
     # Make sure the place_id is the same type for merging 
     stopifnot(class(data_list$pop_table$place_id) == class(data_list$lookup$place_id))    
-      
+    
     # Pull out a vector of the poptable IDs and Shapefile IDs
     new_poptable <- plyr::join(data_list$pop_table, data_list$lookup,
-                                 by = "place_id", type = "left")
+                               by = "place_id", type = "left")
     data_list$pop_table <- new_poptable
-      
+    
   } else if (data_group == "ipums") {
     # Pull out the names coming from the shapefile and counts 
     shapefile_names <- data_list$shapefiles$place_id
@@ -46,11 +48,11 @@ format_data <- function(data_list, data_group) {
     
     # Update the PUMA_ID's 
     puma_ids <- as.numeric(as.character(data_list$shapefiles$puma_id))  
-  
+    
     # Create a revised pop-table and replace the old on in the data-list 
     new_poptable <- data.frame(place_id = shapefile_names[shapefile_indices], 
-                                n_house = new_nhouse[count_indices], 
-                                puma_id = puma_ids[shapefile_indices])
+                               n_house = new_nhouse[count_indices], 
+                               puma_id = puma_ids[shapefile_indices])
     new_poptable$place_id <- as.character(new_poptable$place_id)
     
     # Assert that we have only numeric and character classes 
@@ -70,12 +72,12 @@ format_data <- function(data_list, data_group) {
     check_place_ids(pop_table_places, shapefile_places)
     check_puma_ids(pop_table_pumas, pums_pumas)
   }
-
+  
   # Print out the length of time it takes for format to run
   format_time <- difftime(Sys.time(), format_start_time, units = "secs")
   format_time <- as.numeric(round(format_time, digits = 2))  
-  format_time_statement <- paste0("Format runs in: ", format_time)
-  print(format_time_statement)
+  format_time_statement <- paste0("Format runs in: ", format_time) 
+  if (verbose) { print(format_time_statement) }
   
   return(data_list)
 }
@@ -104,8 +106,11 @@ get_level <- function(shapefile_names, pop_table) {
 #' @return numeric vector indicating the appropriate indices for 
 #' shapefiles which correspond to the count_names 
 get_shapefile_indices <- function(shapefile_names, count_names) {
-  # Match the shapefile names against the count names. And make sure 
-  # that both everything is matched and that 
+  if (!requireNamespace("stringdist", quietly = TRUE)) {
+    stop("stringdist needed for function 'get_shapefile_indices' to work.", call. = FALSE)
+  }
+  
+  # Match the shapefile names against the count names
   shapefile_indices <- stringdist::amatch(count_names, shapefile_names, method = "jw", maxDist = .3)
   
   # Make sure the shapefile indices are unique, have no missing
@@ -142,7 +147,7 @@ replace_word <- function(word, replace, names) {
   names[index] <- replace
   return(names)
 }
-  
+
 #' Remove excess words
 #' 
 #' @param word character of the word you want to replace 
@@ -171,24 +176,6 @@ allocate_count <- function(counts, count_id) {
   return(new_counts)
 }
 
-#' Combine multiple rows of a pop_table into one and rename the aggregated row
-#'
-#' @param pop_table dataframe to update
-#' @param places character vector of places to combine together
-#' @return pop_table a data-frame with the places' counts combined together, and renamed by new_name
-
-combine_many_counts <- function(pop_table, places, new_name){
-    place1 <- places[1]
-    if (length(places) == 1) return(pop_table)
-    for( place in places[-1] ){
-        print(place)
-        pop_table <- spew:::combine_counts(pop_table, place1, place)
-    }
-    pop_table[pop_table$place_id == place1,]$place_id <- new_name
-    return(pop_table)
-    
-}
-
 #' Combine two rows of a pop_table into one 
 #' 
 #' @param pop_table dataframe to update 
@@ -200,7 +187,6 @@ combine_many_counts <- function(pop_table, places, new_name){
 #' @return pop_table a data-frame with the place2 counts 
 #' added to place1, and place2 removed from the pop_table 
 combine_counts <- function(pop_table, place1, place2) {
-  
   place1_index <- which(pop_table$place_id == place1)
   place2_index <- which(pop_table$place_id == place2)
   
@@ -209,7 +195,7 @@ combine_counts <- function(pop_table, place1, place2) {
   
   pop_table[place1_index, "n_house"] <- place1_counts + place2_counts
   pop_table <- pop_table[-place2_index, ]
-    
+  
   return(pop_table)
 }
 
@@ -225,84 +211,4 @@ remove_count <- function(pop_table, place) {
   pop_table <- pop_table[-place_index, ]
   return(pop_table)
 }
-
-
-#' Remove extraneous words from place names 
-#' 
-#' @param names character vector of names   
-#' @return names a character vector of updated names  
-remove_excess_words <- function(names) {
-  # Specific fix for a Peru province 
-  if (any(names == "Provincia de Lima")) {
-    index <- which(names == "Provincia de Lima")
-    names[index] <- "Lima Province"
-  } 
-  
-  if (any(names == "Distrito Federal")) {
-    index <- which(names == "Distrito Federal")
-    names[index] <- "Distrito Capital"
-  }
-  
-  if (any(names == "Ciudad de Buenos Aires")) {
-    index <- which(names == "Ciudad de Buenos Aires")
-    names[index] <- "buenosairescuidad"
-  }
-
-  if (any(names == "Ciudad Autonoma de Buenos Aires")) {
-    index <- which(names == "Ciudad Autonoma de Buenos Aires")
-    names[index] <- "buenosairescuidad"
-  }
-
-  if (any(names == "Bío-Bío")) {
-    index <- which(names == "Bío-Bío")
-    names[index] <- "biobio"
-  }
-  
-  if (any(names == "Region del Bio-Bio (VIII)")) {
-    index <- which(names == "Region del Bio-Bio (VIII)")
-    names[index] <- "biobio"
-  }
-  
-  # Removing titles before the various 
-  # south american countries 
-  names <- gsub("Departamento del", "", names)
-  names <- gsub("Departamento de", "", names)
-  names <- gsub("Departamento", "", names)
-  names <- gsub("Ciudad de", "", names)
-
-  names <- gsub("Provincia Constitutional del", "", names)
-  names <- gsub("Provincia del", "", names) 
-  names <- gsub("Provincia de", "", names) 
-  
-  names <- gsub("Region de La", "", names)
-  names <- gsub("Region del", "", names)
-  names <- gsub("Region de", "", names)
-  
-  names <- gsub("Estado", "", names)
-  
-  # Par paruguay, roman numericls separated by -. Removing 
-  # everything before the - 
-  names <- gsub(".*\\-","", names)
-  
-  # Anything in between paranthesis (specifically for Chile)
-  names <- gsub(" *\\(.*?\\) *", "", names)
-  
-  return(names)
-}
-
-#' Brute force a shapefile into a 1-1 pop table
-#'
-#' Take the total population and divide it by the number of regions
-#' @param total total number of households in the coutry
-#' @param shapefile_names names exactly corresponding to shapefile_names
-#' @return data frame that matches pop_table and shapefile names exactly, 
-#' splitting the population evenly
-force_pop <- function(pop_table, shapefile_names){
-    total <- pop_table$n_house[pop_table$place_id == "total"]
-    if(class(total) %in% c("character", factor)){
-        total <- gsub("[^0-9]+", "", total)
-    }
-    total <- as.numeric(as.character(total))
-    pop_table <- data.frame(place_id = shapefile_names, n_house = floor(total/length(shapefile_names)), level="total")
-    return(pop_table)
-}
+# 

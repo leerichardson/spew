@@ -2,6 +2,7 @@ context("Sampling Methods")
 
 test_that("Moment Matching", {
   # Moment Matching
+  skip_if_not_installed("quadprog")
   library(quadprog)
   library(plyr)
   data(sd_data)

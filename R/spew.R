@@ -101,7 +101,9 @@ spew <- function(pop_table, shapefile, pums_h, pums_p,
   
   # Write out both the pop-table and environments ---
   if (output_type == "write") {
-    if (base_dir == NULL) { stop("If output_type = 'write', must specify output directory in base_dir") }
+    if (is.null(base_dir)) { 
+      stop("If output_type = 'write', must specify output directory in base_dir") 
+    }
   
     output_dir <- file.path(base_dir, "output")
     if (!is.null(output_dir)) { dir.create(output_dir, recursive = TRUE) }
@@ -178,6 +180,8 @@ spew <- function(pop_table, shapefile, pums_h, pums_p,
 }
   
 #' Run SPEW Sequentially 
+#' 
+#' Internal function, only called by the main spew function
 #' 
 spew_seq <- function(num_places, 
                      pop_table, shapefile, pums_h, pums_p, 
@@ -295,8 +299,7 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p,
                                             pums_p = pums_p, 
                                             marginals = marginals,
                                             puma_id = puma_id, 
-                                            place_id = place_id,
-                                            do_subset_pums = do_subset_pums)
+                                            place_id = place_id)
     total_hh <- total_hh + nrow(sampled_households)
 
     # Sample Household Locations ---
@@ -414,7 +417,11 @@ write_data <- function(df, place_id, puma_id, type, output_dir, append = FALSE) 
   filename <- file.path(directory, paste0(type, "_", as.character(place_id), ".csv"))
   filename <- remove_excess(filename)
   
-  data.table::fwrite(df, filename, sep = ",", qmethod = "double", append = append)
+  if (!requireNamespace("data.table", quietly = TRUE)) {
+    write.csv(df, filename, append = append)
+  } else {
+    data.table::fwrite(df, filename, sep = ",", qmethod = "double", append = append)
+  }
   
   return(TRUE)
 }
@@ -432,6 +439,7 @@ write_pop_table <- function(pop_table, output_dir) {
   filename <- file.path(output_dir, "final_pop_table.csv")
   filename <- remove_excess(filename)
   write.csv(pop_table, filename)
+  
   return(TRUE)
 }
 
@@ -497,33 +505,4 @@ print_region_list <- function(region_list) {
   }
   
   return(TRUE)
-}
-
-#' Partition the poptable into chunks 
-#' 
-#' @param total size numeric indicating the size of 
-#' the pop table 
-#' @param partition_size indicating the size of chunks 
-#' to partition the pop table into 
-#' 
-#' @return 
-partition_pt <- function(total_size, partition_size) {
-  # Get the total number of partitions, and the the 
-  # remainder after this split for the final partition
-  number_partitions <- floor(total_size / partition_size)
-  final_partition_size <- total_size %% partition_size
-  partitions <- seq(1, (number_partitions * (partition_size)) + 1, by = partition_size)
-  
-  # If it's not ab equal split, add the final remainder. If
-  # it is, then make sure the final element is the same 
-  # as the total size. 
-  n <- length(partitions)
-  if (final_partition_size != 0) {
-    partitions <- c(partitions, partitions[n] + final_partition_size - 1)
-  } else {
-    partitions[n] <- total_size
-  }
-  stopifnot(partitions[length(partitions)] == total_size)
-  
-  return(partitions)
 }

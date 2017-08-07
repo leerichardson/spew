@@ -21,7 +21,8 @@ read_data <- function(base_dir,
                                      lookup = NULL, 
                                      workplaces = NULL), 
                       data_group = "US", 
-                      vars = list(household = NA, person = NA)) {
+                      vars = list(household = NA, person = NA), 
+                      verbose = FALSE) {
   read_start_time <- Sys.time()
   
   if (data_group != "US" & data_group != "ipums" & data_group != "none") {
@@ -77,7 +78,7 @@ read_data <- function(base_dir,
   read_time <- difftime(Sys.time(), read_start_time, units = "secs")
   read_time <- round(read_time, digits = 2)  
   read_time_statement <- paste0("Read runs in: ", read_time)
-  print(read_time_statement)
+  if (verbose) { print(read_time_statement) }
   
   return(list(pop_table = pop_table, 
               pums = pums, 
@@ -205,7 +206,12 @@ read_pums <- function(input_dir, folders, data_group, vars = list(household = NA
     stopifnot(length(pums_files) == 1)
     
     # Use the unique household ID's for household pums  
-    pums_p <- data.table::fread(pums_files, stringsAsFactors = FALSE)
+    if (!requireNamespace("data.table", quietly = TRUE)) {
+      pums_p <- read.csv(pums_files, stringsAsFactors = FALSE)
+    } else {
+      pums_p <- data.table::fread(pums_files, stringsAsFactors = FALSE)
+    }
+    
     unique_hh_indices <- !duplicated(pums_p$SERIAL)
     pums_h <- pums_p[unique_hh_indices, ]
   
@@ -366,14 +372,26 @@ read_schools <- function(input_dir, folders, data_group) {
     # Read in public and private school data-frames 
     public_file_index <- grep("public", school_files)
     public_file <- paste0(schools_path, school_files[public_file_index])
-    public_df <- data.table::fread(public_file, stringsAsFactors = FALSE, data.table = FALSE, 
-                          colClasses = c(StNo = "character", CoNo = "character", ID = "character"))
-      
+    
+    if (!requireNamespace("data.table", quietly = TRUE)) {
+      public_df <- read.csv(file = public_file, stringsAsFactors = FALSE, 
+                            colClasses = c(StNo = "character", CoNo = "character", ID = "character"))
+    } else {
+      public_df <- data.table::fread(public_file, stringsAsFactors = FALSE, data.table = FALSE, 
+                                     colClasses = c(StNo = "character", CoNo = "character", ID = "character"))
+    }
+    
     private_file_index <- grep("private", school_files)
     private_file <- paste0(schools_path, school_files[private_file_index])
-    private_df <- data.table::fread(private_file, stringsAsFactors = FALSE, data.table = FALSE,
-                           colClasses = c(StNo = "character", CoNo = "character", ID = "character"))
-
+    
+    if (!requireNamespace("data.table", quietly = TRUE)) {
+      private_df <- read.csv(private_file, stringsAsFactors = FALSE, 
+                            colClasses = c(StNo = "character", CoNo = "character", ID = "character"))
+    } else {
+      private_df <- data.table::fread(private_file, stringsAsFactors = FALSE, data.table = FALSE,
+                            colClasses = c(StNo = "character", CoNo = "character", ID = "character"))
+    }
+    
     # Combine the public and private schools into a list 
     schools <- list(public = public_df, private = private_df)
     return(schools)
@@ -421,6 +439,7 @@ read_workplaces <- function(input_dir, folders, data_group) {
 #' @param path_to_roads full path to the directory of where 
 #' the roads are stored, the directory should have zip files that 
 #' have been unzipped for each county
+#' 
 #' @return an appended SpatialDataFrame object with all the roads in the state
 read_roads <- function(path_to_roads, road_id) {
     # Get a vector of the roads .shp files 
@@ -440,13 +459,15 @@ read_roads <- function(path_to_roads, road_id) {
     
     path_to_road <- file.path(path_to_roads, road_shapes[road])
     road_shp <- maptools::readShapeSpatial(path_to_road)
-
-    # Take out the interstates
-    # US Specific
+    # road_shp <- rgdal::readOGR(dsn = path_to_road) 
+    # add above line to remove warnings- need to debug if it is going to work 
+    
+    # Take out the interstates (US Specific)
     interstate_inds <- which(as.character(road_shp@data$RTTYP) == "I")
     if (length(interstate_inds) > 0){
         road_shp <- road_shp[-interstate_inds,]
     }
+    
     return(road_shp)
 }
 
