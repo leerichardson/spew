@@ -11,6 +11,9 @@ readEnvUS(input_folder, type = "sch")
 
 \item{type}{either "sch" or "wpl" currently}
 }
+\value{
+data frame of schools or workplaces
+}
 \description{
 Read input data for environments for US
 }

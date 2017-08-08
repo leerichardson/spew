@@ -4,7 +4,7 @@
 #' @param places data frame with "longitude" and "latitude" and an "ID" column, perhaps a "capacity" column
 #' @param place_name string that will become the column name of the place
 #' @param method c("uniform", "capacity") The method on how we assign places.  The "uniform" argument  means that we do not consider capacity in assignments, only distance.  Conversely, "capacity" means we do consider capacity when assigning agents to places.  The default is "uniform". 
-#' @param dist_fxn  a function with args x1, y1, x2, y2 that returns a single number.  The default is Euclidean Distance $d((x1, y1), (x2,y2) = \sqrt{(x1-x2)^2 + (y1 - y2)^2}$.  The distance should satisfy the requirements of a metric.
+#' @param dist_fxn  a function with args x1, y1, x2, y2 that returns a single number.  The default is Euclidean Distance \eqn{d((x1, y1), (x2,y2) = \sqrt{(x1-x2)^2 + (y1 - y2)^2}}.  The distance should satisfy the requirements of a metric.
 #' @param cap_fxn a function with one argument, a single capacity.  This should be a monotone increasing function.  The default is cap_default.
 #' @export
 #' @return  data frame with column of place_name with the place_ids, e.g. assignments of the places to the agents.
@@ -167,4 +167,16 @@ get_weight_dists <- function(dist_mat, places, method="uniform", cap_fxn = cap_d
   weights <- weights/rowSums(weights)
   stopifnot(dim(weights) == c(m,n))
   return(weights)
+}
+
+
+#' Assign a place to a person
+#'
+#' @param people data frame of synthetic people produced by SPEW
+#' @param data_list of the data and identifying name
+#' @return column corresponding to the people of the place assignment
+assign_place <- function(people, data_list){
+    
+    col <- do.call(paste0("assign_", data_list$name), args=list(people=people, data_list$data))
+    return(col)
 }

@@ -2,10 +2,22 @@
 % Please edit documentation in R/stat_tests.R
 \name{assessSchUS}
 \alias{assessSchUS}
-\title{Assess the schools of the us against the agents}
+\title{Assess the schools of the US against the agents}
 \usage{
 assessSchUS(agents, schools_pub, schools_priv, distFun = haversine)
 }
+\arguments{
+\item{agents}{data frame of agents}
+
+\item{schools_pub}{data frame of public schools with long/lat locations}
+
+\item{schools_priv}{data frame of private schools with county location}
+
+\item{distFun}{distance function taking in x1, y1, x2, y2 as arguments}
+}
+\value{
+data.frame with columns my_dists, school_id
+}
 \description{
-Assess the schools of the us against the agents
+Assess the schools of the US against the agents
 }

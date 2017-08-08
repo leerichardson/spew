@@ -125,14 +125,3 @@ make_ipf_obj<- function(var_name, type="ord", bounds, category_name, output_file
 }
 
 
-
-#' Connect the synthetic ecosystems to the microdata
-#'
-#' @param syneco data frame of current syneco
-#' @param pums the microdata/PUMS we're adding characteristics from
-#' @param join_var either a string of length 1 with the name of the var to match or a string of length 2 with the first string corresponding to the ID in the syneco and the second from the PUMS
-#' @param vars_to_join character string of column names of the PUMS to add to the syneco
-#' @return A data frame of the syneco with the added characteristics from the microdata
-join_pums_to_syneco <- function(syneco, pums, join_var, vars_to_join){
-    ## TODO
-}

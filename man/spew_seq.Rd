@@ -9,5 +9,5 @@ spew_seq(num_places, pop_table, shapefile, pums_h, pums_p, schools, workplaces,
   locations_method, road_noise, timer, verbose)
 }
 \description{
-Run SPEW Sequentially
+Internal function, only called by the main spew function
 }

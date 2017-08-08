@@ -1,0 +1,237 @@
+---
+title: "Synthetic Ecosystem for `r library(spew); data(iso3);country = iso3$country_name[iso3$iso3 == tolower(commandArgs(TRUE)[2])]; toupper(country)`"
+subtitle: "SPEW: Synthetic Populations and Ecosystems of the World"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+---
+	
+<a href="http://stat.cmu.edu/~spew">
+<img src="images/SPEW.jpg" style="width:15%;position:absolute;top:0px;right:0px;" >
+</a>
+
+
+
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE, include = FALSE}
+#!/bin/env/Rscript
+args <- commandArgs(TRUE)
+input_dir <- args[1]
+input_dir <- paste0(input_dir, "/")
+## input_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/americas/south_america/pry"
+## input_dir <- "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/asia/southern_asia/ind"
+cur_dir <- input_dir
+library(spew)
+library(devtools)
+library(reshape2)
+data(iso3)
+country_name <- iso3$country_name[iso3$iso3 == tolower(basename(input_dir))]
+
+library(devtools)
+library(data.table)
+library(maptools)
+library(ggmap)
+library(ggplot2)
+library(RColorBrewer)
+#setwd(input_dir)
+# Params 
+output_dir <- input_dir
+region <- basename(input_dir)
+varsToSummarize = list(vars_hh = "base", vars_p = "base")
+sampSize =  10^4
+vars_hh <- NULL
+doPrint <- TRUE
+ipums_fs <- spew:::summarizeFileStructure(output_dir, doPrint)
+ipums_list <- spew:::summarize_ipums(output_dir, ipums_fs, doPrint = doPrint,
+	       sampSize = sampSize, readFun = data.table::fread)
+ipums_sum_list <- ipums_list
+hh_list <- ipums_list$hh_sum_list
+
+
+
+# Households summary
+hh_list <- ipums_list$hh_sum_list
+hh_sum_df <- do.call('rbind', lapply(hh_list, "[[", 1))
+hh_sum_df$Region <- toupper(hh_sum_df$region_id)
+df <- hh_sum_df[, c("Region", "nRecords")]
+tot_hh <- sum(hh_sum_df$nRecords)
+
+## RMD link
+rmd_link <- gsub("^/mnt/.*/spew_1.2.0/",   "", input_dir)
+## TODO:  make more generic for any version of SPEW
+
+# People  summary
+p_list <- ipums_list$p_sum_list
+p_sum_df <- do.call('rbind', lapply(p_list, "[[", 1))
+p_sum_df$Region <- toupper(p_sum_df$region_id)
+df <- p_sum_df[, c("Region", "nRecords")]
+tot <- sum(p_sum_df$nRecords)
+```
+
+
+## Basic Information
+
++ **Total Synthetic Persons:**  `r prettyNum(tot, big.mark=",")` 
++ **Total Synthetic Households:** `r prettyNum(tot_hh, big.mark = ",")`
++ Number of Lowest Level Sub-regions: `r nrow(ipums_fs$paths_df)`
+
+
+
+## What is a Synthetic Ecosystem?
+
+A synthetic ecosystem is a digital representation of the world.  Synthetic ecosystems include both agents (individuals who interact with one another) and their environment (loci of interaction of the agents).  Synthetic ecosystems are generated to be adequately representative of the real world and hope to achieve realism in population characteristics such as race, age, income, school assignments, and more.
+
+
+
+## How Does SPEW Generate Synthetic Ecosystems?
+SPEW incorporates three essential input data sources
+
+1. Population Totals (counts)
+2. Geography (shapefiles)
+3. Microdata (data on individual persons)
+
+along with *supplementary input data* such as school and workplace information
+along with sampling methodology for
+
+1. Population Characteristics
+2. Agent Locations
+
+in order to produce unique individual households along with their connected persons to form a representative synthetic population for each base-level geographical unit.  Environment assignments such as schools or workplaces are then added to the synthetic populations to form a synthetic ecosystem.
+   
+
+## Download Files
+
++ Download from [Olympus](`r paste0("http://data.olympus.psc.edu/syneco/spew_1.2.0/", rmd_link)`).
+
+
+For each tract:
+
++ Synthetic households (`.csv`)
+    + Sample variables include number of persons, income, a unique identifier, and more
++ Synthetic persons (`.csv`)
+    + Sample variables include race, age, income, school and workplace assignments, a unique identifier, and more
+
+
+
+## Population Density Map
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align = 'center'}
+data_path <- input_dir
+plot_name <- paste0("diags_", region, "-tn.png")
+map_type <- "toner-lite"
+savePlot <- FALSE
+g <- spew:::plot_region_diags(ipums_sum_list, ipums_fs,
+            data_path = data_path, map_type = map_type,
+            savePlot = savePlot, plot_name = plot_name)
+	    	       
+```
+The above map shows a population density representation of `r country_name`.  Each dot represents approximately `r ceiling(tot_hh / 10000)` households.  The dots are colored by sub-region.
+
+
+## Households Overview {.tabset}
+
+### Totals
+
+**Total Synthetic Households:** `r prettyNum(tot_hh, big.mark = ",")`
+
+
+
+### Column Names
+
+There are `r length(ipums_list$header_hh)` columns in the synthetic household ecosystem.  They are:
+
+```{r, echo = FALSE,  message = FALSE, warning = FALSE}
+print(ipums_list$header_hh)
+```
+
+### Graphs {.tabset}
+
+Below is a bar chart of the number of households in each region.
+
+```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.width = 4, fig.align = 'center'}
+cbbPalette <- c("#999999", "#E69F00", "#56B4E9",
+        "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+cols <- rep(cbbPalette, length.out = nrow(df))
+colScale <- scale_fill_manual(values = cols)
+g <- ggplot(df, aes(x = Region, y = nRecords, fill = Region)) +
+    geom_bar(stat = "identity") + ggtitle("Household Counts") +
+    labs(x = "Region", y = "Number of Households") + colScale +
+    theme_light() +
+    theme(axis.text.x = element_text(angle = 90), legend.position = "none")
+print(g)
+```
+
+
+## Synthetic Persons {.tabset}
+
+
+### Totals
+
+**Total Synthetic Persons:** `r prettyNum(tot, big.mark = ",")`
+
+
+### Column Names
+There are `r length(ipums_list$header_p)` columns in the synthetic persons ecosystem.  They are:
+
+```{r, echo = FALSE,  message = FALSE, warning = FALSE}
+print(ipums_list$header_p)
+```
+
+### Graphs {.tabset}
+
+   ```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.align = 'center', fig.height = 4}
+    if( as.character(country_name) %in% c("china", "india")){
+        print("This population currently does not have summary statistics.")
+    } else{
+        p_mf <- lapply(p_list, "[[", 2)
+        regions <- df$Region
+        df2<- do.call('cbind', lapply(p_mf, "[[", 1))
+        df_sf <- data.frame(t(df2))
+        df_sf <- df_sf / rowSums(df_sf)
+        colnames(df_sf) <- c("Male", "Female")
+
+        df_sf$Region <- regions
+        cols <- c("darkblue", "lightpink")
+	colScale <- scale_fill_manual(values = cols)
+        df_melt <- melt(df_sf, id.vars = "Region", varnames = c("Male", "Female"))
+        colnames(df_melt)[2:3] <- c("Sex", "Percentage")
+	p <- ggplot(data=df_melt, aes(x=Region, y=Percentage, fill=Sex)) +
+            geom_bar(stat="identity") + coord_flip() + ggtitle("Ratio of Males to Females") +
+	     colScale + theme_light()
+        print(p)
+    }
+```
+
+
+
+## Data
+
+| Type      | Source  | Link                                                   |
+|-----------|---------|--------------------------------------------------------|
+| Counts    | GeoHive | [link](http://www.geohive.com/)                        |
+| Shapefile | IPUMS-I | [link](https://international.ipums.org/international/) |
+| Microdata | IPUMS-I | [link](https://international.ipums.org/international/) |
+
+Here the years for each input data source depends on the country.  Please refer to the documentation to find the given years.
+
+
+## Methods
+
+| Type				| Method	| Documentation		|
+|----------------------------	|------------	|---------------	|
+| Population Characteristics 	| Uniform 	|      [doc](http://stat.cmu.edu/~spew/assets/spew_documentation.pdf)         |
+| Agent Locations            	| Uniform 	| [doc](http://stat.cmu.edu/~spew/assets/spew_documentation.pdf)               |
+
+**Population Characteristics: Uniform.** We use the input counts data to sample the specified number of households from the records in the microdata using simple uniform sampling with replacement.  Hence, each sampled row from the microdata becomes a synthetic household in the SPEW-synthetic ecosystem.  To form a synthetic person population, we assign people to the synthetic household population based on the serial number of the household.  For more details see the [SPEW documentation](http://stat.cmu.edu/~spew/assets/spew_documentation.pdf).
+
+**Agent Locations: Uniform.**  Each synthetic household is known to be from a certain region.  SPEW uniformly samples a point from the shapefile boundary and interior of that region.  For more details see the [SPEW documentation](http://stat.cmu.edu/~spew/assets/spew_documentation.pdf).
+
+
+## Generation Information
+
+This report was generated on `r Sys.time()` by `spew`, an `R` package used to generate populations throughout the world.  Please see our [spew Github repo](https://github.com/leerichardson/spew) and our previously generated regions at [epimodels.org](http://www.epimodels.org/drupal/?q=node/32).  We are a part of the Informatics Services Group MIDAS branch at Carnegie Mellon University and University of Pittsburgh and are supported by 1 U24 GM110707-01 NIH/NIGMS grant.  Please send any comments to [sventura@stat.cmu.edu](sventura@stat.cmu.edu).

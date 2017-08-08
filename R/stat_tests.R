@@ -565,7 +565,7 @@ makeEnvironmentsDFs <- function(syneco_folder, input_folder, admin_level = 0,
 #'
 #' @param input_folder filepath
 #' @param type either "sch" or "wpl" currently
-#' @ return df of schools or workplaces
+#' @return data frame of schools or workplaces
 readEnvUS <- function(input_folder, type = "sch"){
     stopifnot(type %in% c("sch", "wpl"))
     if (type == "sch"){
@@ -643,7 +643,7 @@ readSynecos <- function(syneco_folder, type = "people",
 #'
 #' @param syneco_list output from makeEnvironmentsDFs
 #' @param type "wpl" "sch" or "both" currently
-#' @return
+#' @return list of school assignments (sch_a) and workplace assignments (wpl_a)
 assessSynecosUS <- function(syneco_list, type = "both"){
     stopifnot(env_type %in% c("sch", "wpl", "both"))
     wpl_a <- NULL
@@ -661,8 +661,13 @@ assessSynecosUS <- function(syneco_list, type = "both"){
     return(list(sch_a = sch_a, wpl_a = wpl_a))
 }
 
-#' Assess the schools of the us against the agents
-#'
+#' Assess the schools of the US against the agents
+#' 
+#' @param agents data frame of agents
+#' @param schools_pub data frame of public schools with long/lat locations
+#' @param schools_priv data frame of private schools with county location
+#' @param distFun distance function taking in x1, y1, x2, y2 as arguments
+#' @return  data.frame with columns my_dists, school_id
 assessSchUS <- function(agents, schools_pub, schools_priv, distFun = haversine){
     ## For agents$SCH
     ##  1 is none, 2 is public, 3 is private
@@ -713,15 +718,9 @@ assessSchUS <- function(agents, schools_pub, schools_priv, distFun = haversine){
         })
     print(summary(my_dists))
     out <- data.frame(my_dists = my_dists, school_id = pub_children$school_id)
-    #hist(my_dists)
     return(out)
 }
 
-#' Assess the schools of the us against the agents
-#'
-assessWplUS <- function(agents, wpl){
-   
-}
 
 
 ## Distances

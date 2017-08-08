@@ -1,0 +1,114 @@
+<p><a href="http://stat.cmu.edu/~spew"> <img src="images/SPEW.jpg" style="width:15%;position:absolute;top:0px;right:0px;" > </a></p>
+<h1 id="delaware">DELAWARE</h1>
+<h2 id="download-files">Download Files</h2>
+<ul>
+<li>Download from <a href="http://data.olympus.psc.edu/syneco/spew_1.2.0/~/Desktop/10/">Olympus</a>.</li>
+</ul>
+<p>There is/are 3 level(s) of nested ecosystems in Delaware: Public Use Micro Areas (PUMAs) and U.S. tracts. Counties may be recovered from tracts by unioning them with the help of a PUMA-County relationship table <a href="http://www2.census.gov/geo/docs/maps-data/data/rel/2010_Census_Tract_to_2010_PUMA.txt">here</a>.</p>
+<p>There is/are 214 lowest level subregions: U.S. tracts.</p>
+<h2 id="population-density-map">Population Density Map</h2>
+<p><img src="figure/unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" style="display: block; margin: auto;" /> The above map shows a sub-sample of the different sub regions. Each region has a sample of up to 10,000 households.</p>
+<h2 id="households-overview" class="tabset">Households Overview</h2>
+<h3 id="totals">Totals</h3>
+<p><strong>Total Synthetic Households:</strong> 398,866</p>
+<h3 id="column-names">Column Names</h3>
+<p>There are 15 columns in the synthetic household ecosystem. They are:</p>
+<pre><code>##  [1] &quot;RT&quot;        &quot;TYPE&quot;      &quot;SERIALNO&quot;  &quot;puma&quot;      &quot;id&quot;       
+##  [6] &quot;REGION&quot;    &quot;ST&quot;        &quot;HINCP&quot;     &quot;NP&quot;        &quot;SYNTHETIC&quot;
+## [11] &quot;HID&quot;       &quot;place&quot;     &quot;id&quot;        &quot;longitude&quot; &quot;latitude&quot;</code></pre>
+<h2 id="persons-overview" class="tabset">Persons Overview</h2>
+<h3 id="totals-1">Totals</h3>
+<p><strong>Total Synthetic Persons:</strong> 966,786</p>
+<h3 id="column-names-1">Column Names</h3>
+<p>There are 37 columns in the synthetic people ecosystem. They are:</p>
+<pre><code>##  [1] &quot;RT&quot;        &quot;TYPE&quot;      &quot;SERIALNO&quot;  &quot;puma&quot;      &quot;id&quot;       
+##  [6] &quot;REGION&quot;    &quot;ST&quot;        &quot;HINCP&quot;     &quot;NP&quot;        &quot;SYNTHETIC&quot;
+## [11] &quot;HID&quot;       &quot;place&quot;     &quot;id&quot;        &quot;longitude&quot; &quot;latitude&quot; 
+## [16] &quot;RT&quot;        &quot;puma&quot;      &quot;id&quot;        &quot;ST&quot;        &quot;SEX&quot;      
+## [21] &quot;AGEP&quot;      &quot;SCH&quot;       &quot;SCHG&quot;      &quot;RELP&quot;      &quot;HISP&quot;     
+## [26] &quot;ESR&quot;       &quot;PINCP&quot;     &quot;NATIVITY&quot;  &quot;OCCP&quot;      &quot;POBP&quot;     
+## [31] &quot;RAC1P&quot;     &quot;SYNTHETIC&quot; &quot;PID&quot;       &quot;school&quot;    &quot;id&quot;       
+## [36] &quot;workplace&quot; &quot;id&quot;</code></pre>
+<h2 id="data">Data</h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Type</th>
+<th align="left">Source</th>
+<th align="left">Year</th>
+<th align="left">Link</th>
+<th align="left">Documentation</th>
+<th align="left">Proprietary</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Counts</td>
+<td align="left">ACS SF 5-Year</td>
+<td align="left">2010</td>
+<td align="left"><a href="http://www2.census.gov/programs-surveys/acs/summary_file/2010/data/">link</a></td>
+<td align="left"><a href="http://www.census.gov/programs-surveys/acs/technical-documentation/summary-file-documentation.2010.html">doc</a></td>
+<td align="left">No</td>
+</tr>
+<tr class="even">
+<td align="left">Shapefile</td>
+<td align="left">US TIGER Roads</td>
+<td align="left">2010</td>
+<td align="left"><a href="https://www.census.gov/cgi-bin/geo/shapefiles/index.php?year=2010&amp;layergroup=Roads">link</a></td>
+<td align="left"><a href="http://www2.census.gov/geo/pdfs/maps-data/data/tiger/tgrshp2010/TGRSHP10SF1.pdf">doc</a></td>
+<td align="left">No</td>
+</tr>
+<tr class="odd">
+<td align="left">Microdata</td>
+<td align="left">ACS PUMS 1-Year</td>
+<td align="left">2013</td>
+<td align="left"><a href="https://factfinder.census.gov/faces/nav/jsf/pages/searchresults.xhtml?refresh=t">link</a></td>
+<td align="left"><a href="http://www.census.gov/programs-surveys/acs/technical-documentation/pums.html">doc</a></td>
+<td align="left">No</td>
+</tr>
+<tr class="even">
+<td align="left">Schools</td>
+<td align="left">NCES</td>
+<td align="left">2013, 2011</td>
+<td align="left"><a href="http://nces.ed.gov/ccd/elsi/tableGenerator.aspx">link</a></td>
+<td align="left"><a href="http://nces.ed.gov/ccd/elsi/tableGenerator.aspx">doc</a></td>
+<td align="left">No</td>
+</tr>
+<tr class="odd">
+<td align="left">Workplaces</td>
+<td align="left">Esri Workplaces</td>
+<td align="left">2009</td>
+<td align="left"><a href="http://www.esri.com/industries/facilities/workplace">link</a></td>
+<td align="left"><a href="http://www.esri.com/industries/facilities/workplace">doc</a></td>
+<td align="left">Yes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="methods">Methods</h2>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Type</th>
+<th align="left">Method</th>
+<th align="left">Documentation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Population Characteristics</td>
+<td align="left">IPF</td>
+<td align="left"><a href="http://stat.cmu.edu/~spew/assets/spew_documentation.pdf">doc</a></td>
+</tr>
+<tr class="even">
+<td align="left">Agent Locations</td>
+<td align="left">Road-based</td>
+<td align="left"><a href="http://stat.cmu.edu/~spew/assets/spew_documentation.pdf">doc</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Population Characteristics: IPF.</strong> Iterative Proportional Fitting (IPF) is an algorithm to fill in a contingency table given some set of marginal totals and a seed table. The marginal totals are approximately maintained at the end of this process. In the U.S. SPEW-generated regions, the marginals used are number of persons per household (NP), household income (HINCP), head of household race (RAC1P), and head of household age (AGEP). The seed table is calculated from the contingency table generated by the tract's microdata on those 4 variables.</p>
+<p>Once the contingency table is filled, we must sample records from the microdata to form a synthetic household population. For each cell in the contingency table, weights are assigned to each record in the microdata based on the distance of the record in the microdata to the actual cell characteristic values. We sample the value of the cell number of records from the microdata based on the the calculated weights. We repeat this for each cell in the contingency table.</p>
+<p>To form a synthetic person population, we assign people to the synthetic household population based on the serial number of the household. For more details see the <a href="http://stat.cmu.edu/~spew/assets/spew_documentation.pdf">SPEW documentation</a>.</p>
+<p><strong>Agent Locations: Road-based.</strong> The idea that motivates this method is that households are typically located near roads. We asisgn each synthetic household a unique location within its assigned tract, in terms of latitude and longitude coordinates. We do this by first intersecting the tract boundary shapefile with the TIGER roads shapefile (with interstate roads removed) which yields all the roads within the tract to which the household belongs. We then sample a point uniformly from the intersected-roads and add a small amount of noise so the households are not actually on the roads.</p>
+<h2 id="generation-information">Generation Information</h2>
+<p>This report was generated on 2017-01-24 15:45:08 by <code>spew</code>, an <code>R</code> package used to generate populations throughout the world. Please see our <a href="https://github.com/leerichardson/spew">spew Github repo</a> and our previously generated regions at <a href="http://www.epimodels.org/drupal/?q=node/32">epimodels.org</a>. We are a part of the Informatics Services Group MIDAS branch at Carnegie Mellon University and University of Pittsburgh and are supported by 1 U24 GM110707-01 NIH/NIGMS grant. Please send your comments and suggestions to <a href="sventura@stat.cmu.edu" class="uri">sventura@stat.cmu.edu</a>.</p>

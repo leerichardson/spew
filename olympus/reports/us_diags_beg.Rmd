@@ -1,0 +1,444 @@
+---
+title: "Synthetic Ecosystem for `r library(spew);data(us); df=us; fips=commandArgs(TRUE)[1];ind=which(as.character(df$STATEFP)==basename(fips));state=df$STATE_NAME[ind][1]; toupper(state)`"
+subtitle: "SPEW: Synthetic Populations and Ecosystems of the World"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    highlight: tango
+---
+
+<a href="http://stat.cmu.edu/~spew">
+<img src="images/SPEW.jpg" style="width:15%;position:absolute;top:0px;right:0px;" >
+</a>
+
+
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# !/bin/env/Rscript
+args <- commandArgs(TRUE)
+input_dir <- args[1]
+input_dir <- paste0(input_dir, "/")
+#input_dir <- "~/Desktop/10"
+library(spew)	
+library(devtools)
+#load_all("~/spew")
+cur_dir <- input_dir
+library(devtools)
+library(reshape2)
+data(us)
+
+## STATEFPS to name
+fps <- basename(input_dir)
+state_name <- spew:::fipsToPlaceName(fps, level = "state", df = us)
+print(state_name)
+rmd_link <- gsub("^/mnt/.*/spew_1.2.0/",   "", input_dir) 
+## TODO:  make more generic for any version of SPEW
+
+library(data.table)
+library(maptools)
+library(ggmap)
+library(ggplot2)
+library(RColorBrewer)
+output_dir <- input_dir
+## Params
+## Data 
+data(us_pums_sf)
+
+region <- basename(input_dir)
+varsToSummarize = list(vars_hh = c("NP", "HINCP"), vars_p =c ("AGEP", "RAC1P"))
+sampSize =  10^4
+vars_hh <- NULL
+doPrint <- TRUE
+ipums_fs <- spew:::summarizeFileStructure(output_dir, doPrint, type = "us")
+sum_level <- 2
+ipums_list <- spew:::summarize_us(output_dir, ipums_fs, varsToSummarize = varsToSummarize, doPrint = doPrint, sampSize = sampSize, sum_level = sum_level, threshold_list = us_pums_sf)
+ipums_sum_list <- ipums_list
+hh_list <- ipums_list$hh_sum_list
+
+## Maps
+data_path <- "."
+plot_name <- paste0("diags_", region, "-tn.png")
+map_type <- "toner-lite"
+savePlot <- FALSE
+
+
+
+# Households summary
+hh_list <- ipums_list$hh_sum_list
+hh_sum_df <- do.call('rbind', lapply(hh_list, "[[", 1))
+hh_sum_df$Region <- toupper(hh_sum_df$region_id)
+df <- hh_sum_df[, c("Region", "nRecords")]
+df$Region <- sapply(df$Region, spew:::fipsToPlaceName, level = "county", df = us)
+tot_hh<- sum(hh_sum_df$nRecords)
+
+## column names
+#print(ipums_list$header_hh)
+
+# People  summary
+p_list <- ipums_list$p_sum_list
+p_sum_df <- do.call('rbind', lapply(p_list, "[[", 1))	
+p_sum_df$Region <- toupper(p_sum_df$region_id)
+df <- p_sum_df[, c("Region", "nRecords")]
+df$Region <- sapply(df$Region, spew:::fipsToPlaceName, level = "county", df = us)
+tot <- sum(p_sum_df$nRecords)
+ regions <- df$Region
+
+## column names
+#print(ipums_list$header_p)
+
+## Environment Summary
+library(parallel)
+ncores <- 4
+paths <- data.frame(lapply(ipums_fs$paths_df, as.character), stringsAsFactors = FALSE)
+fp <- lapply(1:nrow(paths), function(ind){ new_fp <- paste(paths[ind, ], collapse = "/")
+    gsub("household", "people", new_fp)
+})
+tab_list <- mclapply(fp, FUN = function(fp){
+    df <- read.csv(file.path(input_dir, fp), stringsAsFactors = FALSE)[, c("school_id", "workplace_id"),]
+    schools <- unique(df$school_id)
+    work <- unique(df$workplace_id)
+    return(list(schools = schools, work = work))
+    }, mc.cores = ncores)
+
+n_schools <-  length(unique(unlist(lapply(tab_list, "[[", 1)))) -1 # get rid of the empty string
+n_work <- length(unique(unlist(lapply(tab_list, "[[", 2)))) - 1 # get rid of empty string
+
+## Household characteristics
+## Avg. household size
+hh_list <- ipums_list$hh_sum_list
+hh_sf <- lapply(hh_list, "[[", 2)
+hh_np <- lapply(hh_sf, "[[", 1)
+df2<- do.call('cbind', lapply(hh_np, "[[", 1))
+np_total <- rowSums(df2)
+np_avg <- sum(c(1:7) * np_total) / sum(np_total)
+
+## Median Household income
+hh_inc <- lapply(hh_sf, "[[", 1)
+df2<- do.call('cbind', lapply(hh_inc, "[[", 2))
+inc_total <- rowSums(df2)
+np_inc <- rownames(df2)[median(rep(1:8, times = c(inc_total)))]
+val <- gsub("HINCP-HH-", "", np_inc)
+
+## Person
+## Avg. household size
+p_list <- ipums_list$p_sum_list
+p_sf <- lapply(p_list, "[[", 2)
+p_age <- lapply(p_sf, "[[", 1)
+df2<- do.call('cbind', lapply(p_age, "[[", 2))
+age_total <- rowSums(df2)
+age_med <- rownames(df2)[median(rep(1:nrow(df2), times = c(age_total)))]
+age <- gsub("AGEP-HHH-", "", age_med)
+```
+
+## Basic Information
+
++ **Total Synthetic Persons:** `r prettyNum(tot, big.mark=",")` 
++ **Total Synthetic Households:** `r prettyNum(tot_hh, big.mark=",")`
++ Total Schools: `r prettyNum(n_schools, big.mark = ",")`
++ Total Workplaces: `r prettyNum(n_work, big.mark = ",")`
++ Household Characteristics
+    + Average Household Size: `r round(np_avg, 2)`
+    + Median Household Income: `r paste0("$", val, "K")`
++ Person Characteristics
+    + Median Age: `r age` years 
++ Number of Lowest Level Sub-regions: `r nrow(ipums_fs$paths_df)`
+
+
+
+## What is a Synthetic Ecosystem?
+
+A synthetic ecosystem is a digital representation of the world.  Synthetic ecosystems include both agents (individuals who interact with one another) and their environment (loci of interaction of the agents).  Synthetic ecosystems are generated to be adequately representative of the real world and hope to achieve realism in population characteristics such as race, age, income, school assignments, and more.
+
+
+## How Does SPEW Generate Synthetic Ecosystems?
+SPEW incorporates three essential input data sources
+
+1. Population Totals (counts)
+2. Geography (shapefiles)
+3. Microdata (data on individual persons)
+
+along with *supplementary input data* such as school and workplace information
+along with sampling methodology for
+
+1. Population Characteristics
+2. Agent Locations
+
+in order to produce unique individual households along with their connected persons to form a representative synthetic population for each base-level geographical unit.  Environment assignments such as schools or workplaces are then added to the synthetic populations to form a synthetic ecosystem.
+   
+
+## Download Files
+
++ Download from [Olympus](`r paste0("http://data.olympus.psc.edu/syneco/spew_1.2.0/", rmd_link)`).
+
+For each tract:
+
++ Synthetic households (`.csv`)
+    + Sample variables include number of persons, income, a unique identifier, and more
++ Synthetic persons (`.csv`)
+    + Sample variables include race, age, income, school and workplace assignments, a unique identifier, and more	
+
+
+
+## Population Density Map
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align = 'center'}
+## action point
+g_map <- spew:::plot_region_diags(ipums_sum_list, ipums_fs,
+            data_path = data_path, map_type = map_type,
+            savePlot = savePlot, plot_name = plot_name,
+            type = "us")
+
+
+```
+The above map shows a population density representation of `r state_name`.  Each dot represents approximately `r ceiling(tot_hh / 10000)` households.  The dots are colored by county.
+
+## Households Overview {.tabset}
+
+### Totals
+
+**Total Synthetic Households:** `r prettyNum(tot_hh, big.mark = ",")`
+
+### Column Names
+
+There are `r length(ipums_list$header_hh)` columns in the synthetic household ecosystem.  They are:
+
+```{r, echo = FALSE,  message = FALSE, warning = FALSE}
+print(ipums_list$header_hh)
+```
+
+### Graphs {.tabset}
+
+#### Number of Households
+
+Below is a bar chart of the number of households in each region.
+
+```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.width = 6, fig.align = 'center'}
+cbbPalette <- c("#999999", "#E69F00", "#56B4E9",
+           "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+cols <- rep(cbbPalette, length.out = nrow(df))
+colScale <- scale_fill_manual(values = cols)
+g <- ggplot(df, aes(x = Region, y = nRecords, fill = Region)) +
+    geom_bar(stat = "identity") + ggtitle("Household Counts") +
+    labs(x = "Region", y = "Number of Households") + colScale +
+    theme_light() +
+    theme(axis.text.x = element_text(angle = 90, size = 10), legend.position = "none")
+print(g)
+```
+
+#### Household Size
+Below is a bar chart of the household size per region.
+ ```{r, echo = FALSE, message = FALSE, warning = FALSE}
+      # People  summary
+p_list <- ipums_list$p_sum_list
+p_sum_df <- do.call('rbind', lapply(p_list, "[[", 1))
+p_sum_df$Region <- toupper(p_sum_df$region_id)
+df <- p_sum_df[, c("Region", "nRecords")]
+      tot <- sum(p_sum_df$nRecords)
+
+ hh_sf <- lapply(hh_list, "[[", 2)
+ hh_np <- lapply(hh_sf, "[[", 1)
+regions <- df$Region
+df2<- do.call('cbind', lapply(hh_np, "[[", 1))
+df_sf <- data.frame(t(df2))
+df_sf <- df_sf / rowSums(df_sf)
+
+regions <- sapply(regions, spew:::fipsToPlaceName, level = "county", df = us)
+
+df_sf$Region <- regions
+cols <- rep(cbbPalette, length.out = ncol(df_sf))
+colScale <- scale_fill_manual(values = cols, name = "Household Size")
+df_melt <- melt(df_sf, id.vars = "Region")
+colnames(df_melt)[2:3] <- c("NP", "Percentage")
+df_melt$NP <- factor(df_melt$NP, levels = levels(df_melt$NP), labels = c(paste(1:6, "person"), 
+	   "7+ person"))
+p <- ggplot(data=df_melt, aes(x=Region, y=Percentage, fill=NP)) + geom_bar(stat="identity") + 
+  coord_flip() + ggtitle("Ratio of Household Sizes") + colScale + theme_light() +
+    theme(axis.text.y = element_text(size = 10)
+          )
+print(p)
+```
+
+#### Household Income
+ Below is a barchart of the yearly household income ($).
+ ```{r, echo = FALSE, message = FALSE, warning = FALSE}
+ hh_sf <- lapply(hh_list, "[[", 2)
+hh_inc <- lapply(hh_sf, "[[", 1)
+regions <- df$Region
+df2<- do.call('cbind', lapply(hh_inc, "[[", 2))
+df_sf <- data.frame(t(df2))
+df_sf <- df_sf / rowSums(df_sf)
+
+regions <- sapply(regions, spew:::fipsToPlaceName, level = "county", df = us)
+
+df_sf$Region <- regions
+cols <- rep(cbbPalette, length.out = ncol(df_sf))
+colScale <- scale_fill_manual(values = cols, name = "Household Income ($)")
+df_melt <- melt(df_sf, id.vars = "Region")
+ colnames(df_melt)[2:3] <- c("HINCP", "Percentage")
+ labs <- c("0 - 10K", "10-15K", "15-25K", "25-35K", "35-50K", "50-100K", "100-200K", "200+K")
+df_melt$HINCP <- factor(df_melt$HINCP, levels = levels(df_melt$HINCP), labels = labs)
+p <- ggplot(data=df_melt, aes(x=Region, y=Percentage, fill=HINCP)) + geom_bar(stat="identity") + 
+  coord_flip() + ggtitle("Ratio of Household Incomes") + colScale + theme_light() +
+    theme(axis.text.y = element_text(size = 10)
+          )
+print(p)
+```
+
+
+
+
+## Persons Overview {.tabset}
+
+### Totals
+
+**Total Synthetic Persons:** `r prettyNum(tot, big.mark = ",")`
+
+### Column Names
+
+There are `r length(ipums_list$header_p)` columns in the synthetic people ecosystem.  They are:
+
+```{r, echo = FALSE,  message = FALSE, warning = FALSE}
+print(ipums_list$header_p)
+```
+
+### Graphs {.tabset}
+
+#### Number of People
+Below is a barchart of the number of people per region.
+
+```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.width = 6, fig.align = 'center'}
+cbbPalette <- c("#999999", "#E69F00", "#56B4E9",
+           "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+cols <- rep(cbbPalette, length.out = nrow(df))
+colScale <- scale_fill_manual(values = cols)
+g <- ggplot(df, aes(x = Region, y = nRecords, fill = Region)) +
+    geom_bar(stat = "identity") + ggtitle("Person Counts") +
+    labs(x = "Region", y = "Number of People") + colScale +
+    theme_light() +
+    theme(axis.text.x = element_text(angle = 90, size = 10), legend.position = "none")
+print(g)
+```
+
+#### Male to Female Ratio
+
+
+ Below is a barchart of male to female ratio
+```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.align = 'center', fig.height = 6}
+p_sf <- lapply(p_list, "[[", 2)
+p_mf <- lapply(p_sf, "[[", 1)
+df2<- do.call('cbind', lapply(p_mf, "[[", 1))
+df_sf <- data.frame(t(df2))
+df_sf <- df_sf / rowSums(df_sf)
+colnames(df_sf) <- c("Male", "Female")
+
+
+
+df_sf$Region <- regions
+cols <- c("darkblue", "lightpink")
+colScale <- scale_fill_manual(values = cols)
+df_melt <- melt(df_sf, id.vars = "Region", varnames = c("Male", "Female"))
+colnames(df_melt)[2:3] <- c("Sex", "Percentage")
+p <- ggplot(data=df_melt, aes(x=Region, y=Percentage, fill=Sex)) + geom_bar(stat="identity") +
+   coord_flip() + ggtitle("Ratio of Males to Females") + colScale + theme_light() +
+  theme(axis.text.y = element_text(size = 4))
+print(p)
+```
+
+
+#### Age
+
+ Below is a barchart of age ratios per region
+```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.align = 'center', fig.height = 6}
+p_sf <- lapply(p_list, "[[", 2)
+p_mf <- lapply(p_sf, "[[", 1)
+
+df2<- do.call('cbind', lapply(p_mf, "[[", 2))
+df_sf <- data.frame(t(df2))
+df_sf <- df_sf / rowSums(df_sf)
+
+
+
+
+df_sf$Region <- regions
+cols <- rep(cbbPalette, length.out = ncol(df_sf))
+colScale <- scale_fill_manual(values = cols, name = "Age (years)")
+df_melt <- melt(df_sf, id.vars = "Region")
+ colnames(df_melt)[2:3] <- c("AGEP", "Percentage")
+ labs <- c("15-24", "25-34", "35-44", "45-54", "55-59", "60-64", "65-74", "75-84", "85+")
+df_melt$AGEP <- factor(df_melt$AGEP, levels = levels(df_melt$AGEP), labels = labs)
+p <- ggplot(data=df_melt, aes(x=Region, y=Percentage, fill=AGEP)) + geom_bar(stat="identity") +
+   coord_flip() + ggtitle("Ratio of Ages of Individuals over 14 years") + colScale + theme_light() +
+    theme(axis.text.y = element_text(size = 10)
+          )
+print(p)
+```
+
+#### Race
+
+ Below is a barchart of race ratios per region
+```{r, echo = FALSE,  message = FALSE, warning = FALSE, fig.align = 'center', fig.height = 6}
+p_sf <- lapply(p_list, "[[", 2)
+p_mf <- lapply(p_sf, "[[", 1)
+
+df2<- do.call('cbind', lapply(p_mf, "[[", 3))
+df_sf <- data.frame(t(df2))
+df_sf <- df_sf / rowSums(df_sf)
+
+
+
+
+df_sf$Region <- regions
+cols <- rep(cbbPalette, length.out = ncol(df_sf))
+colScale <- scale_fill_manual(values = cols, name = "Race")
+df_melt <- melt(df_sf, id.vars = "Region")
+colnames(df_melt)[2:3] <- c("AGEP", "Percentage")
+ labs <- c("White", "Black", "Indian", "Asian", "Pacific Islander", "Other", "Two+")
+df_melt$AGEP <- factor(df_melt$AGEP, levels = levels(df_melt$AGEP), labels = labs)
+p <- ggplot(data=df_melt, aes(x=Region, y=Percentage, fill=AGEP)) + geom_bar(stat="identity") + coord_flip() + ggtitle("Ratio of Races") + colScale + theme_light() +
+    theme(axis.text.y = element_text(size = 10)
+          )
+print(p)
+```
+
+## Geographic Administrative Levels
+The nested levels are
+
++ `r state_name` 
+    + Public Use Micro Areas (PUMAs)
+        + U.S. tracts.  
+
+Counties may be recovered from tracts by unioning them with the help of a PUMA-County relationship table [here](http://www2.census.gov/geo/docs/maps-data/data/rel/2010_Census_Tract_to_2010_PUMA.txt).
+
+## Data
+
+| Type       | Source          | Year       | Link                                                                                       | Documentation                                                                                                  | Proprietary |
+|------------|-----------------|------------|--------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|-------------|
+| Counts     | ACS SF 5-Year   | 2010       | [link](http://www2.census.gov/programs-surveys/acs/summary_file/2010/data/)                | [doc](http://www.census.gov/programs-surveys/acs/technical-documentation/summary-file-documentation.2010.html) | No          |
+| Shapefile  | US TIGER Roads  | 2010       | [link](https://www.census.gov/cgi-bin/geo/shapefiles/index.php?year=2010&layergroup=Roads) | [doc](http://www2.census.gov/geo/pdfs/maps-data/data/tiger/tgrshp2010/TGRSHP10SF1.pdf)                         | No          |
+| Microdata  | ACS PUMS 1-Year | 2013       | [link](https://factfinder.census.gov/faces/nav/jsf/pages/searchresults.xhtml?refresh=t)    | [doc](http://www.census.gov/programs-surveys/acs/technical-documentation/pums.html)                            | No          |
+| Schools    | NCES            | 2013, 2011 | [link](http://nces.ed.gov/ccd/elsi/tableGenerator.aspx)                                    | [doc](http://nces.ed.gov/ccd/elsi/tableGenerator.aspx)                                                         | No          |
+| Workplaces | Esri Workplaces | 2009       | [link](http://www.esri.com/industries/facilities/workplace)                                | [doc](http://www.esri.com/industries/facilities/workplace)                                                     | Yes         |
+
+## Methods
+
+| Type				| Method	| Documentation		|
+|----------------------------	|------------	|---------------	|
+| Population Characteristics 	| IPF 		|      [doc](http://stat.cmu.edu/~spew/assets/spew_documentation.pdf)         |
+| Agent Locations            	| Road-based 	| [doc](http://stat.cmu.edu/~spew/assets/spew_documentation.pdf)               |
+
+**Population Characteristics: IPF.**  Iterative Proportional Fitting (IPF) is an algorithm to fill in a contingency table given some set of marginal totals and a seed table.  The marginal totals are approximately maintained at the end of this process.  In the U.S. SPEW-generated regions, the marginals used are number of persons per household (`NP`), household income (`HINCP`), head of household race (`RAC1P`), and head of household age (`AGEP`).  The seed table is calculated from the contingency table generated by the tract's microdata on those 4 variables.
+
+Once the contingency table is filled, we must sample records from the microdata to form a synthetic household population.  For each cell in the contingency table,  weights are assigned to each record in the microdata based on the distance of the record in the microdata to the actual cell characteristic values.  We sample the value of the cell number of records from the microdata based on the the calculated weights.  We repeat this for each cell in the contingency table.
+
+To form a synthetic person population, we assign people to the synthetic household population based on the serial number of the household.  For more details see the [SPEW documentation](http://stat.cmu.edu/~spew/assets/spew_documentation.pdf).
+
+**Agent Locations: Road-based.**  The idea that motivates this method is that households are typically located near roads.  We asisgn each synthetic household a unique location within its assigned tract, in terms of latitude and longitude coordinates.   We do this by first intersecting the tract boundary shapefile with the TIGER roads shapefile (with interstate roads removed) which yields all the roads within the tract to which the household belongs.  We then sample a point uniformly from the intersected-roads and add a small amount of noise so the households are not directly on the roads.  
+
+
+## Generation Information
+
+This report was generated on `r Sys.time()` by `spew`, an `R` package used to generate populations throughout the world.  Please see our [spew Github repo](https://github.com/leerichardson/spew) and our previously generated regions at [epimodels.org](http://www.epimodels.org/drupal/?q=node/32).  We are a part of the Informatics Services Group MIDAS branch at Carnegie Mellon University and University of Pittsburgh and are supported by 1 U24 GM110707-01 NIH/NIGMS grant.  Please send your comments and suggestions to [sventura@stat.cmu.edu](sventura@stat.cmu.edu).

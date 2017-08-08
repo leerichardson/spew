@@ -11,6 +11,9 @@ assessSynecosUS(syneco_list, type = "both")
 
 \item{type}{"wpl" "sch" or "both" currently}
 }
+\value{
+list of school assignments (sch_a) and workplace assignments (wpl_a)
+}
 \description{
 Assess the environment use of our synthetic ecosystems
 }
