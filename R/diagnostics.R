@@ -1,36 +1,33 @@
 
-
-
- 
 #' Get the summary values of a spew generated synthetic population and output a row of summary and the column names
 #' 
- #' @param pop_list list of  dataframe of the population subsetted to the summary variables and the actual names
- #' @param region_name string of region_name
- #' @return summary_list list of summary numbers with corresponding names
- summarize_pop <- function(pop_list, region_name){
-     names <- c(region_name, colnames(pop_list$pop))
-     i <- 1
-     coords <- NULL
-     row_list <- NULL
-     nRecords <- nrow(pop_list$pop)
-     df <- as.data.frame(pop_list$pop)
-     if ("longitude" %in% colnames(df)){
-         coords <- colMeans(df[,c("longitude", "latitude")])
-         i <- 3
-     }
-     if ( i <= ncol(df)){
-         row_list <- lapply(i:ncol(df), function(i){
-             tab <- table(df[,i])
-             names(tab) <- paste0(colnames(df)[i],"_", names(tab))
-             return(tab)
-         })
-     }
-     summary_row <- data.frame(region_name=region_name, nRecords=nRecords)
-     return(list(summary_row=summary_row, features=row_list, all_names=pop_list$all_vars))
- }
- 
- 
- 
+#' @param pop_list list of  dataframe of the population subsetted to the summary variables and the actual names
+#' @param region_name string of region_name
+#' @return summary_list list of summary numbers with corresponding names
+summarize_pop <- function(pop_list, region_name){
+    names <- c(region_name, colnames(pop_list$pop))
+    i <- 1
+    coords <- NULL
+    row_list <- NULL
+    nRecords <- nrow(pop_list$pop)
+    df <- as.data.frame(pop_list$pop)
+    if ("longitude" %in% colnames(df)){
+        coords <- colMeans(df[,c("longitude", "latitude")])
+        i <- 3
+    }
+    if ( i <= ncol(df)){
+        row_list <- lapply(i:ncol(df), function(i){
+            tab <- table(df[,i])
+            names(tab) <- paste0(colnames(df)[i],"_", names(tab))
+            return(tab)
+        })
+    }
+    summary_row <- data.frame(region_name=region_name, nRecords=nRecords)
+    return(list(summary_row=summary_row, features=row_list, all_names=pop_list$all_vars))
+}
+
+
+
  
      #' Get the proper names to subset
      #' @param type string of either "hh" or "p" designating to either summarize household populations or individual populations.
@@ -187,6 +184,7 @@ extractStCoTr <- function(paths_df){
 #' @return vector of column names, the header
 extractHeader <- function(path){
     header <- readLines(path, n=1)
+    nms <- unlist(strsplit(header, split = ","))
     nms <- unlist(strsplit(header, split = ","))
     nms <- nms[nchar(nms) > 0]
     return(nms)
