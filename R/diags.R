@@ -81,7 +81,9 @@ check_path <-function(output_dir){
 #' @param type either "household" or "people"
 #' @return a character vector of the header
 get_header <- function(output_dir, type = "household"){
-    files <- list.files(output_dir, recursive = TRUE)
+
+    output_dir <- file.path(output_dir, "output")
+    files <- list.files(output_dir,  recursive = TRUE)
     file_ind <- grep(paste0(type, ".*.csv"), files)[1]
     header <- read.csv(file.path(output_dir, files[file_ind]), nrows = 1, header = FALSE,
                        stringsAsFactors = FALSE)
@@ -99,30 +101,32 @@ get_header <- function(output_dir, type = "household"){
 #' @return list of lists where the first list is a list of the different filenames for each summary level and the second list contains a dataframe of the different file paths along with the name of the larger, aggregated region
 get_filenames <- function(output_dir, summary_level=2,
                           agent_type = "household", pop_type = "US"){
-    
-      files <- list.files(output_dir, recursive = TRUE)
-      files <- grep(paste0(agent_type, ".*.csv"), files, value = TRUE)
-      if(pop_type == "US"){
-          ## Get a data frame of corresponding state, county, and tract
-          st_co_tr <- extract_st_co_tr(files)
-          df <- data.frame(files = files, st_co_tr)
-          vars <- c("state", "county", "tract")[1:summary_level]
-          file_list <- plyr::dlply(df, .variables = vars, .fun = function(df){
-              list(files = file.path(output_dir, as.character(df$files)), id = paste(df[1, vars], collapse = ""))
-          })
-      } else {
-          names <- basename(files)
-          province <- gsub(paste0(agent_type, "_"), "", names)
-          province <- gsub(".csv", "", province)
-          df <- data.frame(files = files, province = province)
-          file_list <- plyr::dlply(df, .variables = "province", .fun = function(df){
-              list(files = file.path(output_dir, as.character(df$files)),
-                   id = as.character(df[1, 2]))
-          })
-      }
-      return(file_list)
 
+    output_dir <- file.path(output_dir, "output")
+    files <- list.files(output_dir, recursive = TRUE)
+    
+    files <- grep(paste0(agent_type, ".*.csv"), files, value = TRUE)
+    if(pop_type == "US"){
+        ## Get a data frame of corresponding state, county, and tract
+        st_co_tr <- extract_st_co_tr(files)
+        df <- data.frame(files = files, st_co_tr)
+        vars <- c("state", "county", "tract")[1:summary_level]
+        file_list <- plyr::dlply(df, .variables = vars, .fun = function(df){
+            list(files = file.path(output_dir, as.character(df$files)), id = paste(df[1, vars], collapse = ""))
+        })
+    } else {
+        names <- basename(files)
+        province <- gsub(paste0(agent_type, "_"), "", names)
+        province <- gsub(".csv", "", province)
+        df <- data.frame(files = files, province = province)
+        file_list <- plyr::dlply(df, .variables = "province", .fun = function(df){
+            list(files = file.path(output_dir, as.character(df$files)),
+                 id = as.character(df[1, 2]))
+        })
     }
+    return(file_list)
+
+}
 
 
 #' Extract the state, county, and tract ID from a string
@@ -181,7 +185,10 @@ summarize_spew <- function(filenames, marginals= NULL, vars_to_sum,
     read_vars <- vars_to_sum
     if(coords){ read_vars <- c(read_vars, "longitude", "latitude")}
     if(!is.null(env_vars)) read_vars <- c(read_vars, env_vars)
-    df <- as.data.frame(do.call('rbind', lapply(filenames$files, data.table::fread, select = read_vars)))
+    df <- as.data.frame(do.call('rbind', lapply(filenames$files, data.table::fread,
+                                                select = read_vars,
+                                                colClasses = "character"
+                                                )))
 
     total_pop <- nrow(df)
 
@@ -202,11 +209,9 @@ summarize_spew <- function(filenames, marginals= NULL, vars_to_sum,
         df <- align_pums(df[, vars_to_sum], marginals[marg_vars])
     }
     vars_sum <- summarize_features(df, marginals, vars_to_sum)
-    names(vars_sum) <- vars_to_sum
 
     ## Summarize the environment variables
     env_sum <- summarize_environment(env_df, env_vars)
-    names(env_sum) <- env_vars
 
     ## Gather everything into a list
     region_summary <- list(region_id = region_id, pop_size = total_pop,
@@ -233,6 +238,7 @@ summarize_features <- function(df, marginals, vars_to_sum){
         var <- vars_to_sum[ind]
         table(df[, var])
     })
+    names(features_table) <- gsub("_marg", "", vars_to_sum)
 
     return(features_table)
  }     
@@ -248,6 +254,7 @@ summarize_environment <- function(df, env_vars){
     out <- lapply(env_vars, function(var){
         unique(na.omit(df[, var]))
     })
+    names(out) <- env_vars
     return(out)
 }
 
