@@ -364,8 +364,105 @@ get_coords_scaled <- function(sum_list, samp_size, coords, pop_totals){
         df <- ll$coords_df
         sample_inds <- sample(1:nrow(df), n_records[ind], replace = TRUE)
         df_sub <- df[sample_inds, ]
+        df_sub$longitude <- as.numeric(df_sub$longitude)
+        df_sub$latitude <- as.numeric(df_sub$latitude)
         rownames(df_sub) <- NULL
         return(df_sub)
     }))
 
+}
+
+
+#' Plot SPEW region
+#'
+#' @param coords_df data frame with "longitude", "latitude", and "region_id" columns
+#' @param get_world_map logical.  Get an underlying map from ggmap.  Default is TRUE
+#' @param f border size between 0 and 1.  Default is .1.
+#' @param region_colors a string of colors to color the map.  Default is from the colorblind friendly palette.
+#' @return a ggmap object
+plot_region <- function(coords_df, get_world_map = FALSE,    f = .1,
+                          region_colors= c("#999999", "#E69F00", "#56B4E9",
+                                           "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")){
+
+    ## Get an underlying map if applicable
+    g <- get_base_map(coords_df, get_world_map = get_world_map, f=f)
+  
+    ## Configure the colors
+    n_regions <- length(unique(coords_df$region))
+    cols <- rep(region_colors, length.out = n_regions)
+    col_scale <- ggplot2::scale_colour_manual(name = "region_id", values = cols)
+
+    ## Actually plot the map
+    g <- g + ggplot2::geom_point(data = coords_df,
+                                 ggplot2::aes(x = longitude, y = latitude, colour = factor(region_id)),
+                                 cex = .4) +
+        col_scale +
+        base_map_theme()
+   
+    ##  Add the region names
+    centers_df <- get_centers(coords_df)
+    g <- g + ggplot2::geom_text(data = centers_df,
+                       ggplot2::aes(x = longitude, y = latitude, label = region_id,
+                           size = 3))
+
+    ## Display map
+    print(g)
+    return(g)
+}
+
+#' Get the base map for plotting
+#'
+#' @param coords_df data frame with "longitude", "latitude", and "region_id" columns
+#' @param get_world_map logical.  Get an underlying map from ggmap.  Default is TRUE
+#' @param f border size of map
+#' @return a ggplotting object
+get_base_map <- function(coords_df, get_world_map = TRUE,
+                         f = .1){
+    if(get_world_map){
+        bbox <- ggmap::make_bbox(coords_df$longitude, coords_df$latitude, f= f)
+        map <- tryCatch({ggmap::get_map(bbox, maptype = "toner-lite")},
+                        error = function(e) {
+                            NULL
+                        })
+        if(is.null(map)) {
+            print("The map is too large to print")
+            return(map)}
+        g <- ggmap::ggmap(map)
+    } else{
+        g <- ggplot2::ggplot()
+    }
+    return(g)
+
+}
+
+#' Get the center longitude and latitude for each region
+#'
+#' @param coords_df data
+#' @param coords_df data frame with "longitude", "latitude", and "region_id" columns
+#' @return data frame with mean lon/lat and region
+get_centers <- function(coords_df){
+    centers_df <- plyr::ddply(coords_df, .variables = "region_id",
+                              .fun = function(df){
+                                  colMeans(df[, c("longitude", "latitude")])
+                              })
+    return(centers_df)
+}
+
+#' The base map theme for SPEW
+#'
+#' @return base map theme
+base_map_theme <- function(){
+    g <-  ggplot2::theme(axis.line=ggplot2::element_blank(),
+              axis.text.x=ggplot2::element_blank(),
+              axis.text.y=ggplot2::element_blank(),
+              axis.ticks=ggplot2::element_blank(),
+              axis.title.x=ggplot2::element_blank(),
+              axis.title.y=ggplot2::element_blank(),
+              legend.position = "none",
+              panel.background=ggplot2::element_blank(),
+              panel.border=ggplot2::element_blank(),
+              panel.grid.major=ggplot2::element_blank(),
+              panel.grid.minor=ggplot2::element_blank(),
+              plot.background=ggplot2::element_blank())
+    return(g)
 }

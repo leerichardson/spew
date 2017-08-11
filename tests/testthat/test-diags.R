@@ -207,6 +207,15 @@ test_that("US diags work", {
                                       marginals = marginals)
     expect_true(length(summaries) == 11)
 
+    ## Plotting
+    coords_df <- summaries$coords_df
+    region_name <- "Delaware"
+    region_colors= c("#999999", "#E69F00", "#56B4E9",
+                     "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+    coords_df <- summaries$coords_df
+    g <- plot_region(coords_df)
+    expect_true("gg" %in% as.character(class(g)))
+    
 
 })
 
@@ -223,6 +232,8 @@ test_that("IPUMS diags work", {
                                       summary_level=2,
                                       marginals = NULL)
     expect_true(summaries$n_house == 301)
+
+
 
 
 })
