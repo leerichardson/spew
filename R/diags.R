@@ -185,10 +185,20 @@ summarize_spew <- function(filenames, marginals= NULL, vars_to_sum,
     read_vars <- vars_to_sum
     if(coords){ read_vars <- c(read_vars, "longitude", "latitude")}
     if(!is.null(env_vars)) read_vars <- c(read_vars, env_vars)
-    df <- as.data.frame(do.call('rbind', lapply(filenames$files, data.table::fread,
-                                                select = read_vars,
-                                                colClasses = "character"
-                                                )))
+    if("school_id" %in% env_vars){ # a little hacky, but school_id needs to be a character
+        df <- as.data.frame(do.call('rbind',
+                                    lapply(filenames$files, 
+                                           data.table::fread, select = read_vars,
+                                           colClasses = list(character = "school_id")
+                                           )))
+                                           
+    } else{
+        df <- as.data.frame(do.call('rbind',
+                                    lapply(filenames$files, 
+                                           data.table::fread,  select = read_vars)
+                                    ))
+    }
+    
 
     total_pop <- nrow(df)
 
@@ -465,4 +475,97 @@ base_map_theme <- function(){
               panel.grid.minor=ggplot2::element_blank(),
               plot.background=ggplot2::element_blank())
     return(g)
+}
+
+#' Plot characteristic summary output from summarize_top_spew_region
+#'
+#' @param feature_name string which will be in the title
+#' @param legend_name name of the legend title
+#' @param feature_df features summary, output from summarize_top_region()
+#' @param category_names optional labels to display as the category types.  Default is whatever is contained in the feature_df.
+#' @param text_size axis text size.  Default is 10
+#' @param region_colors a string of colors to color the map.  Default is from the colorblind friendly palette.
+plot_characteristic_proportions <- function(feature_name = "Feature",
+                                            legend_name = "Types", feature_df,
+                                            category_names = NULL,
+                                            text_size = 10,
+                                            region_colors= c("#999999", "#E69F00", "#56B4E9",
+                                                             "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+                                                             ){
+
+    labs <- names(feature_df)
+    ind <- which(labs == "region")
+    labs <- labs[!grepl("^region$", labs)]
+    n_cats <- length(labs)
+    if(!is.null(category_names)) labs <- category_names
+    stopifnot(length(labs) == n_cats)
+
+    ## Change the raw numbers into proportions
+    plot_df <- data.frame(region = feature_df$region)
+    plot_df <- data.frame(plot_df, feature_df[, -ind] / rowSums(feature_df[, -ind]))
+
+    ## Color configuration
+    cols <- rep(region_colors, length.out = n_cats)
+    col_scale <- ggplot2::scale_fill_manual( values = cols) 
+
+    ## Making our df of tables ggplot compatible
+    df_melt <- reshape2::melt(plot_df, id.vars = "region")
+    colnames(df_melt)[2:3] <- c("feature_name", "Percentage")
+    df_melt[, "feature_name"] <- factor( df_melt[, "feature_name"] ,
+                                      levels = rev(levels(df_melt[, "feature_name"])),
+                                      labels = rev(labs))
+    
+
+    ## Plotting the inverted bar chart
+    g <- ggplot2::ggplot(df_melt, ggplot2::aes(x = region, y = Percentage,
+                                                  fill = feature_name)) +
+        ggplot2::geom_bar(stat = "identity") + ggplot2::coord_flip() +
+        ggplot2::ggtitle(paste("Ratio of", feature_name, "per region")) + col_scale +
+        ggplot2::theme_light() +
+        ggplot2::theme(axis.text.y = ggplot2::element_text(text_size)) +
+        ggplot2::labs(x = "Region", fill = feature_name)
+
+
+
+    print(g)
+    return(g)
+    
+                                                     
+}
+
+#' Plot characteristic summary output from summarize_top_spew_region as totals
+#'
+#' @param feature_df features summary, output from summarize_top_region()
+#' @param type either "n_house" or "n_people".  Default is n_people 
+#' @param text_size axis text size.  Default is 10
+#' @param region_colors a string of colors to color the map.  Default is from the colorblind friendly palette.
+plot_pop_totals <- function( feature_df, type = "n_people",
+                            text_size = 10,
+                            region_colors= c("#999999", "#E69F00", "#56B4E9",
+                                             "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")){
+
+    stopifnot(type %in% c("n_people", "n_house"))
+    nm <- "Person Counts"
+    if(type == "n_house") nm <- "Household Counts"
+
+    ## rename the plotting variable
+    ind <- which(names(feature_df) == type)
+    colnames(feature_df)[ind] <- "val"
+
+    ## Colors
+    cols <- rep(region_colors, length.out = nrow(feature_df))
+    col_scale <- ggplot2::scale_fill_manual(values = cols)
+
+    ## Plot
+    g <- ggplot2::ggplot(feature_df, ggplot2::aes(x = region, y = val,
+                                            fill = region)) +
+        ggplot2::geom_bar(stat = "identity") + ggplot2::ggtitle(nm) +
+        ggplot2::labs(x = "Region", y = "Totals") + col_scale +
+        ggplot2::theme_light() +
+        ggplot2:: theme(axis.text.x = ggplot2::element_text(angle = 90, size = text_size),
+                        legend.position = "none")
+    print(g)
+    return(g)
+    
+
 }

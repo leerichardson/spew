@@ -215,6 +215,14 @@ test_that("US diags work", {
     coords_df <- summaries$coords_df
     g <- plot_region(coords_df)
     expect_true("gg" %in% as.character(class(g)))
+
+    ## Proportions of a feature
+    feature_df <- summaries$NP
+    region_id <- "Test Region"
+    feature_name <- "NP"
+    legend_name <- "Types"
+    text_size <- 10
+    
     
 
 })
