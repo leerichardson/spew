@@ -185,12 +185,12 @@ test_that("individual functions for diagnostics work",{
                                    header_h, header_p,
                                    vars_to_sum_h, vars_to_sum_p, env_vars,
                                    samp_size=100, top_region_id, coords=TRUE)
-    expect_equal(length(out_list), 11)
+    expect_equal(length(out_list), 13)
     out_list <- organize_summaries(summary_h, summary_p,
                                    header_h, header_p,
                                    vars_to_sum_h, vars_to_sum_p, env_vars=NULL,
                                    samp_size=100, top_region_id, coords=FALSE)
-    expect_equal(length(out_list), 9)
+    expect_equal(length(out_list), 11)
 
 })
 
@@ -205,26 +205,7 @@ test_that("US diags work", {
                                       samp_size=100,
                                       summary_level=2,
                                       marginals = marginals)
-    expect_true(length(summaries) == 11)
-
-    ## Plotting
-    coords_df <- summaries$coords_df
-    region_name <- "Delaware"
-    region_colors= c("#999999", "#E69F00", "#56B4E9",
-                     "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
-    coords_df <- summaries$coords_df
-    g <- plot_region(coords_df)
-    expect_true("gg" %in% as.character(class(g)))
-
-    ## Proportions of a feature
-    feature_df <- summaries$NP
-    region_id <- "Test Region"
-    feature_name <- "NP"
-    legend_name <- "Types"
-    text_size <- 10
-    
-    
-
+    expect_true(length(summaries) == 13)
 })
 
 

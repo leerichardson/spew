@@ -25,13 +25,11 @@ summarize_top_region <- function(output_dir,
 
     ## Make sure output directory is in right structure
     stopifnot(check_path(output_dir))
-
     top_region_id <- basename(output_dir)
     
     ## Get the headers 
     header_h <- get_header(output_dir, type = "household")
     header_p <- get_header(output_dir, type = "people")
-
 
     ## Get the files to read, separated by summary level
     ## Will get the "household" files specifically
@@ -298,6 +296,7 @@ organize_summaries <- function(hh_sum_list, p_sum_list,
                                    coords, pop_totals)
 
     base_list <- list(top_region_id = top_region_id,
+                      header_h = header_h, header_p = header_p,
                       n_house = n_house, n_people = n_people,
                       pop_totals = pop_totals, coords_df = coords_df)
     out <- c(base_list, household_dfs, people_dfs, env_dfs)
