@@ -568,3 +568,30 @@ plot_pop_totals <- function( feature_df, type = "n_people",
     
 
 }
+
+
+
+#' Translate FIPS number to place name
+#'
+#' @param fips string -- US FIPS code length 2 for state or length 5 for county
+#' @param level either "state" or "county"
+#' @param df a data frame table to translate FIPS to placename.  It must have column names
+#' STATEFP, STATE_NAME, COUNTYFP, and County.
+#' @return the placenames corresponding to each FIPS #
+fips_to_name<- function(fips, level, df = us){
+ #   print("FIPS code is")
+ #   print(fips)
+    stopifnot(level %in% c("state", "county"))
+    stopifnot(!is.null(df))
+    if (level == "state"){
+        ind <- which(as.character(df$STATEFP) == fips)
+        state <- df$STATE_NAME[ind][1]
+        return(state)
+    } else {
+        stopifnot(nchar(fips) == 5)
+        ind <- which(as.character(df$COUNTYFP) == fips)
+        pn <- df$County[ind][1]
+        pn <- gsub(" County", "", pn)
+        return(pn)
+    }
+}
