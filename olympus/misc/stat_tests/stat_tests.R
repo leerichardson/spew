@@ -8,7 +8,6 @@
 #' @return list of p value for region and original chi square value
 #' @details  to come
 stat_test_us_pums <- function(regionID, type = "p", level = "tract", output, PUMS,  variables = c("RAC1P", "SEX")){
-    #browser()
     stopifnot(sum(variables %in% colnames(output)) == length(variables))
     PUMS_f <-  makeFactors(PUMS, PUMS, variables)
     output_f <- makeFactors(output, PUMS, variables)
@@ -565,7 +564,8 @@ makeEnvironmentsDFs <- function(syneco_folder, input_folder, admin_level = 0,
 #'
 #' @param input_folder filepath
 #' @param type either "sch" or "wpl" currently
-#' @return data frame of schools or workplaces
+#' 
+#' @return df of schools or workplaces
 readEnvUS <- function(input_folder, type = "sch"){
     stopifnot(type %in% c("sch", "wpl"))
     if (type == "sch"){
@@ -610,34 +610,10 @@ readSynecos <- function(syneco_folder, type = "people",
 
 ## Test the marginals
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #######################################################
 ############################# Schools and workplaces
 ####################################################
 ###################################################
-
 
 #' Assess the environment use of our synthetic ecosystems
 #'
@@ -720,10 +696,6 @@ assessSchUS <- function(agents, schools_pub, schools_priv, distFun = haversine){
     out <- data.frame(my_dists = my_dists, school_id = pub_children$school_id)
     return(out)
 }
-
-
-
-## Distances
 
 #' Calculates the geodesic distance between two points
 #'

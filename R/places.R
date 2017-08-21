@@ -3,9 +3,15 @@
 #' @param pop data frame with "longitude" and "latitude" columns
 #' @param places data frame with "longitude" and "latitude" and an "ID" column, perhaps a "capacity" column
 #' @param place_name string that will become the column name of the place
-#' @param method c("uniform", "capacity") The method on how we assign places.  The "uniform" argument  means that we do not consider capacity in assignments, only distance.  Conversely, "capacity" means we do consider capacity when assigning agents to places.  The default is "uniform". 
-#' @param dist_fxn  a function with args x1, y1, x2, y2 that returns a single number.  The default is Euclidean Distance \eqn{d((x1, y1), (x2,y2) = \sqrt{(x1-x2)^2 + (y1 - y2)^2}}.  The distance should satisfy the requirements of a metric.
-#' @param cap_fxn a function with one argument, a single capacity.  This should be a monotone increasing function.  The default is cap_default.
+#' @param method c("uniform", "capacity") The method on how we assign places.  The "uniform" 
+#' argument  means that we do not consider capacity in assignments, only distance.  
+#' Conversely, "capacity" means we do consider capacity when assigning agents to places.
+#' The default is "uniform". 
+#' @param dist_fxn  a function with args x1, y1, x2, y2 that returns a single number. 
+#' The default is Euclidean Distance $d((x1, y1), (x2,y2) = sqrt( x1-x2)^2 + (y1 - y2)^2 ).  
+#' The distance should satisfy the requirements of a metric.
+#' @param cap_fxn a function with one argument, a single capacity.  
+#' This should be a monotone increasing function.  The default is cap_default.
 #' @export
 #' @return  data frame with column of place_name with the place_ids, e.g. assignments of the places to the agents.
 assign_place_coords<- function(pop, places, place_name ="place", method = "uniform", dist_fxn = euclidean_dist,

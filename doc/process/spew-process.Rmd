@@ -77,7 +77,17 @@ It would be great to integrate SPEW with the Travis Continuous Integration syste
 
 #### Minor Details  
 - If using a function from another package, use package::function. For example, if we are using the **spsample** function from package **sp**, write **sp::spsample**. 
-- If using a "Suggests" package, use a requireNamespace condittional before calling 
+- If using a "Suggests" package, use a requireNamespace conditional before calling:
+
+```{r}
+my_fun <- function(a, b) {
+  if (!requireNamespace("pkg", quietly = TRUE)) {
+    stop("Pkg needed for this function to work. Please install it.", call. = FALSE)
+  }
+}
+```
+
+Example from R-packages book
 
 # Documentation 
 SPEW has two layers of documentation: for R-functions, and formal documentation for each public release. Both are detailed next. 
@@ -214,5 +224,4 @@ Supplementary data means any external data required outside of the original data
 The default is for each of these to be set to NULL. The `spew` function checks this, and will assign supplementary data only if it is avaialble. 
 
 Options are various parameters we tweak during runs of SPEW. For instance, one is "output_type", which determines whether we return the ecosystem either inside the R secction, or write the output.
-
 

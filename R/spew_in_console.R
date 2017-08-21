@@ -27,7 +27,6 @@ spewr <- function(pop_table, shapefile, pums_h, pums_p,
                   convert_count = FALSE, do_parallel = FALSE, noise = .1){
 
     ## TODO:  Check if data is compatible
-    
     parallel_type <- "SEQ"
     if(do_parallel){
         parallel_type <- "SOCK"

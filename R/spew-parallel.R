@@ -33,13 +33,13 @@ spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p,
   }
   
   # Send the relevant data objects/packes to workers 
-  mpi.bcast.cmd(library(plyr))
-  mpi.bcast.cmd(library(methods))
-  mpi.bcast.cmd(library(sp))
-  mpi.bcast.cmd(library(rgeos))
-  mpi.bcast.cmd(library(data.table))
-  mpi.bcast.cmd(library(mipfp))
-  mpi.bcast.cmd(library(quadprog))
+  mpi.bcast.cmd(requireNamespace(plyr))
+  mpi.bcast.cmd(requireNamespace(methods))
+  mpi.bcast.cmd(requireNamespace(sp))
+  mpi.bcast.cmd(requireNamespace(rgeos))
+  mpi.bcast.cmd(requireNamespace(data.table))
+  mpi.bcast.cmd(requireNamespace(mipfp))
+  mpi.bcast.cmd(requireNamespace(quadprog))
   
   # Export functions to all of the workers ------
   for (obj in export_objects) {

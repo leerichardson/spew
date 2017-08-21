@@ -12,7 +12,11 @@ readEnvUS(input_folder, type = "sch")
 \item{type}{either "sch" or "wpl" currently}
 }
 \value{
+<<<<<<< Updated upstream
 data frame of schools or workplaces
+=======
+df of schools or workplaces
+>>>>>>> Stashed changes
 }
 \description{
 Read input data for environments for US

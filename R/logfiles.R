@@ -204,7 +204,7 @@ verify_column <- function(column, df_size) {
 check_logfile <- function(logfile) {
   # Verify the log-file made it to the
   # last line of SPEW
-  pops <- spew:::get_rows(logfile, "SPEW Runs in:" )
+  pops <- get_rows(logfile, "SPEW Runs in:" )
   if (length(pops) == 1) {
     pop_result <- TRUE
   } else {

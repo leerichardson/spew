@@ -16,7 +16,7 @@ opts_chunk$set(cache=TRUE, autodep=TRUE, cache.comments=FALSE)
 ```
 
 <a href="http://www.stat.cmu.edu/~spew">	
-  <img src = "SPEW.jpg" style="height:.75%;position:absolute;top:0px;right:0px;" />
+  <img src = "spew-too.png" style="height:.75%;position:absolute;top:0px;right:0px;" />
 </a>	
 
 #	Introduction 
@@ -48,7 +48,7 @@ library(spew)
 # Generate Tartanville 
 data(tartanville)
 tartanville_syneco <- spew(tartanville$pop_table, tartanville$shapefile,
-                            tartanville$pums_h, tartanville$pums_p)
+                            tartanville$pums_h, tartanville$pums_p, )
 
 plot_syneco(tartanville, tartanville_syneco,
             region_name = "Tartanville", 
@@ -258,11 +258,13 @@ SPEW requires three essential data inputs connected through the variables `place
 |-------------------|----------------------------------------------------------------|-----------------------|--------|
 | Population Counts | Table of number of individuals per region.                      | `place_id`, `puma_id` | `.csv` |
 | Shapefile         | Spatial boundaries of the regions in Population Counts.         | `place_id`            | `.shp` |
-| Microdata         | Table of individual records with individual-level characteristics.  Also known as Public Use Microdata Samples (PUMS).  We need both household-level microdata (`pums_h`) and individual-level microdata (`pums_p`). | `puma_id`             | `.csv` |
+| Microdata         | Table of individual records with individual-level characteristics.  Also known as Public Use 
+Microdata Samples (PUMS).  We need both household-level microdata (`pums_h`) and individual-level microdata (`pums_p`). | `puma_id`             | `.csv` |
 
 Given a row in the table of population counts with the variables `place_id` and `puma_id`, one should be able to find the unique region `place_id` in the shapefile that matches that of the row along with the microdata records with the same `puma_id`.
 
 Additionally, the above may be combined into a list along with a `roads` variable, `environments` variable and a `supplementary_data` variable to form an object used to spew the final synthetic ecosystem, e.g. the format of `tartanville`
+
 ```{r}
 data(tartanville)
 names(tartanville)
