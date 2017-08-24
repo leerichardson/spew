@@ -20,7 +20,7 @@ opts_chunk$set(cache=TRUE, autodep=TRUE, cache.comments=FALSE)
 </a>	
 
 #	Introduction 
-Welcome to SPEW (Synthetic Population and Ecosystems of the World).  This guide is for use in for basic usage of the `R` package [spew](https://github.com/leerichardson/spew).  This vignette will walk through the set-up of the fictitious human ecosystem of Tartanville.  We show how to quickly spew a synthetic ecosystem; sample agents using different methods for location assignments, sample agents using different methods for population characteristic assignments, discuss the essential input data for SPEW, expand upon the supplementary data format required for SPEW, and briefly describe some of the more advanced functions of SPEW. 
+Welcome to SPEW (Synthetic Population and Ecosystems of the World).  This guide is for use in for basic usage of the `R` package [spew](https://github.com/leerichardson/spew).  This vignette will walk through the set-up of the fictitious human ecosystem of Tartanville.  We show how to quickly 'spew' a synthetic ecosystem; sample agents using different methods for location assignments, sample agents using different methods for population characteristic assignments, discuss the essential input data for SPEW, expand upon the supplementary data format required for SPEW, and briefly describe some of the more advanced functions of SPEW. 
 
 SPEW uses random sampling to sample both locations of residence for the synthetic individuals and individual records from the microdata.  SPEW is modular in that it can use different methods of sampling to emphasize different aspects of the synthetic ecosystem.  A few methods are demonstrated here.  The methods in **bold** are the default options.	
 
@@ -28,21 +28,15 @@ SPEW uses random sampling to sample both locations of residence for the syntheti
 
 ## Downloading SPEW	
 Open up an `R` session and run the following commands.
-
-**Note:** the dependency `maptools` requires the `gpclib` permit.  The easiest way to get this is to download the `rgeos` package.
-
 ```{r, eval = FALSE}     
-library(devtools)
-if(!require(rgeos)) install.packages("rgeos")	
-install_github("leerichardson/spew")
+devtools::install_github("leerichardson/spew")
 ```
+The package is also available to download from CRAN.
 
 ##	Tartanville:  SPEW basics		
 		
+To plot with functions in SPEW, make sure `ggplot2` is	installed.	
 ```{r, warnings = FALSE}
-library(ggplot2)
-library(maptools)
-library(plyr)
 library(spew)		
 	
 # Generate Tartanville 
