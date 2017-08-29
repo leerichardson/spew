@@ -53,6 +53,9 @@ summarize_top_region <- function(output_dir,
                          marginals, vars_to_sum_p, vars_to_sum_env,
                          samp_size, coords=TRUE, read = TRUE)
 
+    hh_sum_list <- hh_sum_list[!sapply(hh_sum_list, is.null)] # get rid of empty regions
+    p_sum_list <- p_sum_list[!sapply(p_sum_list, is.null)]
+
     ## Organize parts into a more organized list
     out_list <- organize_summaries(hh_sum_list, p_sum_list,
                                    header_h, header_p,
@@ -173,11 +176,13 @@ check_var_names <- function(header_h, header_p,
 #' @param samp_size number of lon/lat coordinates to sample.  Default is 10^4
 #' @param read logical of whether we need to read in the populations.  Default is FALSE
 #' @param pops list of the populations produced by SPEW for a household OR people
+#' @param type either NULL, "households", or "people".  
 #' @return a list of length of  1 for the  region ID , 1 for population size, and optionally one for a dataframe of stored lat/long coords, the number of variables to summarize , and the environmental variables
 summarize_spew <- function(filenames, marginals= NULL, vars_to_sum,
                            env_vars=NULL,
                             coords = TRUE, samp_size=10^4,
-                           read = FALSE, pops = NULL){
+                           read = FALSE, pops = NULL,
+                           type = NULL){
     
     ## Read in the files with relevant columns and only and combine into a large data frame
     read_vars <- vars_to_sum
@@ -189,18 +194,20 @@ summarize_spew <- function(filenames, marginals= NULL, vars_to_sum,
                                            data.table::fread, select = read_vars,
                                            colClasses = list(character = "school_id")
                                            )))
-                                           
+        
     } else{
         df <- as.data.frame(do.call('rbind',
                                     lapply(filenames$files, 
                                            data.table::fread,  select = read_vars)
                                     ))
     }
+    region_id <- filenames$id
+
     
 
     total_pop <- nrow(df)
 
-    region_id <- filenames$id
+
 
     ## Sample coordinates if appropriate
     coords_df <- NULL
