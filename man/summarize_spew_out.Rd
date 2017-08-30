@@ -4,14 +4,13 @@
 \alias{summarize_spew_out}
 \title{Summarize spew output}
 \usage{
-summarize_spew_out(syneco, type = "US", vars_to_sum_h, vars_to_sum_p,
-  vars_to_sum_env = NULL, samp_size = 10^4, summary_level = 2,
-  marginals = NULL, output_dir = NULL)
+summarize_spew_out(syneco = NULL, vars_to_sum_h, vars_to_sum_p,
+  vars_to_sum_env = NULL, samp_size = 10^4, type = "US",
+  summary_level = 2, marginals = NULL, output_dir = NULL,
+  top_region_id = NULL, has_marg = FALSE)
 }
 \arguments{
 \item{syneco}{output from the 'spew' function}
-
-\item{type}{"US" for a US population, "IPUMS" for IPUMS population, or "custom" for a custom population.  This effects what the summary levels are.}
 
 \item{vars_to_sum_h}{character vector of variables from the household data frame output to summarize}
 
@@ -21,11 +20,17 @@ summarize_spew_out(syneco, type = "US", vars_to_sum_h, vars_to_sum_p,
 
 \item{samp_size}{number of agents to retain from each lower-level region, for plotting purposes only.  Default is 10^4.}
 
-\item{summary_level}{For the US, 1-state, 2-county, 3-tract.  For IPUMS, 1 -country, 2-province.  For "custom," these are defined by the user's input data.}
+\item{type}{Only used when output_dir is specified."US" for a US population, "IPUMS" for IPUMS population, or "custom" for a custom population.  This effects what the summary levels are.}
+
+\item{summary_level}{Only used when output_dir is specified.  IFor the US, 1-state, 2-county, 3-tract.  For IPUMS, 1 -country, 2-province.  For "custom," these are defined by the user's input data.}
 
 \item{marginals}{list containing all of the marginal totals.  See ?make_ipf_marg for more details.}
 
-\item{output_dir}{path to top level directory of SPEW folders.  Ex. "./10" for Delaware}
+\item{output_dir}{path to top level directory of SPEW folders.  Ex. "./10" for Delaware.  Default is NULL.  In the case it is NULL, we do not need to read in data.}
+
+\item{top_region_id}{name of the region.  Default is NULL.  It is only used in the case where we directly summarize the syneco object.}
+
+\item{has_marg.}{Does the region of marginals to refer to?  Logical.  Default is FALSE.}
 }
 \value{
 list with the household summary list, people summary list, header for households, and header for people, and a data frame of plotting coordinates by summary region

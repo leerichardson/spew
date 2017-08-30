@@ -5,7 +5,8 @@
 \title{Organize the summaries into a more palatable format}
 \usage{
 organize_summaries(hh_sum_list, p_sum_list, header_h, header_p, vars_to_sum_h,
-  vars_to_sum_p, env_vars, samp_size, top_region_id, coords = TRUE)
+  vars_to_sum_p, env_vars, samp_size, top_region_id, coords = TRUE,
+  has_marg = FALSE)
 }
 \arguments{
 \item{hh_sum_list}{output of summarize_spew for regions for households}
@@ -27,6 +28,8 @@ organize_summaries(hh_sum_list, p_sum_list, header_h, header_p, vars_to_sum_h,
 \item{top_region_id}{main region's ID or name}
 
 \item{coords}{logical of whether to extract the longitude/latitude coordinates and store.  Default is TRUE}
+
+\item{has_marg}{logical.  Does the synthetic ecosystem have marginals to look at?  Default is FALSE}
 }
 \value{
 list including the top region name, headers for households and people, a coordinate plotting data frame scaled to the density of the population with max samp_size records, and data frames of tables for each region for each of the characteristics

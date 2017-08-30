@@ -8,7 +8,7 @@ spew(pop_table, shapefile, pums_h, pums_p, schools = NULL,
   workplaces = NULL, marginals = NULL, output_type = "console",
   base_dir = NULL, convert_count = FALSE, run_type = "SEQ",
   sampling_method = "uniform", locations_method = "uniform",
-  outfile_loc = "", road_noise = 2e-04, timer = TRUE, verbose = TRUE)
+  outfile_loc = "", road_noise = 2e-04, timer = TRUE, verbose = FALSE)
 }
 \arguments{
 \item{pop_table}{dataframe where rows correspond to places where populations 
@@ -57,7 +57,7 @@ Only set to "/dev/null" for internal testing putposes.}
 
 \item{timer}{logical indicating we want to time the run}
 
-\item{verbose}{logical indicating we want to print output during the run}
+\item{verbose}{logical indicating we want to print output during the run.  Default is FALSE.}
 }
 \value{
 logical indicating whether or not this run of spew ended successfully
