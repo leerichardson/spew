@@ -217,6 +217,7 @@ plot_labs <- function(region_name, g = NULL){
 #' @param marginals list containing all of the marginal totals.  See ?make_ipf_marg for more details.
 #' @param output_dir path to top level directory of SPEW folders.  Ex. "./10" for Delaware.  Default is NULL.  In the case it is NULL, we do not need to read in data.
 #' @param top_region_id name of the region.  Default is NULL.  It is only used in the case where we directly summarize the syneco object.
+#' @param has_marg.  Does the region of marginals to refer to?  Logical.  Default is FALSE.
 #' @return list with the household summary list, people summary list, header for households, and header for people, and a data frame of plotting coordinates by summary region
 #' @note This function is only guaranteed to work when you provide marginals describing how a category is "cut."  If a certain category is not represented, then the final totals in each category may be off.
 #' @export
@@ -229,7 +230,8 @@ summarize_spew_out <- function(syneco= NULL,
                              summary_level=2,
                              marginals = NULL,
                              output_dir = NULL,
-                             top_region_id = NULL){
+                             top_region_id = NULL,
+                             has_marg = FALSE){
 
     ## If the output_dir is given, load in the individual files and summarize
     if(!is.null(output_dir)) return(summarize_top_region(output_dir, type, vars_to_sum_h,
@@ -257,13 +259,15 @@ summarize_spew_out <- function(syneco= NULL,
 #' @param samp_size number of agents to retain from each lower-level region, for plotting purposes only.  Default is 10^4.
 #' @param marginals list containing all of the marginal totals.  See ?make_ipf_marg for more details.
 #' @param top_region_id Name supplied of region.
+#' @param has_marg.  Does the region of marginals to refer to?  Logical.  Default is FALSE.
 #' @return list with the household summary list, people summary list, header for households, and header for people, and a data frame of plotting coordinates by summary region
 summarize_syneco <- function(syneco,   vars_to_sum_h, 
                              vars_to_sum_p,
                              vars_to_sum_env=NULL,
                              samp_size=10^4,
                              marginals = NULL,
-                             top_region_id){
+                             top_region_id = "Ecosystem",
+                             has_marg = FALSE){
 
     header_h <- colnames(syneco[[1]]$households)
     header_p <- colnames(syneco[[1]]$people)
@@ -281,7 +285,8 @@ summarize_syneco <- function(syneco,   vars_to_sum_h,
     out_list <- organize_summaries(hh_sum_list, p_sum_list,
                                    header_h, header_p,
                                    vars_to_sum_h, vars_to_sum_p, vars_to_sum_env,
-                                   samp_size, top_region_id, coords=FALSE)
+                                   samp_size, top_region_id, coords=FALSE,
+                                   has_marg = has_marg)
     
     return(out_list)
     

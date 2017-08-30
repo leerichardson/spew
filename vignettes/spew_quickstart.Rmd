@@ -31,29 +31,61 @@ Open up an `R` session and run the following commands.
 ```{r, eval = FALSE}     
 devtools::install_github("leerichardson/spew")
 ```
-The package is also available to download from CRAN.
+
+
 
 ##	Tartanville:  SPEW basics		
 		
 To plot with functions in SPEW, make sure `ggplot2` is	installed.	
-```{r, warnings = FALSE}
-library(spew)		
+```{r, eval = FALSE}
+library(spew)
 	
+# Generate Tartanville 
+data(tartanville)
+
+tartanville_syneco <- spew(tartanville$pop_table, tartanville$shapefile,
+                           tartanville$pums_h, tartanville$pums_p, )
+
+plot_syneco(tartanville, tartanville_syneco,
+                     region_name = "Tartanville")
+
+ out <- summarize_spew_out(tartanville_syneco, vars_to_sum_h = c("puma_id"),
+                            vars_to_sum_p = c("SEX"),
+                           vars_to_sum_env = NULL, top_region_id = "Tartanville")
+g <- plot_characteristic_proportions(feature_name = "Sex", legend_name = "Sex",
+                                feature_df = out$SEX,
+                                category_names = c("Male", "Female"),
+                                text_size = 10,
+                                region_colors = c("lightslateblue", "maroon1"))
+
+g <- plot_pop_totals(feature_df = out$pop_totals, type = "n_people")
+```
+
+```{r, warning = FALSE, results = 'hide', echo = FALSE, message = FALSE}
+devtools::load_all("~/spew")
 # Generate Tartanville 
 data(tartanville)
 tartanville_syneco <- spew(tartanville$pop_table, tartanville$shapefile,
                             tartanville$pums_h, tartanville$pums_p, )
 
 plot_syneco(tartanville, tartanville_syneco,
-            region_name = "Tartanville", 
-            pretty = TRUE)
+                     region_name = "Tartanville")
 
-summarize_syneco(tartanville_syneco,
-                 vars_df = data.frame(var_name = c("NP", "HHINC", "AGEP", "SEX"),
-                                      pop_type = c("hh", "hh", "p", "p"),
-                                      var_type = c("cont", "cont", "cont", "cat"),
-                                      stringsAsFactors = FALSE), verbose = TRUE)
+out <-  summarize_spew_out(tartanville_syneco, vars_to_sum_h = c("puma_id"),
+                            vars_to_sum_p = c("SEX"),
+                           vars_to_sum_env = NULL, top_region_id = "Tartanville")
+print(out)
+
+g <- plot_characteristic_proportions(feature_name = "Sex", legend_name = "Sex",
+                                feature_df = out$SEX,
+                                category_names = c("Male", "Female"),
+                                text_size = 10,
+                                region_colors = c("lightslateblue", "maroon1"))
+
+g <- plot_pop_totals(feature_df = out$pop_totals, type = "n_people")
+
 ```
+
 
 # Sampling of locations 
 In SPEW, we assign locations to our synthetic agents.  We currently support two methods of location assignment:
@@ -67,21 +99,19 @@ Uniform sampling of locations means sampling uniformly within the boundaries of 
 **Ex.** As shown in the 'A true quickstart' tab.
 
 ## Road-based sampling 
-Roads-based sampling requires the `shapefile` argument to be a list with two entries, the first as the `boundaries` and the second as the `roads`.  The first entry should be a shapefile of polygons, and the second, a shapefile of lines.  We see that in the resulting synthetic ecosystem, the agents are assigned locations closer to the roads than in uniform sampling.
+Roads-based sampling requires the `shapefile` argument to be a list with two entries, the first as the `boundaries` and the second as the `roads`.  The first entry should be a shapefile of polygons, and the second, a shapefile of lines.  We see that in the resulting synthetic ecosystem, the agents are assigned locations closer to the roads than in uniform sampling.  We can adjust the variability of how close the agents are to the roads by adjusting `roads_noise`.  Larger values result in larger variance.
 	    
 **Ex.**
 ```{r}
 data(tartanville)
-library(plyr)
 shapefile <- list(boundaries = tartanville$shapefile, roads = tartanville$roads)
 
 tartanville_syneco <- spew(tartanville$pop_table, shapefile,
                             tartanville$pums_h, tartanville$pums_p,
-                            locations_method = "roads")
+                            locations_method = "roads", road_noise = .05)
 
 plot_syneco(tartanville, tartanville_syneco,
-            region_name = "Tartanville", 
-            pretty = TRUE)
+            region_name = "Tartanville")
 ```	
      
 # Sampling of characteristics
@@ -117,25 +147,29 @@ supplementary_data <- list(moments = make_mm_obj(moments_list =
 
 ```
 
-And then we use SPEW, with the additional library `quadprog`, which is required for MM.  Note we have supplemented `spewr` with both a `supplementary_data` argument and the sampling method of `'mm'`.  The outputted synthetic ecosystem is in the same format.  We see that MM matches the inputted average household sizes well.
+And then we use SPEW, with the additional library `quadprog`, which is required for MM.  Note we have supplemented `spew` with both a `supplementary_data` argument and the sampling method of `'mm'`.  The outputted synthetic ecosystem is in the same format.  We see that MM matches the inputted average household sizes well, especially compared to uniform sampling.
 
 ```{r, warnings = FALSE}
-if(!require(quadprog)) install.packages("quadprog")    
-library(quadprog)
-
+data(tartanville)
 tartanville_syneco_mm <- spew(pop_table = tartanville$pop_table, 
                               shapefile = tartanville$shapefile,
                               pums_h = tartanville$pums_h, 
                               pums_p = tartanville$pums_p,
                               marginals = supplementary_data$moments, 
                               sampling_method = "mm")
-                              
-out <- summarize_syneco(tartanville_syneco_mm,
-                 vars_df = data.frame(var_name = c("NP"),
-                                      pop_type = c("hh"),
-                                      var_type = c("cont"),
-                                      stringsAsFactors = FALSE), verbose = TRUE)
-abs(out$NP$Mean - NP_avg[-2])
+
+non_empty_regions <- sapply(tartanville_syneco_mm, class) == "list"
+synthetic_NP_avg <- sapply(tartanville_syneco_mm[non_empty_regions], function(ll){
+    mean(ll$households$NP, na.rm = TRUE)
+    })
+sum(abs(synthetic_NP_avg - NP_avg[-2]))
+
+
+## Comparing to uniform sampling
+synthetic_NP_avg_unif<- sapply(tartanville_syneco[non_empty_regions], function(ll){
+    mean(ll$households$NP, na.rm = TRUE)
+    })
+sum(abs(synthetic_NP_avg_unif- NP_avg[-2]))
 ```
 
 ## Iterative Proportional Fitting
@@ -183,25 +217,23 @@ pums_h <- align_pums(tartanville$pums_h, ipf_obj, suffix = "_ipf") # split into 
 knitr::kable(head(pums_h))
 ```
 
-We are now ready to perform IPF-sampling and do so below.  We find that IPF matches the table we gave as expected number of households for each category in each marginal variable quite well. **Note:** IPF does not always converge, generally due to having a cell in the contingency with value 0.
+We are now ready to perform IPF-sampling and do so below.  SPEW relies on the `mipfp` package.  We find that IPF matches the table we gave as expected number of households for each category in each marginal variable quite well. **Note:** IPF does not always converge, generally due to having a cell in the contingency with value 0.  
 ```{r, warnings = FALSE}
-if(!require(mipfp)) install.packages("mipfp")       
-library(mipfp)
 tartanville_syneco_ipf <- spew(tartanville$pop_table, tartanville$shapefile,
                                pums_h, tartanville$pums_p,
                                marginals = supplementary_data$moments, 
                                sampling_method = "ipf")
 
-out <- summarize_syneco(tartanville_syneco_ipf,
-                 vars_df = data.frame(var_name = c("HHINC_ipf", "RAC1P_ipf"),
-                                      pop_type = c("hh", "hh"),
-                                      var_type = c("cat", "cat"),
-                                      stringsAsFactors = FALSE), verbose = TRUE)
 
-sum(abs(as.matrix(out$HHINC_ipf[, -1]) - as.matrix(df[-2, -1])))
-sum(abs(as.matrix(out$RAC1P_ipf[, -1]) - as.matrix(df2[-2, -1])))
+out <-  summarize_spew_out(tartanville_syneco_ipf, vars_to_sum_h = c("HHINC_ipf", "RAC1P_ipf"),
+                            vars_to_sum_p = c("SEX"),
+                    vars_to_sum_env = NULL, top_region_id = "Tartanville",
+                    marginals = supplementary_data$moments)
+
+sum(abs(as.matrix(out$HHINC_ipf[order(out$HHINC_ipf$region), -3]) - as.matrix(df[-2, -1])))
+sum(abs(as.matrix(out$RAC1P_ipf[order(out$HHINC_ipf$region), -3]) - as.matrix(df2[-2, -1])))
 ```
-We see we almost match almost perfectly on race and very closely on house hold income.
+We see we almost match almost perfectly on household income and very closely on race.
 
 # Assigning environments
 
@@ -216,7 +248,7 @@ tartanville_syneco <- spew(tartanville$pop_table, tartanville$shapefile,
                               tartanville$pums_h, tartanville$pums_p)
 
 plot_syneco(tartanville, tartanville_syneco,
-            region_name = "Tartanville", pretty = TRUE)	
+            region_name = "Tartanville")
 ```
 
 We first subset the data frame of students in T1.

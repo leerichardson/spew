@@ -162,6 +162,17 @@ test_that("individual functions for diagnostics work",{
                         coords = FALSE, read = TRUE)
     expect_true("school_id" %in% names(summary_p[[1]]))
 
+    ## Get_dfs without marginals
+    vars_to_sum <- c("RAC1P", "AGEP")
+    env_vars <- c("school_id", "workplace_id")
+    filenames_p <-  get_filenames(data_path, summary_level = 2,
+                                  agent_type = "people",
+                                  pop_type = "US")
+    summary_p <- lapply(filenames_p, summarize_spew,
+                        marginals = NULL, vars_to_sum, env_vars,
+                        coords = FALSE, read = TRUE)
+
+    dfs <- get_dfs(summary_p, vars_to_sum)
 
     ## Organize_summaries
     vars_to_sum <- c("HINCP", "NP")

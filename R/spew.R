@@ -87,7 +87,7 @@ call_spew <- function(base_dir, folders = NULL, data_group = "US", parallel_type
 #' Only set to "/dev/null" for internal testing putposes.
 #' @param road_noise Noise added to households during road-based sampling 
 #' @param timer logical indicating we want to time the run 
-#' @param verbose logical indicating we want to print output during the run
+#' @param verbose logical indicating we want to print output during the run.  Default is FALSE.
 #' 
 #' @export
 #' 
@@ -96,7 +96,7 @@ spew <- function(pop_table, shapefile, pums_h, pums_p,
                  schools = NULL, workplaces = NULL, marginals = NULL, 
                  output_type = "console", base_dir = NULL, convert_count = FALSE, 
                  run_type = "SEQ", sampling_method = "uniform", locations_method = "uniform", 
-                 outfile_loc = "", road_noise = .0002, timer = TRUE, verbose = TRUE) {
+                 outfile_loc = "", road_noise = .0002, timer = TRUE, verbose = FALSE) {
   if (timer == TRUE) { location_start_time <- Sys.time() }
   
   # Write out both the pop-table and environments ---

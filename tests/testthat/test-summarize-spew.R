@@ -45,5 +45,7 @@ test_that("functions for summarizing spew synecos in console",{
      out <- summarize_spew_out(tartanville_syneco, vars_to_sum_h = c("puma_id"),
                             vars_to_sum_p = c("SEX"),
                             vars_to_sum_env = NULL, top_region_id = "Tartanville")
+
+     ## Testing
     
  })
