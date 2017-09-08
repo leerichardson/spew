@@ -181,7 +181,7 @@ subset_shapes_roads <- function(place_id, shapefile) {
   }
   ## We need to have both sets of shapefiles to have
   ## the same CRS projections
-  proj4string(roads_sub) <-  proj4string(poly) 
+  sp::proj4string(roads_sub) <-  sp::proj4string(poly) 
   
   ## Subset the potential roads, intersect with the 
   ## polygon, verify it's the right class than return the 

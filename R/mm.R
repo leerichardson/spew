@@ -128,7 +128,7 @@ solve_mm_for_var <- function(var_ind, place_id, mm_row, pums, assumption, meq = 
     dvec <- rep(0, N)
     b <- c(1, M, rep(0, N))
     meq <- 2
-    p <- tryCatch({solve.QP(Q, dvec, A, b, meq)$solution}, error = function(e){
+    p <- tryCatch({quadprog::solve.QP(Q, dvec, A, b, meq)$solution}, error = function(e){
         print(e)
         p <- rep(1, N)
         return(p)

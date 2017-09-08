@@ -4,12 +4,14 @@
 \alias{get_dfs}
 \title{Get the dataframes from SPEW summary output}
 \usage{
-get_dfs(sum_list, vars_to_sum)
+get_dfs(sum_list, vars_to_sum, has_marg = FALSE)
 }
 \arguments{
 \item{sum_list}{from summarize_spew}
 
 \item{vars_to_sum}{variables to make data frames of}
+
+\item{has_marg}{logical.  Does the synthetic ecosystem have marginals to look at?  Default is FALSE}
 }
 \value{
 list of data frame for each variable

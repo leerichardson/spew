@@ -22,6 +22,9 @@ plot_characteristic_proportions(feature_name = "Feature",
 
 \item{region_colors}{a string of colors to color the map.  Default is from the colorblind friendly palette.}
 }
+\value{
+a gg map object
+}
 \description{
 Plot characteristic summary output from summarize_top_spew_region
 }

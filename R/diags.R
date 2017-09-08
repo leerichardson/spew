@@ -53,11 +53,15 @@ summarize_top_region <- function(output_dir,
                          marginals, vars_to_sum_p, vars_to_sum_env,
                          samp_size, coords=TRUE, read = TRUE)
 
+    hh_sum_list <- hh_sum_list[!sapply(hh_sum_list, is.null)] # get rid of empty regions
+    p_sum_list <- p_sum_list[!sapply(p_sum_list, is.null)]
+
     ## Organize parts into a more organized list
     out_list <- organize_summaries(hh_sum_list, p_sum_list,
                                    header_h, header_p,
                                    vars_to_sum_h, vars_to_sum_p, vars_to_sum_env,
-                                   samp_size, top_region_id, coords=TRUE)
+                                   samp_size, top_region_id, coords=TRUE,
+                                   has_marg = TRUE)
 
     return(out_list)
 }
@@ -173,11 +177,13 @@ check_var_names <- function(header_h, header_p,
 #' @param samp_size number of lon/lat coordinates to sample.  Default is 10^4
 #' @param read logical of whether we need to read in the populations.  Default is FALSE
 #' @param pops list of the populations produced by SPEW for a household OR people
+#' @param type either NULL, "households", or "people".  
 #' @return a list of length of  1 for the  region ID , 1 for population size, and optionally one for a dataframe of stored lat/long coords, the number of variables to summarize , and the environmental variables
 summarize_spew <- function(filenames, marginals= NULL, vars_to_sum,
                            env_vars=NULL,
                             coords = TRUE, samp_size=10^4,
-                           read = FALSE, pops = NULL){
+                           read = FALSE, pops = NULL,
+                           type = NULL){
     
     ## Read in the files with relevant columns and only and combine into a large data frame
     read_vars <- vars_to_sum
@@ -189,18 +195,20 @@ summarize_spew <- function(filenames, marginals= NULL, vars_to_sum,
                                            data.table::fread, select = read_vars,
                                            colClasses = list(character = "school_id")
                                            )))
-                                           
+        
     } else{
         df <- as.data.frame(do.call('rbind',
                                     lapply(filenames$files, 
                                            data.table::fread,  select = read_vars)
                                     ))
     }
+    region_id <- filenames$id
+
     
 
     total_pop <- nrow(df)
 
-    region_id <- filenames$id
+
 
     ## Sample coordinates if appropriate
     coords_df <- NULL
@@ -280,17 +288,19 @@ summarize_environment <- function(df, env_vars){
 #' @param samp_size total number sampled in each region for plotting
 #' @param top_region_id main region's ID or name
 #' @param coords logical of whether to extract the longitude/latitude coordinates and store.  Default is TRUE
+#' @param has_marg logical.  Does the synthetic ecosystem have marginals to look at?  Default is FALSE
 #' @return list including the top region name, headers for households and people, a coordinate plotting data frame scaled to the density of the population with max samp_size records, and data frames of tables for each region for each of the characteristics
 organize_summaries <- function(hh_sum_list, p_sum_list,
                                header_h, header_p,
                                vars_to_sum_h, vars_to_sum_p, env_vars,
-                               samp_size, top_region_id, coords=TRUE){
+                               samp_size, top_region_id, coords=TRUE,
+                               has_marg = FALSE){
 
     pop_totals <- get_pop_totals(hh_sum_list, p_sum_list)
     n_house <- sum(pop_totals$n_house)
     n_people <- sum(pop_totals$n_people)
-    household_dfs <- get_dfs(hh_sum_list, vars_to_sum_h)
-    people_dfs <- get_dfs(p_sum_list, vars_to_sum_p)
+    household_dfs <- get_dfs(hh_sum_list, vars_to_sum_h, has_marg)
+    people_dfs <- get_dfs(p_sum_list, vars_to_sum_p, has_marg)
     env_dfs <- get_envs(p_sum_list, env_vars)
     coords_df <- get_coords_scaled(p_sum_list, samp_size,
                                    coords, pop_totals)
@@ -323,11 +333,31 @@ get_pop_totals <- function(hh_sum_list, p_sum_list){
 #'
 #' @param sum_list from summarize_spew
 #' @param vars_to_sum variables to make data frames of
+#' @param has_marg logical.  Does the synthetic ecosystem have marginals to look at?  Default is FALSE
 #' @return list of data frame for each variable
 #' @details the output is very gg-verse friendly
-get_dfs <- function(sum_list, vars_to_sum){
+get_dfs <- function(sum_list, vars_to_sum, has_marg = FALSE){
     region <- as.vector(sapply(sum_list, "[[", "region_id"))
-    df_list <- lapply(vars_to_sum,
+    if(!has_marg){  ## Uses the Reduce function which an result in a stack overflow
+        df_list <- lapply(vars_to_sum,
+                          function(var){
+                              ll <- lapply(sum_list, "[[", var)
+                              out_list <- lapply(ll, function(vec){
+                                  df <- as.data.frame(matrix(as.numeric(vec), nrow = 1))
+                                  colnames(df) <- names(vec)
+                                  df
+                              })
+                              out_list <- lapply(1:length(out_list), function(ind){ # to keep track of the proper region
+                                  out_list[[ind]]$region <- region[ind]
+                                  out_list[[ind]]
+                              })
+                              df <- Reduce(merge_reduce, out_list)
+                              reg <- which(colnames(df) == "place_id")
+                              if(length(reg) > 0) colnames(df)[reg] <- "region"
+                              df
+                          })
+    } else {
+        df_list <- lapply(vars_to_sum,
                       function(var){
                           df <- as.data.frame(do.call('rbind',
                                              lapply(sum_list, "[[", var)
@@ -336,9 +366,23 @@ get_dfs <- function(sum_list, vars_to_sum){
                           rownames(df) <- NULL
                           df
                       })
+    }
     names(df_list) <- vars_to_sum
     return(df_list)
 }
+
+#' Wrapper function for merge
+#'
+#' @param x x component of merge
+#' @param y y component of merge
+#' @return a function
+#' @notes This sets the merge default to all = TRUE.  To use in the Reduce function
+merge_reduce <- function(x,y){
+    g <- merge(x,y, all = TRUE)
+    return(g)
+}
+
+
 
 #' Gather the unique assignments for the region
 #'
@@ -484,6 +528,8 @@ base_map_theme <- function(){
 #' @param category_names optional labels to display as the category types.  Default is whatever is contained in the feature_df.
 #' @param text_size axis text size.  Default is 10
 #' @param region_colors a string of colors to color the map.  Default is from the colorblind friendly palette.
+#' @return a gg map object
+#' @export
 plot_characteristic_proportions <- function(feature_name = "Feature",
                                             legend_name = "Types", feature_df,
                                             category_names = NULL,
@@ -505,7 +551,7 @@ plot_characteristic_proportions <- function(feature_name = "Feature",
 
     ## Color configuration
     cols <- rep(region_colors, length.out = n_cats)
-    col_scale <- ggplot2::scale_fill_manual( values = cols) 
+    col_scale <- ggplot2::scale_fill_manual( values = rev(cols) )
 
     ## Making our df of tables ggplot compatible
     df_melt <- reshape2::melt(plot_df, id.vars = "region")
@@ -538,6 +584,8 @@ plot_characteristic_proportions <- function(feature_name = "Feature",
 #' @param type either "n_house" or "n_people".  Default is n_people 
 #' @param text_size axis text size.  Default is 10
 #' @param region_colors a string of colors to color the map.  Default is from the colorblind friendly palette.
+#' @return a gg map object
+#' @export
 plot_pop_totals <- function( feature_df, type = "n_people",
                             text_size = 10,
                             region_colors= c("#999999", "#E69F00", "#56B4E9",

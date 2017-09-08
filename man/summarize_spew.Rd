@@ -5,7 +5,8 @@
 \title{Summarize a SPEW region}
 \usage{
 summarize_spew(filenames, marginals = NULL, vars_to_sum, env_vars = NULL,
-  coords = TRUE, samp_size = 10^4, read = FALSE, pops = NULL)
+  coords = TRUE, samp_size = 10^4, read = FALSE, pops = NULL,
+  type = NULL)
 }
 \arguments{
 \item{filenames}{list of full path to files to summarize and the id of the region}
@@ -23,6 +24,8 @@ summarize_spew(filenames, marginals = NULL, vars_to_sum, env_vars = NULL,
 \item{read}{logical of whether we need to read in the populations.  Default is FALSE}
 
 \item{pops}{list of the populations produced by SPEW for a household OR people}
+
+\item{type}{either NULL, "households", or "people".}
 }
 \value{
 a list of length of  1 for the  region ID , 1 for population size, and optionally one for a dataframe of stored lat/long coords, the number of variables to summarize , and the environmental variables
