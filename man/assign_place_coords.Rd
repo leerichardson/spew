@@ -14,15 +14,17 @@ assign_place_coords(pop, places, place_name = "place", method = "uniform",
 
 \item{place_name}{string that will become the column name of the place}
 
-\item{method}{c("uniform", "capacity") The method on how we assign places.  The "uniform" argument  means that we do not consider capacity in assignments, only distance.  Conversely, "capacity" means we do consider capacity when assigning agents to places.  The default is "uniform".}
+\item{method}{c("uniform", "capacity") The method on how we assign places.  The "uniform" 
+argument  means that we do not consider capacity in assignments, only distance.  
+Conversely, "capacity" means we do consider capacity when assigning agents to places.
+The default is "uniform".}
 
-<<<<<<< Updated upstream
-\item{dist_fxn}{a function with args x1, y1, x2, y2 that returns a single number.  The default is Euclidean Distance \eqn{d((x1, y1), (x2,y2) = \sqrt{(x1-x2)^2 + (y1 - y2)^2}}.  The distance should satisfy the requirements of a metric.}
-=======
-\item{dist_fxn}{a function with args x1, y1, x2, y2 that returns a single number.  The default is Euclidean Distance $d((x1, y1), (x2,y2) = sqrt( x1-x2)^2 + (y1 - y2)^2 ).  The distance should satisfy the requirements of a metric.}
->>>>>>> Stashed changes
+\item{dist_fxn}{a function with args x1, y1, x2, y2 that returns a single number. 
+The default is Euclidean Distance $d((x1, y1), (x2,y2) = sqrt( x1-x2)^2 + (y1 - y2)^2 ).  
+The distance should satisfy the requirements of a metric.}
 
-\item{cap_fxn}{a function with one argument, a single capacity.  This should be a monotone increasing function.  The default is cap_default.}
+\item{cap_fxn}{a function with one argument, a single capacity.
+This should be a monotone increasing function.  The default is cap_default.}
 }
 \value{
 data frame with column of place_name with the place_ids, e.g. assignments of the places to the agents.

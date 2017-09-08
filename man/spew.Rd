@@ -2,7 +2,6 @@
 % Please edit documentation in R/spew.R
 \name{spew}
 \alias{spew}
-\alias{spew-alg}
 \title{SPEW algorithm to generate synthetic ecosystems}
 \usage{
 spew(pop_table, shapefile, pums_h, pums_p, schools = NULL,
