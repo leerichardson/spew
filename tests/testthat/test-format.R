@@ -16,20 +16,25 @@ test_that("ipums formatting", {
   skip_if_not_installed("stringdist")
   
   # Write all format output to a file 
-  data(uruguay_data)
+  uruguay_path <- system.file("extdata/ury", package = "spew")
+  uruguay_raw <- read_data(base_dir = uruguay_path, 
+                       data_group = "ipums", 
+                       folders = list(pop_table = "counts", 
+                                      pums = "pums", 
+                                      shapefiles = "shapefiles"))
   library(stringdist)
   
   # Check that we are getting the accurate level 
-  shape_names <- uruguay_data$shapefiles$place_id
-  level <- get_level(shape_names, uruguay_data$pop_table)
+  shape_names <- uruguay_raw$shapefiles$place_id
+  level <- get_level(shape_names, uruguay_raw$pop_table)
   expect_equal(level, "level2")
   
-  level_indices <- which(uruguay_data$pop_table$level == level)
-  count_names <- uruguay_data$pop_table$place_id[level_indices]
+  level_indices <- which(uruguay_raw$pop_table$level == level)
+  count_names <- uruguay_raw$pop_table$place_id[level_indices]
   shape_indices <- get_shapefile_indices(shape_names, count_names)
 
   # Make sure the formatted data is doing the right thing 
-  uruguay_format <- format_data(data_list = uruguay_data, data_group = "ipums", verbose = FALSE)
+  uruguay_format <- format_data(data_list = uruguay_raw, data_group = "ipums", verbose = FALSE)
   expect_equal(nrow(uruguay_format$pop_table) == 19, TRUE)
   expect_equal(all(uruguay_format$pop_table$place_id == uruguay_format$pop_table$place_id), TRUE)  
 
@@ -40,6 +45,6 @@ test_that("ipums formatting", {
   expect_equal(new_counts[1] > pseudo_counts[1], TRUE)
   
   # Verify that we can combine counts and remove rows 
-  pt_remove <- remove_count(pop_table = uruguay_format$pop_table, place = "Rocha")
+  pt_remove <- remove_count(pop_table = uruguay_format$pop_table, place = "rocha")
   expect_equal(nrow(pt_remove) == 18, TRUE)
 })

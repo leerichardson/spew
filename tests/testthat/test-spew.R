@@ -5,7 +5,7 @@
 #   skip_if_not_installed("Rmpi")
 # 
 #   data(delaware)
-#   data(uruguay_format)
+#   data(uruguay)
 #   library(sp)
 #   library(rgeos)
 #   library(data.table)

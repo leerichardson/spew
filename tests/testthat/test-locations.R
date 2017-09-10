@@ -22,12 +22,12 @@ test_that("Single and Multiple Polygons", {
 
 test_that("IPUMS Shapefiles work", {
   library(sp)
-  data(uruguay_format)
+  data(uruguay)
   
   num_samples <- 100
-  place_names <- uruguay_format$shapefiles$place_id
+  place_names <- uruguay$shapefiles$place_id
   for (place in place_names[1:6]) {
-    samp <- sample_locations(method = "uniform", place, num_samples, uruguay_format$shapefiles)
+    samp <- sample_locations(method = "uniform", place, num_samples, uruguay$shapefiles)
     expect_equal(length(samp), num_samples)
   }
   
