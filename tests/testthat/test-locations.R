@@ -2,19 +2,21 @@ context("Location Sampling")
 
 test_that("Single and Multiple Polygons", {
   library(sp)
-  data(sd_data)
+  data(delaware)
+  row <- delaware$pop_table[100, ]
+  
   
   multiple_polygons <- sample_locations(method = "uniform", 
-                                        place_id = 46027965700, n_house = 100, 
-                                        shapefile = sd_data$shapefiles$shapefile)
+                                        place_id = row[, "place_id"], n_house = row[, "n_house"], 
+                                        shapefile = delaware$shapefiles$shapefile)
   expect_equal(is.null(multiple_polygons), FALSE)
   
   num_samples <- floor(runif(1, min = 1, max = 200))
-  rand_row <- floor(runif(1, min = 1, max = nrow(sd_data$pop_table)))  
+  rand_row <- floor(runif(1, min = 1, max = nrow(delaware$pop_table)))  
   single_polygon <- sample_locations(method = "uniform", 
-                                     place_id = sd_data$pop_table[rand_row, "place_id"], 
+                                     place_id = delaware$pop_table[rand_row, "place_id"], 
                                      n_house = num_samples, 
-                                     shapefile = sd_data$shapefiles$shapefile)
+                                     shapefile = delaware$shapefiles$shapefile)
   expect_equal(length(single_polygon), num_samples)
 })
 
@@ -28,6 +30,7 @@ test_that("IPUMS Shapefiles work", {
     samp <- sample_locations(method = "uniform", place, num_samples, uruguay_format$shapefiles)
     expect_equal(length(samp), num_samples)
   }
+  
 })
 
 
@@ -86,16 +89,16 @@ test_that("Uniform Large Households", {
   # Load in the South Dakota data
   library(maptools)
   library(sp)
-  data(sd_data)
+  data(delaware)
 
   # Verify the Uniform sampling methodology still works
   number_houses <- 1000
-  pid <- "46135966302"
+  pid <- delaware$pop_table[100, "place_id"]
 
   uniform_locations <- sample_locations(method = "uniform",
                                         place_id = pid,
                                         n_house = number_houses,
-                                        shapefile = sd_data$shapefiles$shapefile, 
+                                        shapefile = delaware$shapefiles$shapefile, 
                                         noise = .01)
 
   # Verify uniform sampling works for a large number of points 
@@ -103,7 +106,7 @@ test_that("Uniform Large Households", {
   uniform_locations_large <- sample_locations(method = "uniform",
                                               place_id = pid,
                                               n_house = large_num_houses,
-                                              shapefile = sd_data$shapefiles$shapefile, 
+                                              shapefile = delaware$shapefiles$shapefile, 
                                               noise = .001)
   
   # Verify the results are the correct class and equal length

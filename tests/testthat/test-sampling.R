@@ -5,25 +5,25 @@ test_that("Moment Matching", {
   skip_if_not_installed("quadprog")
   library(quadprog)
   library(plyr)
-  data(sd_data)
+  data(delaware)
 
   # Load in all of the necessary data 
-  sd_hh <- sd_data$pums$pums_h
-  sd_p <- sd_data$pums$pums_p
-  sd_poptab <- sd_data$pop_table
+  del_hh <- delaware$pums$pums_h
+  del_p <- delaware$pums$pums_p
+  del_poptab <- delaware$pop_table
   
   # Subset the data to a particular PUMA 
   puma <- 300
-  sd_hh <- sd_hh[which(sd_hh$puma_id == puma), ]
-  sd_p <- sd_p[which(sd_p$puma_id == puma), ]
-  sd_poptab <- sd_poptab[which(sd_poptab$puma_id == puma), ]
-  pums <- sd_hh
+  del_hh <- del_hh[which(del_hh$puma_id == puma), ]
+  del_p <- del_p[which(del_p$puma_id == puma), ]
+  del_poptab <- del_poptab[which(del_poptab$puma_id == puma), ]
+  pums <- del_hh
 
   # Testing functions
   place_id <- "SG1"
   puma_id <- "LFR"
   mm_row <- data.frame(place_id = place_id, puma_id = puma_id, NP = 2.8)
-  pums <- sd_hh
+  pums <- del_hh
   var_ind <- 3
   var_name <- "NP"
   counts <- 10^5

@@ -3,25 +3,25 @@ context("School Functions")
 test_that("United States School Assignment", {
   
   # Get the data for a randomly sampled tract set up ------------------------
-  data(sd_data)
-  index <- sample(x = 1:nrow(sd_data$pop_table), size = 1)
+  data(delaware)
+  index <- sample(x = 1:nrow(delaware$pop_table), size = 1)
   
   # Obtain the specific parameters for this run of make 
-  n_house <- sd_data$pop_table[index, "n_house"]
-  puma_id <- sd_data$pop_table[index, "puma_id"]
-  place_id <- sd_data$pop_table[index, "place_id"]
+  n_house <- delaware$pop_table[index, "n_house"]
+  puma_id <- delaware$pop_table[index, "puma_id"]
+  place_id <- delaware$pop_table[index, "place_id"]
   
   # Sample n indices from the household pums 
   sampled_households <- sample_households(method = "uniform",
                                           n_house = n_house, 
-                                          pums_h = sd_data$pums$pums_h, 
-                                          pums_p = sd_data$pums$pums_p, 
+                                          pums_h = delaware$pums$pums_h, 
+                                          pums_p = delaware$pums$pums_p, 
                                           puma_id = puma_id, 
                                           place_id = place_id)
   
   # Attach locations to the sample households 
   locations <- sample_locations(method = "uniform", place_id = place_id, n_house = n_house, 
-                                shapefile = sd_data$shapefile$shapefile)
+                                shapefile = delaware$shapefile$shapefile)
   sampled_households$longitude <- locations@coords[, 1]
   sampled_households$latitude <- locations@coords[, 2]
   
@@ -37,7 +37,7 @@ test_that("United States School Assignment", {
   # sure to include both the place and puma id
   sampled_people <- sample_people(method = "uniform", 
                                   household_pums = sampled_households, 
-                                  pums_p = sd_data$pums$pums_p, 
+                                  pums_p = delaware$pums$pums_p, 
                                   puma_id = puma_id, 
                                   place_id = place_id)    
   sampled_people$place_id <- place_id
@@ -49,7 +49,7 @@ test_that("United States School Assignment", {
   # Set up school assignment data-frame 
   school_var <- sampled_people$SCH
   school_grades <- sampled_people$SCHG
-  school_ids <- assign_schools(sampled_people, sd_data$schools)
+  school_ids <- assign_schools(sampled_people, delaware$schools)
   ages <- sampled_people$AGEP
   
   school_df <- data.frame(enroll = school_var, grade = school_grades, 
@@ -72,4 +72,3 @@ test_that("United States School Assignment", {
   non_school_assignments <- school_df$assignments[non_school_indices]
   expect_equal(all(is.na(non_school_assignments)), TRUE)
 })
-

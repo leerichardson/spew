@@ -3,25 +3,25 @@ context("Workplace Functions")
 test_that("United States Workplace Assignment", {
   
   # Get the data for a randomly sampled tract set up ------------------------
-  data(sd_data)
-  index <- sample(x = 1:nrow(sd_data$pop_table), size = 1)
+  data(delaware)
+  index <- sample(x = 1:nrow(delaware$pop_table), size = 1)
   
   # Obtain the specific parameters for this run of make 
-  n_house <- sd_data$pop_table[index, "n_house"]
-  puma_id <- sd_data$pop_table[index, "puma_id"]
-  place_id <- sd_data$pop_table[index, "place_id"]
+  n_house <- delaware$pop_table[index, "n_house"]
+  puma_id <- delaware$pop_table[index, "puma_id"]
+  place_id <- delaware$pop_table[index, "place_id"]
   
   # Sample n indices from the household pums 
   sampled_households <- sample_households(method = "uniform",
                                           n_house = n_house, 
-                                          pums_h = sd_data$pums$pums_h, 
-                                          pums_p = sd_data$pums$pums_p, 
+                                          pums_h = delaware$pums$pums_h, 
+                                          pums_p = delaware$pums$pums_p, 
                                           puma_id = puma_id, 
                                           place_id = place_id)
   
   # Attach locations to the sample households 
   locations <- sample_locations(method = "uniform", place_id = place_id, n_house = n_house, 
-                                shapefile = sd_data$shapefile$shapefile)
+                                shapefile = delaware$shapefile$shapefile)
   sampled_households$longitude <- locations@coords[, 1]
   sampled_households$latitude <- locations@coords[, 2]
   
@@ -37,7 +37,7 @@ test_that("United States Workplace Assignment", {
   # sure to include both the place and puma id
   sampled_people <- sample_people(method = "uniform", 
                                   household_pums = sampled_households, 
-                                  pums_p = sd_data$pums$pums_p, 
+                                  pums_p = delaware$pums$pums_p, 
                                   puma_id = puma_id, 
                                   place_id = place_id)  
   
@@ -52,7 +52,7 @@ test_that("United States Workplace Assignment", {
   library(plyr)
   
   # Set up workplace assignment data-frame 
-  workplace_ids <- assign_workplaces(sampled_people, sd_data$workplaces)
+  workplace_ids <- assign_workplaces(sampled_people, delaware$workplaces)
 
   work_df <- data.frame(emp = sampled_people$emp,
                         work = workplace_ids,
@@ -65,7 +65,7 @@ test_that("United States Workplace Assignment", {
   expect_equal(any(is.na(work_df$work[worker_inds])), FALSE)
 
   # make sure all the workplaces assigned are from the proper subset
-  workplaces <- sd_data$workplaces
+  workplaces <- delaware$workplaces
   workplaces$st <- substr(workplaces$stcotr, 1, 2)
   workplaces$co <- substr(workplaces$stcotr, 3, 5)
   stno <- sampled_people$st[1]
