@@ -24,7 +24,9 @@ Suggests:
     data.table,
     snow,
     rgdal,
-    methods
+    methods,
+    ggplot2,
+    reshape2
 VignetteBuilder: knitr
 Imports:
     sp,

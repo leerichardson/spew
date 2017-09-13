@@ -17,3 +17,6 @@ a function
 \description{
 Wrapper function for merge
 }
+\note{
+This sets the merge default to all = TRUE.  To use in the Reduce function
+}

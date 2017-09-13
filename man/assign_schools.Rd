@@ -11,6 +11,10 @@ assign_schools(people, schools, weightSchools = weight_dists,
 \item{people}{data frame of synthetic people}
 
 \item{schools}{list with public and private school data frames}
+
+\item{weightSchools}{Function to weight the schools}
+
+\item{distFun}{Function to compute distance between schools and agents}
 }
 \value{
 a column of school assignments by school ID

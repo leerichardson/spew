@@ -2,6 +2,9 @@
 #' 
 #' @param people data frame of synthetic people
 #' @param schools list with public and private school data frames 
+#' @param weightSchools Function to weight the schools 
+#' @param distFun Function to compute distance between schools and agents 
+#' 
 #' @references See PUMS CODEBOOK:  http://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2010-2014.pdf
 #' @return a column of school assignments by school ID 
 assign_schools <- function(people, schools, weightSchools = weight_dists, distFun = haversine) {
@@ -34,7 +37,8 @@ assign_schools <- function(people, schools, weightSchools = weight_dists, distFu
   people <- people[people_ord, ]
   
   school_assignments <- plyr::ddply(people, .variables = c('SCH', 'SCHG', 'grade', 'age', 'co'), 
-                              .fun = assign_schools_inner, schools = schools, weightSchools = weightSchools, distFun = distFun)
+                              .fun = assign_schools_inner, schools = schools, 
+                              weightSchools = weightSchools, distFun = distFun)
   school_ids <- school_assignments$ids[original_order]
   
   return(school_ids)
@@ -43,6 +47,9 @@ assign_schools <- function(people, schools, weightSchools = weight_dists, distFu
 #' Function which assigns schools 
 #' @param df subset of people split so all age, grade, SCH, and county should be the same in the df
 #' @param schools list of schools, one data frame of private and one of public 
+#' @param weightSchools Function to weight the schools 
+#' @param distFun Function to compute distance between schools and agents 
+#' 
 #' @return column of school ID assignments
 assign_schools_inner <- function(df, schools, weightSchools, distFun) {
   # Check for the conditions of a school age child 
@@ -126,7 +133,7 @@ weight_dists2 <- function(dist_mat, schools){
 #' n is the number of schools
 #' @param schools_sub data frame of schools
 #' @return m x n matrix of probabilities.  Each row should sum to 1
-weight_dists_D<- function(dist_mat, schools){
+weight_dists_D <- function(dist_mat, schools){
   m <- nrow(dist_mat)
   n <- ncol(dist_mat)
   weights <-  exp( 1 + 1 / (dist_mat / 20 ))
@@ -138,15 +145,13 @@ weight_dists_D<- function(dist_mat, schools){
   return(weights)
 }
 
-
-
 #' Weight school assignment probabilities by capacity only
 #'
 #' @param dist_mat a m x n matrix where m is the number of people and 
 #' n is the number of schools
 #' @param schools_sub data frame of schools
 #' @return m x n matrix of probabilities.  Each row should sum to 1
-weight_dists_C<- function(dist_mat, schools){
+weight_dists_C <- function(dist_mat, schools){
   m <- nrow(dist_mat)
   n <- ncol(dist_mat)
   

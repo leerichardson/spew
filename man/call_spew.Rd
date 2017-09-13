@@ -37,7 +37,8 @@ which variables to include in the corresponding household and person PUMS data-s
 \item{do_write}{logical, do we need to write out the synthetic populations and environments?
 If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.}
 
-\item{noise}{a numeric value indicating the value of the noise we add to household locations during road-based sampling.  Default is .0002.}
+\item{noise}{a numeric value indicating the value of the noise we add to household 
+locations during road-based sampling.  Default is .0002.}
 
 \item{data-group}{character, either "US", "ipums", or "none"}
 }

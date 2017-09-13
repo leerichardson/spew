@@ -10,6 +10,10 @@ assign_schools_inner(df, schools, weightSchools, distFun)
 \item{df}{subset of people split so all age, grade, SCH, and county should be the same in the df}
 
 \item{schools}{list of schools, one data frame of private and one of public}
+
+\item{weightSchools}{Function to weight the schools}
+
+\item{distFun}{Function to compute distance between schools and agents}
 }
 \value{
 column of school ID assignments

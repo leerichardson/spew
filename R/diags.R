@@ -376,7 +376,8 @@ get_dfs <- function(sum_list, vars_to_sum, has_marg = FALSE){
 #' @param x x component of merge
 #' @param y y component of merge
 #' @return a function
-#' @notes This sets the merge default to all = TRUE.  To use in the Reduce function
+#' 
+#' @note This sets the merge default to all = TRUE.  To use in the Reduce function
 merge_reduce <- function(x,y){
     g <- merge(x,y, all = TRUE)
     return(g)

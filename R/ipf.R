@@ -300,7 +300,12 @@ assign_weights <- function(pums, table, alpha, k, marginals) {
 
 #' Calculate distance b/w cont table row and pums 
 #' 
+#' @param pums 
 #' @param table_row 
+#' @param alpha 
+#' @param k 
+#' @param marginals 
+#' 
 calc_dists <- function(pums, table_row, alpha, k, marginals) {
   # Get the ordinal and categorical variable names
   var_types <- lapply(marginals, function(x) x[["type"]])
