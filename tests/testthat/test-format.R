@@ -1,6 +1,9 @@
 context("Format functions")
+testthat::skip_on_cran()
 
 test_that("United States formatting", { 
+  testthat::skip_on_cran()
+  
   # Write all format output to a file 
   data(delaware)
   
@@ -13,10 +16,17 @@ test_that("United States formatting", {
 }) 
 
 test_that("ipums formatting", { 
-  skip_if_not_installed("stringdist")
+  testthat::skip_on_cran()
+  testthat::skip_if_not_installed("stringdist")
   
   # Write all format output to a file 
   uruguay_path <- system.file("extdata/ury", package = "spew")
+
+  # Skip if the delaware data is not available!  
+  if (!file.exists(uruguay_path)) {
+    skip("Skipping: Can't find Delaware Data!")
+  }
+  
   uruguay_raw <- read_data(base_dir = uruguay_path, 
                        data_group = "ipums", 
                        folders = list(pop_table = "counts", 

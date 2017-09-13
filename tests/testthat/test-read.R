@@ -1,6 +1,8 @@
 context("Read Functions")
 
 test_that("United States functions", {
+  testthat::skip_on_cran()
+  
   library(maptools)
   library(rgeos)
   library(rgdal)
@@ -14,7 +16,6 @@ test_that("United States functions", {
     skip("Skipping: Can't find Delaware Data!")
   }
   
-  
   # Set the new delaware folders
   delaware_folders <- list(pop_table = "counts/natstat/2010/tract", 
                            pums = "pums/natstat/2013/puma", 
@@ -25,8 +26,7 @@ test_that("United States functions", {
                            workplaces = "workplaces/natstat/2009/county", 
                            marginals = "marginals/natstat/2014/tract")
 
-  ## Test the read_shapespatial_to_ogr function
-
+  # Test the read_shapespatial_to_ogr function
   files <- list.files(file.path(data_path, delaware_folders$shapefiles))
   file <- grep(".shp$", files, value = TRUE)
   shp <- read_shapespatial_to_ogr(file.path(data_path, delaware_folders$shapefiles, file))
@@ -38,8 +38,8 @@ test_that("United States functions", {
                                       folders = delaware_folders)
   
   # Data-frame has correct dimensions 
-  expect_equal(nrow(delaware_poptable), 218)
-  expect_equal(ncol(delaware_poptable), 4)
+  expect_equal(nrow(delaware_poptable), 33)
+  expect_equal(ncol(delaware_poptable), 6)
   expect_equal(class(delaware_poptable), "data.frame")
   
   # Make sure stringAsFactors=FALSE 
@@ -75,11 +75,11 @@ test_that("United States functions", {
   delaware_pums <- read_pums(data_path, 
                              data_group = "US", 
                              folders = delaware_folders, 
-                             vars = list(household = c("SERIALNO", "ST"), 
+                             vars = list(household = c("SERIALNO", "PUMA"), 
                                          person = c("SERIALNO", "ST")))
   
   expect_equal(ncol(delaware_pums$pums_h), 2) 
-  expect_equal(names(delaware_pums$pums_h), c("SERIALNO", "ST"))
+  expect_equal(names(delaware_pums$pums_h), c("SERIALNO", "PUMA"))
   expect_equal(ncol(delaware_pums$pums_h), 2)
   
   # Shapefile ---
@@ -96,7 +96,7 @@ test_that("United States functions", {
   
   # Test the standardization functions
   standard_shape <- standardize_shapefiles(delaware_shape, data_group = "US")
-  expect_true(length(standard_shape$shapefile$place_id) == 218)
+  expect_true(length(standard_shape$shapefile$place_id) == 33)
   expect_true(class(standard_shape$shapefile$place_id) == "character")
   
   # Schools ---
@@ -135,6 +135,8 @@ test_that("United States functions", {
 })
 
 test_that("ipums functions", {
+  testthat::skip_on_cran()
+  
   # Make sure we are using the correct data-raw directory 
   # as opposed to the test/testthat one within the package 
   library(data.table)
@@ -193,6 +195,8 @@ test_that("ipums functions", {
 })
 
 test_that("custom group read functions", {
+  testthat::skip_on_cran()
+  
   data_path <- system.file("extdata/ury", package = "spew")
   
   # Skip if the delaware data is not available!  

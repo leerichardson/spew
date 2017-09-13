@@ -3,7 +3,7 @@ context("Location Sampling")
 test_that("Single and Multiple Polygons", {
   library(sp)
   data(delaware)
-  row <- delaware$pop_table[100, ]
+  row <- delaware$pop_table[17, ]
   
   
   multiple_polygons <- sample_locations(method = "uniform", 
@@ -41,7 +41,7 @@ test_that("Road sampling works", {
   library(maptools)
 
   data(delaware)
-  row <- 2
+  row <- 17
   pid <- delaware$pop_table$place_id[row]
   number_houses <- delaware$pop_table$n_house[row]
   
@@ -93,7 +93,7 @@ test_that("Uniform Large Households", {
 
   # Verify the Uniform sampling methodology still works
   number_houses <- 1000
-  pid <- delaware$pop_table[100, "place_id"]
+  pid <- delaware$pop_table[17, "place_id"]
 
   uniform_locations <- sample_locations(method = "uniform",
                                         place_id = pid,

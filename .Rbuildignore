@@ -6,3 +6,5 @@
 ^old-code/$
 ^olympus$
 ^doc$
+^inst/extdata/10$
+^inst/extdata/ury$
