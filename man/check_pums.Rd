@@ -6,9 +6,14 @@
 \usage{
 check_pums(pums)
 }
-\description{
-@param pums list with the household and person level 
- pums 
- @return  Either a character "Pums is ready!" or an error message 
+\arguments{
+\item{pums}{list with the household and person level 
+pums}
+}
+\value{
+Either a character "Pums is ready!" or an error message 
 detailing what went wrong
+}
+\description{
+Check that the pums has all the required components
 }

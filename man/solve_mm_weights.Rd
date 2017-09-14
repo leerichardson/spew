@@ -15,6 +15,8 @@ solve_mm_weights(place_id, mm_row, pums, assumption = "independence",
 \item{pums}{the subsetted PUMS from which the sample will be drawn}
 
 \item{assumption}{"independence"}
+
+\item{meq}{(number of moments + 1) to match (2 is default and corresponds to matching the average)}
 }
 \value{
 x vector of length of the number of  records in the PUMS.  These are probabilities for each of the records.

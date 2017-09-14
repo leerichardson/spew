@@ -21,6 +21,8 @@ that this is a list with two shapefiles if me}
 
 \item{noise}{the standard deviation of how much 
 we jitter the road locations in each direction (only if method is "roads")}
+
+\item{shapefile_id}{optionally include a shapefile id for subsetting shapefile}
 }
 \value{
 SpatialPoints object with coordinates for the n households

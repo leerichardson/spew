@@ -20,6 +20,8 @@ that read_data expects.}
 
 \item{vars}{list with household and person variables specifying which PUMS 
 variables to use}
+
+\item{verbose}{logical determining whether to write output to console}
 }
 \value{
 list: Each elements contains a standardized data-source

@@ -20,8 +20,6 @@ plot_syneco <- function(input_data, syneco, region_name = NULL,
                                                    "#009E73", "#F0E442", "#0072B2",
                                                    "#D55E00", "#CC79A7"))
                                           ){
-
-
     ## Fortify the shapefile(s)
     shapefile <- ggplot2::fortify(input_data$shapefile, region = "place_id")
     if(!is.null(input_data$roads)) roads <- ggplot2::fortify(input_data$roads)
@@ -31,9 +29,6 @@ plot_syneco <- function(input_data, syneco, region_name = NULL,
 
     ## Plot the roads
     g <- plot_roads(roads, g,  color_list)
-
-
-
 
     ## Plot the boundaries
     g <- plot_bds(shapefile, g, color_list)
@@ -49,7 +44,6 @@ plot_syneco <- function(input_data, syneco, region_name = NULL,
     g <- plot_labs(region_name, g)
 
     return(g)
-
 }
 
 
@@ -182,8 +176,9 @@ plot_env <- function(input_data, g = NULL,
 #' Add the labels and the theme to the plot
 #'
 #' @param region_name string, will become the title of the plot
-#' g a ggplot.  Default is NULL.
-plot_labs <- function(region_name, g = NULL){
+#' @param g a ggplot.  Default is NULL.
+#' 
+plot_labs <- function(region_name, g = NULL) {
     if(is.null(g))     g <- ggplot2::ggplot() # Set up empty plot
 
     g <- g + ggplot2::ggtitle(paste(region_name, "Synthetic Ecosystem")) + 
@@ -217,9 +212,12 @@ plot_labs <- function(region_name, g = NULL){
 #' @param marginals list containing all of the marginal totals.  See ?make_ipf_marg for more details.
 #' @param output_dir path to top level directory of SPEW folders.  Ex. "./10" for Delaware.  Default is NULL.  In the case it is NULL, we do not need to read in data.
 #' @param top_region_id name of the region.  Default is NULL.  It is only used in the case where we directly summarize the syneco object.
-#' @param has_marg.  Does the region of marginals to refer to?  Logical.  Default is FALSE.
-#' @return list with the household summary list, people summary list, header for households, and header for people, and a data frame of plotting coordinates by summary region
+#' @param has_marg  Does the region of marginals to refer to?  Logical.  Default is FALSE.
+#' @return list with the household summary list, people summary list, header for households, and header 
+#' for people, and a data frame of plotting coordinates by summary region
+#' 
 #' @note This function is only guaranteed to work when you provide marginals describing how a category is "cut."  If a certain category is not represented, then the final totals in each category may be off.
+#' 
 #' @export
 summarize_spew_out <- function(syneco= NULL,
                              vars_to_sum_h, 
@@ -259,7 +257,7 @@ summarize_spew_out <- function(syneco= NULL,
 #' @param samp_size number of agents to retain from each lower-level region, for plotting purposes only.  Default is 10^4.
 #' @param marginals list containing all of the marginal totals.  See ?make_ipf_marg for more details.
 #' @param top_region_id Name supplied of region.
-#' @param has_marg.  Does the region of marginals to refer to?  Logical.  Default is FALSE.
+#' @param has_marg  Does the region of marginals to refer to?  Logical.  Default is FALSE.
 #' @return list with the household summary list, people summary list, header for households, and header for people, and a data frame of plotting coordinates by summary region
 summarize_syneco <- function(syneco,   vars_to_sum_h, 
                              vars_to_sum_p,
@@ -298,8 +296,11 @@ summarize_syneco <- function(syneco,   vars_to_sum_h,
 #' @param type either "households or "people".  Default is "households".  The type to summarize
 #' @param marginals marginals object
 #' @param vars_to_sum names of the variables to summarize
-#' @param vars_to_sum environment variables to summarize.  Default is NULL
-#' @return a list of length of  1 for the  region ID , 1 for population size, and optionally one for a dataframe of stored lat/long coords, the number of variables to summarize , and the environmental variables
+#' @param vars_to_sum_env environment variables to summarize.  Default is NULL
+#' 
+#' @return a list of length of  1 for the  region ID , 1 for population size, and optionally 
+#' one for a dataframe of stored lat/long coords, the number of variables to summarize , 
+#' and the environmental variables
 summarize_spew_region <- function(spew_region, type = "households", marginals,
                                   vars_to_sum, vars_to_sum_env = NULL){
 

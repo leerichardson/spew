@@ -2,24 +2,15 @@
 % Please edit documentation in R/logfiles.R
 \name{verify_column}
 \alias{verify_column}
-\alias{verify_column}
 \title{Verify the column is the correct size}
 \usage{
-verify_column(column, df_size)
-
 verify_column(column, df_size)
 }
 \arguments{
 \item{column}{to be verified}
 
-\item{data-frame}{size}
-
-\item{column}{to be verified}
-
-\item{data-frame}{size}
+\item{df_size}{size}
 }
 \description{
-Verify the column is the correct size
-
 Verify the column is the correct size
 }

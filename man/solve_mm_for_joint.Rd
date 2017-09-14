@@ -7,6 +7,8 @@
 solve_mm_for_joint(place_id, mm_row, pums, assumption, meq = 2)
 }
 \arguments{
+\item{place_id}{unique code identifying the place}
+
 \item{mm_row}{dataframe of 1 row, includes place_id, puma_id, and averages, with names matching PUMS}
 
 \item{pums}{the subsetted PUMS from which the sample will be drawn}

@@ -14,8 +14,6 @@ sample_uniform(n_house, pums_h, puma_id = NULL, place_id = NULL)
 \item{puma_id}{if specifying the subset of PUMS to sample s}
 
 \item{place_id}{id of the current region}
-
-\item{marginals}{irrelecant}
 }
 \description{
 Sample households uniformly

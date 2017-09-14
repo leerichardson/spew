@@ -6,7 +6,10 @@
 \usage{
 print_region_list(region_list)
 }
+\arguments{
+\item{region_list}{a list containing all of the 
+summary and diagnostic information for each}
+}
 \description{
-@param region_list a list containing all of the 
- summary and diagnostic information for each
+Write out information on each region
 }

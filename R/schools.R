@@ -8,7 +8,6 @@
 #' @references See PUMS CODEBOOK:  http://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2010-2014.pdf
 #' @return a column of school assignments by school ID 
 assign_schools <- function(people, schools, weightSchools = weight_dists, distFun = haversine) {
-  
   # Verify we have the necessary variables for assigning 
   impt_vars <- c("latitude", "longitude", "SCH", "SCHG", "AGEP", "place_id")
   stopifnot(all(impt_vars %in% colnames(people)))
@@ -80,7 +79,7 @@ assign_schools_inner <- function(df, schools, weightSchools, distFun) {
 #'
 #' @param dist_mat a m x n matrix where m is the number of people and 
 #' n is the number of schools
-#' @param schools_sub data frame of schools
+#' @param schools data frame of schools
 #' @return m x n matrix of probabilities.  Each row should sum to 1
 weight_dists <- function(dist_mat, schools){
   m <- nrow(dist_mat)
@@ -105,7 +104,7 @@ weight_dists <- function(dist_mat, schools){
 #'
 #' @param dist_mat a m x n matrix where m is the number of people and 
 #' n is the number of schools
-#' @param schools_sub data frame of schools
+#' @param schools data frame of schools
 #' @return m x n matrix of probabilities.  Each row should sum to 1
 weight_dists2 <- function(dist_mat, schools){
   m <- nrow(dist_mat)
@@ -125,22 +124,20 @@ weight_dists2 <- function(dist_mat, schools){
   return(weights)
 }
 
-
-
 #' Weight school assignment probabilities, distance only
 #'
 #' @param dist_mat a m x n matrix where m is the number of people and 
 #' n is the number of schools
-#' @param schools_sub data frame of schools
+#' @param schools data frame of schools
 #' @return m x n matrix of probabilities.  Each row should sum to 1
-weight_dists_D <- function(dist_mat, schools){
+weight_dists_D <- function(dist_mat, schools) {
   m <- nrow(dist_mat)
   n <- ncol(dist_mat)
   weights <-  exp( 1 + 1 / (dist_mat / 20 ))
   weights <- weights / rowSums(weights)
   weights <- ifelse(is.na(weights), 0.0001, weights)
   weights <- weights / rowSums(weights)
- # print( range(weights[1,]))
+  
   stopifnot(dim(weights) == c(m,n))
   return(weights)
 }
@@ -149,7 +146,7 @@ weight_dists_D <- function(dist_mat, schools){
 #'
 #' @param dist_mat a m x n matrix where m is the number of people and 
 #' n is the number of schools
-#' @param schools_sub data frame of schools
+#' @param schools data frame of schools
 #' @return m x n matrix of probabilities.  Each row should sum to 1
 weight_dists_C <- function(dist_mat, schools){
   m <- nrow(dist_mat)
@@ -272,5 +269,3 @@ subset_schools <- function(df, schools){
     return(school_sub[grade_inds,])
   }
 }
-
-

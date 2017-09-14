@@ -14,8 +14,14 @@ sample_households(method, n_house, pums_h, pums_p = NULL, puma_id = NULL,
 
 \item{pums_h}{dataframe of the households we are sampling from}
 
+\item{pums_p}{optionally include a dataframe of agents}
+
 \item{puma_id}{vector indicating which specific puma in PUMS we are sampling 
 from, if any}
+
+\item{place_id}{unique code identifying the place}
+
+\item{marginals}{optionally used for IPF or MM sampling}
 }
 \value{
 numeric with the indicies of the household PUMS to sample

@@ -14,11 +14,11 @@ make_ipf_obj(var_name, type = "ord", bounds, category_name,
 
 \item{bounds}{dataframe of upper and lower bounds (inclusive) for variables (numeric)}
 
+\item{category_name}{short name of the category, will be visible to person.  Either length one and the bounds will be pasted to it or length of the number of rows of the bounds with names of your choice.}
+
 \item{output_file}{if not NULL then we save the file as a RDS object to output_file}
 
 \item{df}{data frame with place_id and category counts}
-
-\item{category_names}{short name of the category, will be visible to person.  Either length one and the bounds will be pasted to it or length of the number of rows of the bounds with names of your choice.}
 }
 \value{
 a list in the format for use in IPF

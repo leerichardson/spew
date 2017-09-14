@@ -12,7 +12,9 @@
 #' The distance should satisfy the requirements of a metric.
 #' @param cap_fxn a function with one argument, a single capacity.  
 #' This should be a monotone increasing function.  The default is cap_default.
+#' 
 #' @export
+#' 
 #' @return  data frame with column of place_name with the place_ids, e.g. assignments of the places to the agents.
 assign_place_coords<- function(pop, places, place_name ="place", method = "uniform", dist_fxn = euclidean_dist,
                                cap_fxn = cap_default){
@@ -82,11 +84,13 @@ checkDF <- function(df, type = "coords"){
 #' Get the distance matrix 
 #'
 #' Get the distance matrix between two data frames that have "longitude" and "latitude" columns
+#' 
 #' @param pop data frame of the population with m rows
 #' @param places data frame of places to assign with n rows
 #' @param dist_fxn currently "haversine" with args for x1, y1, x2, y2, returning a scalar value between 0 and 1
-#' @param cap_fxn a function with one argument, a single capacity.  This should be a monotone increasing function.  The default is cap_default.
-#' @return m x n matrix with scaled distance between 0 and 1.  Eg.  Entry ij means that the scaled distance between row i from pop and row j from places is entry ij.
+#' 
+#' @return m x n matrix with scaled distance between 0 and 1.  Eg.  Entry ij means that 
+#' the scaled distance between row i from pop and row j from places is entry ij.
 get_dist_mat <- function(pop, places, dist_fxn = haversine_dist){
     m <- nrow(pop) # number of individuals in pop
     n <- nrow(places) # number of places
@@ -149,15 +153,17 @@ euclidean_dist <- function(x1, y1, x2, y2){
 #' n is the number of schools
 #' @param places data frame of places with an ID column
 #' @param method ("uniform", "capacity")
+#' @param cap_fxn a function with one argument, a single capacity.  
+#' This should be a monotone increasing function.  The default is cap_default.
+#' 
 #' @return m x n matrix of probabilities.  Each row should sum to 1
+#' 
 get_weight_dists <- function(dist_mat, places, method="uniform", cap_fxn = cap_default){
   m <- nrow(dist_mat)
   n <- ncol(dist_mat)
 
   # If uniform sampling, we assume each place has the same capacity
-  if(method == "uniform"){
-      places$capacity <- 100
-  }
+  if (method == "uniform") { places$capacity <- 100 }
   stopifnot("capacity" %in% names(places))
 
   capacity <- as.numeric(as.character(places$capacity))
@@ -175,14 +181,12 @@ get_weight_dists <- function(dist_mat, places, method="uniform", cap_fxn = cap_d
   return(weights)
 }
 
-
 #' Assign a place to a person
 #'
 #' @param people data frame of synthetic people produced by SPEW
 #' @param data_list of the data and identifying name
 #' @return column corresponding to the people of the place assignment
 assign_place <- function(people, data_list){
-    
     col <- do.call(paste0("assign_", data_list$name), args=list(people=people, data_list$data))
     return(col)
 }

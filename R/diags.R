@@ -491,8 +491,8 @@ get_base_map <- function(coords_df, get_world_map = TRUE,
 
 #' Get the center longitude and latitude for each region
 #'
-#' @param coords_df data
 #' @param coords_df data frame with "longitude", "latitude", and "region_id" columns
+#' 
 #' @return data frame with mean lon/lat and region
 get_centers <- function(coords_df){
     centers_df <- plyr::ddply(coords_df, .variables = "region_id",

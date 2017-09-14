@@ -13,6 +13,10 @@ sample_people(method, household_pums, pums_p, puma_id = NULL,
 \item{household_pums}{dataframe with the sampled houehold PUMS}
 
 \item{pums_p}{dataframe of the individual microdata}
+
+\item{puma_id}{ID of microdata sampling region}
+
+\item{place_id}{ID of place}
 }
 \value{
 people numeric vector indicating the indices of people to sample

@@ -16,10 +16,12 @@ summarize_spew_region(spew_region, type = "households", marginals,
 
 \item{vars_to_sum}{names of the variables to summarize}
 
-\item{vars_to_sum}{environment variables to summarize.  Default is NULL}
+\item{vars_to_sum_env}{environment variables to summarize.  Default is NULL}
 }
 \value{
-a list of length of  1 for the  region ID , 1 for population size, and optionally one for a dataframe of stored lat/long coords, the number of variables to summarize , and the environmental variables
+a list of length of  1 for the  region ID , 1 for population size, and optionally 
+one for a dataframe of stored lat/long coords, the number of variables to summarize , 
+and the environmental variables
 }
 \description{
 Summarize a singular region from spew output

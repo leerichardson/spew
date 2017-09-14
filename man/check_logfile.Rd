@@ -2,27 +2,17 @@
 % Please edit documentation in R/logfiles.R
 \name{check_logfile}
 \alias{check_logfile}
-\alias{check_logfile}
 \title{Check to see if a SPEW log-file is complete}
 \usage{
 check_logfile(logfile)
-
-check_logfile(logfile)
 }
 \arguments{
-\item{logfile}{character vecor of a SPEW Log-file}
-
 \item{logfile}{character vecor of a SPEW Log-file}
 }
 \value{
 character string indicating the status of the
 SPEW log-file
-
-character string indicating the status of the
-SPEW log-file
 }
 \description{
-Check to see if a SPEW log-file is complete
-
 Check to see if a SPEW log-file is complete
 }

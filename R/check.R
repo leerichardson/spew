@@ -1,6 +1,8 @@
 #' Check the pop_table has all the necessary components 
 #' 
-#' @param pop_table 
+#' @param pop_table dataframe where rows correspond to places where populations 
+#' should be generated. Other requird columns are "n_house" and "puma_id"
+#' 
 #' @return Either a character "Pop table is ready!", or an 
 #' error message detailing what went wrong 
 check_pop_table <- function(pop_table) {
@@ -15,7 +17,9 @@ check_pop_table <- function(pop_table) {
 
 #' Check the shapefile has the necessary components 
 #' 
-#' @param shapefile 
+#' @param shapefile sp class object used for assigning households to 
+#' particular locations  
+#' 
 #' @return Either a character"Shapefile is ready!" or an error message 
 #' detailing what went wrong
 check_shapefile <- function(shapefile) {
@@ -28,9 +32,10 @@ check_shapefile <- function(shapefile) {
 
 #' Check that the pums has all the required components 
 #' 
-#'  @param pums list with the household and person level 
+#' @param pums list with the household and person level 
 #'  pums 
-#'  @return  Either a character "Pums is ready!" or an error message 
+#'  
+#' @return  Either a character "Pums is ready!" or an error message 
 #' detailing what went wrong
 check_pums <- function(pums) {
   

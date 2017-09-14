@@ -7,7 +7,8 @@
 check_pop_table(pop_table)
 }
 \arguments{
-\item{pop_table}{}
+\item{pop_table}{dataframe where rows correspond to places where populations 
+should be generated. Other requird columns are "n_house" and "puma_id"}
 }
 \value{
 Either a character "Pop table is ready!", or an 

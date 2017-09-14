@@ -446,7 +446,7 @@ spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p,
   sz <- mpi.comm.size(0)
   name <- mpi.get.processor.name()
   if (verbose) { cat("Hello, rank " , rk , " out of " , sz , " on " , name, "\n") }
-  
+
   # If we are on Olympus, make sure to switch to personal libraries
   # because the core olympus directories don't have our updated functions. 
   hostname <- system("hostname", intern = TRUE)

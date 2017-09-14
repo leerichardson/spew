@@ -8,40 +8,51 @@ spew_place(index, pop_table, shapefile, pums_h, pums_p, schools = NULL,
   workplaces = NULL, marginals = NULL, output_type = "console",
   sampling_method = "uniform", locations_method = "uniform",
   convert_count = FALSE, output_dir = NULL, road_noise = 2e-04,
-  timer = TRUE, verbose = TRUE)
+  timer = TRUE, verbose = FALSE)
 }
 \arguments{
-\item{index}{row of the pop-table to generate}
+\item{index}{specfic row of pop-table to generate}
 
-\item{pop_table}{}
+\item{pop_table}{dataframe where rows correspond to places where populations 
+should be generated. Other requird columns are "n_house" and "puma_id"}
 
-\item{shapefile}{}
+\item{shapefile}{sp class object used for assigning households to 
+particular locations}
 
-\item{pums_h}{}
+\item{pums_h}{dataframe with microdata corresponding to housegolds}
 
-\item{pums_p}{}
+\item{pums_p}{dataframe with microdata corresponding to people}
 
-\item{schools}{}
+\item{schools}{list with names "public" and "private" with a 
+dataframe of schools corresponding to public or private, respectively}
 
-\item{workplaces}{}
+\item{workplaces}{dataframe of workplaces with a workplace_id column, 
+employees column, and stcotr column}
 
-\item{marginals}{}
+\item{marginals}{list of marginal population totals. Each element of the 
+list contains the marginal totals of a separate variable}
 
-\item{output_type}{}
+\item{output_type}{Default is "console" if we want to resulting population 
+as an R variable. Alternative is "write", which is used on Olympus for writing 
+out .csv files of the population}
 
-\item{sampling_method}{}
+\item{sampling_method}{character indicating the type of sampling 
+method to use, defaults to "uniform". Can also be "ipf" with appropriate marginal data.}
 
-\item{locations_method}{}
+\item{locations_method}{character indicating the type of location 
+sampling to use, defaults to "uniform", can also be "roads".}
 
-\item{convert_count}{}
+\item{convert_count}{logical meant to indicate if we are going to convert 
+population totals from people to household counts. Default: FALSE, assumes
+the population is the total number of households}
 
-\item{output_dir}{}
+\item{output_dir}{directory to write output if output_type = "write", NULL otherwise}
 
-\item{road_noise}{}
+\item{road_noise}{Noise added to households during road-based sampling}
 
-\item{timer}{}
+\item{timer}{logical indicating we want to time the run}
 
-\item{verbose}{}
+\item{verbose}{logical indicating we want to print output during the run.  Default is FALSE.#'}
 }
 \value{
 List of a synthetic ecosystem

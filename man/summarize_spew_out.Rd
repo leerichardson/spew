@@ -30,10 +30,11 @@ summarize_spew_out(syneco = NULL, vars_to_sum_h, vars_to_sum_p,
 
 \item{top_region_id}{name of the region.  Default is NULL.  It is only used in the case where we directly summarize the syneco object.}
 
-\item{has_marg.}{Does the region of marginals to refer to?  Logical.  Default is FALSE.}
+\item{has_marg}{Does the region of marginals to refer to?  Logical.  Default is FALSE.}
 }
 \value{
-list with the household summary list, people summary list, header for households, and header for people, and a data frame of plotting coordinates by summary region
+list with the household summary list, people summary list, header for households, and header 
+for people, and a data frame of plotting coordinates by summary region
 }
 \description{
 Summarize spew output

@@ -4,26 +4,31 @@
 \alias{call_spew}
 \title{Wrapper for reading, formatting, and writing SPEW ecosystems}
 \usage{
-call_spew(base_dir, folders = NULL, data_group = "US",
-  parallel_type = "SEQ", sampling_method = "uniform",
-  locations_method = "uniform", convert_count = FALSE,
-  vars = list(household = NA, person = NA), do_subset_pums = TRUE,
-  do_write = TRUE, noise = 2e-04)
+call_spew(base_dir, folders = NULL, data_group = "US", run_type = "SEQ",
+  sampling_method = "uniform", locations_method = "uniform",
+  output_type = "write", convert_count = FALSE, vars = list(household =
+  NA, person = NA), road_noise = 2e-04, outfile_loc = "", timer = TRUE,
+  verbose = TRUE)
 }
 \arguments{
 \item{base_dir}{character specifying ecosystem directory}
 
 \item{folders}{list specifying sub-directories for each data-source}
 
-\item{parallel_type}{Indicating to run sequentially or parallel. If parallel, 
-the back-end is specified, either "MPI", "SOCK", or "MC"}
+\item{data_group}{character, either "US", "ipums", or "none"}
 
-\item{sampling_method}{character of sampling method. Default: "uniform", can also 
-be "ipf" or "mm" if appropriate marginal/moments data is included}
+\item{run_type}{Whether to run sequentially in parallel. Default is "SEQ", for 
+a sequential run. If parallel, back-end is either "MPI", "SOCK", or "MC"}
 
-\item{locations_method}{character vector indicating the type of location 
-sampling to use. Default to "uniform". can also be "roads" if appropriate line 
-shapefiles are included.}
+\item{sampling_method}{character indicating the type of sampling 
+method to use, defaults to "uniform". Can also be "ipf" with appropriate marginal data.}
+
+\item{locations_method}{character indicating the type of location 
+sampling to use, defaults to "uniform", can also be "roads".}
+
+\item{output_type}{Default is "console" if we want to resulting population 
+as an R variable. Alternative is "write", which is used on Olympus for writing 
+out .csv files of the population}
 
 \item{convert_count}{logical meant to indicate if we are going to convert 
 population totals from people to household counts. Default: FALSE, assumes
@@ -32,15 +37,14 @@ the population is the total number of households}
 \item{vars}{list with two elements: household and person. This specifies 
 which variables to include in the corresponding household and person PUMS data-set}
 
-\item{do_subset_pums}{logical, do we need to subset PUMS when doing the method of sampling.  Default is TRUE.}
+\item{road_noise}{Noise added to households during road-based sampling}
 
-\item{do_write}{logical, do we need to write out the synthetic populations and environments?
-If FALSE, then we instead return the synthetic households and people in a list.  Default is TRUE.}
+\item{outfile_loc}{Defaults to "", so we print out the parallel run information. 
+Only set to "/dev/null" for internal testing putposes.}
 
-\item{noise}{a numeric value indicating the value of the noise we add to household 
-locations during road-based sampling.  Default is .0002.}
+\item{timer}{logical indicating we want to time the run}
 
-\item{data-group}{character, either "US", "ipums", or "none"}
+\item{verbose}{logical indicating we want to print output during the run.  Default is FALSE.#'}
 }
 \value{
 logical indicating whether or not this run of spew ended successfully

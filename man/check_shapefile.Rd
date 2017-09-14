@@ -7,7 +7,8 @@
 check_shapefile(shapefile)
 }
 \arguments{
-\item{shapefile}{}
+\item{shapefile}{sp class object used for assigning households to 
+particular locations}
 }
 \value{
 Either a character"Shapefile is ready!" or an error message 

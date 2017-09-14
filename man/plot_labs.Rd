@@ -7,8 +7,9 @@
 plot_labs(region_name, g = NULL)
 }
 \arguments{
-\item{region_name}{string, will become the title of the plot
-g a ggplot.  Default is NULL.}
+\item{region_name}{string, will become the title of the plot}
+
+\item{g}{a ggplot.  Default is NULL.}
 }
 \description{
 Add the labels and the theme to the plot

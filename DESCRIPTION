@@ -1,5 +1,6 @@
 Package: spew
 Type: Package
+Depends: R (>= 2.10)
 Title: Synthetic Populations and Ecosystems of the World
 Version: 1.3.0
 Date: 2016-12-14

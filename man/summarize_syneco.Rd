@@ -23,7 +23,7 @@ summarize_syneco(syneco, vars_to_sum_h, vars_to_sum_p, vars_to_sum_env = NULL,
 
 \item{top_region_id}{Name supplied of region.}
 
-\item{has_marg.}{Does the region of marginals to refer to?  Logical.  Default is FALSE.}
+\item{has_marg}{Does the region of marginals to refer to?  Logical.  Default is FALSE.}
 }
 \value{
 list with the household summary list, people summary list, header for households, and header for people, and a data frame of plotting coordinates by summary region

@@ -18,6 +18,8 @@ In addition, we must have road shapefiles so shapefile is a list with both
 the tracts and the roads, tracts is the first object and roads the second.}
 
 \item{noise}{the standard deviation of how much we jitter the road locations in each direction}
+
+\item{shapefile_id}{optionally include a shapefile id for subsetting shapefile}
 }
 \description{
 Sample coordinates from roads

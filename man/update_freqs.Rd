@@ -7,9 +7,9 @@
 update_freqs(freqs, n_house)
 }
 \arguments{
-\item{n_house}{number of households}
+\item{freqs}{current number of households}
 
-\item{frequencies}{}
+\item{n_house}{number of households}
 }
 \description{
 Update frequencies to match # of households

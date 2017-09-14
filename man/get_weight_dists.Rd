@@ -14,6 +14,9 @@ n is the number of schools}
 \item{places}{data frame of places with an ID column}
 
 \item{method}{("uniform", "capacity")}
+
+\item{cap_fxn}{a function with one argument, a single capacity.
+This should be a monotone increasing function.  The default is cap_default.}
 }
 \value{
 m x n matrix of probabilities.  Each row should sum to 1

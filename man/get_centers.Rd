@@ -7,8 +7,6 @@
 get_centers(coords_df)
 }
 \arguments{
-\item{coords_df}{data}
-
 \item{coords_df}{data frame with "longitude", "latitude", and "region_id" columns}
 }
 \value{

@@ -7,7 +7,15 @@
 calc_dists(pums, table_row, alpha, k, marginals)
 }
 \arguments{
-\item{table_row}{}
+\item{pums}{dataframe with marginal columns}
+
+\item{table_row}{row of table to calculate distance}
+
+\item{alpha}{number between 0 and 1, weight of categorical variables}
+
+\item{k}{number between 0 and 1, weight of orginal variables}
+
+\item{marginals}{list with marginal data}
 }
 \description{
 Calculate distance b/w cont table row and pums

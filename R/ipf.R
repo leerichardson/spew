@@ -164,8 +164,9 @@ fill_cont_table <- function(pums, marginals, place_id, n_house) {
 
 #' Update frequencies to match # of households 
 #' 
-#' @param frequencies 
+#' @param freqs current number of households 
 #' @param n_house number of households 
+#' 
 update_freqs <- function(freqs, n_house) {
   n <- sum(freqs)
   update_ind <- sample(x = which(freqs > 0), size = 1, replace = TRUE)  
@@ -298,13 +299,14 @@ assign_weights <- function(pums, table, alpha, k, marginals) {
   return(probs)
 }
 
+
 #' Calculate distance b/w cont table row and pums 
 #' 
-#' @param pums 
-#' @param table_row 
-#' @param alpha 
-#' @param k 
-#' @param marginals 
+#' @param pums dataframe with marginal columns 
+#' @param table_row row of table to calculate distance 
+#' @param alpha number between 0 and 1, weight of categorical variables 
+#' @param k number between 0 and 1, weight of orginal variables 
+#' @param marginals list with marginal data 
 #' 
 calc_dists <- function(pums, table_row, alpha, k, marginals) {
   # Get the ordinal and categorical variable names

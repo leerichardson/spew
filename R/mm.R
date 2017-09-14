@@ -54,6 +54,8 @@ sample_mm <- function(n_house, pums_h, pums_p, mm_obj, puma_id = NULL, place_id 
 #' @param mm_row dataframe of 1 row, includes place_id, puma_id, and averages, with names matching PUMS
 #' @param pums the subsetted PUMS from which the sample will be drawn
 #' @param assumption  "independence"
+#' @param meq (number of moments + 1) to match (2 is default and corresponds to matching the average)
+#' 
 #' @return  x vector of length of the number of  records in the PUMS.  These are probabilities for each of the records.
 #' @details the function solve.QP from the "quadprog" package is used.
 solve_mm_weights <- function(place_id, mm_row, pums, assumption = "independence", meq = 2){
@@ -78,10 +80,12 @@ solve_mm_weights <- function(place_id, mm_row, pums, assumption = "independence"
 
 #' Do the Moment Matching solving for joint distribution
 #'
+#' @param place_id unique code identifying the place
 #' @param mm_row dataframe of 1 row, includes place_id, puma_id, and averages, with names matching PUMS
 #' @param pums the subsetted PUMS from which the sample will be drawn
 #' @param assumption  "joint"
 #' @param meq (number of moments + 1) to match (2 is default and corresponds to matching the average)
+#' 
 #' @return  x vector of length of the number of records in the PUMS.  These are probabilities for each of the records in the PUMS.
 solve_mm_for_joint <- function(place_id, mm_row, pums, assumption, meq = 2){
     M <- as.numeric(mm_row[, -c(1:2)])
@@ -112,6 +116,7 @@ solve_mm_for_joint <- function(place_id, mm_row, pums, assumption, meq = 2){
 #' Do the MM solving for an individual variable
 #'
 #' @param var_ind variable index of mm_row, colname should match one in PUMS.
+#' @param place_id unique code identifying the place
 #' @param mm_row dataframe of 1 row, includes place_id, puma_id, and averages, with names matching PUMS
 #' @param pums the subsetted PUMS from which the sample will be drawn
 #' @param assumption  "independence"
@@ -143,6 +148,7 @@ solve_mm_for_var <- function(var_ind, place_id, mm_row, pums, assumption, meq = 
 #' @param n vector with sorted unique categories.  p and n correspond to one another
 #' @param pums PUMS data frame
 #' @param var_name varaible name we are matching on
+#' 
 #' @return probabilities for whole data frame
 extrapolate_probs_to_pums <- function(p, n, pums, var_name){
     counts <- sapply(1:length(p), function(ii){
@@ -162,7 +168,7 @@ extrapolate_probs_to_pums <- function(p, n, pums, var_name){
 #' @param p probabilities from solve.QP of length(unique(pums[, var_name]))
 #' @param n matrix with unique categories  p and n correspond to one another
 #' @param pums PUMS data frame
-#' @param var_name varaible name we are matching on
+#' @param var_names varaible name we are matching on
 #' @param tab data frame with categories and frequency
 #' @return probabilities for whole data frame
 extrapolate_probs_to_pums_joint <- function(p, n, pums, var_names, tab){

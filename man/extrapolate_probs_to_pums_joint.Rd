@@ -13,9 +13,9 @@ extrapolate_probs_to_pums_joint(p, n, pums, var_names, tab)
 
 \item{pums}{PUMS data frame}
 
-\item{tab}{data frame with categories and frequency}
+\item{var_names}{varaible name we are matching on}
 
-\item{var_name}{varaible name we are matching on}
+\item{tab}{data frame with categories and frequency}
 }
 \value{
 probabilities for whole data frame

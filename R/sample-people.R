@@ -3,8 +3,11 @@
 #' @param method character indicating the method for sampling 
 #' @param n_house numeric indicating the number of households to sample 
 #' @param pums_h dataframe of the households we are sampling from 
+#' @param pums_p optionally include a dataframe of agents 
 #' @param puma_id vector indicating which specific puma in PUMS we are sampling 
 #' from, if any 
+#' @param place_id unique code identifying the place
+#' @param marginals optionally used for IPF or MM sampling 
 #' 
 #' @return numeric with the indicies of the household PUMS to sample
 sample_households <- function(method, n_house, pums_h, pums_p = NULL,
@@ -25,7 +28,7 @@ sample_households <- function(method, n_house, pums_h, pums_p = NULL,
   } else {
     stop("Sampling method must be ipf, mm, or uniform")
   }
-
+  
   # Subset the sampled indices from the PUMS, and add 
   # in puma and place ids to the final pums 
   sampled_households <- pums_h[households, ]
@@ -48,6 +51,9 @@ sample_households <- function(method, n_house, pums_h, pums_p = NULL,
 #' @param method character indicating the method for sampling 
 #' @param household_pums dataframe with the sampled houehold PUMS 
 #' @param pums_p dataframe of the individual microdata 
+#' @param puma_id ID of microdata sampling region 
+#' @param place_id ID of place 
+#' 
 #' @return people numeric vector indicating the indices of people to sample 
 sample_people <- function(method, household_pums, pums_p, puma_id = NULL, place_id = NULL) {
   if (method == "uniform") {
@@ -77,7 +83,7 @@ sample_people <- function(method, household_pums, pums_p, puma_id = NULL, place_
 #' @param pums_h the household pums 
 #' @param puma_id if specifying the subset of PUMS to sample s
 #' @param place_id id of the current region 
-#' @param marginals irrelecant
+#' 
 sample_uniform <- function(n_house, pums_h, puma_id = NULL, place_id = NULL) {
   # Subset to a specific PUMA if we have data to do this 
   if (!is.null(puma_id)) {

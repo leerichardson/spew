@@ -9,6 +9,7 @@
 #' that read_data expects. 
 #' @param vars list with household and person variables specifying which PUMS 
 #' variables to use 
+#' @param verbose logical determining whether to write output to console
 #' 
 #' @return list: Each elements contains a standardized data-source
 #' 
@@ -140,6 +141,11 @@ read_pop_table <- function(input_dir, folders, data_group) {
 }
 
 #' Make sure pop_table has the appropriate columns
+#' 
+#' @param pop_table Non-standardized population  
+#' @param data_group character either "US", "ipums" or "none": Gives the format 
+#' that read_data expects. 
+#' 
 standardize_pop_table <- function(pop_table, data_group){
     if (data_group == "US") {
     # Make sure we aren't stripping off a leading 0 

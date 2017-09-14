@@ -10,7 +10,7 @@ weight_dists(dist_mat, schools)
 \item{dist_mat}{a m x n matrix where m is the number of people and 
 n is the number of schools}
 
-\item{schools_sub}{data frame of schools}
+\item{schools}{data frame of schools}
 }
 \value{
 m x n matrix of probabilities.  Each row should sum to 1

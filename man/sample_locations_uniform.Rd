@@ -19,6 +19,8 @@ subsampling}
 This is only used if the number of points to sample exceeds 100,000, in which 
 case the spsample function takes too long. Instead, we sample 100,000 points, 
 sample n_house from these 100,000, and then add random noise.}
+
+\item{shapefile_id}{optionally include a shapefile id for subsetting shapefile}
 }
 \value{
 SpatialPoints object with coordinates for the n households

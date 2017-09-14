@@ -17,6 +17,8 @@ write_data(df, place_id, puma_id, type, output_dir, append = FALSE)
 
 \item{output_dir}{character containing the directory in which we want to 
 write the final csv's}
+
+\item{append}{logical determining if we want to append to the current file}
 }
 \value{
 data indicating the indices of people to sample
