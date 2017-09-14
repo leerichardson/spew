@@ -8,3 +8,4 @@
 ^doc$
 ^inst/extdata/10$
 ^inst/extdata/ury$
+^\.travis\.yml$
