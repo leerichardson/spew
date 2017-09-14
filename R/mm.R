@@ -179,7 +179,7 @@ extrapolate_probs_to_pums_joint <- function(p, n, pums, var_names, tab){
     small_df$p <- new_p
     pums_sub <- pums[, var_names]
     pums_sub <- as.data.frame(apply(pums_sub, 2, as.character), stringsAsFactors = FALSE)
-    df <- join(pums_sub, small_df)
+    df <- plyr::join(pums_sub, small_df)
     stopifnot(nrow(df) == nrow(pums))
     x <- as.numeric(df$p)
     ## TODO

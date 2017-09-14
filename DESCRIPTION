@@ -25,12 +25,13 @@ Suggests:
     data.table,
     snow,
     rgdal,
-    methods,
     ggplot2,
-    reshape2
+    reshape2,
+    devtools
 VignetteBuilder: knitr
 Imports:
     sp,
     maptools,
-    plyr
+    plyr,
+    methods
 RoxygenNote: 6.0.1

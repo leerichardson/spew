@@ -8,18 +8,15 @@
 #' @return a written synth pop with added characteristics
 add_characteristic <- function(synth_pop_path, args, pop_type = "people",
                                method="demo_matching", doPar = FALSE){
-    char_fun <-switch(method,
-                      demo_matching = add_char_demo
-                      )
+    char_fun <-switch(method, demo_matching = add_char_demo)
     type <- pop_type
     if (type == "both") type <- "people"
     file_names <-  grep(paste0(type, ".+\\.csv"), list.files(synth_pop_path), value = TRUE)
-    # if not in parallel
-    if(!doPar){
+    
+    if (!doPar) {
         out <- lapply(file.path(synth_pop_path, file_names), char_fun,
                       synth_pop_path, pop_type, args)
-    } else{
-    }
+    }     
     return(out)
 }
 
@@ -35,25 +32,27 @@ add_char_demo <- function(synth_pop_fn, output_path, pop_type, args){
     if (pop_type == "both"){
         synth_pop_p<- read.csv(synth_pop_fn)
         synth_pop_h <- read.csv(gsub("people", "household", synth_pop_fn))
-        synth_pop <- join(synth_pop_p,
+        synth_pop <- plyr::join(synth_pop_p,
                           synth_pop_h, by=c("SERIALNO", "SYNTHETIC_HID",
                                             "place_id", "puma_id", "longitude", "latitude")) # WARNING MAKE MORE GENERIC
     } else {
         synth_pop <- read.csv(synth_pop_fn)
     }
-    ## Align the variables we want to match on
+    
+    # Align the variables we want to match on
     marginals <- args$marginals
     stopifnot(!is.null(marginals))
     var_names <- names(marginals)
     aligned_pop <- align_pums(synth_pop, marginals)
     char_pums <- args$char_pums
     stopifnot(!is.null(char_pums))
-    ## Subset the synth pop and the char pums and add them to the demographics
-    synth_pop_sp <- dlply(aligned_pop, .variables = paste0(var_names, "_marg"),
+    
+    # Subset the synth pop and the char pums and add them to the demographics
+    synth_pop_sp <- plyr::dlply(aligned_pop, .variables = paste0(var_names, "_marg"),
                           .fun = identity)
-    new_df <- ldply(synth_pop_sp, .fun = demo_sample, char_pums, var_names, args)
+    new_df <- plyr::ldply(synth_pop_sp, .fun = demo_sample, char_pums, var_names, args)
     stopifnot(nrow(synth_pop) == nrow(new_df))
-    ## write out the new pop
+    # write out the new pop
     suffix <- args$suffix
     if(is.null(suffix)) suffix <- "_v2"
     output_path <- paste0(args$output_path, suffix)
@@ -85,8 +84,6 @@ demo_sample <- function(pop_df, char_pums, var_names, args = NULL){
     new_df <- cbind(pop_df, char_df_full[, -c(colnames(char_df_full) %in% var_names)])
     return(new_df)
 }
-
-
 
 #' Set up for creating a set of marginal information for IPF sampling
 #'

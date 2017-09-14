@@ -423,9 +423,7 @@ get_coords_scaled <- function(sum_list, samp_size, coords, pop_totals){
         rownames(df_sub) <- NULL
         return(df_sub)
     }))
-
 }
-
 
 #' Plot SPEW region
 #'
@@ -448,7 +446,7 @@ plot_region <- function(coords_df, get_world_map = FALSE,    f = .1,
 
     ## Actually plot the map
     g <- g + ggplot2::geom_point(data = coords_df,
-                                 ggplot2::aes(x = longitude, y = latitude, colour = factor(region_id)),
+                                 ggplot2::aes_string(x = "longitude", y = "latitude", colour = "factor(region_id)"),
                                  cex = .4) +
         col_scale +
         base_map_theme()
@@ -456,8 +454,7 @@ plot_region <- function(coords_df, get_world_map = FALSE,    f = .1,
     ##  Add the region names
     centers_df <- get_centers(coords_df)
     g <- g + ggplot2::geom_text(data = centers_df,
-                       ggplot2::aes(x = longitude, y = latitude, label = region_id,
-                           size = 3))
+                       ggplot2::aes_string(x = "longitude", y = "latitude", label = "region_id", size = 3))
 
     ## Display map
     print(g)
@@ -536,9 +533,8 @@ plot_characteristic_proportions <- function(feature_name = "Feature",
                                             category_names = NULL,
                                             text_size = 10,
                                             region_colors= c("#999999", "#E69F00", "#56B4E9",
-                                                             "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
-                                                             ){
-
+                                                             "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")) 
+                                            {
     labs <- names(feature_df)
     ind <- which(labs == "region")
     labs <- labs[!grepl("^region$", labs)]
@@ -560,23 +556,17 @@ plot_characteristic_proportions <- function(feature_name = "Feature",
     df_melt[, "feature_name"] <- factor( df_melt[, "feature_name"] ,
                                       levels = rev(levels(df_melt[, "feature_name"])),
                                       labels = rev(labs))
-    
 
     ## Plotting the inverted bar chart
-    g <- ggplot2::ggplot(df_melt, ggplot2::aes(x = region, y = Percentage,
-                                                  fill = feature_name)) +
-        ggplot2::geom_bar(stat = "identity") + ggplot2::coord_flip() +
-        ggplot2::ggtitle(paste("Ratio of", feature_name, "per region")) + col_scale +
-        ggplot2::theme_light() +
-        ggplot2::theme(axis.text.y = ggplot2::element_text(text_size)) +
-        ggplot2::labs(x = "Region", fill = feature_name)
-
-
+    g <- ggplot2::ggplot(df_melt, ggplot2::aes_string(x = "region", y = "Percentage", fill = "feature_name")) +
+          ggplot2::geom_bar(stat = "identity") + ggplot2::coord_flip() +
+          ggplot2::ggtitle(paste("Ratio of", feature_name, "per region")) + col_scale +
+          ggplot2::theme_light() +
+          ggplot2::theme(axis.text.y = ggplot2::element_text(text_size)) +
+          ggplot2::labs(x = "Region", fill = feature_name)
 
     print(g)
     return(g)
-    
-                                                     
 }
 
 #' Plot characteristic summary output from summarize_top_spew_region as totals
@@ -605,17 +595,13 @@ plot_pop_totals <- function( feature_df, type = "n_people",
     col_scale <- ggplot2::scale_fill_manual(values = cols)
 
     ## Plot
-    g <- ggplot2::ggplot(feature_df, ggplot2::aes(x = region, y = val,
-                                            fill = region)) +
-        ggplot2::geom_bar(stat = "identity") + ggplot2::ggtitle(nm) +
-        ggplot2::labs(x = "Region", y = "Totals") + col_scale +
-        ggplot2::theme_light() +
-        ggplot2:: theme(axis.text.x = ggplot2::element_text(angle = 90, size = text_size),
-                        legend.position = "none")
+    g <- ggplot2::ggplot(feature_df, ggplot2::aes_string (x = "region", y = "val", fill = "region")) +
+          ggplot2::geom_bar(stat = "identity") + ggplot2::ggtitle(nm) +
+          ggplot2::labs(x = "Region", y = "Totals") + col_scale +
+          ggplot2::theme_light() +
+          ggplot2:: theme(axis.text.x = ggplot2::element_text(angle = 90, size = text_size), legend.position = "none")
     print(g)
     return(g)
-    
-
 }
 
 
@@ -624,14 +610,14 @@ plot_pop_totals <- function( feature_df, type = "n_people",
 #'
 #' @param fips string -- US FIPS code length 2 for state or length 5 for county
 #' @param level either "state" or "county"
-#' @param df a data frame table to translate FIPS to placename.  It must have column names
+#' @param df a data frame table to translate FIPS to placename. It must have column names
 #' STATEFP, STATE_NAME, COUNTYFP, and County.
+#' 
 #' @return the placenames corresponding to each FIPS #
-fips_to_name<- function(fips, level, df = us){
- #   print("FIPS code is")
- #   print(fips)
+fips_to_name <- function(fips, level, df) {
     stopifnot(level %in% c("state", "county"))
     stopifnot(!is.null(df))
+
     if (level == "state"){
         ind <- which(as.character(df$STATEFP) == fips)
         state <- df$STATE_NAME[ind][1]

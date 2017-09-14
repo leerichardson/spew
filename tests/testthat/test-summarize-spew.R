@@ -28,8 +28,7 @@ test_that("functions for summarizing spew synecos in console",{
 
     g <- plot_syneco(tartanville, tartanville_syneco,
                      region_name = "Tartanville")
-
-
+    
     ## Summarizing the region
     out <- summarize_spew_region(tartanville_syneco[[1]],
                           type = "households",
@@ -45,7 +44,4 @@ test_that("functions for summarizing spew synecos in console",{
      out <- summarize_spew_out(tartanville_syneco, vars_to_sum_h = c("puma_id"),
                             vars_to_sum_p = c("SEX"),
                             vars_to_sum_env = NULL, top_region_id = "Tartanville")
-
-     ## Testing
-    
  })

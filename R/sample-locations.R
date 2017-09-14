@@ -108,7 +108,7 @@ remove_holes <- function(polygon) {
   is_hole <- lapply(polygon@Polygons, function(p) p@hole)
   is_hole <- unlist(is_hole)
   polys <- polygon@Polygons[!is_hole]
-  polygon <- Polygons(polys, ID = polygon@ID)
+  polygon <- sp::Polygons(polys, ID = polygon@ID)
   return(polygon)
 }
 

@@ -72,8 +72,7 @@ data(tartanville)
 tartanville_syneco <- spew(tartanville$pop_table, tartanville$shapefile,
                             tartanville$pums_h, tartanville$pums_p)
 
-plot_syneco(tartanville, tartanville_syneco,
-                     region_name = "Tartanville")
+plot_syneco(tartanville, tartanville_syneco, region_name = "Tartanville")
 
 out <-  summarize_spew_out(tartanville_syneco, vars_to_sum_h = c("puma_id"),
                             vars_to_sum_p = c("SEX"),

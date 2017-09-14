@@ -4,7 +4,7 @@
 \alias{read_marginals}
 \title{Read in the marginals population characteristic totals}
 \usage{
-read_marginals(input_dir, folders, data_group)
+read_marginals(input_dir, folders, data_group, sampling_method = "ipf")
 }
 \arguments{
 \item{input_dir}{character vector specifying the directory containing 
@@ -16,6 +16,8 @@ specific data}
 \item{data_group}{character either "US", "ipums" or "none" which tells 
 read_data if the input data follows a particular format. Used mainly for 
 the pre-formatted data-types we have on our Olympus}
+
+\item{sampling_method}{should be "ipf"}
 }
 \value{
 data frame with counts

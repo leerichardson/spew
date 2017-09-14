@@ -2,7 +2,7 @@
 % Please edit documentation in R/summarize_spew.R
 \name{plot_agents}
 \alias{plot_agents}
-\title{Plot the agentsof the synthetic ecosystem}
+\title{Plot the agents of synthetic ecosystem}
 \usage{
 plot_agents(syneco, input_data, g = NULL, color_list = list(bds = "white",
   interior = "gray60", roads = "gray10", agents = "darkorchid3", envs =
@@ -16,11 +16,12 @@ plot_agents(syneco, input_data, g = NULL, color_list = list(bds = "white",
 
 \item{g}{a ggplot.  Default is NULL.}
 
-\item{color_list}{optional list of colors to provide to the synthetic ecosystem. This must be a list with the following components,  "bds", "interior", "roads", "agents", "envs" where each entry in the list is a color or vector of colors}
+\item{color_list}{optional list of colors to provide to the synthetic ecosystem. This must be a list with the following components:
+"bds", "interior", "roads", "agents", "envs" where each entry in the list is a color or vector of colors}
 }
 \value{
 a ggplot of the region
 }
 \description{
-Plot the agentsof the synthetic ecosystem
+Plot the agents of synthetic ecosystem
 }

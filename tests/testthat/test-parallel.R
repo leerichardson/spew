@@ -1,14 +1,9 @@
 context("Parallel")
 
 test_that("Parallel Backends", {
+  # Skip this test formally, but use this file to debug for olympus ---
   testthat::skip(message = "Skipping parallel tests in formal suite")
   
-  # Skip this test formally, but use this file to debug for olympus ---
-  testthat::skip_if_not_installed(pkg = "Rmpi")
-  testthat::skip_if_not_installed(pkg = "parallel")
-  testthat::skip_if_not_installed(pkg = "doParallel")
-  testthat::skip_if_not_installed(pkg = "foreach")
-
   data(delaware)
   library(sp)
   library(rgeos)
@@ -49,5 +44,5 @@ test_that("Parallel Backends", {
                        shapefile = delaware$shapefiles,
                        pums_h = delaware$pums$pums_h, 
                        pums_p = delaware$pums$pums_p, 
-                       verbose = FALSE, run_type = "MPI")
+                       verbose = TRUE, run_type = "MPI")
 })

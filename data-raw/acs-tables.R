@@ -106,15 +106,17 @@ formatID <- function(geo, type){
 #' @param pums_h household pums from US ACS (same year as person PUMS)
 #' @param person_vars currently in c("AGEP", "RAC1P")
 #' @param hh_vars currently in c("HINCP", "NP")
+#' 
 #' @return a shortened and combined set of PUMS
+#' 
 #' @references For details about the PUMS variables, 
 #' see http://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2010-2014.pdf.  
 combinePUMS <- function(pums_p, pums_h, person_vars = c("AGEP", "RAC1P"),
                         hh_vars = c("HINCP", "NP")) {
-  p_sub <- subset(pums_p, as.numeric(as.character(RELP)) == 0) # get the head of household
+  p_sub <- pums_p[which(as.numeric(as.character(pums_p$RELP)) == 0), ] # get the head of household
   p_sub <- subset(p_sub, select = c("SERIALNO", "PUMA", "PWGTP", person_vars))
   hh_sub <- subset(pums_h, select = c("SERIALNO", "PUMA", hh_vars))
-  pums_c <- join(p_sub, hh_sub)
+  pums_c <- plyr::join(p_sub, hh_sub)
   return(pums_c)
 }
 

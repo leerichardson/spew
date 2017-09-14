@@ -295,42 +295,46 @@ spew_sock <- function(num_places, pop_table, shapefile, pums_h, pums_p,
                       schools, workplaces, marginals, output_type, output_dir, 
                       convert_count, sampling_method, locations_method, outfile_loc, 
                       export_objects, road_noise, timer, verbose) {
+  
   # Set up a SOCK cluster 
   num_workers <- min(num_places, parallel::detectCores(), 64) 
-  cluster <- makeCluster(num_workers, type = "SOCK", outfile = outfile_loc)
+  cluster <- parallel::makeCluster(num_workers, type = "SOCK", outfile = outfile_loc)
   doParallel::registerDoParallel(cluster)
   
   # Export objects to the SOCK cluster  
   parallel::clusterExport(cl = cluster, varlist = export_objects, envir = environment())  
   
   # Run for-each to generate each place on a separate core 
+  `%dopar%` <- foreach::`%dopar%`
+  place <-  NULL
   region_list <- foreach::foreach(place = 1:num_places, 
                          .packages = c("plyr", "methods", "sp", "rgeos", "data.table", "mipfp", "quadprog"),
                          .errorhandling = 'pass', 
                          .export = export_objects) %dopar% {
-                           print(paste0("Region ", place, " out of ", num_places))
-                           times <- spew_place(index = place, 
-                                      pop_table = pop_table, 
-                                      shapefile = shapefile, 
-                                      pums_h = pums_h, 
-                                      pums_p = pums_p, 
-                                      schools = schools, 
-                                      workplaces = workplaces, 
-                                      marginals = marginals, 
-                                      output_type = output_type,
-                                      sampling_method = sampling_method, 
-                                      locations_method = locations_method, 
-                                      convert_count = convert_count, 
-                                      output_dir = output_dir,
-                                      road_noise = road_noise, 
-                                      timer = timer, 
-                                      verbose = verbose)
+                           
+                         print(paste0("Region ", place, " out of ", num_places))
+                         times <- spew_place(index = get("place"), 
+                                    pop_table = pop_table, 
+                                    shapefile = shapefile, 
+                                    pums_h = pums_h, 
+                                    pums_p = pums_p, 
+                                    schools = schools, 
+                                    workplaces = workplaces, 
+                                    marginals = marginals, 
+                                    output_type = output_type,
+                                    sampling_method = sampling_method, 
+                                    locations_method = locations_method, 
+                                    convert_count = convert_count, 
+                                    output_dir = output_dir,
+                                    road_noise = road_noise, 
+                                    timer = timer, 
+                                    verbose = verbose)
                                                       
                            print(paste0("Finished ", pop_table[place, "place_id"]))
                            times
                          }
-  stopCluster(cluster)
   
+  parallel::stopCluster(cluster)
   return(region_list)
 }
 
@@ -375,24 +379,24 @@ spew_mc <- function(num_places, pop_table, shapefile, pums_h, pums_p,
                     convert_count, sampling_method, locations_method, outfile_loc, 
                     export_objects, road_noise, timer, verbose) {
   
-  num_workers <- detectCores()
-  region_list <- mclapply(X = 1:num_places, 
-                          FUN = spew_place, 
-                          pop_table = pop_table, 
-                          shapefile = shapefile, 
-                          pums_h = pums_h, 
-                          pums_p = pums_p, 
-                          schools = schools, 
-                          workplaces = workplaces, 
-                          marginals = marginals, 
-                          output_type = output_type,
-                          sampling_method = sampling_method, 
-                          locations_method = locations_method, 
-                          convert_count = convert_count, 
-                          output_dir = output_dir,
-                          road_noise = road_noise, 
-                          timer = timer, 
-                          verbose = verbose)
+  num_workers <- parallel::detectCores()
+  region_list <- parallel::mclapply(X = 1:num_places, 
+                                    FUN = spew_place, 
+                                    pop_table = pop_table, 
+                                    shapefile = shapefile, 
+                                    pums_h = pums_h, 
+                                    pums_p = pums_p, 
+                                    schools = schools, 
+                                    workplaces = workplaces, 
+                                    marginals = marginals, 
+                                    output_type = output_type,
+                                    sampling_method = sampling_method, 
+                                    locations_method = locations_method, 
+                                    convert_count = convert_count, 
+                                    output_dir = output_dir,
+                                    road_noise = road_noise, 
+                                    timer = timer, 
+                                    verbose = verbose)
   
   return(region_list)
 }
@@ -438,13 +442,13 @@ spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p,
                      convert_count, sampling_method, locations_method, outfile_loc, 
                      export_objects, road_noise, timer, verbose) {
   # Set up the MPI workers
-  num_workers <- mpi.universe.size()
-  mpi.spawn.Rslaves(nslaves = num_workers)
+  num_workers <- Rmpi::mpi.universe.size()
+  Rmpi::mpi.spawn.Rslaves(nslaves = num_workers)
   
   # Print out the processor information
-  rk <- mpi.comm.rank(0)
-  sz <- mpi.comm.size(0)
-  name <- mpi.get.processor.name()
+  rk <- Rmpi::mpi.comm.rank(0)
+  sz <- Rmpi::mpi.comm.size(0)
+  name <- Rmpi::mpi.get.processor.name()
   if (verbose) { cat("Hello, rank " , rk , " out of " , sz , " on " , name, "\n") }
 
   # If we are on Olympus, make sure to switch to personal libraries
@@ -456,23 +460,23 @@ spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p,
     username <- system("whoami", intern = TRUE)
     print(paste0("Username: ", username))
     print(.libPaths())
-    mpi.bcast.cmd(username <- system("whoami", intern = TRUE))    
-    mpi.bcast.cmd(personal_lib <- grep(username, .libPaths()))
-    mpi.bcast.cmd(print(.libPaths()[personal_lib]))
-    mpi.bcast.cmd(print(personal_lib))
-    mpi.bcast.cmd(.libPaths(new = c(.libPaths()[personal_lib])))
-    mpi.bcast.cmd(print("New Lib-Paths"))
-    mpi.bcast.cmd(print(.libPaths()))
+    Rmpi::mpi.bcast.cmd(username <- system("whoami", intern = TRUE))    
+    Rmpi::mpi.bcast.cmd(personal_lib <- grep(username, .libPaths()))
+    Rmpi::mpi.bcast.cmd(print(.libPaths()[personal_lib]))
+    Rmpi::mpi.bcast.cmd(print(personal_lib))
+    Rmpi::mpi.bcast.cmd(.libPaths(new = c(.libPaths()[personal_lib])))
+    Rmpi::mpi.bcast.cmd(print("New Lib-Paths"))
+    Rmpi::mpi.bcast.cmd(print(.libPaths()))
   }
   
   # Send the relevant data objects/packes to workers 
-  mpi.bcast.cmd(requireNamespace(plyr))
-  mpi.bcast.cmd(requireNamespace(methods))
-  mpi.bcast.cmd(requireNamespace(sp))
-  mpi.bcast.cmd(requireNamespace(rgeos))
-  mpi.bcast.cmd(requireNamespace(data.table))
-  mpi.bcast.cmd(requireNamespace(mipfp))
-  mpi.bcast.cmd(requireNamespace(quadprog))
+  Rmpi::mpi.bcast.cmd("requireNamespace(plyr)")
+  Rmpi::mpi.bcast.cmd("requireNamespace(methods)")
+  Rmpi::mpi.bcast.cmd("requireNamespace(sp)")
+  Rmpi::mpi.bcast.cmd("requireNamespace(rgeos)")
+  Rmpi::mpi.bcast.cmd("requireNamespace(data.table)")
+  Rmpi::mpi.bcast.cmd("requireNamespace(mipfp)")
+  Rmpi::mpi.bcast.cmd("requireNamespace(quadprog)")
   
   # Export functions to all of the workers ------
   for (obj in export_objects) {
@@ -481,7 +485,7 @@ spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p,
   }
   
   # Call SPEW for each one of the places 
-  region_list <- mpi.applyLB(X = 1:num_places, 
+  region_list <- Rmpi::mpi.applyLB(X = 1:num_places, 
                              FUN = spew_place, 
                              pop_table = pop_table, 
                              shapefile = shapefile, 
@@ -500,8 +504,8 @@ spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p,
                              verbose = verbose)
   
   # Close the connections and MPI
-  mpi.close.Rslaves()
-  mpi.exit()
+  Rmpi::mpi.close.Rslaves()
+  Rmpi::mpi.exit()
   
   return(region_list)
 }

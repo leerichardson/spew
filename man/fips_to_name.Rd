@@ -4,14 +4,14 @@
 \alias{fips_to_name}
 \title{Translate FIPS number to place name}
 \usage{
-fips_to_name(fips, level, df = us)
+fips_to_name(fips, level, df)
 }
 \arguments{
 \item{fips}{string -- US FIPS code length 2 for state or length 5 for county}
 
 \item{level}{either "state" or "county"}
 
-\item{df}{a data frame table to translate FIPS to placename.  It must have column names
+\item{df}{a data frame table to translate FIPS to placename. It must have column names
 STATEFP, STATE_NAME, COUNTYFP, and County.}
 }
 \value{

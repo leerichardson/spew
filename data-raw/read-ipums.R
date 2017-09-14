@@ -6,7 +6,6 @@
 # program 
 
 # Updated: July 7, 2017
-
 uruguay_path <- system.file("extdata/ury", package = "spew")
 
 uruguay <- read_data(base_dir = uruguay_path, 

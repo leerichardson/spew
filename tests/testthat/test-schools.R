@@ -4,7 +4,7 @@ test_that("United States School Assignment", {
   
   # Get the data for a randomly sampled tract set up ------------------------
   data(delaware)
-  index <- sample(x = 1:nrow(delaware$pop_table), size = 1)
+  index <- 17
   
   # Obtain the specific parameters for this run of make 
   n_house <- delaware$pop_table[index, "n_house"]

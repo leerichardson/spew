@@ -23,3 +23,7 @@ NULL
 
 #' Table of US states and counties 
 "us"
+
+#' @import utils stats methods 
+NULL
+

@@ -93,7 +93,7 @@ get_data_group <- function(location_name) {
 #' 
 get_total_time <- function(logfile) {
   total_line <- get_rows(logfile, "SPEW Runs in:")
-  total_numbers <- number_from_char(total_line)
+  total_numbers <- as.numeric(gsub("([0-9]+).*$", "\\1", total_line))
   total_time <- paste0(total_numbers[2], ".", total_numbers[3])
   return(total_time)
 }

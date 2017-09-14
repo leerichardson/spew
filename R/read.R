@@ -505,15 +505,15 @@ read_roads <- function(path_to_roads, road_id) {
 #' @param data_group character either "US", "ipums" or "none" which tells 
 #' read_data if the input data follows a particular format. Used mainly for 
 #' the pre-formatted data-types we have on our Olympus
+#' @param sampling_method should be "ipf"
 #' 
 #' @return data frame with counts 
-read_marginals <- function(input_dir, folders, data_group) {
-                                        # Get a character vector of files in marginal folder
+read_marginals <- function(input_dir, folders, data_group, sampling_method = "ipf") {
     marginals <- NULL
     marginal_files <- list.files(file.path(... = input_dir, folders$marginals))
     
     if (data_group == "US") {
-                                        # Subset marginal file with "marginals" in name
+        # Subset marginal file with "marginals" in name
         marginal_ind <- grep(pattern = "marginals", x = marginal_files)
         marginal_file <- marginal_files[marginal_ind]
         marginals <- readRDS(file = file.path(input_dir, folders$marginals, marginal_file))
@@ -522,16 +522,14 @@ read_marginals <- function(input_dir, folders, data_group) {
     } else if (data_group == "ipums") {
         
     } else if (data_group == "none") {
-        if(sampling_method == "ipf"){
-                                        # Subset marginal file with "marginals" in name
+        if(sampling_method == "ipf") {
+        # Subset marginal file with "marginals" in name
             marginal_ind <- grep(pattern = "marginals", x = marginal_files)
             marginal_file <- marginal_files[marginal_ind]
             marginals <- readRDS(file = file.path(input_dir, folders$marginals, marginal_file))
             print("got marginals for none group ipf")
         }
         return(marginals)
-
-
   }
 }
 

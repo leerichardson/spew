@@ -2,7 +2,6 @@
 ## August 24, 2017
 ## Functions to analyze SPEW synecos in console
 
-
 #' Plotting the synthetic ecosystem
 #'
 #' @param input_data a list of the essential data and possibly supplementary data, shapefile must be one of the names
@@ -66,7 +65,7 @@ plot_interior <- function(shapefile, g = NULL,
     if(is.null(g))     g <- ggplot2::ggplot() # Set up empty plot
 
     g <- g + ggplot2::geom_polygon(data = shapefile,
-                                   ggplot2::aes (x = long, y = lat, group = group),
+                                   ggplot2::aes_string(x = "long", y = "lat", group = "group"),
                                    fill = color_list$interior, col = color_list$interior)
     return(g)
 }
@@ -90,42 +89,46 @@ plot_bds <- function(shapefile, g = NULL,
 
     if(is.null(g))     g <- ggplot2::ggplot() # Set up empty plot
     g <- g + ggplot2::geom_polygon(data = shapefile,
-                                   ggplot2::aes (x = long, y = lat, group = group),
+                                   ggplot2::aes_string(x = "long", y = "lat", group = "group"),
                                    col = color_list$bds, lwd = 2, alpha = .4)
     return(g)
 }
 
 
-#' Plot the agentsof the synthetic ecosystem
+#' Plot the agents of synthetic ecosystem
 #'
 #' @param syneco the outputted synthetic ecosystem data from spew
 #' @param input_data a list of the essential data and possibly supplementary data, shapefile must be one of the names
 #' @param g a ggplot.  Default is NULL.
-#' @param color_list optional list of colors to provide to the synthetic ecosystem. This must be a list with the following components,  "bds", "interior", "roads", "agents", "envs" where each entry in the list is a color or vector of colors
+#' @param color_list optional list of colors to provide to the synthetic ecosystem. This must be a list with the following components:
+#' "bds", "interior", "roads", "agents", "envs" where each entry in the list is a color or vector of colors
+#' 
 #' @return a ggplot of the region
 plot_agents <- function(syneco, input_data,
                         g = NULL, 
-                     color_list =  list(bds = "white",
+                        color_list =  list(bds = "white",
                                           interior = "gray60",
                                           roads = "gray10",
                                           agents = "darkorchid3",
                                           envs = c("#E69F00", "#56B4E9",
                                                    "#009E73", "#F0E442", "#0072B2",
-                                                   "#D55E00", "#CC79A7"))){
-
-    if(is.null(g))     g <- ggplot2::ggplot() # Set up empty plot
-
-    households <- do.call('rbind', lapply(syneco, "[[", 1))
-    g <- g + ggplot2::geom_point(data = households,
-                                 ggplot2::aes(longitude, latitude),
-                                 alpha = 1, col = color_list$agents)
-    coords_df <- data.frame(sp::coordinates(input_data$shapefile),
-                            place_id = input_data$shapefile@data$place_id)
-    g <- g + ggplot2::geom_text(data = coords_df,
-                       ggplot2::aes(x= X1, y = X2, label = place_id),
-                           col = color_list$bds, size = 8)
-    return(g)
+                                                   "#D55E00", "#CC79A7"))) {
+  
+  if (is.null(g)) { g <- ggplot2::ggplot() } # Set up empty plot 
+  
+  households <- do.call('rbind', lapply(syneco, "[[", 1))
+  g <- g + ggplot2::geom_point(data = households,
+                               ggplot2::aes_string(x = "longitude", y = "latitude"),
+                               alpha = 1, col = color_list$agents)
+  coords_df <- data.frame(sp::coordinates(input_data$shapefile),
+                          place_id = input_data$shapefile@data$place_id)
+  g <- g + ggplot2::geom_text(data = coords_df,
+                              ggplot2::aes_string(x = "X1", y = "X2", label = "place_id"),
+                              col = color_list$bds, size = 8)
+  return(g)
+  
 }
+
 
 
 #' Plot the roads of the synthetic ecosystem
@@ -144,7 +147,7 @@ plot_roads <- function(roads, g = NULL,
                                                    "#D55E00", "#CC79A7"))){
 
     if(is.null(g))     g <- ggplot2::ggplot() # Set up empty plot
-     g <- g + ggplot2::geom_path( data = roads, ggplot2::aes(x=long, y = lat, group = group),
+     g <- g + ggplot2::geom_path(data = roads, ggplot2::aes_string(x = "long", y = "lat", group = "group"),
                                col = color_list$roads, lwd =2 , alpha = .9)
     return(g)
 }
@@ -164,12 +167,12 @@ plot_env <- function(input_data, g = NULL,
                                                    "#009E73", "#F0E442", "#0072B2",
                                                    "#D55E00", "#CC79A7"))){
 
-    if(is.null(g))     g <- ggplot2::ggplot() # Set up empty plot
+    if (is.null(g)) { g <- ggplot2::ggplot() } # Set up empty plot
     cols <- rep(color_list$envs, length.out = length(unique(input_data$environments$Type)))
     col_scale <- ggplot2::scale_colour_manual(name = "reg", values = cols)
     g <- g + ggplot2::geom_point(data = input_data$environments,
-                        ggplot2::aes(x = longitude, y = latitude,
-                                     col = Type, group = Type),  shape = 17, size = 5) + col_scale
+                        ggplot2::aes_string(x = "longitude", y = "latitude", col = "Type", group = "Type"),  
+                        shape = 17, size = 5) + col_scale
     return(g)
 }
 
@@ -334,6 +337,4 @@ summarize_spew_region <- function(spew_region, type = "households", marginals,
     region_summary <- c(region_summary, vars_sum, env_sum)
     
     return(region_summary)
-                           
-    
 }

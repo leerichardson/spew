@@ -5,7 +5,11 @@
 
 # Use spew and acs package to ACS summary tables  
 library(acs)
-devtools::load_all()
+
+#devtools::load_all()
+# Replace this line with 
+source("acs-tables.R")
+
 
 # Loop through South Dakota counties downloading the 4 tables 
 table_numbers <- c("B19001", "B11016", "B25007", "B25006")
