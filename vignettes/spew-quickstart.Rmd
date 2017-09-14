@@ -1,18 +1,22 @@
 ---
 title: 'SPEW: A brief tour'
 author: "Department of Statistics, Carnegie Mellon University"
-output:
-  html_document:
-    toc: true
-    toc_float: true
-    highlight: textmate
-    theme: flatly
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
+<!-- toc: true -->
+<!-- toc_float: true -->
+<!-- highlight: textmate -->
+<!-- theme: flatly -->
 
 ```{r, include=FALSE}
 library(knitr) # We need the knitr package to set chunk options
 # Set default knitr options for knitting code into the report:
-opts_chunk$set(cache=TRUE, autodep=TRUE, cache.comments=FALSE)
+#opts_chunk$set(cache=TRUE, autodep=TRUE, cache.comments=FALSE)
 ```
 
 <a href="http://www.stat.cmu.edu/~spew">	
@@ -29,13 +33,10 @@ SPEW uses random sampling to sample both locations of residence for the syntheti
 ## Downloading SPEW	
 Open up an `R` session and run the following commands.
 ```{r, eval = FALSE}     
-devtools::install_github("leerichardson/spew")
+  devtools::install_github("leerichardson/spew")
 ```
 
-
-
 ##	Tartanville:  SPEW basics		
-		
 To plot with functions in SPEW, make sure `ggplot2` is	installed.	
 ```{r, eval = FALSE}
 library(spew)
@@ -49,9 +50,10 @@ tartanville_syneco <- spew(tartanville$pop_table, tartanville$shapefile,
 plot_syneco(tartanville, tartanville_syneco,
                      region_name = "Tartanville")
 
- out <- summarize_spew_out(tartanville_syneco, vars_to_sum_h = c("puma_id"),
+out <- summarize_spew_out(tartanville_syneco, vars_to_sum_h = c("puma_id"),
                             vars_to_sum_p = c("SEX"),
                            vars_to_sum_env = NULL, top_region_id = "Tartanville")
+
 g <- plot_characteristic_proportions(feature_name = "Sex", legend_name = "Sex",
                                 feature_df = out$SEX,
                                 category_names = c("Male", "Female"),
@@ -62,11 +64,13 @@ g <- plot_pop_totals(feature_df = out$pop_totals, type = "n_people")
 ```
 
 ```{r, warning = FALSE, results = 'hide', echo = FALSE, message = FALSE}
-devtools::load_all("~/spew")
+#spew_path <- gsub(pattern = "/inst", replacement = "", system.file(package = "spew"))
+devtools::load_all("../")
+
 # Generate Tartanville 
 data(tartanville)
 tartanville_syneco <- spew(tartanville$pop_table, tartanville$shapefile,
-                            tartanville$pums_h, tartanville$pums_p, )
+                            tartanville$pums_h, tartanville$pums_p)
 
 plot_syneco(tartanville, tartanville_syneco,
                      region_name = "Tartanville")
@@ -83,7 +87,6 @@ g <- plot_characteristic_proportions(feature_name = "Sex", legend_name = "Sex",
                                 region_colors = c("lightslateblue", "maroon1"))
 
 g <- plot_pop_totals(feature_df = out$pop_totals, type = "n_people")
-
 ```
 
 
@@ -144,7 +147,6 @@ supplementary_data <- list(moments = make_mm_obj(moments_list =
                                                   NP = NP_avg)),
                            assumption = "independence",
                                 nMom = 1, type = "cont"))
-
 ```
 
 And then we use SPEW, with the additional library `quadprog`, which is required for MM.  Note we have supplemented `spew` with both a `supplementary_data` argument and the sampling method of `'mm'`.  The outputted synthetic ecosystem is in the same format.  We see that MM matches the inputted average household sizes well, especially compared to uniform sampling.
@@ -360,8 +362,7 @@ Finally, the `marginals` object is added to the list of supplementary data,
 supplementary_data <- list(marginals = marginals)
 ```		 	       
 
-		    
-## Environments  (`environments`)
+		    ## Environments  (`environments`)
 This is a data frame with the following arguments
 
 ```
@@ -369,31 +370,3 @@ environments <- data.frame(ID = {IDs}, Type = {environment.type},
 	     longitude = {longitude}, latitude = {latitude},
 	     capacity = {capacity.of.place})
 ```	     
-
-# Advanced SPEW
-The tools shown in this vignette are mainly for the generation of small synthetic ecosystems ( < 1 million synthetic individuals).  However, SPEW is equipped to produce large synthetic ecosystems.
-
-The function `call_spew` is a function that automates the process of reading in data from pre-specified folders and writes out the synthetic ecosystems to files within an output folder.
-
-It is helpful to have the following directory structure
-    
-+ region_to_spew
-	+ input
-		+ counts
-		+ marginals
-      	+ pums
-      	+ shapefiles
-	+ output
-  	+ logfiles
-
-In `call_spew`, two formats have been adapted to speed the process of SPEW due to the similar nature of the data.  The first is "usa" for US states as the data all originates from the US Census.  The second is "ipums" where the data originates from [IPUMS-I](https://international.ipums.org/international/) and [GeoHive](http://geohive.com/).
-
-A third custom option is available for data sources that do not fit into either of the above options.
-
-Additionally, `call_spew` has been adapted to specifically assign schools from [NCES](http://nces.ed.gov/ipeds/datacenter/) so that children are assigned to either private or public schools, within the county if possible based upon the appropriate grade range from the microdata from the US Census.
-
-Functions are available to provide graphical and textual summaries of these synthetic ecosystems generated by `call_spew`.
-
-Finally, `call_spew` has been painstakingly designed to support 3 parallel back ends (SOCK, RMPI, and MC) to provide the most efficient use of available computing resources in addition to the non-parallel "SEQ" option.
-
-For more information, please see the [full documentation](https://github.com/leerichardson/spew/blob/master/olympus/documentation/spew_documentation.pdf).	 
