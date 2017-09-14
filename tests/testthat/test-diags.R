@@ -1,9 +1,8 @@
 context("Diagnostic functions")
 
 test_that("individual functions for diagnostics work",{
-
     ## check path
-    data_path <- "../test_data/42"
+    data_path <- system.file("extdata/test_data/42", package = "spew")
     files <- list.files(data_path)
     expect_true( "output" %in% files)
 
@@ -23,8 +22,8 @@ test_that("individual functions for diagnostics work",{
     expect_equal(length(file_list[[1]]), 2)
     expect_equal(length(file_list[[1]]$files), 2)
     expect_equal(length(file_list[[2]]$files), 1)
-    expect_equal(file_list[[1]]$id,  "42003")
-    expect_equal(file_list[[2]]$id,  "42005")
+    expect_equal(file_list[[1]]$id, "42003")
+    expect_equal(file_list[[2]]$id, "42005")
 
     ## Summarize state level
     file_list <- get_filenames(data_path, summary_level = 1,
@@ -85,7 +84,8 @@ test_that("individual functions for diagnostics work",{
                                pop_type = "US")
     sub_files <- filenames_h[[1]]
     vars_to_sum <- c("HINCP", "NP")
-    marginals <- readRDS("../test_data/42/marginals/marg_us.RDS")
+    
+    marginals <- readRDS(file.path(data_path, "marginals/marg_us.RDS"))
     read_vars <- vars_to_sum
     df <- as.data.frame(do.call('rbind',
                                 lapply(sub_files$files, data.table::fread, select = read_vars)))
@@ -114,7 +114,7 @@ test_that("individual functions for diagnostics work",{
     sub_files <- filenames_p[[2]]
     vars_to_sum <- c("RAC1P", "AGEP")
     env_vars <- c("school_id", "workplace_id")
-    marginals <- readRDS("../test_data/42/marginals/marg_us.RDS")
+    marginals <- readRDS(file.path(data_path, "marginals/marg_us.RDS"))
     read_vars <- c(vars_to_sum, env_vars, "longitude", "latitude")
     df <- as.data.frame(do.call('rbind',
                                 lapply(sub_files$files, data.table::fread, select = read_vars)))
@@ -206,8 +206,8 @@ test_that("individual functions for diagnostics work",{
 })
 
 test_that("US diags work", {
-    data_path <- "../test_data/42"
-    marginals <- readRDS("../test_data/42/marginals/marg_us.RDS")
+    data_path <- system.file("extdata/test_data/42", package = "spew")  
+    marginals <- readRDS(file.path(data_path, "marginals/marg_us.RDS"))
     summaries <- summarize_top_region(output_dir = data_path,
                                       type="US",
                                       vars_to_sum_h = c("NP", "HINCP"), 
@@ -221,8 +221,7 @@ test_that("US diags work", {
 
 
 test_that("IPUMS diags work", {
-
-    data_path <- "../test_data/vatican"
+    data_path <- system.file("extdata/test_data/vatican", package = "spew")
     summaries <- summarize_top_region(output_dir = data_path,
                                       type="IPUMS",
                                       vars_to_sum_h = c("NP", "HINCP"), 
@@ -232,18 +231,10 @@ test_that("IPUMS diags work", {
                                       summary_level=2,
                                       marginals = NULL)
     expect_true(summaries$n_house == 301)
-
-
-
-
 })
 
 
 test_that("Custom diags", {
-
-## TODO
-
-
 })
 
 
