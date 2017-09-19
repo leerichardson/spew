@@ -51,4 +51,4 @@ test_that("SPEW algorithm runs as expected", {
   original_nhouse <- uruguay$pop_table[1, "n_house"]  
   expect_false(nrow(uruguay_region$households) == original_nhouse)
   expect_true(abs((nrow(uruguay_region$people) / original_nhouse) - 1) < .2)
-})
+  })

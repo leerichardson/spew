@@ -97,7 +97,7 @@ spew <- function(pop_table, shapefile, pums_h, pums_p,
                  schools = NULL, workplaces = NULL, marginals = NULL, 
                  output_type = "console", base_dir = NULL, convert_count = FALSE, 
                  run_type = "SEQ", sampling_method = "uniform", locations_method = "uniform", 
-                 outfile_loc = "", road_noise = .0002, timer = TRUE, verbose = FALSE) {
+                 outfile_loc = "", road_noise = .0002, timer = FALSE, verbose = FALSE) {
   if (timer == TRUE) { location_start_time <- Sys.time() }
   
   # Write out both the pop-table and environments ---
@@ -546,135 +546,91 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p,
                        output_type = "console", sampling_method = "uniform", 
                        locations_method = "uniform", convert_count = FALSE, 
                        output_dir = NULL, road_noise = .0002, 
-                       timer = TRUE, verbose = FALSE) {
+                       timer = FALSE, verbose = FALSE) {
   if (timer == TRUE) { place_start_time <- Sys.time() }
-
-  # Obtain number of households, puma_id, and place_id from pop table
+  
+  # Extract region-specific information such as household size, IDs, etc...
   n_house <- pop_table[index, "n_house"]
+  if (n_house == 0) { print("Place has 0 Households!"); return(TRUE) } 
+  n_house <- ccount(convert_count, pums_h$PERSONS, nrow(pums_p), nrow(pums_h), n_house)
   puma_id <- pop_table[index, "puma_id"]
   place_id <- pop_table[index, "place_id"]
+  shapefile_id <- switch("shapefile_id" %in% names(pop_table), NULL, pop_table[index, "shapefile_id"])
   
-  # To avoid data-frames larger than 5 Million, generate large 
-  # places incrementally, appending rows onto each-other 
-  append <- FALSE
-  max_size <- 5000000
-  iter <- 0
-  total_hh <- 0
-  total_people <- 0
-  number_iters <- floor(n_house / max_size)
-  if (number_iters == 0) {
-    iter_vec <- n_house
-  } else {
-    remainder <- n_house %% max_size 
-    iter_vec <- c(rep(max_size, number_iters), remainder)
-  }
+  # Sample Households ---
+  sampled_households <- sample_households(method = sampling_method, 
+                                          n_house = n_house, 
+                                          pums_h = pums_h, 
+                                          pums_p = pums_p, 
+                                          marginals = marginals,
+                                          puma_id = puma_id, 
+                                          place_id = place_id)
   
-  for (n_house in iter_vec) {
-    # If this is the second increment of this place, make sure we append
-    iter <- iter + 1
-    if (iter == 2) {
-      append <- TRUE
-    }
-    
-    # Skip if 0 people in a region
-    if (pop_table[index, "n_house"] == 0 | n_house == 0) {
-      print("Place has 0 Households!")
-      return(TRUE)
-    }
-    
-    # If there's a shapefile ID, extract from the pop table 
-    if ("shapefile_id" %in% names(pop_table)) {
-      shapefile_id <- pop_table[index, "shapefile_id"]
-    } else {
-      shapefile_id <- NULL
-    }
-    
-    # Convert people counts to household counts 
-    if (convert_count == TRUE) {
-      hh_sizes <- pums_h$PERSONS
-      if (is.null(hh_sizes)) {
-        hh_sizes <- nrow(pums_p) / nrow(pums_h)
-      }
-      n_house <- floor(people_to_households(hh_sizes, n_house))
-    }
-    
-    # Sample Households ---
-    sampled_households <- sample_households(method = sampling_method, 
-                                            n_house = n_house, 
-                                            pums_h = pums_h, 
-                                            pums_p = pums_p, 
-                                            marginals = marginals,
-                                            puma_id = puma_id, 
-                                            place_id = place_id)
-    total_hh <- total_hh + nrow(sampled_households)
+  # Sample Household Locations ---
+  locations <- sample_locations(method = locations_method, 
+                                place_id = place_id,
+                                n_house = n_house, 
+                                shapefile = shapefile, 
+                                noise = road_noise, 
+                                shapefile_id = shapefile_id)
+  sampled_households$longitude <- locations@coords[, 1]
+  sampled_households$latitude <- locations@coords[, 2]
 
-    # Sample Household Locations ---
-    locations <- sample_locations(method = locations_method, 
-                                  place_id = place_id,
-                                  n_house = n_house, 
-                                  shapefile = shapefile, 
-                                  noise = road_noise, 
-                                  shapefile_id = shapefile_id)
-    sampled_households$longitude <- locations@coords[, 1]
-    sampled_households$latitude <- locations@coords[, 2]
-    rm(locations); gc()
+  # Sample People --- 
+  sampled_people <- sample_people(method = sampling_method, 
+                                  household_pums = sampled_households, 
+                                  pums_p = pums_p, 
+                                  puma_id = puma_id, 
+                                  place_id = place_id)
+
+  # Schools --- 
+  school_time <- 0
+  if (!is.null(schools)) {
+    school_start_time <- Sys.time()
     
-    # Sample People --- 
-    sampled_people <- sample_people(method = sampling_method, 
-                                    household_pums = sampled_households, 
-                                    pums_p = pums_p, 
-                                    puma_id = puma_id, 
-                                    place_id = place_id)
-    total_people <- total_people + nrow(sampled_people)
+    school_ids <- assign_schools(sampled_people, schools)
+    sampled_people$school_id <- school_ids
+    stopifnot("school_id" %in% names(sampled_people))
     
-    # Schools --- 
-    school_time <- 0
-    if (!is.null(schools)) {
-      school_start_time <- Sys.time()
-      
-      school_ids <- assign_schools(sampled_people, schools)
-      sampled_people$school_id <- school_ids
-      stopifnot("school_id" %in% names(sampled_people))
-      
-      school_time <- difftime(Sys.time(), school_start_time, units = "secs")
-      school_time <- round(school_time, digits = 2)
-    }
-    
-    # Workplaces ---
-    workplace_time <- 0
-    if (!is.null(workplaces)) {
-      workplace_start_time <- Sys.time()
-      
-      workplace_ids <- assign_workplaces(sampled_people, workplaces)
-      sampled_people$workplace_id <- workplace_ids
-      stopifnot("workplace_id" %in% names(sampled_people))
-      
-      workplace_time <- difftime(Sys.time(), workplace_start_time, units = "secs")
-      workplace_time <- round(school_time, digits = 2)
-    }
-    
-    # Activities ---
-    # ABBYS FUNCTION GOES HERE 
-    
-    # Return synthetic ecosystem if output_type equals 'console'
-    if (output_type == "console") {
-      return(list(households = sampled_households,
-                  people = sampled_people, 
-                  place_id = place_id,
-                  puma_id = puma_id))
-    }
-    
-    stopifnot(output_type == "write")
-    
-    # Write the synthetic populations as CSV's
-    write_data(df = sampled_households, place_id = place_id, 
-               puma_id = puma_id, type = "household", 
-               output_dir = output_dir, append = append)          
-    write_data(df = sampled_people, place_id = place_id, 
-               puma_id = puma_id, type = "people", 
-               output_dir = output_dir, append = append)    
+    school_time <- difftime(Sys.time(), school_start_time, units = "secs")
+    school_time <- round(school_time, digits = 2)
   }
   
+  # Workplaces ---
+  workplace_time <- 0
+  if (!is.null(workplaces)) {
+    workplace_start_time <- Sys.time()
+    
+    workplace_ids <- assign_workplaces(sampled_people, workplaces)
+    sampled_people$workplace_id <- workplace_ids
+    stopifnot("workplace_id" %in% names(sampled_people))
+    
+    workplace_time <- difftime(Sys.time(), workplace_start_time, units = "secs")
+    workplace_time <- round(school_time, digits = 2)
+  }
+  
+  # Activities ---
+
+  # Vectors ---
+  
+  # Return synthetic ecosystem if output_type equals 'console'
+  if (output_type == "console") {
+    return(list(households = sampled_households,
+                people = sampled_people, 
+                place_id = place_id,
+                puma_id = puma_id))
+  }
+  
+  stopifnot(output_type == "write")
+  
+  # Write the synthetic populations as CSV's
+  write_data(df = sampled_households, place_id = place_id, 
+             puma_id = puma_id, type = "household", 
+             output_dir = output_dir)          
+  write_data(df = sampled_people, place_id = place_id, 
+             puma_id = puma_id, type = "people", 
+             output_dir = output_dir)    
+
   # Collect diagnostic and summary information on this particular   
   # job and return this to the make_data function for analysis 
   place_time <- difftime(Sys.time(), place_start_time, units = "secs")
@@ -689,10 +645,7 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p,
   total_place_statement <- paste0("Total Places: ", nrow(pop_table))
   place_name_statement <- paste0("Place Name: ", place_id)
   puma_statement <- paste0("Puma: ", puma_id)
-  
-  # Remove largest objects, then to Garbage collection
-  rm(sampled_people); rm(sampled_households); gc()
-  
+
   return(list(place_name = place_name_statement,
               place_num = place_statement, 
               total_places = total_place_statement, 
@@ -702,6 +655,40 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p,
               schools = school_statement, 
               workplaces = workplace_statement, 
               puma_name = puma_statement))
+}
+
+#' Adjust number of households 
+#' 
+#' Only changes things when population total represents the number 
+#' of people (instead of households) 
+#' 
+#' @param convert_count logical, TRUE means make the switch 
+#' @param persons vector of number of persons in each household 
+#' @param np rows of person pums 
+#' @param nh rows of household pums 
+#' @n_house original count of number of households 
+#' 
+#' @return updated n_house 
+ccount <- function(convert_count = FALSE, persons, np, nh, n_house) {
+  if (convert_count == TRUE) {
+    if (is.null(persons)) { persons <- nrow(pums_p) / nrow(pums_h) }
+    n_house <- people_to_households(persons, n_house)
+  }
+  
+  return(n_house)  
+}
+
+#' Convert a population count to household count 
+#' 
+#' @param hh_sizes numeric vector with the household 
+#' sizes for this particular sampling region  
+#' @param n_people numeric indicating the number 
+#' of people in this specific region 
+#' @return number of households 
+people_to_households <- function(hh_sizes, n_people) {
+  hh_avg <- mean(hh_sizes)
+  num_households <- floor(n_people / hh_avg)
+  return(num_households)
 }
 
 #' Output our final synthetic populations as csv's 
@@ -783,19 +770,6 @@ write_workplaces <- function(workplaces, env_dir) {
   write.csv(workplaces, workplaces_filename)
   
   return(TRUE)
-}
-
-#' Convert a population count to household count 
-#' 
-#' @param hh_sizes numeric vector with the household 
-#' sizes for this particular sampling region  
-#' @param n_people numeric indicating the number 
-#' of people in this specific region 
-#' @return number of households 
-people_to_households <- function(hh_sizes, n_people) {
-  hh_avg <- mean(hh_sizes)
-  num_households <- n_people / hh_avg
-  return(num_households)
 }
 
 #' Write out information on each region 
