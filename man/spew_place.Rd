@@ -8,7 +8,7 @@ spew_place(index, pop_table, shapefile, pums_h, pums_p, schools = NULL,
   workplaces = NULL, marginals = NULL, output_type = "console",
   sampling_method = "uniform", locations_method = "uniform",
   convert_count = FALSE, output_dir = NULL, road_noise = 2e-04,
-  timer = TRUE, verbose = FALSE)
+  timer = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{index}{specfic row of pop-table to generate}

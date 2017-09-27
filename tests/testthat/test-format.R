@@ -20,14 +20,14 @@ test_that("ipums formatting", {
   testthat::skip_if_not_installed("stringdist")
   
   # Write all format output to a file 
-  uruguay_path <- system.file("extdata/ury", package = "spew")
+  uruguay_path <- system.file("extdata/ury/input", package = "spew")
 
   # Skip if the delaware data is not available!  
   if (!file.exists(uruguay_path)) {
     skip("Skipping: Can't find Delaware Data!")
   }
   
-  uruguay_raw <- read_data(base_dir = uruguay_path, 
+  uruguay_raw <- read_data(input_dir = uruguay_path, 
                        data_group = "ipums", 
                        folders = list(pop_table = "counts", 
                                       pums = "pums", 

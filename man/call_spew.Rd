@@ -4,14 +4,16 @@
 \alias{call_spew}
 \title{Wrapper for reading, formatting, and writing SPEW ecosystems}
 \usage{
-call_spew(base_dir, folders = NULL, data_group = "US", run_type = "SEQ",
-  sampling_method = "uniform", locations_method = "uniform",
-  output_type = "write", convert_count = FALSE, vars = list(household =
-  NA, person = NA), road_noise = 2e-04, outfile_loc = "", timer = TRUE,
-  verbose = TRUE)
+call_spew(input_dir, output_dir, folders = NULL, data_group = "US",
+  run_type = "SEQ", sampling_method = "uniform",
+  locations_method = "uniform", output_type = "write",
+  convert_count = FALSE, vars = list(household = NA, person = NA),
+  road_noise = 2e-04, outfile_loc = "", timer = TRUE, verbose = TRUE)
 }
 \arguments{
-\item{base_dir}{character specifying ecosystem directory}
+\item{input_dir}{character specifying input directory}
+
+\item{output_dir}{charcater specifying output directory}
 
 \item{folders}{list specifying sub-directories for each data-source}
 

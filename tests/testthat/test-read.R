@@ -125,8 +125,8 @@ test_that("United States functions", {
   expect_true(class(delaware_marginals[[1]][[1]]) == "data.frame")
   
   # Overall ---
-  base_path <- system.file("extdata/10", package = "spew")
-  delaware <- read_data(base_dir = base_path, 
+  base_path <- system.file("extdata/10/input", package = "spew")
+  delaware <- read_data(input_dir = base_path, 
                         folders = delaware_folders, 
                         data_group = "US")
   
@@ -184,8 +184,8 @@ test_that("ipums functions", {
   expect_equal("puma_id" %in% names(standard_shape), TRUE)  
 
   # Overall ---
-  base_dir <- system.file("extdata/ury", package = "spew")
-  uruguay_data <- read_data(base_dir = base_dir, 
+  input_dir <- system.file("extdata/ury/input", package = "spew")
+  uruguay_data <- read_data(input_dir = input_dir, 
                             data_group = "ipums", 
                             folders = uruguay_folders)
   

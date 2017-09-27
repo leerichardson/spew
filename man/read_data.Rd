@@ -4,13 +4,13 @@
 \alias{read_data}
 \title{Read SPEW input data from files}
 \usage{
-read_data(base_dir, folders = list(pop_table = NULL, pums = NULL, shapefiles =
-  NULL, roads = NULL, schools = NULL, lookup = NULL, workplaces = NULL),
+read_data(input_dir, folders = list(pop_table = NULL, pums = NULL, shapefiles
+  = NULL, roads = NULL, schools = NULL, lookup = NULL, workplaces = NULL),
   data_group = "US", vars = list(household = NA, person = NA),
   verbose = FALSE)
 }
 \arguments{
-\item{base_dir}{character vector specifying the ecosystem directory}
+\item{input_dir}{character vector specifying the ecosystem directory}
 
 \item{folders}{list containing the subdirectory file-path containing where each 
 type of data is located}

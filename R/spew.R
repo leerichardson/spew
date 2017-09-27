@@ -2,7 +2,8 @@
 #' 
 #' Generates SPEW synthetic ecosystems on the Olympus Computing Cluster 
 #' 
-#' @param base_dir character specifying ecosystem directory
+#' @param input_dir character specifying input directory
+#' @param output_dir charcater specifying output directory 
 #' @param folders list specifying sub-directories for each data-source 
 #' @param data_group character, either "US", "ipums", or "none"
 #' @param run_type Whether to run sequentially in parallel. Default is "SEQ", for 
@@ -28,30 +29,35 @@
 #' @export
 #' 
 #' @return logical indicating whether or not this run of spew ended successfully 
-call_spew <- function(base_dir, folders = NULL, data_group = "US", run_type = "SEQ",
+call_spew <- function(input_dir, output_dir, folders = NULL, data_group = "US", run_type = "SEQ",
                       sampling_method = "uniform", locations_method = "uniform", output_type = "write", 
                       convert_count = FALSE, vars = list(household = NA, person = NA),
                       road_noise = .0002, outfile_loc = "", timer = TRUE, verbose = TRUE) {
-  spew_start_time <- Sys.time()
+  if (timer) { spew_start_time <- Sys.time() }
     
   # Read and format data from olympus directories ---
-  data_list <- read_data(base_dir = base_dir, folders = folders, data_group = data_group, vars)
+  data_list <- read_data(input_dir = input_dir, folders = folders, data_group = data_group, vars = vars)
   formatted_data <- format_data(data_list = data_list, data_group = data_group)
 
   # Call the SPEW algorithm on the formatted data ---
   spew(pop_table = formatted_data$pop_table, shapefile = formatted_data$shapefiles, 
        pums_h = formatted_data$pums$pums_h, pums_p = formatted_data$pums$pums_p,
        schools = formatted_data$schools, workplaces = formatted_data$workplaces, 
-       marginals = formatted_data$marginals, output_type = output_type, base_dir = base_dir, 
+       marginals = formatted_data$marginals, output_type = output_type, output_dir = output_dir, 
        locations_method = locations_method, convert_count = convert_count,
        sampling_method = sampling_method, run_type = run_type, outfile_loc = outfile_loc, 
        road_noise = road_noise, timer = timer, verbose = verbose)
 
   # Print out the overall run-time of SPEW ---
-  spew_time <- difftime(Sys.time(), spew_start_time, units = "secs")
-  spew_time <- round(spew_time, digits = 2)
-  spew_statement <- paste0("SPEW Runs in: ", spew_time)
-  print(spew_statement)
+  if (timer) {
+    spew_time <- difftime(Sys.time(), spew_start_time, units = "secs")
+    spew_time <- round(spew_time, digits = 2)
+  }
+  
+  if (verbose) {
+    spew_statement <- paste0("SPEW Runs in: ", spew_time)
+    print(spew_statement)
+  }
   
   return(TRUE)
 }
@@ -73,7 +79,7 @@ call_spew <- function(base_dir, folders = NULL, data_group = "US", run_type = "S
 #' @param output_type Default is "console" if we want to resulting population 
 #' as an R variable. Alternative is "write", which is used on Olympus for writing 
 #' out .csv files of the population
-#' @param base_dir character specifying ecosystem directory write to. Only used if
+#' @param output_dir character specifying ecosystem directory write to. Only used if
 #' output_type = "write"
 #' @param convert_count logical meant to indicate if we are going to convert 
 #' population totals from people to household counts. Default: FALSE, assumes
@@ -95,19 +101,18 @@ call_spew <- function(base_dir, folders = NULL, data_group = "US", run_type = "S
 #' @return logical indicating whether or not this run of spew ended successfully 
 spew <- function(pop_table, shapefile, pums_h, pums_p, 
                  schools = NULL, workplaces = NULL, marginals = NULL, 
-                 output_type = "console", base_dir = NULL, convert_count = FALSE, 
+                 output_type = "console", output_dir = NULL, convert_count = FALSE, 
                  run_type = "SEQ", sampling_method = "uniform", locations_method = "uniform", 
                  outfile_loc = "", road_noise = .0002, timer = FALSE, verbose = FALSE) {
   if (timer == TRUE) { location_start_time <- Sys.time() }
   
   # Write out both the pop-table and environments ---
-  output_dir <- NULL
   if (output_type == "write") {
-    if (is.null(base_dir)) { 
-      stop("If output_type = 'write', must specify output directory in base_dir") 
+    if (is.null(output_dir)) { 
+      stop("If output_type = 'write', must specify output_dir") 
     }
   
-    output_dir <- file.path(base_dir, "output")
+    output_dir <- file.path(output_dir, "output")
     if (!is.null(output_dir)) { dir.create(output_dir, recursive = TRUE) }
     write_pop_table(pop_table, output_dir)
     
@@ -637,8 +642,8 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p,
   place_time <- as.numeric(round(place_time, digits = 2))
   place_time_statement <- paste0("Time: ", place_time)
   
-  hh_statement <- paste0("Households: ", total_hh)
-  people_statement <- paste0("People: ", total_people)  
+  hh_statement <- paste0("Households: ", nrow(sampled_households))
+  people_statement <- paste0("People: ", nrow(sampled_people))  
   school_statement <- paste0("Schools: ", school_time)
   workplace_statement <- paste0("Workplaces: ", workplace_time)  
   place_statement <- paste0("Place: ", index) 
@@ -666,12 +671,12 @@ spew_place <- function(index, pop_table, shapefile, pums_h, pums_p,
 #' @param persons vector of number of persons in each household 
 #' @param np rows of person pums 
 #' @param nh rows of household pums 
-#' @n_house original count of number of households 
+#' @param n_house original count of number of households 
 #' 
 #' @return updated n_house 
 ccount <- function(convert_count = FALSE, persons, np, nh, n_house) {
   if (convert_count == TRUE) {
-    if (is.null(persons)) { persons <- nrow(pums_p) / nrow(pums_h) }
+    if (is.null(persons)) { persons <- np / nh }
     n_house <- people_to_households(persons, n_house)
   }
   

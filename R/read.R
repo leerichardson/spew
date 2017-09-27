@@ -2,7 +2,7 @@
 #' 
 #' Based on directory structure for input data on the Olympus computing cluster 
 #' 
-#' @param base_dir character vector specifying the ecosystem directory 
+#' @param input_dir character vector specifying the ecosystem directory 
 #' @param folders list containing the subdirectory file-path containing where each 
 #' type of data is located 
 #' @param data_group character either "US", "ipums" or "none": Gives the format 
@@ -13,7 +13,7 @@
 #' 
 #' @return list: Each elements contains a standardized data-source
 #' 
-read_data <- function(base_dir, 
+read_data <- function(input_dir, 
                       folders = list(pop_table = NULL, 
                                      pums = NULL, 
                                      shapefiles = NULL, 
@@ -29,10 +29,7 @@ read_data <- function(base_dir,
   if (data_group != "US" & data_group != "ipums" & data_group != "none") {
     stop("spew only accepts data_group: 'US', 'ipums', or 'none'")
   } 
-  
-  # Point the input directory to the input/ portion of the base directory
-  input_dir <- file.path(base_dir, "input")
-  
+
   # Read required data sources ---
   pop_table <- read_pop_table(input_dir, folders, data_group)
   pop_table <- standardize_pop_table(pop_table, data_group)
@@ -350,14 +347,15 @@ read_shapefiles <- function(input_dir, folders, data_group) {
 #' @return the shapefile, class SpatialPolygonsDataFrame
 #' @note This is to keep up-to-date and use rgdal:readOGR instead of the now unsupported maptools::readShapeSpatial
 read_shapespatial_to_ogr <- function(full_path){
-    ## readOGR does not recognize tilde expansion, and so we must expand it
+    # readOGR does not recognize tilde expansion, and so we must expand it
     full_path <- path.expand(full_path)
-    ## Extract the basename
+    
+    # Extract the basename
     base_name <- gsub(".shp", "", basename(full_path))
-    ## Extract the folder
+    
+    # Extract the folder
     folder <- gsub(paste0("/", basename(full_path), "$"), "", full_path)
-    shp <- rgdal::readOGR(dsn=folder, layer=base_name,
-                          verbose = FALSE)
+    shp <- rgdal::readOGR(dsn=folder, layer=base_name, verbose = FALSE)
     return(shp)
 }
 

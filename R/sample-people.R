@@ -56,13 +56,14 @@ sample_households <- function(method, n_house, pums_h, pums_p = NULL,
 #' 
 #' @return people numeric vector indicating the indices of people to sample 
 sample_people <- function(method, household_pums, pums_p, puma_id = NULL, place_id = NULL) {
-  if (method == "uniform") {
+  if (method %in%  c("uniform", "ipf", "mm")) {
+    # Don't duplucate variables, except lat/lon which is required for environmental assignment 
+    household_pums <- household_pums[, c("SERIALNO", "SYNTHETIC_HID", "latitude", "longitude")]
+    
+    # Include all people from the sampled households 
     sampled_people <- plyr::join(household_pums, pums_p, type = "left", by = "SERIALNO")
-  } else if (method %in%  c("ipf", "mm")) {
-    sampled_people <- plyr::join(household_pums, pums_p, type = "left", by = "SERIALNO")
-  } else {
-    stop("Sampling method must be ipf, mm, or uniform")
-  }
+    
+  } else { stop("Sampling method must be ipf, mm, or uniform") }
   
   # Remove names which comp
   place_id <- remove_excess(place_id)

@@ -6,9 +6,9 @@
 \usage{
 spew(pop_table, shapefile, pums_h, pums_p, schools = NULL,
   workplaces = NULL, marginals = NULL, output_type = "console",
-  base_dir = NULL, convert_count = FALSE, run_type = "SEQ",
+  output_dir = NULL, convert_count = FALSE, run_type = "SEQ",
   sampling_method = "uniform", locations_method = "uniform",
-  outfile_loc = "", road_noise = 2e-04, timer = TRUE, verbose = FALSE)
+  outfile_loc = "", road_noise = 2e-04, timer = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{pop_table}{dataframe where rows correspond to places where populations 
@@ -34,7 +34,7 @@ list contains the marginal totals of a separate variable}
 as an R variable. Alternative is "write", which is used on Olympus for writing 
 out .csv files of the population}
 
-\item{base_dir}{character specifying ecosystem directory write to. Only used if
+\item{output_dir}{character specifying ecosystem directory write to. Only used if
 output_type = "write"}
 
 \item{convert_count}{logical meant to indicate if we are going to convert 

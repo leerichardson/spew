@@ -1,8 +1,8 @@
 context("School Functions")
 
 test_that("United States School Assignment", {
-  
-  # Get the data for a randomly sampled tract set up ------------------------
+ 
+  # Get the data for a randomly sampled tract set up ---
   data(delaware)
   index <- 17
   
