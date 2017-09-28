@@ -112,7 +112,6 @@ spew <- function(pop_table, shapefile, pums_h, pums_p,
       stop("If output_type = 'write', must specify output_dir") 
     }
   
-    output_dir <- file.path(output_dir, "output")
     if (!is.null(output_dir)) { dir.create(output_dir, recursive = TRUE) }
     write_pop_table(pop_table, output_dir)
     
@@ -137,7 +136,8 @@ spew <- function(pop_table, shapefile, pums_h, pums_p,
                       "samp_ipf_inds", "assign_weights", "calc_dists", "get_ord_dists", 
                       "get_cat_dists", "remove_excess","sample_mm", "solve_mm_weights", 
                       "solve_mm_for_joint","solve_mm_for_var", "extrapolate_probs_to_pums",
-                      "extrapolate_probs_to_pums_joint", "make_mm_obj", "impute_missing_vals")
+                      "extrapolate_probs_to_pums_joint", "make_mm_obj", "impute_missing_vals", 
+                      "ccount")
   
   # Call either the sequential, or parallel version of the SPEW algorithm 
   num_places <- nrow(pop_table)
