@@ -137,7 +137,7 @@ spew <- function(pop_table, shapefile, pums_h, pums_p,
                       "get_cat_dists", "remove_excess","sample_mm", "solve_mm_weights", 
                       "solve_mm_for_joint","solve_mm_for_var", "extrapolate_probs_to_pums",
                       "extrapolate_probs_to_pums_joint", "make_mm_obj", "impute_missing_vals", 
-                      "ccount")
+                      "ccount", "read_shapespatial_to_ogr")
   
   # Call either the sequential, or parallel version of the SPEW algorithm 
   num_places <- nrow(pop_table)
