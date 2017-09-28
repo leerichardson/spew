@@ -15,14 +15,23 @@
 
 # Make sure we are using the most recent version of R
 # and the input output module to access the $WORK directory
+module load r/3.3.1
 module load io
-module load pandoc
-module load r/3.2.1
+module load gdal
 module load geos 
+module load pandoc
+module load openmpi
+
+echo "Modules: "
+module list 
+
 
 # Remove the old outputs
-rm -r $base_dir/output
+echo "Removing old outputs at: $output_dir"
+rm -r $output_dir
 
 # Run SPEW to generate synthetic ecosystems 
 echo "Running on node: " $HOSTNAME
-Rscript /mnt/beegfs1/data/shared_group_data/syneco/olympus/call_spew/run_spew.R ${base_dir} ${data_group} ${parallel_type}
+spew_script=/mnt/beegfs1/data/shared_group_data/syneco/spew/olympus/call_spew/run_spew.R
+Rscript $spew_script ${input_dir} ${output_dir} ${data_group} ${run_type}
+
