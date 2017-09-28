@@ -3,7 +3,7 @@
 # PBS Directives ---
 
 # Request 2 nodes, 63 cores, and 200 GB of memory 
-#PBS -l nodes=2:ppn=63 -l mem=200gb 
+#PBS -l nodes=2:ppn=32 -l mem=200gb 
 
 # Request a maximum of 3 days for the job 
 #PBS -l walltime=24:00:00
@@ -21,7 +21,7 @@ module load io
 module load gdal
 module load geos 
 module load pandoc
-module load openmpi
+module load openmpi/1.10.0
 
 echo "Modules: "
 module list 
@@ -34,4 +34,4 @@ rm -r $output_dir
 echo "Running on node: " $HOSTNAME
 spew_script=/mnt/beegfs1/data/shared_group_data/syneco/spew/olympus/call_spew/run_spew.R
 
-mpirun -n 1 --hostfile $PBS_NODEFILE --prefix /usr/lib64/openmpi Rscript --no-save $spew_script ${input_dir} ${output_dir} ${data_group} ${run_type}
+mpirun -n 1 --oversubscribe --hostfile $PBS_NODEFILE --prefix /usr/lib64/openmpi Rscript --no-save $spew_script ${input_dir} ${output_dir} ${data_group} ${run_type}

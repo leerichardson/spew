@@ -15,8 +15,7 @@ library(data.table)
 library(mipfp)
 library(stringdist)
 library(plyr)
-
-if (!require(Rmpi)) { print("Still need to get Rmpi working")}
+library(Rmpi)
 
 # Parse the command line into SPEW inputs ---
 args <- commandArgs(trailingOnly = TRUE)
@@ -59,7 +58,7 @@ if (data_group == "US") {
 	              pums = "pums", 
 	              shapefiles = "shapefiles")
 
-	vars = list(household = c("SERIAL", "COUNTRY","YEAR",,"PERSONS","GEOLEV1", "HHTYPE","PERNUM"), 
+	vars = list(household = c("SERIAL", "COUNTRY","YEAR","PERSONS","GEOLEV1", "HHTYPE","PERNUM"), 
 				person = c("SERIAL","AGE","SEX","RACE","SCHOOL","INCTOT"))
 
 	sampling_method <- "uniform"
