@@ -25,7 +25,6 @@ module load openmpi
 echo "Modules: "
 module list 
 
-
 # Remove the old outputs
 echo "Removing old outputs at: $output_dir"
 rm -r $output_dir

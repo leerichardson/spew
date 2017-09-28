@@ -1,6 +1,6 @@
 #!/bin/bash 
 
-# PBS Directives ------------------------------
+# PBS Directives ---
 
 # Request 2 nodes, 63 cores, and 200 GB of memory 
 #PBS -l nodes=2:ppn=63 -l mem=200gb 
@@ -11,19 +11,27 @@
 # Combine stdout and stderr into the same directory 
 #PBS -j oe
 	
-# Spew commands -------------------------------
+# Spew commands ---
 echo "Calling SPEW"
 
-# Load modules on both the host node AND the other nodes!
-module load io 
-module load geos/3.5.0
-module load r/3.2.1
-module load openmpi/1.8.1 
+# Make sure we are using the most recent version of R
+# and the input output module to access the $WORK directory
+module load r/3.3.1
+module load io
+module load gdal
+module load geos 
+module load pandoc
+module load openmpi
+
+echo "Modules: "
 module list 
 
 # Remove the old outputs
-rm -r $base_dir/output
+echo "Removing old outputs at: $output_dir"
+rm -r $output_dir
 
 # Run SPEW to generate synthetic ecosystems 
 echo "Running on node: " $HOSTNAME
-mpirun -n 1 --hostfile $PBS_NODEFILE --prefix /usr/lib64/openmpi Rscript --no-save /mnt/beegfs1/data/shared_group_data/syneco/olympus/call_spew/run_spew.R ${base_dir} ${data_group} ${parallel_type}
+spew_script=/mnt/beegfs1/data/shared_group_data/syneco/spew/olympus/call_spew/run_spew.R
+
+mpirun -n 1 --hostfile $PBS_NODEFILE --prefix /usr/lib64/openmpi Rscript --no-save $spew_script ${input_dir} ${output_dir} ${data_group} ${run_type}

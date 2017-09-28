@@ -1,13 +1,9 @@
 # Set the library paths so it checks the personal library first (gets data.table development version)
-personal_lib <- "/mnt/beegfs1/users/leerich/R/x86_64-pc-linux-gnu-library/3.3"
-
-system("module load gdal")
-library(rgdal, lib.loc=personal_lib)
-
-
+#personal_lib <- "/mnt/beegfs1/users/leerich/R/x86_64-pc-linux-gnu-library/3.3"
 library(devtools)
 devtools::load_all("/mnt/beegfs1/data/shared_group_data/syneco/spew")
 
+library(rgdal)
 library(methods) 
 library(sp)
 library(maptools)
@@ -21,7 +17,6 @@ library(stringdist)
 library(plyr)
 
 if (!require(Rmpi)) { print("Still need to get Rmpi working")}
-
 
 # Parse the command line into SPEW inputs ---
 args <- commandArgs(trailingOnly = TRUE)
@@ -61,15 +56,16 @@ if (data_group == "US") {
 
 } else if (data_group == "ipums") {	
 	folders <- list(pop_table = "counts", 
-	                  pums = "pums", 
-	                  shapefiles = "shapefiles")
-	vars = list(household = c("COUNTRY","YEAR","SERIAL","PERSONS","GEOLEV1",
-								"HHTYPE","PERNUM"), 
+	              pums = "pums", 
+	              shapefiles = "shapefiles")
+
+	vars = list(household = c("SERIAL", "COUNTRY","YEAR",,"PERSONS","GEOLEV1", "HHTYPE","PERNUM"), 
 				person = c("SERIAL","AGE","SEX","RACE","SCHOOL","INCTOT"))
+
 	sampling_method <- "uniform"
 	locations_method <- "uniform"
 	convert_count <- TRUE
-	parallel_type = "MC"
+	run_type = "MC"
 
 } else if (data_group == "none") {
 	# Set the custom file-paths for Canada!
@@ -105,6 +101,7 @@ call_spew(input_dir = input_dir,
 		  output_dir = output_dir, 
 		  folders = folders, 
 		  vars = vars, 
+		  data_group = data_group,
 		  run_type = run_type, 
 		  sampling_method = sampling_method, 
 		  locations_method = locations_method,
