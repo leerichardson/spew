@@ -10,6 +10,8 @@ Description: spew is a general purpose synthetic ecosystem generator.
 License: GPL-3 
 URL: http://github.com/leerichardson/spew
 BugReports: http://github.com/leerichardson/spew/issues
+RoxygenNote: 6.0.1
+VignetteBuilder: knitr
 Suggests:
     testthat,
     knitr,
@@ -28,10 +30,8 @@ Suggests:
     ggplot2,
     reshape2,
     devtools
-VignetteBuilder: knitr
 Imports:
     sp,
     maptools,
     plyr,
     methods
-RoxygenNote: 6.0.1
