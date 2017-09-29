@@ -5,4 +5,10 @@ sudo: false
 cache: packages
 
 r_packages:
-  roxygen2
+  roxygen2 
+
+addons:
+  apt:
+    packages:
+      - libgdal-dev # for installing rgdal 
+      - libopenmpi-dev # for Rmpi 
