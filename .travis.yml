@@ -5,4 +5,4 @@ sudo: false
 cache: packages
 
 r_packages:
-  roxygen2 (>= 5.0.0)
+  roxygen2
