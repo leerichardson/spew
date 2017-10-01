@@ -12,3 +12,6 @@ addons:
     packages:
       - libgdal-dev # for installing rgdal 
       - libopenmpi-dev # for Rmpi 
+      - openmpi-bin
+      - libproj-dev
+      - libgeos-dev

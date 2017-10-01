@@ -42,7 +42,7 @@ with open(us_hierarchy, 'rb') as us_csv:
 		state_path = us_base_dir + "/" + state
 		state_call = "bash " + call_spew + " " + state_path + " US " + run_type 
 		print state_call
-		# os.system(state_call)
+		os.system(state_call)
 
 # Call all IPUMS country, as well as a special condition for Canada 
 run_type = "MC"
@@ -70,4 +70,5 @@ with open(spew_hierarchy, 'rb') as spew_csv:
 			continue
 
 		ipums_call = "bash " + call_spew + " " + country_path + " ipums " + run_type + " for " + country
+		os.system(ipums_call)
 		print ipums_call
