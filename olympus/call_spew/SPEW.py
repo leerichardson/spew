@@ -5,94 +5,69 @@ import os
 import csv
 import time 
 import stat
+
+homedir = os.environ['HOME']
+print homedir
+if homedir != "/home/lee":
+	homedir = "/mnt/beegfs1/data/shared_group_data/syneco"
+else:
+	homedir = "/home/lee/Dropbox"
+
+print "Home Directory: " + homedir
+
 # Shell script to call SPEW
-call_spew = "/mnt/beegfs1/data/shared_group_data/syneco/olympus/call_spew/call_spew.sh"
+call_spew = homedir + "/spew/olympus/call_spew/call_spew.sh"
+print "Call SPEW Script: " + call_spew
 
 # Filepath for the SPEW hierarchy 
-spew_hierarchy =  "/mnt/beegfs1/data/shared_group_data/syneco/olympus/spew_hierarchy/spew_hierarchy.csv"
+spew_hierarchy =  homedir + "/spew/olympus/spew_hierarchy/spew_hierarchy.csv"
+
+# Set the input directory 
+input_base = homedir + "/spew_input"
 
 # Filepath for all United States Directories 
-us_hierarchy = "/mnt/beegfs1/data/shared_group_data/syneco/olympus/spew_hierarchy/country_hierarchies/usa_lookup.csv"
-us_base_dir = "spew_1.2.0/americas/northern_america/usa"
-
-# Call California, New-York Specially with a specified number of NODES 
-cali_call = "bash " + call_spew + " " + us_base_dir + "/06 US MPI 16"
-texas_call = "bash " + call_spew + " " + us_base_dir + "/48 US MPI 6"
-print cali_call
-print texas_call
-#os.system(cali_call)
-time.sleep(10)
-os.system(texas_call)
-time.sleep(10)
+us_hierarchy = homedir + "/spew/olympus/spew_hierarchy/country_hierarchies/usa_lookup.csv"
+print us_hierarchy
+us_base_dir = "americas/northern_america/usa"
 
 # Call the rest of the United States 
+run_type = "MPI"
 with open(us_hierarchy, 'rb') as us_csv:	
 	us_hier = csv.reader(us_csv) 
 	for us_row in us_hier:
-		nodes = "2"
-		parallel_type = "MPI"
-		time.sleep(3)
-		
-		# Skip if this is the first row of the .csv
 		state = us_row[0]
 		if state == "geoid":
 			continue
-
-		# Skip Large states because we have already called them
-		if state == "06" or state == "48":
-			print "Already called California and Texas!"
-			continue
-
-		# Add extra nodes for some of the larger states!
-		if state == "42" or state == "12" or state == "36" or state == "17":
-			nodes = "4"
-
-		# Run the smaller states on one node!
-		if state == "02" or state == "08" or state == "09" or state == "38" or state == "46" or state == "44" or state == "56" or state == "50" or state == "30":
-			nodes = "1"
-
+		
 		state_path = us_base_dir + "/" + state
-		state_call = "bash " + call_spew + " " + state_path + " US " + parallel_type + " " + nodes
+		state_call = "bash " + call_spew + " " + state_path + " US " + run_type 
 		print state_call
-		os.system(state_call)
+		# os.system(state_call)
 
 # Call all IPUMS country, as well as a special condition for Canada 
+run_type = "MC"
 with open(spew_hierarchy, 'rb') as spew_csv:
 	spew_hier = csv.reader(spew_csv)
 	for row in spew_hier:
-		# Skip the first row of the .csv
 		country = row[0]
-		if country == "country_name":
+		if country == "country_name": # Skip the first (title) row of the .csv
 			continue
-		time.sleep(3)
 
-		# Construct the filepath to the specific country 	
+		# Construct file path for the country 	
 		iso3 = row[2]
+		if iso3 == "lca" or iso3 == "gbr" or iso3 == "usa": 
+			continue
+
 		region = row[4]
 		sub_region = row[5]
-		country_path = "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0/" + region + "/" + sub_region + "/" + iso3
+		country_path = region + "/" + sub_region + "/" + iso3
 
 		# Skip if there is no PUMS input data
-		input_dir = country_path + "/input"
+		input_dir = input_base + "/" + country_path + "/input"
+		print "Input Directory for " + country + ": " + input_dir
 		inputs = os.listdir(input_dir)
 		if "pums" not in inputs:
 			continue
 
-		# Skip Saint Lucia, Great Britain, and the USA 
-		if iso3 == "lca" or iso3 == "gbr" or iso3 == "usa":
-			continue
-		
-		# Set the input path for this particular SPEW call
-		data_group = "ipums"
-		call_dir = "spew_1.2.0/" + region + "/" + sub_region + "/" + iso3
-
-		# Run the Canada synthetic ecosystem separately 
-		if iso3 == "can":
-			data_group = "none"
-			canada_call = "bash " + call_spew + " " + call_dir + " " + data_group + " SOCK 1"
-			os.system(canada_call)
-			continue
-
-		# Construct bash call for eligible ipums country 		
-		ipums_call = "bash " + call_spew + " " + call_dir + " " + data_group + " MC 1"
-		os.system(ipums_call)
+		ipums_call = "bash " + call_spew + " " + country_path + " ipums " + run_type + " for " + country
+		print ipums_call
