@@ -1,17 +1,18 @@
 #!/bin/bash 
 
-# PBS Directives ------------------------------
+# PBS Directives ---
 
 # Request 1 node, 64 cores, and 200 GB of memory 
-#PBS -l nodes=1:ppn=56 -l mem=200gb 
+#PBS -l nodes=1:ppn=50 -l mem=120gb 
 
 # Request a maximum of 3 days for the job 
-#PBS -l walltime=24:00:00
+#PBS -l walltime=14:00:00
 
 # Combine stdout and stderr into the same directory 
 #PBS -j oe
 	
-# Spew commands -------------------------------
+# Spew commands ---
+echo "Calling SPEW"
 
 # Make sure we are using the most recent version of R
 # and the input output module to access the $WORK directory
@@ -20,7 +21,7 @@ module load io
 module load gdal
 module load geos 
 module load pandoc
-module load openmpi
+module load openmpi/1.10.0
 
 echo "Modules: "
 module list 
