@@ -1,4 +1,6 @@
+library(Rmpi)
 devtools::load_all("/home/lee/Dropbox/spew")
+
 
 input_dir <- "/home/lee/Dropbox/spew/inst/extdata/10/input"
 output_dir <- "/home/lee/Dropbox/spew_output/10/output"
@@ -17,7 +19,6 @@ data_group = "US"
 sampling_method = "ipf"
 locations_method = "roads"
 run_type = "MPI"
-
 
 call_spew(input_dir = input_dir, 
 		  output_dir = output_dir, 

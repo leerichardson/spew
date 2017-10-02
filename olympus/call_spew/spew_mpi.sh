@@ -34,4 +34,6 @@ rm -r $output_dir
 echo "Running on node: " $HOSTNAME
 spew_script=/mnt/beegfs1/data/shared_group_data/syneco/spew/olympus/call_spew/run_spew.R
 
-mpirun -n 1 --oversubscribe --hostfile $PBS_NODEFILE --prefix /usr/lib64/openmpi Rscript --no-save $spew_script ${input_dir} ${output_dir} ${data_group} ${run_type}
+mpirun -n 1 --oversubscribe --mca pml ob1 --hostfile $PBS_NODEFILE --prefix /usr/lib64/openmpi Rscript --no-save $spew_script ${input_dir} ${output_dir} ${data_group} ${run_type}
+
+echo "Job Finished!"

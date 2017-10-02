@@ -1,4 +1,4 @@
-# Lee Richardson 
+	# Lee Richardson 
 # Script to Generate SPEW_1.2.0 Ecosystems on Olympus
 # November 4, 2016
 import os 
@@ -49,11 +49,10 @@ run_type = "MC"
 with open(spew_hierarchy, 'rb') as spew_csv:
 	spew_hier = csv.reader(spew_csv)
 	for row in spew_hier:
+		# Construct file path for the country 	
 		country = row[0]
 		if country == "country_name": # Skip the first (title) row of the .csv
 			continue
-
-		# Construct file path for the country 	
 		iso3 = row[2]
 		if iso3 == "lca" or iso3 == "gbr" or iso3 == "usa": 
 			continue
@@ -69,6 +68,6 @@ with open(spew_hierarchy, 'rb') as spew_csv:
 		if "pums" not in inputs:
 			continue
 
-		ipums_call = "bash " + call_spew + " " + country_path + " ipums " + run_type + " for " + country
-		os.system(ipums_call)
+		ipums_call = "bash " + call_spew + " " + country_path + " ipums " + run_type 
 		print ipums_call
+		os.system(ipums_call)

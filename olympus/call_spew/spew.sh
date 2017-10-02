@@ -34,3 +34,4 @@ echo "Running on node: " $HOSTNAME
 spew_script=/mnt/beegfs1/data/shared_group_data/syneco/spew/olympus/call_spew/run_spew.R
 Rscript $spew_script ${input_dir} ${output_dir} ${data_group} ${run_type}
 
+echo "Job Finished!"
