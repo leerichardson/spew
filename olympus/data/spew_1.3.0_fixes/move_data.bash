@@ -9,6 +9,9 @@ echo $geohive_dir
 ipums_shapedir=$base_dir/old/spew_olympus/getting_data/ipums/world_geolev1
 echo $ipums_shapedir
 
+ipums_dir=$base_dir/old/spew_olympus/getting_data/ipums/countries
+echo $ipums_dir
+
 # Palestine ---
 palestine_dir=$base_dir/spew_input/asia/western_asia/pse/input
 
@@ -84,7 +87,27 @@ mkdir -p $kgz_dir/pums/ipums/2009/1
 kgz_ipums=$base_dir/old/spew_olympus/getting_data/ipums/countries/kyrgyz_republic.csv
 cp $kgz_ipums $kgz_dir/pums/ipums/2009/1
 
+# Sierra Leone ---
+sle_dir=$base_dir/spew_input/africa/western_africa/sle/input
 
+new_sle_count=$sle_dir/counts/geohive/2015
+new_sle_shape=$sle_dir/shapefiles/ipums/2004/1
 
+mkdir -p $new_sle_count/2
+mkdir -p $new_sle_shape
 
+cp $geohive_dir/sierraleone/sierraleone_admin.csv $new_sle_count/2
+cp $ipums_shapedir/sierra_leone.* $new_sle_shape
+
+# Puerto Rico ---
+pri_dir=$base_dir/spew_input/americas/caribbean/pri/input
+
+new_pri_count=$pri_dir/counts/geohive/2010
+new_pri_shape=$pri_dir/shapefiles/ipums/2010/1
+
+mkdir -p $new_pri_count/2
+mkdir -p $new_pri_shape
+
+cp $geohive_dir/us-pr/us-pr_admin.csv $new_pri_count/2
+cp $ipums_shapedir/puerto_rico.* $new_pri_shape
 
