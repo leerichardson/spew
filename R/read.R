@@ -206,6 +206,8 @@ read_pums <- function(input_dir, folders, data_group, vars = list(household = NA
                                   all.files = TRUE, 
                                   recursive = TRUE, 
                                   full.names = TRUE)
+
+    pums_files <- pums_files[grep("ipums", x=pums_files)]
     stopifnot(length(pums_files) == 1)
     
     # Use the unique household ID's for household pums  
@@ -320,8 +322,9 @@ read_shapefiles <- function(input_dir, folders, data_group) {
                               all.files = TRUE, 
                               recursive = TRUE, 
                               full.names = TRUE)
-    revised_indices <- grep("revised.shp", shapefiles)
-    
+
+	  revised_indices <- grep("revised.shp", shapefiles)
+
     if (length(revised_indices) == 1) {
       filename <- shapefiles[revised_indices]
     } else {
