@@ -16,7 +16,7 @@ vignette: >
 ```{r, include=FALSE}
 library(knitr) # We need the knitr package to set chunk options
 # Set default knitr options for knitting code into the report:
-#opts_chunk$set(cache=TRUE, autodep=TRUE, cache.comments=FALSE)
+# opts_chunk$set(cache=TRUE, autodep=TRUE, cache.comments=FALSE)
 ```
 
 <a href="http://www.stat.cmu.edu/~spew">	
@@ -36,11 +36,16 @@ Open up an `R` session and run the following commands.
   devtools::install_github("leerichardson/spew")
 ```
 
+Next, load the *spew* library into the R-session with:
+
+```{r}
+  library(spew)
+```
+
 ##	Tartanville:  SPEW basics		
 To plot with functions in SPEW, make sure `ggplot2` is	installed.	
+
 ```{r, eval = FALSE}
-library(spew)
-	
 # Generate Tartanville 
 data(tartanville)
 
@@ -64,9 +69,8 @@ g <- plot_pop_totals(feature_df = out$pop_totals, type = "n_people")
 ```
 
 ```{r, warning = FALSE, results = 'hide', echo = FALSE, message = FALSE}
-#spew_path <- gsub(pattern = "/inst", replacement = "", system.file(package = "spew"))
-devtools::load_all("../")
-
+# library(spew)
+# devtools::load_all("../")
 # Generate Tartanville 
 data(tartanville)
 tartanville_syneco <- spew(tartanville$pop_table, tartanville$shapefile,
