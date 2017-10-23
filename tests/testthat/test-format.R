@@ -1,5 +1,4 @@
 context("Format functions")
-testthat::skip_on_cran()
 
 test_that("United States formatting", { 
   testthat::skip_on_cran()
