@@ -441,6 +441,8 @@ spew_mc <- function(num_places, pop_table, shapefile, pums_h, pums_p,
 #' @param timer logical indicating we want to time the run 
 #' @param verbose logical indicating we want to print output during the run.  Default is FALSE.#' 
 #' 
+#' @export
+#' 
 #' @return region_list with output_type for all num_place locations 
 spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p, 
                      schools, workplaces, marginals, output_type, output_dir, 
@@ -544,6 +546,8 @@ spew_mpi <- function(num_places, pop_table, shapefile, pums_h, pums_p,
 #' @param road_noise Noise added to households during road-based sampling 
 #' @param timer logical indicating we want to time the run 
 #' @param verbose logical indicating we want to print output during the run.  Default is FALSE.#' 
+#' 
+#' @export
 #' 
 #' @return List of a synthetic ecosystem 
 spew_place <- function(index, pop_table, shapefile, pums_h, pums_p, 
@@ -689,6 +693,7 @@ ccount <- function(convert_count = FALSE, persons, np, nh, n_house) {
 #' sizes for this particular sampling region  
 #' @param n_people numeric indicating the number 
 #' of people in this specific region 
+#' 
 #' @return number of households 
 people_to_households <- function(hh_sizes, n_people) {
   hh_avg <- mean(hh_sizes)

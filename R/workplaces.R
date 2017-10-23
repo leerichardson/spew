@@ -3,6 +3,9 @@
 #' We look at the ESR variable from the synthetic people, which is the employment status recode.  If values 1, 2, 4, and 5 are considered employed.  We then randomly assign the person inside the county, with weights based on numbers of workers at the place.  We return the ESRI ID of the workplace  Note that in this way, workers do not cross borders.
 #' @param people data frame of synthetic people produced by SPEW
 #' @param workplaces data frame of workplaces from ESRI
+#' 
+#' @export
+#' 
 #' @return column of workplace IDs for synthetic people
 assign_workplaces <- function(people, workplaces){
   #TODO:  make it so workers can leave county.  look at county dists.

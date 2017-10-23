@@ -11,6 +11,8 @@
 #' we jitter the road locations in each direction (only if method is "roads")
 #' @param shapefile_id optionally include a shapefile id for subsetting shapefile 
 #' 
+#' @export
+#' 
 #' @return SpatialPoints object with coordinates for the n households
 sample_locations <- function(method, place_id, n_house, shapefile, noise = .001, shapefile_id = NULL) {
   # Call the appropriate location sampling function
@@ -41,6 +43,8 @@ sample_locations <- function(method, place_id, n_house, shapefile, noise = .001,
 #' case the spsample function takes too long. Instead, we sample 100,000 points, 
 #' sample n_house from these 100,000, and then add random noise.
 #' @param shapefile_id optionally include a shapefile id for subsetting shapefile 
+#' 
+#' @export
 #' 
 #' @return SpatialPoints object with coordinates for the n households
 sample_locations_uniform <- function(place_id, n_house, shapefile, noise = .001, shapefile_id = NULL) {
@@ -122,6 +126,8 @@ remove_holes <- function(polygon) {
 #' the tracts and the roads, tracts is the first object and roads the second.
 #' @param noise the standard deviation of how much we jitter the road locations in each direction
 #' @param shapefile_id optionally include a shapefile id for subsetting shapefile 
+#' 
+#' @export
 #' 
 sample_locations_roads <- function(place_id, n_house, shapefile, noise = .0001, shapefile_id) {
   stopifnot(any(names(shapefile) == "roads"))

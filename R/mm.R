@@ -9,6 +9,8 @@
 #' @param puma_id id indicating the current puma 
 #' @param place_id id indicating the current region
 #' 
+#' @export
+#' 
 sample_mm <- function(n_house, pums_h, pums_p, mm_obj, puma_id = NULL, place_id = NULL) {
     if (!requireNamespace("quadprog", quietly = TRUE)) {
       stop("quadprog needed for sample_mm to work.", call. = FALSE)

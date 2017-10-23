@@ -9,6 +9,8 @@
 #' @param place_id unique code identifying the place
 #' @param marginals optionally used for IPF or MM sampling 
 #' 
+#' @export
+#' 
 #' @return numeric with the indicies of the household PUMS to sample
 sample_households <- function(method, n_house, pums_h, pums_p = NULL,
                               puma_id = NULL, place_id = NULL, 
@@ -54,6 +56,8 @@ sample_households <- function(method, n_house, pums_h, pums_p = NULL,
 #' @param puma_id ID of microdata sampling region 
 #' @param place_id ID of place 
 #' 
+#' @export
+#' 
 #' @return people numeric vector indicating the indices of people to sample 
 sample_people <- function(method, household_pums, pums_p, puma_id = NULL, place_id = NULL) {
   if (method %in%  c("uniform", "ipf", "mm")) {
@@ -84,6 +88,8 @@ sample_people <- function(method, household_pums, pums_p, puma_id = NULL, place_
 #' @param pums_h the household pums 
 #' @param puma_id if specifying the subset of PUMS to sample s
 #' @param place_id id of the current region 
+#' 
+#' @export
 #' 
 sample_uniform <- function(n_house, pums_h, puma_id = NULL, place_id = NULL) {
   # Subset to a specific PUMA if we have data to do this 

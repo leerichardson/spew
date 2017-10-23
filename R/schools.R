@@ -6,6 +6,9 @@
 #' @param distFun Function to compute distance between schools and agents 
 #' 
 #' @references See PUMS CODEBOOK:  http://www2.census.gov/programs-surveys/acs/tech_docs/pums/data_dict/PUMS_Data_Dictionary_2010-2014.pdf
+#' 
+#' @export
+#' 
 #' @return a column of school assignments by school ID 
 assign_schools <- function(people, schools, weightSchools = weight_dists, distFun = haversine) {
   # Verify we have the necessary variables for assigning 
