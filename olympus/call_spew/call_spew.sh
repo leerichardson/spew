@@ -32,6 +32,14 @@ echo "Logfile Location: $output_log"
 data_group=$2
 echo "Data Group: $data_group"
 
+nodes=1
+ppn=5
+if [ -z "$4" ]; then 
+	queue=batch
+else
+	queue=$4
+fi
+
 run_type=$3
 if [ -z "$3" ]; then 
 	run_type="SOCK"
@@ -41,10 +49,22 @@ echo "Run Type: $run_type"
 # Use mpirun script if using MPI. If not, call the normal script
 if [ $run_type = "MPI" ]; then 
 	call_script=/mnt/beegfs1/data/shared_group_data/syneco/spew/olympus/call_spew/spew_mpi.sh
+	ppn=63
+	
+	if [ -z "$5" ]; then 
+		nodes=2
+	else
+		nodes=$5
+	fi
 else
 	call_script=/mnt/beegfs1/data/shared_group_data/syneco/spew/olympus/call_spew/spew.sh
+	ppn=55
 fi
 
-echo "Calling Script: $call_script"
+size="gb"
+mempn=7
+memtot=$(($mempn*$nodes*$ppn))
 
-qsub -o $output_log -e $output_log -v input_dir=$input_dir,output_dir=$output_dir,data_group=$data_group,run_type=$run_type -N $eco_name $call_script
+echo "Calling Script: $call_script. Nodes: $nodes, PPN: $ppn, Queue: $queue, Mem Per Node: $mempn$size Total Memory: $memtot$size"
+
+qsub -o $output_log -e $output_log -v input_dir=$input_dir,output_dir=$output_dir,data_group=$data_group,run_type=$run_type -N $eco_name $call_script -l nodes=$nodes:ppn=$ppn -q $queue -l mem=882gb # -l pmem=${mempn}gb 

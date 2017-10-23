@@ -1,21 +1,12 @@
 #!/bin/bash 
 
-# PBS Directives ---
-
-# Request 2 nodes, 63 cores, and 200 GB of memory 
-#PBS -l nodes=2:ppn=63 -l mem=120gb 
-
-# Request a maximum of 3 days for the job 
 #PBS -l walltime=14:00:00
-
-# Combine stdout and stderr into the same directory 
 #PBS -j oe
-	
+
 # Spew commands ---
 echo "Calling SPEW"
 
-# Make sure we are using the most recent version of R
-# and the input output module to access the $WORK directory
+# Load required modules for R-dependencies to work
 module load r/3.3.1
 module load io
 module load gdal

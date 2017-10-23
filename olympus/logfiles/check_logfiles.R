@@ -1,8 +1,8 @@
 # Load in the SPEW logfile functions 
-library(spew)
+devtools::load_all("/mnt/beegfs1/data/shared_group_data/syneco/spew")
 
 # Read in the log-file data 
-all_logfiles <- list.files("/mnt/beegfs1/data/shared_group_data/syneco/olympus/logfiles/logfiles_1.2.0", 
+all_logfiles <- list.files("/mnt/beegfs1/data/shared_group_data/syneco/spew/olympus/logfiles/logfiles_1.3.0", 
 							full.names = TRUE)
 
 # Extract the country name from the log-file...

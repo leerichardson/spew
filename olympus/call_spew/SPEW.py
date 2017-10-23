@@ -1,10 +1,15 @@
-	# Lee Richardson 
-# Script to Generate SPEW_1.2.0 Ecosystems on Olympus
+# Lee Richardson 
+# Script to Generate SPEW_1.3.0 Ecosystems on Olympus
 # November 4, 2016
+# Adapted October 16, 2017 for SPEW 1.3.0 
 import os 
 import csv
 import time 
 import stat
+import random 
+
+r_nodes = ['intel128', 'intel256']
+n_nodes = ['amd512']
 
 homedir = os.environ['HOME']
 print homedir
@@ -32,6 +37,7 @@ us_base_dir = "americas/northern_america/usa"
 
 # Call the rest of the United States 
 run_type = "MPI"
+nodes="2"
 with open(us_hierarchy, 'rb') as us_csv:	
 	us_hier = csv.reader(us_csv) 
 	for us_row in us_hier:
@@ -40,11 +46,9 @@ with open(us_hierarchy, 'rb') as us_csv:
 			continue
 		
 		state_path = us_base_dir + "/" + state
-		state_call = "bash " + call_spew + " " + state_path + " US " + run_type 
+		state_call = "bash " + call_spew + " " + state_path + " US " + run_type + " " + str(random.choice(n_nodes)) + " " + nodes
 		print state_call
-		if homedir != "/home/lee/Dropbox":
-			os.system(state_call)
-
+		os.system(state_call)
 
 # Call all IPUMS country, as well as a special condition for Canada 
 run_type = "MC"
@@ -73,7 +77,6 @@ with open(spew_hierarchy, 'rb') as spew_csv:
 				continue
 
 		ipums_call = "bash " + call_spew + " " + country_path + " ipums " + run_type 
-		print ipums_call
-		
+		print ipums_call		
 		if homedir != "/home/lee/Dropbox":
 			os.system(ipums_call)

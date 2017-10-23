@@ -4,8 +4,8 @@ import datetime
 
 # Set the base directory where all of the 
 # outputs are located as well as the 
-base_dir = "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.2.0"
-output_dir = "/mnt/beegfs1/data/shared_group_data/syneco/olympus/logfiles/logfiles_1.2.0"
+base_dir = "/mnt/beegfs1/data/shared_group_data/syneco/spew_1.3.0"
+output_dir = "/mnt/beegfs1/data/shared_group_data/syneco/spew/olympus/logfiles/logfiles_1.3.0"
 
 # If the output directory exists, remove it and replace it 
 # with a blank directory. If not, create it 
