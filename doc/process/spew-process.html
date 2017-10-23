@@ -133,23 +133,29 @@ $(document).ready(function () {
 <li>Generating and releasing synthetic ecosystems</li>
 <li>Providing a general-purpose synthetic ecosystem generator</li>
 </ol>
-<p>To meet goal 1, we generate and host our synthetic ecosystems on the Olympus computing cluster, hosted by the Pittsburgh Supercomputing Center (PSC). To meet goal 2, we organize SPEW into an R-package, avaialble for users with custom data. The next section details code for both code for Olympus and the R-package.</p>
+<p>To meet goal 1, we generate and host our synthetic ecosystems on the Olympus computing cluster, hosted by the Pittsburgh Supercomputing Center (PSC). To meet goal 2, we organize SPEW into an R-package, avaialble for users with custom data.</p>
 </div>
 <div id="spew-organization" class="section level1">
 <h1>SPEW Organization</h1>
-<p>All SPEW code is on Github at <a href="https://github.com/leerichardson/spew" class="uri">https://github.com/leerichardson/spew</a>. The <strong>olympus/</strong> directory contains all code used for generating and hosting our ecosystems. The <strong>doc/</strong> directory contains our formal documentation, and everything else corresponds to the R-package.</p>
+<p>All SPEW code is on Github at <a href="https://github.com/leerichardson/spew" class="uri">https://github.com/leerichardson/spew</a>. The <strong>olympus/</strong> directory contains all code used for generating and hosting our ecosystems, <strong>doc/</strong> includes our formal documentation, and everything else corresponds to the R-package.</p>
 <div id="olympus" class="section level2">
 <h2>Olympus</h2>
 <p>The <strong>olympus/</strong> directory contains code for running SPEW on Olympus, generating reports, collecting and formatting data, analyzing logfiles, and generating the SPEW geographic hierarchy. All of our files are located on Olympus at:</p>
 <p><strong>/mnt/beegfs1/data/shared_group_data/syneco</strong>.</p>
-<p>Here, directories with names <em>spew_NUMBER</em> are releases of SPEW ecosystems data. The directory <strong>olympus/</strong> synchronizes with the <strong>olympus/</strong> directory on Github. Lee uses the file <strong>olympus/move_file.bash</strong> for moving code back and forth, which is easily adapted to other computers. Files we no longer use are in the <strong>old/</strong> directory.</p>
+<p>In this directory, we have the following sub-directories:</p>
+<ul>
+<li><strong>spew/</strong>: Copy of the current spew-software hosted on Github. With devtools, this copy allows us to quickly update SPEW code to run on Olympus, by simply using: <em>devtools::load_all(“/mnt/beegfs1/data/shared_group_data/syneco”)</em> (e.g. <em>olympus/run_spew.R</em>). I use the program (Sublime SFTP) to edit files on Olympus locally, which saves the hassle of SCP’s files back and forth. A git repository is set up in this directory, so you can commit, push, etc. just as you can locally.</li>
+<li><strong>spew_NUMBER/</strong>: Releases of spew synthetic populations. For example, <em>spew_1.2.0</em> is the release of version 1.2.0 of our synthetic ecosysystems.</li>
+<li><strong>spew_input/</strong>: Input data used in our synthetic ecosystems. Recently split into its own directory to avoid duplication.</li>
+<li><strong>old/</strong>: Old files we no longer use. The most useful part of this directory is <em>old/spew_olympus/getting_data</em>, which contains originally downloaded data-sources.</li>
+</ul>
 <p>Our final ecosystems are available online at: <a href="http://data.olympus.psc.edu/syneco/" class="uri">http://data.olympus.psc.edu/syneco/</a>. This website is just an online version of the Olympus directory:</p>
 <p><strong>/mnt/lustre0/machines/data.olympus.psc.edu/srv/apache/data/syneco</strong></p>
-<p>Implying that anything we want to appear online, we can just put here. We post finalized versions of our ecosystems using “symlinks” between this directory and our Olympus directory, to avoid copying.</p>
+<p>Meaning that anything we want online, we simply put into this directory. We post finalized versions of our ecosystems using “symlinks” between this directory and <strong>/mnt/beegfs1/data/shared_group_data/syneco</strong> to avoid copying.</p>
 <p>We now briefly explain each subdirectory inside <strong>olympus/</strong>.</p>
 <ul>
-<li><strong>call_spew/</strong>: Generating synthetic ecosystems on Olympus using the <em>spew</em> package</li>
-<li><strong>data/</strong>: Downloading and pre-procesing data. Still needs to be moved from <strong>old/spew_olympus</strong><br />
+<li><strong>call_spew/</strong>: Scripts to call the SPEW ecosystems, with our directory structure, on Olympus.</li>
+<li><strong>data/</strong>: Ideally contains all code for downloading and pre-processing data. Should provide a “record” of how we can all data into <strong>spew_input/</strong>. We still want to merge files from <strong>old/spew_olympus</strong><br />
 </li>
 <li><strong>logfiles/</strong>:Extracting and analyzing logfiles from SPEW runs, used to generate figures in the paper.</li>
 <li><strong>reports/</strong>: Generating diagnostic reports</li>
@@ -161,12 +167,12 @@ $(document).ready(function () {
 <h2>R-Package</h2>
 <p>The primary reference for our <em>spew</em> R-package is the book <strong>R Packages</strong>, available online at:</p>
 <p><a href="http://r-pkgs.had.co.nz/" class="uri">http://r-pkgs.had.co.nz/</a>.</p>
-<p>For new contributors, the two most important parts are the <strong>R/</strong> folder, where all R-code lives, and <strong>tests/</strong>, for verifying that our R-code works. The fundamental concept to remember is that all code should have a corresponding test, and all tests should pass before adding code.</p>
-<p>Our package includes internal data for verifying our code and tests work. The data is organized as follows:</p>
+<p>For new contributors, the two most important parts are the <strong>R/</strong> folder, where all R-code lives, and <strong>tests/</strong>, for verifying that our R-code works. The key concept to remember is that all code should have a corresponding test, and all tests should pass before adding code.</p>
+<p>We include internal data for verifying our code and tests work, organized as follows:</p>
 <ul>
-<li><strong>data/</strong>: Formatted data we can use for our functions. Data in this directory can be loaded using <code>data(tartanville)</code></li>
-<li><strong>data-raw/</strong>: R-scripts used to generate data located in the <strong>data/</strong> folder</li>
-<li><strong>inst/extdata</strong>: Example data input directories from Olympus.</li>
+<li><strong>data/</strong>: Formatted data we can use for our functions. Data in this directory can be loaded using <code>data(tartanville)</code>.</li>
+<li><strong>data-raw/</strong>: R-scripts used to generate data located in the <strong>data/</strong> folder.</li>
+<li><strong>inst/extdata</strong>: Data with same input structure as Olympus. Used to test our IO functions locally.</li>
 </ul>
 <p>An example of how this works: For a new version of SPEW, I download the input data into <strong>inst/extdata</strong>. Then, I write an r-script in <strong>data-raw</strong> which saves the binary (<em>.rda</em>) file for easy use in <strong>data/</strong>.</p>
 </div>
@@ -177,34 +183,38 @@ $(document).ready(function () {
 <p>An example of re-factoring existing code is contained in the appendix.</p>
 <div id="functions" class="section level2">
 <h2>Functions</h2>
-<p>The <strong>R/</strong> directory has files for various groupings of functions. It is important to stress that all R-code in these files should be functions: not scripts. Ideally, functions should be as general as possible, and shouldn’t be tailored to Olympus file-paths. (with obvious exceptions: the <strong>R/ read.R</strong> files only purpose is reading data on Olympus).</p>
-<p>The main functions are in the <strong>spew.R</strong> file, containing the <strong>call_spew</strong> function for Olympis, and the <strong>spew</strong> which works more generally. The <strong>spew</strong> function essentially loops rows of the population table, generating a synthetic population for each row. We also include different wrappers for running this in parallel.</p>
+<p>The <strong>R/</strong> directory has files for various groupings of functions. It is important to stress that all R-code in these files should be functions: not scripts. Ideally, functions should work generally, and not be tailored to specific file-formats or Olympus (with obvious exceptions: the <strong>R/read.R</strong> files only purpose is reading data on Olympus). For new data-sources, a good idea is to think about what a “general” input/output relationship would look like, and pre-process any data into that format before writing the functions.</p>
+<p>The main functions are in the <strong>spew.R</strong> file. This contains the <strong>call_spew</strong> function for Olympus, <strong>spew</strong> which works more generally. <strong>spew</strong> loops over each region specified in the population table, and generates a synthetic ecosystem for each using the <strong>spew_place</strong> function. We include three different wrapper functions <strong>spew_seq</strong>, <strong>spew_sock</strong>, <strong>spew_mpi</strong>, and <strong>spew_mc</strong> which generate ecosystems with different parallel back-ends. We include these functions because some ecosystems (e.g. the United States) require more nodes (MPI), and others (e.g. IPUMS) require more memory (MC).</p>
 </div>
 <div id="unit-tests" class="section level2">
 <h2>Unit Tests</h2>
-<p>Key to keeping our functions correct are unit-tests. Unit testing is covered in detail here <a href="http://r-pkgs.had.co.nz/tests.html" class="uri">http://r-pkgs.had.co.nz/tests.html</a>. All functions added to <em>spew</em> should have a corresponding tests, and all test must pass before code is added. If it is the end of the day, and the code still doesn’t work, it is better to wait than put it online without testing.</p>
+<p>Key to keeping our functions correct are <em>unit-tests</em>. Unit testing is covered in detail here <a href="http://r-pkgs.had.co.nz/tests.html" class="uri">http://r-pkgs.had.co.nz/tests.html</a>. All functions added to <em>spew</em> should have a corresponding tests, and all test must pass before code is added. If it is the end of the day, and the code still doesn’t work, it is better to wait than pushing it to Github without testing.</p>
 <div id="integration-with-travis-ci" class="section level3">
 <h3>Integration with Travis CI</h3>
-<p>It would be great to integrate SPEW with the Travis Continuous Integration system. Travis runs all automatic checks required by CRAN, along with our unit-tests, each time code is added. We hope to incorporate this soon.</p>
+<p>The <strong>spew</strong> R-package has been integrated with the Travis Continous Integration service. Since <strong>spew</strong> will go on CRAN, one requirement for this is that it must pass R CMD CHECK <a href="http://r-pkgs.had.co.nz/check.html" class="uri">http://r-pkgs.had.co.nz/check.html</a> without any errors, warnings, or notes.</p>
+<p>Practically speaking, this means that everytime someone pushes new code to Github, Travis automatically runs <em>R CMD CHECK</em> on the new code-base. If any errors are introduced, I recieve an e-mail explaining what went wrong. Both Travis and Unit Testing are used to ensure the correctness of our code automatically, so that we can avoid introducing bugs.</p>
 <div id="minor-details" class="section level4">
 <h4>Minor Details</h4>
 <ul>
 <li>If using a function from another package, use package::function. For example, if we are using the <strong>spsample</strong> function from package <strong>sp</strong>, write <strong>sp::spsample</strong>.</li>
-<li>If using a “Suggests” package, use a requireNamespace conditional before calling:</li>
+<li>If using a “Suggests” package, use a requireNamespace conditional before calling (example from the R-packages book):</li>
 </ul>
 <pre class="r"><code>my_fun &lt;- function(a, b) {
   if (!requireNamespace(&quot;pkg&quot;, quietly = TRUE)) {
     stop(&quot;Pkg needed for this function to work. Please install it.&quot;, call. = FALSE)
   }
 }</code></pre>
-<p>Example from R-packages book</p>
 </div>
 </div>
 </div>
 </div>
 <div id="documentation" class="section level1">
 <h1>Documentation</h1>
-<p>SPEW has two layers of documentation: for R-functions, and formal documentation for each public release. Both are detailed next.</p>
+<p>SPEW has two layers of documentation:</p>
+<ol style="list-style-type: decimal">
+<li>R-functions</li>
+<li>Formal Documentation for Ecosystem Release.</li>
+</ol>
 <div id="r-functions" class="section level2">
 <h2>R-Functions</h2>
 <p>We document R-functions following <a href="http://r-pkgs.had.co.nz/man.html" class="uri">http://r-pkgs.had.co.nz/man.html</a>. The documentation should be as concise as possible. Additionally, remember to move to a new-line when writing documentation, and try to keep less than 100 characters per line.</p>
@@ -222,10 +232,10 @@ $(document).ready(function () {
 </div>
 <div id="clarifications-for-this-release" class="section level3">
 <h3>Clarifications for this release</h3>
-<p>All details of the release must be documented. For example, we might need to record that “For canada, we adapted the version of spatial sampling because there was no lake data”.</p>
+<p>All details of the release must be documented. For example, we might need to record that “For Canada, we adapted the version of spatial sampling because there was no lake data”.</p>
 </div>
-<div id="description-of-file-formatting" class="section level3">
-<h3>Description of file-formatting</h3>
+<div id="description-of-output-directories" class="section level3">
+<h3>Description of output directories</h3>
 <p>We have a complicated directory for each ecosystem, which should be layed out here.</p>
 </div>
 </div>
