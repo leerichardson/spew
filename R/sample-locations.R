@@ -82,16 +82,14 @@ sample_locations_uniform <- function(place_id, n_house, shapefile, noise = .001,
   # Obtain a Uniform, simple random sample of size n_house. If there 
   # are less the 100K points, use the 
   if (n_house < 100000) {
-    locs <- sp::spsample(poly, n = n_house, offset = c(0, 0), 
-                         type = "random", iter = 50)
+    locs <- sp::spsample(poly, n = n_house, offset = c(0, 0), type = "random", iter = 50)
   } else {
     # Sample 100,000 points, then sample n_house of these with replacement 
-    locs <- sp::spsample(poly, n = 100000, offset = c(0, 0), 
-                         type = "random", iter = 50)
-    sample_inds <- sample(x = 1:100000, size = n_house, replace = TRUE)
+    locs <- sp::spsample(poly, n = 10000, offset = c(0, 0), type = "random", iter = 50)
+    sample_inds <- sample(x = 1:10000, size = n_house, replace = TRUE)
     locs@coords <- locs@coords[sample_inds, ]
     
-    # Add noise so we don't duplicate poitns 
+    # Add noise so we don't duplicate points 
     locs@coords[, 1] <- locs@coords[, 1] + rnorm(n_house, 0, noise)
     locs@coords[, 2] <- locs@coords[, 2] + rnorm(n_house, 0, noise)
   }
@@ -153,8 +151,8 @@ sample_locations_roads <- function(place_id, n_house, shapefile, noise = .0001, 
 
 #' Subset the shapefile and road lines to proper roads within specified tract
 #'
-#' @param place_id numeric specifiying the ID of the region we are 
-#' subsampling  
+#' @param place_id numeric specifying the ID of the region we are 
+#' sub-sampling  
 #' @param shapefile sp class with all of the locations for each place id.  
 #' In addition, we must have road shapefiles so shapefile is a list with both the 
 #' tracts and the roads, tracts is the first object and roads the second.
@@ -186,9 +184,8 @@ subset_shapes_roads <- function(place_id, shapefile) {
       roads_sub <- shapefile$roads
   }
   
-  if (is.null(roads_sub)) {
-    return(NULL)
-  }
+  if (is.null(roads_sub)) { return(NULL) }
+
   ## We need to have both sets of shapefiles to have
   ## the same CRS projections
   sp::proj4string(roads_sub) <-  sp::proj4string(poly) 
@@ -198,9 +195,7 @@ subset_shapes_roads <- function(place_id, shapefile) {
   ## final intersected shapefile 
   potential_roads <- roads_sub[poly, ]
   new_shp <- rgeos::gIntersection(potential_roads, poly, drop_lower_td = TRUE)
-  
 
-  
   stopifnot(class(new_shp) == "SpatialLines" | class(new_shp) == "SpatialPoints")
     
   return(new_shp)
