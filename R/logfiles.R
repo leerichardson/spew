@@ -68,17 +68,8 @@ check_logfile <- function(logfile) {
 #' @param location_name name character vector
 #' 
 get_data_group <- function(location_name) {
-  # Make sure this isn't the custom data group
-  # which right now only includes Canada
-  if (location_name == "canada") {
-    data_group <- "custom"
-    return(data_group)
-  }
-  
-  # If as.numeric gives a numeric, it's the USA
-  # ID. If not, it's IPUMS
-  location_name <- as.numeric(location_name)
-  if (is.na(location_name)) {
+  # If as.numeric gives a numeric, it's the USA ID. If not, it's IPUMS
+  if (is.na(as.numeric(location_name))) {
     data_group <- "ipums"
   } else {
     data_group = "us"
@@ -93,10 +84,30 @@ get_data_group <- function(location_name) {
 #' 
 get_total_time <- function(logfile) {
   total_line <- get_rows(logfile, "SPEW Runs in:")
-  total_numbers <- as.numeric(gsub("([0-9]+).*$", "\\1", total_line))
-  total_time <- paste0(total_numbers[2], ".", total_numbers[3])
-  return(total_time)
+  total_line <- remove_excess(total_line)
+  total_line <- gsub(" ", "", total_line)
+  total_line <- strsplit(x = total_line, split = ":")
+  total_line <- unlist(lapply(total_line, function(x) x[length(x)]))
+  total_line <- gsub("\"", "", total_line)
+
+  return(as.numeric(total_line))
 }
+
+# logfile <- get_rows(logfile, name)
+# logfile <- remove_excess(logfile)
+# logfile <- gsub(" ", "", logfile)
+# 
+# # Split the clean rows by the colon separating them
+# # and return the column with everything to the right
+# # of the column
+# logfile <- strsplit(x = logfile, split = ":")
+# logfile <- unlist(lapply(logfile, function(x) x[length(x)]))
+# logfile <- gsub("[^[:alnum:][:space:]]","", logfile)
+# 
+# # Remove the error colums IF there was an error in the log-file row
+# if (length(grep("Place Name", name)) != 1) {
+#   logfile <- as.numeric(logfile)
+# } 
 
 #' Parse a SPEW Log-file to into an appropriate column
 #'
@@ -107,8 +118,7 @@ get_total_time <- function(logfile) {
 #' 
 #' or not the final lgogfile should be converted to a numeric.
 create_column <- function(logfile, name, type = "numeric") {
-  # Subset the rows and remove the excess from
-  # the logfiles
+  # Subset the rows and remove the excess from the logfiles
   logfile <- get_rows(logfile, name)
   logfile <- remove_excess(logfile)
   logfile <- gsub(" ", "", logfile)
@@ -117,14 +127,15 @@ create_column <- function(logfile, name, type = "numeric") {
   # and return the column with everything to the right
   # of the column
   logfile <- strsplit(x = logfile, split = ":")
-  after_colon <- unlist(lapply(logfile, function(x) x[length(x)]))
+  logfile <- unlist(lapply(logfile, function(x) x[length(x)]))
+  logfile <- gsub("[^[:alnum:][:space:]]","", logfile)
   
   # Remove the error colums IF there was an error in the log-file row
   if (length(grep("Place Name", name)) != 1) {
-    after_colon <- as.numeric(after_colon)
-  }
+    logfile <- as.numeric(logfile)
+  } 
   
-  return(after_colon)
+  return(logfile)
 }
 
 #' Extract rows with a certain character

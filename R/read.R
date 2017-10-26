@@ -217,6 +217,11 @@ read_pums <- function(input_dir, folders, data_group, vars = list(household = NA
       pums_p <- data.table::fread(pums_files, stringsAsFactors = FALSE)
     }
     
+    # Remove rows with Age = 999 or Sex = 9.
+    pums_p <- pums_p[which(pums_p$AGE != 999), ]
+    pums_p <- pums_p[which(pums_p$SEX != 9), ]
+    
+    # Create household PUMS with unique Person PUMS 
     unique_hh_indices <- !duplicated(pums_p$SERIAL)
     pums_h <- pums_p[unique_hh_indices, ]
   
