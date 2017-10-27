@@ -33,7 +33,7 @@ SPEW uses random sampling to sample both locations of residence for the syntheti
 ## Downloading SPEW	
 Open up an `R` session and run the following commands.
 ```{r, eval = FALSE}     
-  devtools::install_github("leerichardson/spew")
+  install.packages("spew")
 ```
 
 Next, load the *spew* library into the R-session with:
@@ -290,7 +290,7 @@ SPEW requires three essential data inputs connected through the variables `place
 | Population Counts | Table of number of individuals per region.                      | `place_id`, `puma_id` | `.csv` |
 | Shapefile         | Spatial boundaries of the regions in Population Counts.         | `place_id`            | `.shp` |
 | Microdata         | Table of individual records with individual-level characteristics.  Also known as Public Use 
-Microdata Samples (PUMS).  We need both household-level microdata (`pums_h`) and individual-level microdata (`pums_p`). | `puma_id`             | `.csv` |
+Microdata Samples (PUMS).  | We need both household-level microdata (`pums_h`) and individual-level microdata (`pums_p`). | `puma_id`             | `.csv` |
 
 Given a row in the table of population counts with the variables `place_id` and `puma_id`, one should be able to find the unique region `place_id` in the shapefile that matches that of the row along with the microdata records with the same `puma_id`.
 
@@ -365,7 +365,7 @@ Finally, the `marginals` object is added to the list of supplementary data,
 supplementary_data <- list(marginals = marginals)
 ```		 	       
 
-		    ## Environments  (`environments`)
+## Environments  (`environments`)
 This is a data frame with the following arguments
 
 ```
