@@ -6,7 +6,7 @@ Version: 1.3.0
 Date: 2016-12-14
 Author: Lee Richardson, Shannon Gallagher, Sam Ventura
 Maintainer: Lee Richardson <leerichardson2013@gmail.com>
-Description: spew is a general purpose synthetic ecosystem generator. 
+Description: General-purpose synthetic ecosystem generator.
 License: GPL-3 
 URL: http://github.com/leerichardson/spew
 BugReports: http://github.com/leerichardson/spew/issues

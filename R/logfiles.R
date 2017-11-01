@@ -2,11 +2,14 @@
 #'
 #' @param logfile character with the file-name
 #' @param columns character vector indicating the
+#' @param path path to the logfile (used for debugging) 
+#' 
 #' names of the columns we are extracting from the
 #' log-file
-spewlog_to_df <- function(logfile, columns) {
+spewlog_to_df <- function(logfile, columns, path = NULL) {
   # Loop through each one of the Columns
   # and make each one a data-frame columns
+  # if (length(grep(pattern = "ind", x = path)) > 0) { browser() }
   for (col in columns) {
     # Extract column info from log-file
     current_col <- create_column(logfile, col)

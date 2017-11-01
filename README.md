@@ -1,8 +1,8 @@
 # spew
-Synthetic Populations and Ecosystems of the World
+SPEW provides functions for generating synthetic ecosystems. For an introduction on using spew, please see our vignette. 
 
 ## Installation
 ```{r}
-library(devtools)
-install_github("leerichardson/spew")
+    install.packages("spew")
+    library(spew)
 ```

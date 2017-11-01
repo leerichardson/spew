@@ -4,12 +4,15 @@
 \alias{spewlog_to_df}
 \title{Convert a SPEW Logfile into a data-frame}
 \usage{
-spewlog_to_df(logfile, columns)
+spewlog_to_df(logfile, columns, path = NULL)
 }
 \arguments{
 \item{logfile}{character with the file-name}
 
-\item{columns}{character vector indicating the
+\item{columns}{character vector indicating the}
+
+\item{path}{path to the logfile (used for debugging) 
+
 names of the columns we are extracting from the
 log-file}
 }

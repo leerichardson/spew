@@ -24,6 +24,9 @@ sample_ipf(n_house, pums_h, pums_p, marginals, alpha = 0, k = 0.001,
 
 \item{place_id}{id indicating the current region}
 }
+\value{
+households data frame with re-sampled pums_h households
+}
 \description{
 Sample households PUMS accoording to IPF
 }

@@ -8,10 +8,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-<!-- toc: true -->
-<!-- toc_float: true -->
-<!-- highlight: textmate -->
-<!-- theme: flatly -->
 
 ```{r, include=FALSE}
 library(knitr) # We need the knitr package to set chunk options
@@ -39,40 +35,15 @@ Open up an `R` session and run the following commands.
 Next, load the *spew* library into the R-session with:
 
 ```{r}
-  library(spew)
+library(spew)
 ```
 
-##	Tartanville:  SPEW basics		
+##	Tartanville: SPEW basics		
 To plot with functions in SPEW, make sure `ggplot2` is	installed.	
 
-```{r, eval = FALSE}
-# Generate Tartanville 
+```{r, warning = FALSE, results = 'hide', echo = TRUE, message = FALSE}
 data(tartanville)
 
-tartanville_syneco <- spew(tartanville$pop_table, tartanville$shapefile,
-                           tartanville$pums_h, tartanville$pums_p, )
-
-plot_syneco(tartanville, tartanville_syneco,
-                     region_name = "Tartanville")
-
-out <- summarize_spew_out(tartanville_syneco, vars_to_sum_h = c("puma_id"),
-                            vars_to_sum_p = c("SEX"),
-                           vars_to_sum_env = NULL, top_region_id = "Tartanville")
-
-g <- plot_characteristic_proportions(feature_name = "Sex", legend_name = "Sex",
-                                feature_df = out$SEX,
-                                category_names = c("Male", "Female"),
-                                text_size = 10,
-                                region_colors = c("lightslateblue", "maroon1"))
-
-g <- plot_pop_totals(feature_df = out$pop_totals, type = "n_people")
-```
-
-```{r, warning = FALSE, results = 'hide', echo = FALSE, message = FALSE}
-# library(spew)
-# devtools::load_all("../")
-# Generate Tartanville 
-data(tartanville)
 tartanville_syneco <- spew(tartanville$pop_table, tartanville$shapefile,
                             tartanville$pums_h, tartanville$pums_p)
 
@@ -116,8 +87,7 @@ tartanville_syneco <- spew(tartanville$pop_table, shapefile,
                             tartanville$pums_h, tartanville$pums_p,
                             locations_method = "roads", road_noise = .05)
 
-plot_syneco(tartanville, tartanville_syneco,
-            region_name = "Tartanville")
+plot_syneco(tartanville, tartanville_syneco, region_name = "Tartanville")
 ```	
      
 # Sampling of characteristics
@@ -170,7 +140,7 @@ synthetic_NP_avg <- sapply(tartanville_syneco_mm[non_empty_regions], function(ll
 sum(abs(synthetic_NP_avg - NP_avg[-2]))
 
 
-## Comparing to uniform sampling
+# Comparing to uniform sampling
 synthetic_NP_avg_unif<- sapply(tartanville_syneco[non_empty_regions], function(ll){
     mean(ll$households$NP, na.rm = TRUE)
     })
@@ -315,11 +285,6 @@ The roads are in the form of spatial lines.
 data(tartanville)
 class(tartanville$roads)
 ```
-To create a synthetic ecosystem, we need to adapt the `shapefile` argument of the function `spewr`.  It needs the following format
-
-```
-shapefile <- list(boundaries = {orig.shapefile.regions}, roads = {my.roads})
-```  
 
 ## Moment Matching (MM) (`moments`)
 The moments object is created through the `make_mm_obj` function.  This function requires a `moments_list` argument which has the following format.
@@ -331,6 +296,7 @@ The moments object is created through the `make_mm_obj` function.  This function
 + `nMom` should be 1 at this moment in time.
 
 + `type` should be "cont"  for continuous variables.
+
 ```
 moments_list <- list(mom1 = data.frame(place_id = {my.place.ids}, puma_id = {my.pumas},
                                        var1 = {var1.avg}, var2 = {var2.avg}, ..., var{p} ={varp.avg}),
@@ -364,12 +330,3 @@ Finally, the `marginals` object is added to the list of supplementary data,
 ```
 supplementary_data <- list(marginals = marginals)
 ```		 	       
-
-## Environments  (`environments`)
-This is a data frame with the following arguments
-
-```
-environments <- data.frame(ID = {IDs}, Type = {environment.type},
-	     longitude = {longitude}, latitude = {latitude},
-	     capacity = {capacity.of.place})
-```	     

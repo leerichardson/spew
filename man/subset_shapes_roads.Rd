@@ -7,8 +7,8 @@
 subset_shapes_roads(place_id, shapefile)
 }
 \arguments{
-\item{place_id}{numeric specifiying the ID of the region we are 
-subsampling}
+\item{place_id}{numeric specifying the ID of the region we are 
+sub-sampling}
 
 \item{shapefile}{sp class with all of the locations for each place id.
 In addition, we must have road shapefiles so shapefile is a list with both the 

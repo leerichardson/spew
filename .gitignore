@@ -8,3 +8,4 @@ inst/doc
 .o*
 .e*
 doc/ecosystems/spew_1.2.0/spew_1.2.0.tar.gz
+/revdep/.cache.rds

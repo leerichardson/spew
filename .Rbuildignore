@@ -9,3 +9,7 @@
 ^inst/extdata/10$
 ^inst/extdata/ury$
 ^\.travis\.yml$
+^plots$
+^cran-comments\.md$
+^revdep$
+^NEWS\.md$
