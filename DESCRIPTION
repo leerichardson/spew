@@ -1,7 +1,7 @@
 Package: spew
 Type: Package
 Depends: R (>= 2.10)
-Title: An implementation of the SPEW framework for generating synthetic ecosystems 
+Title: An Implementation of the SPEW Framework for Generating Synthetic Ecosystems
 Version: 1.3.0
 Date: 2017-11-03
 Author: Lee F. Richardson, Shannon Gallagher, Samuel L. Ventura, William F. Eddy
