@@ -4,7 +4,7 @@ author: "Department of Statistics, Carnegie Mellon University"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{SPEW: A brief tour}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -177,9 +177,7 @@ bounds <- data.frame(lower = c(1, 2), upper = c(1, 2))
 category_name <- c("Tartan", "Argyle")
 df2 <- data.frame(place_id = paste0("T", 1:9),  v1 = c(28, 0, 4, 1, 5, 8, 2, 1, 3))
 df2$v2 <- tartanville$pop_table$n_house - df2$v1
-#
 ipf_obj_rac1p <- make_ipf_obj(var_name, type, bounds, category_name, df = df2)
-
 
 # Combine both together
 ipf_obj <- list(HHINC = ipf_obj_hhinc[[1]], RAC1P = ipf_obj_rac1p[[1]])

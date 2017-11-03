@@ -12,6 +12,19 @@
 #' @export
 #' 
 #' @return numeric with the indicies of the household PUMS to sample
+#' 
+#' @examples
+#' data("tartanville")
+#' example_place_id <- tartanville$pop_table$place_id[1] 
+#' example_puma_id <- tartanville$pop_table$puma_id[1] 
+#' example_n_house <- tartanville$pop_table$n_house[1] 
+#' sample_households(method = "uniform", 
+#'                   pums_h = tartanville$pums_h, 
+#'                   pums_p = tartanville$pums_p, 
+#'                   n_house = example_n_house, 
+#'                   place_id = example_place_id, 
+#'                   puma_id = example_puma_id)
+#' 
 sample_households <- function(method, n_house, pums_h, pums_p = NULL,
                               puma_id = NULL, place_id = NULL, 
                               marginals = NULL) {
@@ -31,8 +44,7 @@ sample_households <- function(method, n_house, pums_h, pums_p = NULL,
     stop("Sampling method must be ipf, mm, or uniform")
   }
   
-  # Subset the sampled indices from the PUMS, and add 
-  # in puma and place ids to the final pums 
+  # Subset the sampled indices from the PUMS, and add in puma and place ids to the final pums 
   sampled_households <- pums_h[households, ]
   
   # Remove the comma's from ourput

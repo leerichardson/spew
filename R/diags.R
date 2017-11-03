@@ -1,7 +1,6 @@
 ## Functions to run the diagnostics
 ## Revised as of August, 2017 for clarity and simplicity
 
-
 #' Summarize the region in a more human-readable format
 #'
 #' @param output_dir path to top level directory of SPEW folders.  Ex. "./10" for Delaware
@@ -203,12 +202,7 @@ summarize_spew <- function(filenames, marginals= NULL, vars_to_sum,
                                     ))
     }
     region_id <- filenames$id
-
-    
-
     total_pop <- nrow(df)
-
-
 
     ## Sample coordinates if appropriate
     coords_df <- NULL
@@ -234,7 +228,6 @@ summarize_spew <- function(filenames, marginals= NULL, vars_to_sum,
                            coords_df = coords_df)
     region_summary <- c(region_summary, vars_sum, env_sum)
     return(region_summary)
-                           
 }
 
 #' Summarize individual features of a region
@@ -527,7 +520,9 @@ base_map_theme <- function(){
 #' @param text_size axis text size.  Default is 10
 #' @param region_colors a string of colors to color the map.  Default is from the colorblind friendly palette.
 #' @return a gg map object
+#' 
 #' @export
+#' 
 plot_characteristic_proportions <- function(feature_name = "Feature",
                                             legend_name = "Types", feature_df,
                                             category_names = NULL,
@@ -575,12 +570,21 @@ plot_characteristic_proportions <- function(feature_name = "Feature",
 #' @param type either "n_house" or "n_people".  Default is n_people 
 #' @param text_size axis text size.  Default is 10
 #' @param region_colors a string of colors to color the map.  Default is from the colorblind friendly palette.
+#' 
 #' @return a gg map object
+#' 
 #' @export
+#' 
+#' @examples 
+#' data(tartanville)
+#' 
+#' tartanville_syneco <- spew(tartanville$pop_table, tartanville$shapefile, 
+#'                            tartanville$pums_h, tartanville$pums_p)
+#' plot_syneco(tartanville, tartanville_syneco, region_name = "Tartanville")
 plot_pop_totals <- function( feature_df, type = "n_people",
                             text_size = 10,
                             region_colors= c("#999999", "#E69F00", "#56B4E9",
-                                             "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")){
+                                             "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")) {
 
     stopifnot(type %in% c("n_people", "n_house"))
     nm <- "Person Counts"

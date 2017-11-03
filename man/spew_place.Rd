@@ -58,5 +58,15 @@ the population is the total number of households}
 List of a synthetic ecosystem
 }
 \description{
-Generate synthetic ecosystem for single place
+Used by 'spew' to split the generated of synthetic ecosytstems 
+into independent regions.
+}
+\examples{
+data(tartanville)
+tartanville_T1 <- spew_place(index = 1, 
+                             pop_table = tartanville$pop_table, 
+                             shapefile = tartanville$shapefile, 
+                             pums_h = tartanville$pums_h, 
+                             pums_p = tartanville$pums_p)
+                             
 }

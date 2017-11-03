@@ -2,7 +2,7 @@
 % Please edit documentation in R/summarize_spew.R
 \name{plot_syneco}
 \alias{plot_syneco}
-\title{Plotting the synthetic ecosystem}
+\title{Plot Synthetic Ecosystem}
 \usage{
 plot_syneco(input_data, syneco, region_name = NULL, color_list = list(bds =
   "white", interior = "gray60", roads = "gray10", agents = "darkorchid3", envs =
@@ -22,5 +22,14 @@ plot_syneco(input_data, syneco, region_name = NULL, color_list = list(bds =
 plot of the synthetic ecosystem
 }
 \description{
-Plotting the synthetic ecosystem
+Plot Synthetic Ecosystem
+}
+\examples{
+data(tartanville)
+
+tartanville_syneco <- spew(tartanville$pop_table, tartanville$shapefile, 
+                           tartanville$pums_h, tartanville$pums_p)
+                           
+plot_syneco(tartanville, tartanville_syneco, region_name = "Tartanville")
+
 }

@@ -14,6 +14,17 @@
 #' @export
 #' 
 #' @return SpatialPoints object with coordinates for the n households
+#' 
+#' @examples 
+#' data("tartanville")
+#' example_place_id <- tartanville$pop_table$place_id[1] 
+#' example_puma_id <- tartanville$pop_table$puma_id[1] 
+#' example_n_house <- tartanville$pop_table$n_house[1] 
+#' sample_locations(method = "uniform", 
+#'                   shapefile = tartanville$shapefile, 
+#'                   n_house = example_n_house, 
+#'                   place_id = example_place_id)
+#'                   
 sample_locations <- function(method, place_id, n_house, shapefile, noise = .001, shapefile_id = NULL) {
   # Call the appropriate location sampling function
   if (method == "uniform") {

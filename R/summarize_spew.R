@@ -2,14 +2,25 @@
 ## August 24, 2017
 ## Functions to analyze SPEW synecos in console
 
-#' Plotting the synthetic ecosystem
+#' Plot Synthetic Ecosystem
 #'
 #' @param input_data a list of the essential data and possibly supplementary data, shapefile must be one of the names
 #' @param syneco the outputted synthetic ecosystem data from spew
 #' @param region_name string, will become the title of the plot
 #' @param  color_list optional list of colors to provide to the synthetic ecosystem.  This must be a list with the following components, "bds", "interior", "roads", "agents", "envs" where each entry in the list is a color or vector of colors
+#' 
 #' @return plot of the synthetic ecosystem 
+#' 
 #' @export
+#' 
+#' @examples 
+#' data(tartanville)
+#' 
+#' tartanville_syneco <- spew(tartanville$pop_table, tartanville$shapefile, 
+#'                            tartanville$pums_h, tartanville$pums_p)
+#'                            
+#' plot_syneco(tartanville, tartanville_syneco, region_name = "Tartanville")
+#' 
 plot_syneco <- function(input_data, syneco, region_name = NULL,
                         color_list = list(bds = "white",
                                           interior = "gray60",
@@ -199,9 +210,7 @@ plot_labs <- function(region_name, g = NULL) {
               plot.background=ggplot2::element_blank())
 
     return(g)
-
 }
-
 
 #' Summarize spew output
 #'
@@ -222,6 +231,20 @@ plot_labs <- function(region_name, g = NULL) {
 #' @note This function is only guaranteed to work when you provide marginals describing how a category is "cut."  If a certain category is not represented, then the final totals in each category may be off.
 #' 
 #' @export
+#' 
+#' @examples 
+#' data(tartanville)
+#' 
+#' tartanville_syneco <- spew(tartanville$pop_table, tartanville$shapefile, 
+#'                            tartanville$pums_h, tartanville$pums_p)
+#'                            
+#' out <-  summarize_spew_out(tartanville_syneco, 
+#'                            vars_to_sum_h = c("puma_id"), 
+#'                            vars_to_sum_p = c("SEX"), 
+#'                            vars_to_sum_env = NULL, 
+#'                            top_region_id = "Tartanville") 
+#' print(out)
+#' 
 summarize_spew_out <- function(syneco= NULL,
                              vars_to_sum_h, 
                              vars_to_sum_p,

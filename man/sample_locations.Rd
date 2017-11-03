@@ -30,3 +30,14 @@ SpatialPoints object with coordinates for the n households
 \description{
 Generic sampling locations function
 }
+\examples{
+data("tartanville")
+example_place_id <- tartanville$pop_table$place_id[1] 
+example_puma_id <- tartanville$pop_table$puma_id[1] 
+example_n_house <- tartanville$pop_table$n_house[1] 
+sample_locations(method = "uniform", 
+                  shapefile = tartanville$shapefile, 
+                  n_house = example_n_house, 
+                  place_id = example_place_id)
+                  
+}

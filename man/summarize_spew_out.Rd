@@ -42,3 +42,17 @@ Summarize spew output
 \note{
 This function is only guaranteed to work when you provide marginals describing how a category is "cut."  If a certain category is not represented, then the final totals in each category may be off.
 }
+\examples{
+data(tartanville)
+
+tartanville_syneco <- spew(tartanville$pop_table, tartanville$shapefile, 
+                           tartanville$pums_h, tartanville$pums_p)
+                           
+out <-  summarize_spew_out(tartanville_syneco, 
+                           vars_to_sum_h = c("puma_id"), 
+                           vars_to_sum_p = c("SEX"), 
+                           vars_to_sum_env = NULL, 
+                           top_region_id = "Tartanville") 
+print(out)
+
+}
